@@ -556,12 +556,6 @@ var ResponseHandler = function(json, $this) {
 			$this.lastMsgId = json.lastMsgId;
 		}
 
-		if (json.time) {
-			msg = '[' + json.time + '] ';
-		}
-
-		//msg = '<img src="//habrastorage.org/getpro/habr/avatars/85e/4f4/13b/85e4f413b4d83b31654870ea96a91e8c_small.jpg" alt="" style="width: 20px;height: 20px;"> ';
-
 		if (json.fromName) {
 			var fromUser = $this.getUserInfo(json.fromName);
 			var user = fromUser;
