@@ -1,0 +1,5 @@
+.idea/
+conf/local.ini
+vendor/
+app.min.js
+composer.*
