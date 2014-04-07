@@ -13,16 +13,15 @@ session_start();
 $email = isset($_POST['email']) ? trim($_POST['email']) : null;
 $token = isset($_POST['token']) ? $_POST['token'] : null;
 $sessionToken = isset($_SESSION['token']) ? $_SESSION['token'] : null;
-$validation = null;
 
-function showFirst() {
+function showFirst($email, $validation = null, Form $form = null) {
 	$token = PasswordUtils::get(20);
 	$_SESSION['token'] = $token;
 	require_once "pages/recovery1.php";
 }
 
 if (!$email || !$token) {
-	showFirst();
+	showFirst($email);
 	exit;
 }
 
@@ -43,7 +42,7 @@ $form
 $validation = $form->validate();
 
 if (!$validation || $sessionToken != $token) {
-	showFirst();
+	showFirst($email, $validation, $form);
 	exit;
 }
 
