@@ -59,9 +59,10 @@ class LoginController extends ControllerBase
 	{
 		$user = $chain->getFrom();
 		$request = $chain->getRequest();
+		$lang = Lang::get();
 
 		if (!$userDAO = $this->validateLogin($request)) {
-			$this->errorResponse($user, ['email' => 'Указанный email или пароль не подходят']);
+			$this->errorResponse($user, ['email' => $lang->getPhrase('InvalidLogin')]);
 			return;
 		}
 
@@ -69,13 +70,19 @@ class LoginController extends ControllerBase
 		$clients = UserCollection::get();
 
 		if ($oldUserId == $userDAO->getId()) {
-			$this->errorResponse($user, ['email' => 'Вы уже авторизованы!']);
+			$this->errorResponse($user, ['email' => $lang->getPhrase('AlreadyAuthorized')]);
 			return;
+		}
+
+		if ($duplicatedUser = $clients->getClientById($userDAO->getId())) {
+			$duplicatedUser
+				->setAsyncDetach(false)
+				->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
+			Chat::get()->onClose($duplicatedUser->getConnection());
 		}
 
 		$user->setUserDAO($userDAO);
 		Chat::getSessionEngine()->updateSessionId($user, $oldUserId);
-
 
 		$this->sendNotifyResponse($user);
 

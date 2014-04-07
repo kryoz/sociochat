@@ -30,6 +30,7 @@ class SessionFilter implements ChainInterface
 		$newUserWrapper->setLastMsgId((float) $newUserWrapper->getWSRequest()->getCookie('lastMsgId'));
 		$logger = Log::get()->fetch();
 		$clients = UserCollection::get();
+		$lang = Lang::get();
 
 		$sessionHandler = $this->sessionHandler;
 		$sessionHandler->clean(ChatConfig::get()->getConfig()->session->lifetime);
@@ -37,7 +38,7 @@ class SessionFilter implements ChainInterface
 		if (!$token = $newUserWrapper->getWSRequest()->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);
 
-			$newUserWrapper->send(['msg' => Lang::get()->getPhrase('UnAuthSession')]);
+			$newUserWrapper->send(['msg' => $lang->getPhrase('UnAuthSession')]);
 			$newUserWrapper->close();
 			return false;
 		}
@@ -68,7 +69,7 @@ class SessionFilter implements ChainInterface
 					if ($oldClient->getConnectionId()) {
 						$oldClient
 							->setAsyncDetach(false)
-							->send(['msg' => 'Не допускается одновременная работа в двух или более вкладках.', 'disconnect' => 1]);
+							->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
 						$clients->detach($oldClient);
 
 						$newUserWrapper->setLastMsgId(-1);
