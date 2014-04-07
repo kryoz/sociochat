@@ -2,4 +2,5 @@
 conf/local.ini
 vendor/
 app.min.js
-composer.*
+composer.lock
+composer.phar

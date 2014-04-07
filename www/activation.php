@@ -1,4 +1,5 @@
 <?php
+use MyApp\ChatConfig;
 use MyApp\DAO\ActivationsDAO;
 use MyApp\DAO\UserDAO;
 use MyApp\Forms\Form;
@@ -56,7 +57,7 @@ if ($activation->getCode() != $code) {
 	exit;
 }
 
-if (strtotime($activation->getTimestamp()) + 3600 < time()) {
+if (strtotime($activation->getTimestamp()) + ChatConfig::get()->getConfig()->activationTTL < time()) {
 	$activation->setIsUsed(true);
 	$activation->save();
 	require_once "pages/activation_error.php";
