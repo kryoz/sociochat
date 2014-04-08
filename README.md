@@ -21,7 +21,7 @@ SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.o
 ## Installation
 
 * PHP 5.5
-* MySQL (PostgreSQL should work too, but I haven't made db schema for it yet)
+* MySQL or PostgreSQL. Use schema sql files in <em>db/</em> accordingly
 * PECL extension 'libevent' is recommended to achieve the best speed
 ```bash
 sudo apt-get install libevent libevent-dev
