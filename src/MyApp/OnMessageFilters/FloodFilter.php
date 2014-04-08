@@ -23,19 +23,20 @@ class FloodFilter implements ChainInterface
 
 		$prevRequest = isset($this->userTimers[$user->getId()]) ? $this->userTimers[$user->getId()] : false;
 
-		if ($prevRequest) {
-			$isPing = isset($chain->getRequest()['subject']) && $chain->getRequest()['subject'] == 'Ping';
-			if (!$isPing) {
-				$response = (new ErrorResponse())
-					->setErrors(['flood' => Lang::get()->getPhrase('FloodDetected')])
-					->setChatId($user->getChatId());
-				(new UserCollection())
-					->setResponse($response)
-					->attach($user)
-					->notify(false);
+		if (isset($chain->getRequest()['subject']) && $chain->getRequest()['subject'] == 'Ping') {
+			return;
+		}
 
-				return false;
-			}
+		if ($prevRequest) {
+			$response = (new ErrorResponse())
+				->setErrors(['flood' => Lang::get()->getPhrase('FloodDetected')])
+				->setChatId($user->getChatId());
+			(new UserCollection())
+				->setResponse($response)
+				->attach($user)
+				->notify(false);
+
+			return false;
 
 		}
 
