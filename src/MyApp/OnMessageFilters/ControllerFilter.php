@@ -38,7 +38,7 @@ class ControllerFilter implements ChainInterface
 		$controller = new $controllerName;
 		/* @var $controller ControllerBase */
 
-		if (!$controller->validateFields($chain) === false) {
+		if ($controller->validateFields($chain) === false) {
 			return false;
 		}
 
