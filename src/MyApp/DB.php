@@ -26,10 +26,11 @@ class DB
 
 	public function __construct()
 	{
-		$this->scheme = DB_SCHEME;
-		$this->dbURL = "dbname=".DB_NAME.";host=".DB_HOST;
-		$this->user = DB_USER;
-		$this->pass = DB_PASS;
+		$config = ChatConfig::get()->getConfig()->db;
+		$this->scheme = $config->scheme;
+		$this->dbURL = "dbname=".$config->name.";host=".$config->host;
+		$this->user = $config->user;
+		$this->pass = $config->pass;
 		$this->init();
 	}
 
@@ -85,10 +86,11 @@ class DB
 	/**
 	 * @param $sql
 	 * @param array $params
+	 * @param string|null $sequence
 	 * @return string
-	 * @throws PDOException
+	 * @throws \PDOException
 	 */
-	public function exec($sql, array $params = [])
+	public function exec($sql, array $params = [], $sequence = null)
 	{
 		$this->checkConnection();
 		try {
@@ -103,7 +105,7 @@ class DB
 			);
 		}
 
-		return $this->dbh->lastInsertId();
+		return $this->dbh->lastInsertId($sequence);
 	}
 
 	public function begin()

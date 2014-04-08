@@ -62,7 +62,7 @@ class UserBlacklistDAO extends DAOBase
 		return $this[self::USER_ID];
 	}
 
-	public function save()
+	public function save($sequence = null)
 	{
 		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = ?", [$this->getUserId()]);
 

@@ -12,6 +12,7 @@ require_once 'config.php';
 
 $pidFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'chat-server.pid';
 $logger = Log::get()->fetch();
+$config = ChatConfig::get()->getConfig();
 
 if (file_exists($pidFile)) {
 	$pid = file_get_contents($pidFile);
@@ -33,13 +34,13 @@ $app = new Chat();
 
 $loop = MightyLoop::get()->fetch();
 $webSock = new Server($loop);
-$webSock->listen(8080, 'localhost');
+$webSock->listen($config->daemon->port, $config->daemon->host);
 
 $server = new IoServer(
 	new HttpServer(new WsServer($app)),
 	$webSock
 );
 
-$logger->info("Starting chat server daemon...");
+$logger->info("Starting chat server daemon on ".$config->daemon->host.":".$config->daemon->port, ['CHAT-SERVER']);
 
 $loop->run();

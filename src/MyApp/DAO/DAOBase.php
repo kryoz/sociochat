@@ -52,7 +52,7 @@ abstract class DAOBase extends FixedArrayAccess
         return $this[self::ID];
     }
 
-    public function save()
+    public function save($sequence = null)
     {
         $params = array_diff_key($this->properties, $this->relativeProperties + [self::ID => null]);
 
@@ -66,7 +66,7 @@ abstract class DAOBase extends FixedArrayAccess
 	        }
             $query .= "(".implode(', ', $keys). ")";
 
-            $this[self::ID] = $this->db->exec($query, $params);
+            $this[self::ID] = $this->db->exec($query, $params, $this->dbTable.'_id_seq');
         } else {
             $query = "UPDATE {$this->dbTable} SET ";
             $queryParts = [];

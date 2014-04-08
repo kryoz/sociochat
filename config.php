@@ -4,12 +4,6 @@ use MyApp\ChatConfig;
 $DS = DIRECTORY_SEPARATOR;
 define('ROOT', __DIR__);
 
-define('DB_NAME', 'chat');
-define('DB_PASS', '123');
-define('DB_USER', 'chat');
-define('DB_SCHEME', 'mysql');
-define('DB_HOST', 'localhost');
-
 if (!isset($loader)) {
 	$loader = require_once ROOT.$DS.'vendor'.$DS.'autoload.php';
 	$loader->register();
