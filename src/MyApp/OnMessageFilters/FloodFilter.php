@@ -23,7 +23,7 @@ class FloodFilter implements ChainInterface
 		$user = $chain->getFrom();
 
 		if (isset($chain->getRequest()['subject']) && $chain->getRequest()['subject'] == 'Ping') {
-			return $this->manageRequest($user, $this->pingTimers);
+			return $this->manageRequest($user, $this->pingTimers, false);
 		}
 
 		return $this->manageRequest($user, $this->otherTimers);
@@ -32,12 +32,15 @@ class FloodFilter implements ChainInterface
 	/**
 	 * @param User $user
 	 * @param array $timers
+	 * @param bool $doResponse
 	 * @return bool
 	 */
-	private function manageRequest(User $user, array &$timers)
+	private function manageRequest(User $user, array &$timers, $doResponse = true)
 	{
 		if ($this->isRequestHot($user, $timers)) {
-			$this->respondFloodError($user);
+			if ($doResponse) {
+				$this->respondFloodError($user);
+			}
 			return false;
 		}
 
