@@ -1,4 +1,4 @@
-Sociochat.ru
+Sociochat
 =========
 
 This is source code of  <a href="https://sociochat.ru" target="_blank">SocioChat</a> in actual state.
