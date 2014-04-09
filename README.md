@@ -3,14 +3,16 @@ Sociochat.ru
 
 This is source code of  <a href="https://sociochat.ru" target="_blank">SocioChat</a> in actual state.
 The code is a bit rough in some places, lacking of tests, but pretty readable and managable.
-I'll be happy with your feedback in form of <a href="https://github.com/kryoz/sociochat/issues">bugreports</a> or pull requests. See also an official groups in <a href="http://vk.com/sociochat" target="_blank">VK</a> and <a href="https://www.facebook.com/groups/sociochat/" target="_blank">Facebook</a> 
+I'll be happy with your feedback in form of <a href="https://github.com/kryoz/sociochat/issues">bugreports</a> or pull requests. 
+See also official groups in <a href="http://vk.com/sociochat" target="_blank">VK</a> and <a href="https://www.facebook.com/groups/sociochat/" target="_blank">Facebook</a> 
 
 SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
 ## Features
 
 * Very fast and full async websocket handling
-* Adaptive markup
+* Adaptive markup via Twitter Bootstrap 3
+* UI optimized to use with mobile devices
 * HTML5 Notifications
 * The concept "chat first - register later"
 * Private chatting and personal banning
