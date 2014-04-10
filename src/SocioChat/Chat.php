@@ -3,18 +3,18 @@ namespace SocioChat;
 
 use Guzzle\Http\Message\RequestInterface;
 use Monolog\Logger;
-use SocioChat\Chain\ChainContainer;
-use SocioChat\Clients\User;
-use SocioChat\Clients\UserCollection;
-use SocioChat\OnCloseFilters\DetachFilter;
-use SocioChat\OnMessageFilters\ControllerFilter;
-use SocioChat\OnMessageFilters\FloodFilter;
-use SocioChat\OnMessageFilters\SessionFilter;
-use SocioChat\OnOpenFilters\ResponseFilter;
-use SocioChat\Response\ErrorResponse;
-use SocioChat\Session\DBSessionHandler;
-use SocioChat\Session\MemorySessionHandler;
-use SocioChat\Session\SessionHandler;
+use MyApp\Chain\ChainContainer;
+use MyApp\Clients\User;
+use MyApp\Clients\UserCollection;
+use MyApp\OnCloseFilters\DetachFilter;
+use MyApp\OnMessageFilters\ControllerFilter;
+use MyApp\OnMessageFilters\FloodFilter;
+use MyApp\OnMessageFilters\SessionFilter;
+use MyApp\OnOpenFilters\ResponseFilter;
+use MyApp\Response\ErrorResponse;
+use MyApp\Session\DBSessionHandler;
+use MyApp\Session\MemorySessionHandler;
+use MyApp\Session\SessionHandler;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
@@ -54,13 +54,17 @@ class Chat implements MessageComponentInterface
 
 	public function onMessage(ConnectionInterface $from, $jsonRequest)
 	{
+		if (!$jsonRequest) {
+			return;
+		}
+
 		if (!$user = UserCollection::get()->getClientByConnectionId($from->resourceId)) {
-			Log::get()->fetch()->error("Got unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
+			Log::get()->fetch()->error("Got request from unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
 			return;
 		}
 
 		if (!$request = json_decode($jsonRequest, 1)) {
-			return $this->notifyOnMalformedJSON($user, $jsonRequest);
+			return $this->respondOnMalformedJSON($user);
 		}
 
 		(new ChainContainer())
@@ -75,7 +79,6 @@ class Chat implements MessageComponentInterface
 	public function onError(ConnectionInterface $conn, \Exception $e)
 	{
 		Log::get()->fetch()->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
-		$conn->close();
 	}
 
 	public static function getSessionEngine()
@@ -85,21 +88,16 @@ class Chat implements MessageComponentInterface
 
 	/**
 	 * @param User $from
-	 * @param $msg
 	 */
-	private function notifyOnMalformedJSON(User $from, $msg)
+	private function respondOnMalformedJSON(User $from)
 	{
-		if (!$msg) {
-			return;
-		}
-
-		$message = (new ErrorResponse())
-			->setErrors(['Ай-ай-ай! Нехорошка! :D'])
+		$response = (new ErrorResponse())
+			->setErrors(['request' => Lang::get()->getPhrase('MalformedJsonRequest')])
 			->setChatId($from->getChatId());
 
 		(new UserCollection())
 			->attach($from)
-			->setResponse($message)
+			->setResponse($response)
 			->notify();
 	}
 }
