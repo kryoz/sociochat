@@ -5,7 +5,7 @@ use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 
 $DS = DIRECTORY_SEPARATOR;
-$root = dirname(dirname(__FILE__));
+$root = dirname(__DIR__);
 
 require $root.$DS.'vendor/autoload.php';
 

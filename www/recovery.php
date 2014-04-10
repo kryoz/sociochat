@@ -7,7 +7,7 @@ use MyApp\Forms\Form;
 use MyApp\Forms\Rules;
 use MyApp\Utils\PasswordUtils;
 
-require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'config.php';
+require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'config.php';
 session_start();
 
 $email = isset($_POST['email']) ? trim($_POST['email']) : null;

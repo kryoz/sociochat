@@ -5,7 +5,7 @@ use MyApp\DAO\UserDAO;
 use MyApp\Forms\Form;
 use MyApp\Forms\Rules;
 
-require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'config.php';
+require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'config.php';
 session_start();
 
 $email = isset($_REQUEST['email']) ? $_REQUEST['email'] : null;
