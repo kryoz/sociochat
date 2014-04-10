@@ -122,7 +122,6 @@ doesnotexist:-o-prefocus, #panel-chat {
 	color: #4A6799;
 }
 #log > div {
-	text-shadow: 1px 1px rgba(255, 255, 255, .5);
 	word-break: break-word;
 }
 .vk {
