@@ -2,6 +2,9 @@
 
 namespace SocioChat\DAO;
 
+use PDO;
+use SocioChat\Utils\DbQueryHelper;
+
 class SessionDAO extends DAOBase
 {
 	const SESSION_ID = 'session_id';
@@ -57,6 +60,32 @@ class SessionDAO extends DAOBase
 	{
 		$this[self::USER_ID] = $userId;
 		return $this;
+	}
+
+	public function getObsoleteUserIds($deadLine)
+	{
+		if (!$unregisteredList = UserDAO::create()->getUnregisteredUserIds()) {
+			return [];
+		}
+
+		$queryParams = array_merge([$deadLine], $unregisteredList);
+
+		return $this->db->query(
+			"SELECT user_id FROM {$this->dbTable} WHERE access < ? AND user_id IN (".DbQueryHelper::commaSeparatedHolders($unregisteredList).")",
+			$queryParams,
+			PDO::FETCH_COLUMN
+		);
+	}
+
+	public function dropByUserId($userId)
+	{
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = ?", [$userId]);
+	}
+
+	public function dropByUserIdList(array $userIds)
+	{
+		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id IN ($usersList)", $userIds);
 	}
 
 	protected function getForeignProperties()

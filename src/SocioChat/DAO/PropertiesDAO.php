@@ -4,6 +4,7 @@ namespace SocioChat\DAO;
 
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
+use SocioChat\Utils\DbQueryHelper;
 
 class PropertiesDAO extends DAOBase
 {
@@ -107,9 +108,15 @@ class PropertiesDAO extends DAOBase
 		return $this;
 	}
 
-	protected function getForeignProperties()
+	public function dropByUserId($id)
 	{
-		return [];
+		$this->dropById($id, 'user_id');
+	}
+
+	public function dropByUserIdList(array $userIds)
+	{
+		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id IN ($usersList)", $userIds);
 	}
 
 	public function toPublicArray()
@@ -131,6 +138,11 @@ class PropertiesDAO extends DAOBase
 		}
 
 		$this->fillParams($data);
+	}
+
+	protected function getForeignProperties()
+	{
+		return [];
 	}
 }
 

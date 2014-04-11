@@ -3,22 +3,17 @@
 namespace SocioChat\Session;
 
 use SocioChat\Clients\User;
+use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
-use SocioChat\DB;
+use SocioChat\DAO\UserBlacklistDAO;
+use SocioChat\DAO\UserDAO;
 use SocioChat\TSingleton;
 
 class DBSessionHandler implements SessionHandler
 {
 	use TSingleton;
-	/**
-	 * @var DB
-	 */
-	private $db;
 
-	public function __construct()
-	{
-		$this->db = DB::get();
-	}
+	const TIMESTAMP = 'Y-m-d H:i:s';
 
 	public function read($sessionId)
 	{
@@ -34,7 +29,7 @@ class DBSessionHandler implements SessionHandler
 
 		$session
 			->setSessionId($sessionId)
-			->setAccessTime(date('Y-m-d H:i:s'))
+			->setAccessTime(date(self::TIMESTAMP))
 			->setUserId($userId);
 
 		$session->save();
@@ -42,35 +37,31 @@ class DBSessionHandler implements SessionHandler
 
 	public function clean($ttl)
 	{
-		$old = date('Y-m-d H:i:s', time() - $ttl);
-		$users = $this->db->query('SELECT s.user_id AS user_id FROM sessions AS s JOIN users AS u ON u.id = s.user_id WHERE s.access < ? AND u.email IS NULL', [$old]);
+		$deadLine = date(self::TIMESTAMP, time() - $ttl);
+		$users = SessionDAO::create()->getObsoleteUserIds($deadLine);
 
 		if (!empty($users)) {
-			$users = array_column($users, 'user_id');
-			$usersList = '('.implode(', ', $users).')';
-
-			$this->db->exec('DELETE FROM sessions WHERE access < ?', [$old]);
-			$this->db->exec("DELETE FROM users WHERE id IN $usersList");
-			$this->db->exec("DELETE FROM user_properties WHERE user_id IN $usersList");
-			$this->db->exec("DELETE FROM user_blacklist WHERE user_id IN $usersList OR ignored_user_id IN $usersList");
+			SessionDAO::create()->dropByUserIdList($users);
+			UserDAO::create()->dropByUserIdList($users);
+			PropertiesDAO::create()->dropByUserIdList($users);
+			UserBlacklistDAO::create()->dropByUserIdList($users);
 		}
 	}
 
 	public function updateSessionId(User $user, $oldUserId)
 	{
+		SessionDAO::create()->dropByUserId($oldUserId);
 
-		$this->db->exec('DELETE FROM sessions WHERE user_id = ?', [$oldUserId]);
-
-		$session = SessionDAO::create();
-		$session->getByUserId($user->getId());
+		$session = SessionDAO::create()->getByUserId($user->getId());
 		$session
 			->setSessionId($user->getWSRequest()->getCookie('PHPSESSID'))
-			->setAccessTime(date('Y-m-d H:i:s'))
+			->setAccessTime(date(self::TIMESTAMP))
 			->setUserId($user->getId());
+
 		$session->save();
 
-		$this->db->exec('DELETE FROM users WHERE id = ?', [$oldUserId]);
-		$this->db->exec('DELETE FROM user_properties WHERE user_id = ?', [$oldUserId]);
-		$this->db->exec('DELETE FROM user_blacklist WHERE user_id = ? OR ignored_user_id = ?', [$oldUserId, $oldUserId]);
+		UserDAO::create()->dropById($oldUserId);
+		PropertiesDAO::create()->dropByUserId($oldUserId);
+		UserBlacklistDAO::create()->dropByUserId($oldUserId);
 	}
 }

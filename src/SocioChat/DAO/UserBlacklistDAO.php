@@ -3,6 +3,7 @@
 namespace SocioChat\DAO;
 
 use SocioChat\Log;
+use SocioChat\Utils\DbQueryHelper;
 
 class UserBlacklistDAO extends DAOBase
 {
@@ -60,6 +61,17 @@ class UserBlacklistDAO extends DAOBase
 	public function getUserId()
 	{
 		return $this[self::USER_ID];
+	}
+
+	public function dropByUserId($id)
+	{
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = ? OR ignored_user_id = ?", [$id, $id]);
+	}
+
+	public function dropByUserIdList(array $userIds)
+	{
+		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE id IN ($usersList)", $userIds);
 	}
 
 	public function save($sequence = null)

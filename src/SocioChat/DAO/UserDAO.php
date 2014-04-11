@@ -2,6 +2,8 @@
 
 namespace SocioChat\DAO;
 
+use SocioChat\Utils\DbQueryHelper;
+
 class UserDAO extends DAOBase
 {
 	const SOCIAL_TOKEN = 'social_token';
@@ -91,6 +93,11 @@ class UserDAO extends DAOBase
 		return $this->getByPropId(self::EMAIL, $email);
 	}
 
+	public function getUnregisteredUserIds()
+	{
+		return $this->db->query("SELECT id FROM {$this->dbTable} WHERE email IS NULL", [], \PDO::FETCH_COLUMN);
+	}
+
 	/**
 	 * @return PropertiesDAO
 	 */
@@ -110,6 +117,12 @@ class UserDAO extends DAOBase
 		}
 
 		return $this[self::BLACKLIST];
+	}
+
+	public function dropByUserIdList(array $userIds)
+	{
+		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE id IN ($usersList)", $userIds);
 	}
 
 	protected function getForeignProperties()
