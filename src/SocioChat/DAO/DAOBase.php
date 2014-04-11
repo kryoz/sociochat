@@ -52,7 +52,7 @@ abstract class DAOBase extends FixedArrayAccess
         return $this[self::ID];
     }
 
-    public function save($sequence = null)
+    public function save()
     {
         $params = array_diff_key($this->properties, $this->relativeProperties + [self::ID => null]);
 
@@ -86,7 +86,7 @@ abstract class DAOBase extends FixedArrayAccess
 
 	public function getAllList()
 	{
-		$query = "SELECT * FROM {$this->table}";
+		$query = "SELECT * FROM {$this->dbTable}";
 
 		return $this->getListByQuery($query);
 	}
@@ -113,6 +113,12 @@ abstract class DAOBase extends FixedArrayAccess
 		}
 
 		return $result;
+	}
+
+	public function dropById($id, $dbKey = null)
+	{
+		$dbKey = $dbKey ?: 'id';
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE $dbKey = :id", ['id' => $id]);
 	}
 
     public function __wakeup()
