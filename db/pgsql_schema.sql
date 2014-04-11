@@ -42,7 +42,7 @@ CREATE TABLE user_blacklist (
   user_id int NOT NULL,
   ignored_user_id int NOT NULL
 ) WITH (OIDS=FALSE);
-CREATE INDEX user_id ON user_blacklist USING btree(user_id, ignored_user_id);
+CREATE INDEX user_blacklist_id ON user_blacklist USING btree(user_id, ignored_user_id);
 
 
 CREATE TABLE user_properties (
