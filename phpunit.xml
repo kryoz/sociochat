@@ -12,7 +12,7 @@
     syntaxCheck="true">
     <testsuites>
         <testsuite name="Main">
-            <directory>./test</directory>
+            <directory>./unit-tests</directory>
         </testsuite>
     </testsuites>
     <filter>
