@@ -1,5 +1,5 @@
 <?php
-use MyApp\ChatConfig;
+use SocioChat\ChatConfig;
 
 $DS = DIRECTORY_SEPARATOR;
 define('ROOT', __DIR__);

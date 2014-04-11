@@ -1,6 +1,6 @@
 <?php
-use MyApp\Enum\SexEnum;
-use MyApp\Enum\TimEnum;
+use SocioChat\Enum\SexEnum;
+use SocioChat\Enum\TimEnum;
 use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 
