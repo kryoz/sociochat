@@ -46,7 +46,7 @@ class DB
 	 * @return array
 	 * @throws PDOException
 	 */
-	public function query($sql, array $params = array(), $fetchFlags = PDO::FETCH_ASSOC)
+	public function query($sql, array $params = [], $fetchFlags = PDO::FETCH_ASSOC)
 	{
 		$this->checkConnection();
 
