@@ -14,6 +14,7 @@ use SocioChat\Forms\WrongRuleNameException;
 use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
+use SocioChat\Utils\CharTranslator;
 use SocioChat\Utils\Lang;
 
 class PropertiesController extends ControllerBase
@@ -62,13 +63,13 @@ class PropertiesController extends ControllerBase
 			return;
 		}
 
-		$request[PropertiesDAO::NAME] = strip_tags(trim($request[PropertiesDAO::NAME]));
+		$userName = $request[PropertiesDAO::NAME] = strip_tags(trim($request[PropertiesDAO::NAME]));
 
-		$duplUser = PropertiesDAO::create()->getByUserName($request[PropertiesDAO::NAME]);
+		if (!$this->checkIfAlreadyRegisteredName(CharTranslator::toEnglish($userName), $user)) {
+			return;
+		}
 
-		if ($duplUser->getId() && $duplUser->getUserId() != $user->getId()) {
-			$this->errorResponse($user, [PropertiesDAO::NAME => $lang->getPhrase('NameAlreadyRegistered', $request[PropertiesDAO::NAME])]);
-			$this->propertiesResponse($user);
+		if (!$this->checkIfAlreadyRegisteredName(CharTranslator::toRussian($userName), $user)) {
 			return;
 		}
 
@@ -87,6 +88,19 @@ class PropertiesController extends ControllerBase
 		$this->propertiesResponse($user);
 
 		(new ResponseFilter())->notifyOnPendingDuals($user);
+	}
+
+	private function checkIfAlreadyRegisteredName($userName, User $user)
+	{
+		$duplUser = PropertiesDAO::create()->getByUserName($userName);
+
+		if ($duplUser->getId() && $duplUser->getUserId() != $user->getId()) {
+			$this->errorResponse($user, [PropertiesDAO::NAME => Lang::get()->getPhrase('NameAlreadyRegistered', $userName)]);
+			$this->propertiesResponse($user);
+			return;
+		}
+
+		return true;
 	}
 
 	private function propertiesResponse(User $user)
