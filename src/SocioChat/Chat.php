@@ -2,19 +2,18 @@
 namespace SocioChat;
 
 use Guzzle\Http\Message\RequestInterface;
-use Monolog\Logger;
-use MyApp\Chain\ChainContainer;
-use MyApp\Clients\User;
-use MyApp\Clients\UserCollection;
-use MyApp\OnCloseFilters\DetachFilter;
-use MyApp\OnMessageFilters\ControllerFilter;
-use MyApp\OnMessageFilters\FloodFilter;
-use MyApp\OnMessageFilters\SessionFilter;
-use MyApp\OnOpenFilters\ResponseFilter;
-use MyApp\Response\ErrorResponse;
-use MyApp\Session\DBSessionHandler;
-use MyApp\Session\MemorySessionHandler;
-use MyApp\Session\SessionHandler;
+use SocioChat\Chain\ChainContainer;
+use SocioChat\Clients\User;
+use SocioChat\Clients\UserCollection;
+use SocioChat\OnCloseFilters\DetachFilter;
+use SocioChat\OnMessageFilters\ControllerFilter;
+use SocioChat\OnMessageFilters\FloodFilter;
+use SocioChat\OnMessageFilters\SessionFilter;
+use SocioChat\OnOpenFilters\ResponseFilter;
+use SocioChat\Response\ErrorResponse;
+use SocioChat\Session\DBSessionHandler;
+use SocioChat\Session\MemorySessionHandler;
+use SocioChat\Session\SessionHandler;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
@@ -79,6 +78,7 @@ class Chat implements MessageComponentInterface
 	public function onError(ConnectionInterface $conn, \Exception $e)
 	{
 		Log::get()->fetch()->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
+		$conn->close();
 	}
 
 	public static function getSessionEngine()
