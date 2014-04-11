@@ -1,9 +1,9 @@
 <?php
-use MyApp\ChatConfig;
-use MyApp\DAO\ActivationsDAO;
-use MyApp\DAO\UserDAO;
-use MyApp\Forms\Form;
-use MyApp\Forms\Rules;
+use SocioChat\ChatConfig;
+use SocioChat\DAO\ActivationsDAO;
+use SocioChat\DAO\UserDAO;
+use SocioChat\Forms\Form;
+use SocioChat\Forms\Rules;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'config.php';
 session_start();

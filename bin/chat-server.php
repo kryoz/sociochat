@@ -1,8 +1,8 @@
 <?php
-use MyApp\Chat;
-use MyApp\ChatConfig;
-use MyApp\Log;
-use MyApp\MightyLoop;
+use SocioChat\Chat;
+use SocioChat\ChatConfig;
+use SocioChat\Log;
+use SocioChat\MightyLoop;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
