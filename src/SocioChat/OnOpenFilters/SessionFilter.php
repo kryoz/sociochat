@@ -1,10 +1,12 @@
 <?php
 namespace SocioChat\OnOpenFilters;
 
+use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
 use SocioChat\Chat;
 use SocioChat\ChatConfig;
+use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
@@ -27,10 +29,15 @@ class SessionFilter implements ChainInterface
 	public function handleRequest(ChainContainer $chain)
 	{
 		$newUserWrapper = $chain->getFrom();
-		$newUserWrapper->setLastMsgId((float) $newUserWrapper->getWSRequest()->getCookie('lastMsgId'));
+
 		$logger = Log::get()->fetch();
 		$clients = UserCollection::get();
-		$lang = Lang::get();
+		$langCode = $newUserWrapper->getWSRequest()->getCookie('lang') ?: 'ru';
+		$lang = (new Lang())->setLexiconByHTTPpreference($langCode);
+
+		$newUserWrapper
+			->setLastMsgId((float) $newUserWrapper->getWSRequest()->getCookie('lastMsgId'))
+			->setLanguage($lang);
 
 		$sessionHandler = $this->sessionHandler;
 		$sessionHandler->clean(ChatConfig::get()->getConfig()->session->lifetime);
@@ -44,44 +51,7 @@ class SessionFilter implements ChainInterface
 		}
 
 		if ($sessionInfo = $sessionHandler->read($token)) {
-			$user = UserDAO::create()->getById($sessionInfo['user_id']);
-
-			if ($oldClient = $clients->getClientById($user->getId())) {
-
-				if ($timer = $oldClient->getTimer()) {
-					MightyLoop::get()->fetch()->cancelTimer($timer);
-					$logger->info("Deffered disconnection timer canceled: connection_id = {$newUserWrapper->getConnectionId()} for user_id = {$sessionInfo['user_id']}", [__CLASS__]);
-
-					if ($oldClient->getConnectionId()) {
-						$oldClient
-							->setAsyncDetach(false)
-							->send(['disconnect' => 1]);
-						$clients->detach($oldClient);
-
-						$newUserWrapper->setLastMsgId(-1);
-					}
-				} else {
-					// если не было таймера, то
-					// либо это нормальное возвращение пользователя
-					// либо попытка открыть вторую вкладку
-					// перезагрузка окна
-
-					if ($oldClient->getConnectionId()) {
-						$oldClient
-							->setAsyncDetach(false)
-							->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
-						$clients->detach($oldClient);
-
-						$newUserWrapper->setLastMsgId(-1);
-
-						$logger->info("Probably tabs duplication detected: detaching = {$oldClient->getConnectionId()} for user_id = {$oldClient->getId()}", [__CLASS__]);
-					}
-				}
-
-				if ($newUserWrapper->getLastMsgId() != 0) {
-					$logger->info("Re-established connection_id = {$newUserWrapper->getConnectionId()} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
-				}
-			}
+			$user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
 		} else {
 			$user = UserDAO::create()
 				->setChatId(1)
@@ -117,5 +87,69 @@ class SessionFilter implements ChainInterface
 		$newUserWrapper->setUserDAO($user);
 		$sessionHandler->store($token, $user->getId());
 		$clients->attach($newUserWrapper);
+	}
+
+	/**
+	 * @param $sessionInfo
+	 * @param $clients
+	 * @param $logger
+	 * @param $newUserWrapper
+	 * @return $this
+	 */
+	private function handleKnownUser($sessionInfo, UserCollection $clients, Logger $logger, User $newUserWrapper)
+	{
+		$user = UserDAO::create()->getById($sessionInfo['user_id']);
+		$lang = $newUserWrapper->getLang();
+		if ($oldClient = $clients->getClientById($user->getId())) {
+
+			if ($timer = $oldClient->getDisconnectTimer()) {
+				MightyLoop::get()->fetch()->cancelTimer($timer);
+				$logger->info(
+					"Deffered disconnection timer canceled: connection_id = {$newUserWrapper->getConnectionId(
+					)} for user_id = {$sessionInfo['user_id']}",
+					[__CLASS__]
+				);
+
+				if ($oldClient->getConnectionId()) {
+					$oldClient
+						->setAsyncDetach(false)
+						->send(['disconnect' => 1]);
+					$clients->detach($oldClient);
+
+					$newUserWrapper->setLastMsgId(-1);
+				}
+			} else {
+				// If there is no timer set, then
+				// 1) it's regular user visit
+				// 2) an attempt to open another browser tab
+				// 3) window reload
+
+				if ($oldClient->getConnectionId()) {
+					$oldClient
+						->setAsyncDetach(false)
+						->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
+					$clients->detach($oldClient);
+
+					$newUserWrapper->setLastMsgId(-1);
+
+					$logger->info(
+						"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId(
+						)} for user_id = {$oldClient->getId()}",
+						[__CLASS__]
+					);
+				}
+			}
+
+			if ($newUserWrapper->getLastMsgId() != 0) {
+				$logger->info(
+					"Re-established connection_id = {$newUserWrapper->getConnectionId(
+					)} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}",
+					[__CLASS__]
+				);
+				return $user;
+			}
+			return $user;
+		}
+		return $user;
 	}
 }

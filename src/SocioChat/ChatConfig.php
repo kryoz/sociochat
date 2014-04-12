@@ -2,7 +2,6 @@
 namespace SocioChat;
 
 use SocioChat\TSingleton;
-use SocioChat\Utils\Lang;
 use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 
@@ -30,7 +29,8 @@ class ChatConfig
 
 	public function loadConfigs()
 	{
-		$confPath = ROOT.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR;
+		$DS = DIRECTORY_SEPARATOR;
+		$confPath = ROOT.$DS.'conf'.$DS;
 		$reader = new Ini();
 		$config = new Config($reader->fromFile($confPath . 'default.ini'));
 		if (file_exists($confPath . 'local.ini')) {
@@ -38,7 +38,5 @@ class ChatConfig
 		}
 
 		$this->config = $config;
-
-		Lang::get()->setLexicon(new Config($reader->fromFile($confPath . 'lang.ini')));
 	}
 }

@@ -44,7 +44,7 @@ class PropertiesController extends ControllerBase
 	{
 		$request = $chain->getRequest();
 		$user = $chain->getFrom();
-		$lang = Lang::get();
+		$lang = $user->getLang();
 
 		try {
 			$form = (new Form())
@@ -95,7 +95,7 @@ class PropertiesController extends ControllerBase
 		$duplUser = PropertiesDAO::create()->getByUserName($userName);
 
 		if ($duplUser->getId() && $duplUser->getUserId() != $user->getId()) {
-			$this->errorResponse($user, [PropertiesDAO::NAME => Lang::get()->getPhrase('NameAlreadyRegistered', $userName)]);
+			$this->errorResponse($user, [PropertiesDAO::NAME => $user->getLang()->getPhrase('NameAlreadyRegistered', $userName)]);
 			$this->propertiesResponse($user);
 			return;
 		}
@@ -125,8 +125,7 @@ class PropertiesController extends ControllerBase
 		$props = $user->getProperties();
 
 		if ($props->getName() != $oldName) {
-			$female = $props->getSex()->getId() == SexEnum::FEMALE ? 'а': '';
-			$response->setMsg(Lang::get()->getPhrase('UserChangedName', $oldName, $female, $props->getName()));
+			$response->setMsg($user->getLang()->getPhrase('UserChangedName', $oldName, $props->getName()));
 		}
 
 		UserCollection::get()
@@ -138,7 +137,7 @@ class PropertiesController extends ControllerBase
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setMsg(Lang::get()->getPhrase('ProfileChangeForbiddenInDualization'))
+			->setMsg($user->getLang()->getPhrase('ProfileChangeForbiddenInDualization'))
 			->setChatId($user->getChatId());
 
 		(new UserCollection())
@@ -151,7 +150,7 @@ class PropertiesController extends ControllerBase
 	{
 		$name = $request[PropertiesDAO::NAME];
 		$tim = TimEnum::create($request[PropertiesDAO::TIM]);
-		$guestName = Lang::get()->getPhrase('Guest');
+		$guestName = $user->getLang()->getPhrase('Guest');
 
 		if (mb_strpos($name, $guestName) !== false) {
 			$newname = str_replace($guestName, $tim->getShortName(), $name);

@@ -72,7 +72,7 @@ class MessageController extends ControllerBase
 
 		$form = (new Form())
 			->import([UserDAO::ID => $userId])
-			->addRule(UserDAO::ID, Rules::UserOnline(),  Lang::get()->getPhrase('UserIsNotOnline'));
+			->addRule(UserDAO::ID, Rules::UserOnline(), $from->getLang()->getPhrase('UserIsNotOnline'));
 
 		if (!$form->validate()) {
 			$this->errorResponse($from, $form->getErrors());

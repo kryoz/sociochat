@@ -92,7 +92,7 @@ class Chat implements MessageComponentInterface
 	private function respondOnMalformedJSON(User $from)
 	{
 		$response = (new ErrorResponse())
-			->setErrors(['request' => Lang::get()->getPhrase('MalformedJsonRequest')])
+			->setErrors(['request' => $from->getLang()->getPhrase('MalformedJsonRequest')])
 			->setChatId($from->getChatId());
 
 		(new UserCollection())

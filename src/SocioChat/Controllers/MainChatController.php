@@ -50,7 +50,7 @@ class MainChatController extends ControllerBase
 
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setMsg(Lang::get()->getPhrase('UserLeftPrivate', $user->getProperties()->getName()))
+			->setMsg($user->getLang()->getPhrase('UserLeftPrivate', $user->getProperties()->getName()))
 			->setDualChat('exit')
 			->setGuests($partners)
 			->setChatId($oldChatId);
@@ -87,7 +87,7 @@ class MainChatController extends ControllerBase
 			->setChatId($user->getChatId())
 			->setTime(null)
 			->setDualChat('exit')
-			->setMsg(Lang::get()->getPhrase('ExitDualQueue'));
+			->setMsg($user->getLang()->getPhrase('ExitDualQueue'));
 
 		(new UserCollection())
 			->attach($user)
@@ -101,7 +101,7 @@ class MainChatController extends ControllerBase
 			->setChatId($user->getChatId())
 			->setTime(null)
 			->setDualChat('exit')
-			->setMsg((Lang::get()->getPhrase('ReturnedToMainChat')));
+			->setMsg($user->getLang()->getPhrase('ReturnedToMainChat'));
 
 		(new UserCollection())
 			->attach($user)

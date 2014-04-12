@@ -9,6 +9,7 @@ use SocioChat\Log;
 use SocioChat\Response\Response;
 use Ratchet\ConnectionInterface;
 use React\EventLoop\Timer\TimerInterface;
+use SocioChat\Utils\Lang;
 
 class User implements ConnectionInterface
 {
@@ -28,6 +29,10 @@ class User implements ConnectionInterface
 	 * @var UserDAO
 	 */
 	private $userDAO;
+	/**
+	 * @var Lang
+	 */
+	private $language;
 
 	public function __construct(ConnectionInterface $client)
 	{
@@ -109,14 +114,6 @@ class User implements ConnectionInterface
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getEmail()
-	{
-		return $this->userDAO->getEmail();
-	}
-
-	/**
 	 * @return PropertiesDAO
 	 */
 	public function getProperties()
@@ -135,7 +132,7 @@ class User implements ConnectionInterface
 	/**
 	 * @param \React\EventLoop\Timer\TimerInterface $timer
 	 */
-	public function setTimer(TimerInterface $timer)
+	public function setDisconnectTimer(TimerInterface $timer)
 	{
 		$this->timer = $timer;
 	}
@@ -143,7 +140,7 @@ class User implements ConnectionInterface
 	/**
 	 * @return \React\EventLoop\Timer\TimerInterface
 	 */
-	public function getTimer()
+	public function getDisconnectTimer()
 	{
 		return $this->timer;
 	}
@@ -167,11 +164,13 @@ class User implements ConnectionInterface
 	}
 
 	/**
-	 * @param int $lastMsgId
+	 * @param $lastMsgId
+	 * @return $this
 	 */
 	public function setLastMsgId($lastMsgId)
 	{
 		$this->lastMsgId = $lastMsgId;
+		return $this;
 	}
 
 	/**
@@ -185,6 +184,24 @@ class User implements ConnectionInterface
 	public function isInPrivateChat()
 	{
 		return $this->getChatId() != 1;
+	}
+
+	/**
+	 * @param Lang $language
+	 * @return $this
+	 */
+	public function setLanguage(Lang $language)
+	{
+		$this->language = $language;
+		return $this;
+	}
+
+	/**
+	 * @return Lang
+	 */
+	public function getLang()
+	{
+		return $this->language;
 	}
 
 	public function save()

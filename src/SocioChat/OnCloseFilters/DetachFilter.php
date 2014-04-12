@@ -52,7 +52,7 @@ class DetachFilter implements ChainInterface
 			$timeout = ChatConfig::get()->getConfig()->session->timeout;
 			$logger->info("OnClose: Detach deffered in $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
 			$timer = $loop->addTimer($timeout, $detacher);
-			$user->setTimer($timer);
+			$user->setDisconnectTimer($timer);
 		} else {
 			$logger->info("OnClose: Detached instantly...", [__CLASS__]);
 			$detacher();
@@ -66,7 +66,7 @@ class DetachFilter implements ChainInterface
 		$response = new MessageResponse();
 
 		if ($user->isAsyncDetach()) {
-			$response->setMsg(Lang::get()->getPhrase('LeavesUs', $user->getProperties()->getName()));
+			$response->setMsg($user->getLang()->getPhrase('LeavesUs', $user->getProperties()->getName()));
 		}
 
 		$response

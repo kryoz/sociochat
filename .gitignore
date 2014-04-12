@@ -4,3 +4,4 @@ vendor/
 app.min.js
 composer.lock
 composer.phar
+chat.log

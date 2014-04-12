@@ -10,6 +10,9 @@ class Log
 {
 	use TSingleton;
 
+	/**
+	 * @var \Monolog\Logger
+	 */
 	protected $logger;
 
 	public function __construct()

@@ -59,7 +59,7 @@ class LoginController extends ControllerBase
 	{
 		$user = $chain->getFrom();
 		$request = $chain->getRequest();
-		$lang = Lang::get();
+		$lang = $user->getLang();
 
 		if (!$userDAO = $this->validateLogin($request)) {
 			$this->errorResponse($user, ['email' => $lang->getPhrase('InvalidLogin')]);
@@ -100,7 +100,7 @@ class LoginController extends ControllerBase
 		$duplUser = UserDAO::create()->getByEmail($email);
 
 		if ($duplUser->getId() && $duplUser->getId() != $user->getId()) {
-			$this->errorResponse($user, ['email' => Lang::get()->getPhrase('EmailAlreadyRegistered')]);
+			$this->errorResponse($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
 			return;
 		}
 
@@ -139,7 +139,7 @@ class LoginController extends ControllerBase
 		$response = (new MessageResponse())
 			->setChatId($user->getChatId())
 			->setTime(null)
-			->setMsg(Lang::get()->getPhrase('ProfileUpdated'));
+			->setMsg($user->getLang()->getPhrase('ProfileUpdated'));
 		(new UserCollection())
 			->attach($user)
 			->setResponse($response)

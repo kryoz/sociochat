@@ -18,9 +18,11 @@ abstract class ControllerBase
 			return;
 		}
 
+		$user = $chain->getFrom();
+
 		foreach ($this->getFields() as $field) {
 			if (!isset($request[$field])) {
-				$this->errorResponse($chain->getFrom(), Lang::get()->getPhrase('RequiredPropertyNotSpecified'));
+				$this->errorResponse($user, $user->getLang()->getPhrase('RequiredPropertyNotSpecified'));
 				return false;
 			}
 		}
@@ -33,7 +35,7 @@ abstract class ControllerBase
 	protected function errorResponse(User $user, $errors = null)
 	{
 		$response = (new ErrorResponse())
-			->setErrors(is_array($errors) ? $errors : [$errors ?: Lang::get()->getPhrase('RequiredActionNotSpecified')])
+			->setErrors(is_array($errors) ? $errors : [$errors ?: $user->getLang()->getPhrase('RequiredActionNotSpecified')])
 			->setChatId($user->getChatId());
 
 		(new UserCollection())

@@ -39,8 +39,8 @@ class EnrollController extends ControllerBase
 	{
 		$duals = PendingDuals::get();
 		$users = UserCollection::get();
-		$lang = Lang::get();
 		$user = $chain->getFrom();
+		$lang = $user->getLang();
 
 		if ($user->getProperties()->getTim()->getId() == TimEnum::ANY) {
 			$user->send(['msg' => $lang->getPhrase('SelectTIMinProfile')]);
@@ -70,7 +70,7 @@ class EnrollController extends ControllerBase
 			$user->setChatId($newChatRoomId);
 			$user->save();
 
-			$this->sendMatchResponse($users->getUsersByChatId($newChatRoomId), Lang::get()->getPhrase('DualIsFound'));
+			$this->sendMatchResponse($users->getUsersByChatId($newChatRoomId), $lang->getPhrase('DualIsFound'));
 			$this->renewGuestsList($oldChatId, $lang->getPhrase('DualizationStarted'));
 			$this->sendRenewPositions($duals->getUsersByDualTim($tim));
 			return;
@@ -85,7 +85,7 @@ class EnrollController extends ControllerBase
 		$users = UserCollection::get();
 		$user = $chain->getFrom();
 		$request = $chain->getRequest();
-		$lang = Lang::get();
+		$lang = $user->getLang();
 
 		if (!isset($request[PropertiesDAO::USER_ID])) {
 			$this->errorResponse($user, ['user_id' => $lang->getPhrase('RequiredPropertyNotSpecified')]);
@@ -141,7 +141,7 @@ class EnrollController extends ControllerBase
 	{
 		return function(User $userInviter, User $desiredUser) {
 			$response = (new MessageResponse())
-				->setMsg(Lang::get()->getPhrase('UserInviteTimeout', $userInviter->getProperties()->getName()))
+				->setMsg($desiredUser->getLang()->getPhrase('UserInviteTimeout', $userInviter->getProperties()->getName()))
 				->setChatId($desiredUser->getChatId())
 				->setTime(null);
 
@@ -151,7 +151,7 @@ class EnrollController extends ControllerBase
 				->notify(false);
 
 			$response = (new MessageResponse())
-				->setMsg(Lang::get()->getPhrase('SelfInviteTimeout', $desiredUser->getProperties()->getName()))
+				->setMsg($userInviter->getLang()->getPhrase('SelfInviteTimeout', $desiredUser->getProperties()->getName()))
 				->setChatId($userInviter->getChatId())
 				->setTime(null);
 
@@ -241,7 +241,7 @@ class EnrollController extends ControllerBase
 		$response = (new MessageResponse())
 			->setTime(null)
 			->setChatId($user->getChatId())
-			->setMsg(Lang::get()->getPhrase('DualIsWanted', $dual->getShortName()));
+			->setMsg($user->getLang()->getPhrase('DualIsWanted', $dual->getShortName()));
 
 		$collection
 			->setResponse($response)
@@ -260,7 +260,7 @@ class EnrollController extends ControllerBase
 		foreach ($userIds as $userId) {
 			$user = $users->getClientById($userId);
 			$response = (new MessageResponse())
-				->setMsg(Lang::get()->getPhrase('DualQueueShifted', count($userIds)))
+				->setMsg($user->getLang()->getPhrase('DualQueueShifted', count($userIds)))
 				->setDualChat('init')
 				->setTime(null)
 				->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))

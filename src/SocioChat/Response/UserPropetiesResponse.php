@@ -55,7 +55,7 @@ class UserPropetiesResponse extends Response
 	{
 		$properties = $user->getProperties();
 
-		$this->setEmail($user->getEmail());
+		$this->setEmail($user->getUserDAO()->getEmail());
 		$this->setSex($properties->getSex()->getId());
 		$this->setTim($properties->getTim()->getId());
 		$this->setName($properties->getName());

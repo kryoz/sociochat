@@ -37,7 +37,7 @@ class BlacklistController extends ControllerBase
 		$user = $chain->getFrom();
 
 		if (!$banUser = UserCollection::get()->getClientById($request[PropertiesDAO::USER_ID])) {
-			$this->errorResponse($user, ['user_id' => Lang::get()->getPhrase('ThatUserNotFound')]);
+			$this->errorResponse($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
 			return;
 		}
 
@@ -53,7 +53,7 @@ class BlacklistController extends ControllerBase
 		$user = $chain->getFrom();
 
 		if (!$unbanUser = UserCollection::get()->getClientById($request['user_id'])) {
-			$this->errorResponse($user, ['user_id' => Lang::get()->getPhrase('ThatUserNotFound')]);
+			$this->errorResponse($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
 			return;
 		}
 
@@ -66,7 +66,7 @@ class BlacklistController extends ControllerBase
 	private function banResponse(User $user, User $banUser)
 	{
 		$response = (new MessageResponse())
-			->setMsg(Lang::get()->getPhrase('UserBannedSuccessfully', $banUser->getProperties()->getName()))
+			->setMsg($user->getLang()->getPhrase('UserBannedSuccessfully', $banUser->getProperties()->getName()))
 			->setTime(null)
 			->setChatId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
@@ -77,7 +77,7 @@ class BlacklistController extends ControllerBase
 			->notify(false);
 
 		$response = (new MessageResponse())
-			->setMsg(Lang::get()->getPhrase('UserBannedYou', $user->getProperties()->getName()))
+			->setMsg($banUser->getLang()->getPhrase('UserBannedYou', $user->getProperties()->getName()))
 			->setChatId($banUser->getChatId())
 			->setTime(null);
 
@@ -90,7 +90,7 @@ class BlacklistController extends ControllerBase
 	private function unbanResponse(User $user, User $banUser)
 	{
 		$response = (new MessageResponse())
-			->setMsg(Lang::get()->getPhrase('UserIsUnbanned', $banUser->getProperties()->getName()))
+			->setMsg($user->getLang()->getPhrase('UserIsUnbanned', $banUser->getProperties()->getName()))
 			->setTime(null)
 			->setChatId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
@@ -101,7 +101,7 @@ class BlacklistController extends ControllerBase
 			->notify(false);
 
 		$response = (new MessageResponse())
-			->setMsg(Lang::get()->getPhrase('UserUnbannedYou', $user->getProperties()->getName()))
+			->setMsg($banUser->getLang()->getPhrase('UserUnbannedYou', $user->getProperties()->getName()))
 			->setChatId($banUser->getChatId())
 			->setTime(null);
 

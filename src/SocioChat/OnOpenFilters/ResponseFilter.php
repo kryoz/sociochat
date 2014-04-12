@@ -46,7 +46,7 @@ class ResponseFilter implements ChainInterface
 		$chatId = $user->getChatId();
 		$users = $userCollection->getUsersByChatId($chatId);
 		$usersCount = count($users);
-		$lang = Lang::get();
+		$lang = $user->getLang();
 
 		Log::get()->fetch()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
@@ -102,7 +102,7 @@ class ResponseFilter implements ChainInterface
 	{
 		if (!empty(PendingDuals::get()->getUsersByDualTim($user->getProperties()->getTim()))) {
 			$response = (new MessageResponse())
-				->setMsg(Lang::get()->getPhrase('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
+				->setMsg($user->getLang()->getPhrase('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
 				->setTime(null)
 				->setChatId($user->getChatId());
 			(new UserCollection())
