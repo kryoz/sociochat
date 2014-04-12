@@ -349,19 +349,8 @@ var App = {
 	},
 	send: function (params) {
 		if (!this.connection || this.connection.readyState == 1) {
-			if (this.floodControl()) {
-				return;
-			}
-
 			this.connection.send(JSON.stringify(params));
 		}
-	},
-	floodControl: function () {
-		if (getCookie('shutter') == 1) {
-			this.addLog('*** Ошибка: Флуд не поощряется', 1);
-			return true;
-		}
-		setCookie('shutter', 1, {expires: 1});
 	},
 	returnToChat : function () {
 		this.domElems.menuChat.tab('show');

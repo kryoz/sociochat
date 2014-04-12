@@ -41,6 +41,7 @@ class FloodFilter implements ChainInterface
 			if ($doResponse) {
 				$this->respondFloodError($user);
 			}
+			$this->setTimer($user, $timers);
 			return false;
 		}
 
@@ -80,11 +81,19 @@ class FloodFilter implements ChainInterface
 	private function setTimer(User $user, array &$timers)
 	{
 		$loop = MightyLoop::get()->fetch();
+		$timeout = ChatConfig::get()->getConfig()->flood->timeout;
+		$penalty = ChatConfig::get()->getConfig()->flood->penalty;
+
 		$timerCallback = function () use ($user, &$timers) {
 			unset($timers[$user->getId()]);
 		};
 
-		$timer = $loop->addTimer(ChatConfig::get()->getConfig()->floodTimeout, $timerCallback);
+		if (isset($timers[$user->getId()])) {
+			$loop->cancelTimer($timers[$user->getId()]);
+			$timeout += $penalty;
+		}
+
+		$timer = $loop->addTimer($timeout, $timerCallback);
 
 		$timers[$user->getId()] = $timer;
 	}
