@@ -1,7 +1,7 @@
 Sociochat
 =========
 
-This is source code of  <a href="https://sociochat.ru" target="_blank">SocioChat</a> in actual state.
+This is source code of  <a href="https://sociochat.me" target="_blank">SocioChat</a> in actual state.
 The code is a bit rough in some places, lacking of tests, but pretty readable and managable.
 I'll be happy with your feedback in form of <a href="https://github.com/kryoz/sociochat/issues">bugreports</a> or pull requests. 
 See also official groups in <a href="http://vk.com/sociochat" target="_blank">VK</a> and <a href="https://www.facebook.com/groups/sociochat/" target="_blank">Facebook</a> 
