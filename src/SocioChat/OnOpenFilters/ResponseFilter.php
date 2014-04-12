@@ -10,7 +10,6 @@ use SocioChat\Clients\UserCollection;
 use SocioChat\Log;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
-use SocioChat\Utils\Lang;
 
 class ResponseFilter implements ChainInterface
 {
@@ -44,8 +43,7 @@ class ResponseFilter implements ChainInterface
 	public function notifyChat(User $user, UserCollection $userCollection)
 	{
 		$chatId = $user->getChatId();
-		$users = $userCollection->getUsersByChatId($chatId);
-		$usersCount = count($users);
+		$usersCount = count($userCollection->getUsersByChatId($chatId));
 		$lang = $user->getLang();
 
 		Log::get()->fetch()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);

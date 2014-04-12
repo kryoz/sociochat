@@ -60,10 +60,10 @@ class SessionFilter implements ChainInterface
 			$user->save();
 
 			$id = $user->getId();
-			$guestName = 'Гость'.$id;
+			$guestName = $lang->getPhrase('Guest').$id;
 
 			if (PropertiesDAO::create()->getByUserName($guestName)->getName()) {
-				$guestName = 'Гость '.$id;
+				$guestName = $lang->getPhrase('Guest').' '.$id;
 			}
 
 			$properties = $user->getPropeties();

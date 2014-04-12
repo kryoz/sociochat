@@ -43,8 +43,27 @@ class UserCollection
 
 	public function notify($log = true)
 	{
-		/* @var $user User */
 		$response = $this->getResponse();
+		$this->handleLog($response, $log);
+
+		foreach ($this->users as $user) {
+			/* @var $user User */
+			if ($response->getChatId() == $user->getChatId()) {
+				// Filter responses from banned users
+				$saveGuests = $response->getGuests();
+
+				if (!$response->getFrom() || ($response->getFrom() && !$user->getBlacklist()->isBanned($response->getFrom()->getId()))) {
+					$this->banInfo($response, $user);
+					$user->update($response);
+				}
+
+				$response->setGuestsRaw($saveGuests);
+			}
+		}
+	}
+
+	protected function handleLog(Response $response, $log)
+	{
 		$isMessage = $response instanceof MessageResponse;
 		$saveGuests = $response->getGuests();
 
@@ -55,25 +74,6 @@ class UserCollection
 		}
 
 		$response->setGuestsRaw($saveGuests);
-
-		foreach ($this->users as $user) {
-			if ($response->getChatId() == $user->getChatId()) {
-
-				/* @var $response Response */
-				// Фильтрация ответов от забаненных
-				$saveGuests = $response->getGuests();
-
-				if ($response->getFrom() && !$user->getBlacklist()->isBanned($response->getFrom()->getId())) {
-					$this->banInfo($response, $user);
-					$user->update($response);
-				} elseif (!$response->getFrom()) {
-					$this->banInfo($response, $user);
-					$user->update($response);
-				}
-
-				$response->setGuestsRaw($saveGuests);
-			}
-		}
 	}
 
 	public function setResponse(Response $response)
