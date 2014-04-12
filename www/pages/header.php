@@ -1,7 +1,7 @@
 <?php
 $title = isset($title) ? $title : 'соционический чат с дуалами';
 $js = isset($js) ? $js : '';
-$domain = 'https://sociochat.me';
+$domain = isset($domain) ? $domain : 'https://sociochat.me';
 ?><!doctype html>
 <html>
 <head>
