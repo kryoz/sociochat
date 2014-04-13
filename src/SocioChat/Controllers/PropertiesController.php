@@ -15,7 +15,6 @@ use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
 use SocioChat\Utils\CharTranslator;
-use SocioChat\Utils\Lang;
 
 class PropertiesController extends ControllerBase
 {

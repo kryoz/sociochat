@@ -7,7 +7,6 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Response\MessageResponse;
-use SocioChat\Utils\Lang;
 
 class MainChatController extends ControllerBase
 {

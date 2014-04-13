@@ -9,7 +9,6 @@ use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Log;
 use SocioChat\Response\MessageResponse;
-use SocioChat\Utils\Lang;
 
 class MessageController extends ControllerBase
 {

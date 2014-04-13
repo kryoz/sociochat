@@ -1,9 +1,8 @@
 <?php
-namespace SocioChat\Utils;
+namespace SocioChat\Message;
 
 use SocioChat\Log;
-use Zend\Config\Config;
-use Zend\Config\Reader\Ini;
+
 
 class Lang
 {
@@ -13,34 +12,12 @@ class Lang
 	private $lexicon;
 
 	/**
-	 * @param Config $lexicon
+	 * @param $langCode
 	 * @return $this
 	 */
-	public function setLexicon(Config $lexicon)
+	public function setLangByCode($langCode)
 	{
-		$this->lexicon = $lexicon;
-		return $this;
-	}
-
-	/**
-	 * @param $httpAcceptLanguage
-	 * @return $this
-	 */
-	public function setLexiconByHTTPpreference($httpAcceptLanguage)
-	{
-		switch ($httpAcceptLanguage) {
-			case 'en' : $langFile = 'en'; break;
-			case 'ru' :
-			default: $langFile = 'ru';
-		}
-
-		$langFile .= '.ini';
-
-		$DS = DIRECTORY_SEPARATOR;
-		$confPath = ROOT.$DS.'conf'.$DS.'lang'.$DS;
-
-		$reader = new Ini();
-		$this->setLexicon(new Config($reader->fromFile($confPath.$langFile)));
+		$this->lexicon = Dictionary::get()->getLang($langCode);
 		return $this;
 	}
 

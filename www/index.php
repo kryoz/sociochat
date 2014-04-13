@@ -2,7 +2,7 @@
 use SocioChat\ChatConfig;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
-use SocioChat\Utils\Lang;
+use SocioChat\Message\Lang;
 
 $DS = DIRECTORY_SEPARATOR;
 $root = dirname(__DIR__);
@@ -12,7 +12,7 @@ require $root.$DS.'config.php';
 $config = ChatConfig::get()->getConfig();
 
 $httpAcceptLanguage = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-$lang = (new Lang)->setLexiconByHTTPpreference($httpAcceptLanguage);
+$lang = (new Lang)->setLangByCode($httpAcceptLanguage);
 $lifetime = time() + $config->session->lifetime;
 
 session_start();

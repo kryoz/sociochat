@@ -6,13 +6,12 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\ChatsCollection;
-use SocioChat\Log;
-use SocioChat\MightyLoop;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Log;
+use SocioChat\MightyLoop;
 use SocioChat\Response\MessageResponse;
-use SocioChat\Utils\Lang;
 
 
 class DetachFilter implements ChainInterface

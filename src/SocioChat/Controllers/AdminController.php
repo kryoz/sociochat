@@ -6,6 +6,7 @@ use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Log;
+use SocioChat\Message\Dictionary;
 
 class AdminController extends ControllerBase
 {
@@ -42,6 +43,7 @@ class AdminController extends ControllerBase
 	protected function processReload(ChainContainer $chain)
 	{
 		ChatConfig::get()->loadConfigs();
+		Dictionary::get()->loadTranslations();
 		Log::get()->fetch()->info('Configuration reloaded');
 	}
 

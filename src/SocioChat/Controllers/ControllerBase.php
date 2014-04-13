@@ -6,7 +6,6 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Response\ErrorResponse;
-use SocioChat\Utils\Lang;
 
 abstract class ControllerBase
 {

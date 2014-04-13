@@ -2,14 +2,14 @@
 
 namespace SocioChat\Clients;
 
+use Ratchet\ConnectionInterface;
+use React\EventLoop\Timer\TimerInterface;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\Log;
+use SocioChat\Message\Lang;
 use SocioChat\Response\Response;
-use Ratchet\ConnectionInterface;
-use React\EventLoop\Timer\TimerInterface;
-use SocioChat\Utils\Lang;
 
 class User implements ConnectionInterface
 {

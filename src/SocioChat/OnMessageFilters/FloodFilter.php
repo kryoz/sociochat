@@ -10,7 +10,6 @@ use SocioChat\Clients\UserCollection;
 use SocioChat\MightyLoop;
 use SocioChat\Response\ErrorResponse;
 use SocioChat\TSingleton;
-use SocioChat\Utils\Lang;
 
 class FloodFilter implements ChainInterface
 {

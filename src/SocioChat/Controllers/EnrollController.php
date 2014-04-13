@@ -2,14 +2,13 @@
 namespace SocioChat\Controllers;
 
 use SocioChat\Chain\ChainContainer;
+use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\PendingPrivates;
-use SocioChat\DAO\PropertiesDAO;
-use SocioChat\Enum\TimEnum;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
-use SocioChat\Clients\PendingDuals;
+use SocioChat\DAO\PropertiesDAO;
+use SocioChat\Enum\TimEnum;
 use SocioChat\Response\MessageResponse;
-use SocioChat\Utils\Lang;
 
 class EnrollController extends ControllerBase
 {

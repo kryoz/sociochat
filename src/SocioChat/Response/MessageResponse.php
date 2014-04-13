@@ -2,6 +2,8 @@
 
 namespace SocioChat\Response;
 
+use SocioChat\Message\MsgContainer;
+
 class MessageResponse extends Response
 {
 	const MAX_MSG_LENGTH = 1024;
@@ -35,15 +37,16 @@ class MessageResponse extends Response
 		return $this->msg;
 	}
 
-	public function setMsg($msg)
+	public function setMsg(MsgContainer $msg)
 	{
-		$msg = strip_tags(htmlentities($msg));
+		$text = $msg->getMsg($this->getFrom()->getLang());
+		$text = strip_tags(htmlentities($text));
 
-		if (mb_strlen($msg) > self::MAX_MSG_LENGTH) {
-			$msg = mb_strcut($msg, 0, self::MAX_MSG_LENGTH) . '...';
+		if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
+			$text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
 		}
 
-		$this->msg = $msg;
+		$this->msg = $text;
 		return $this;
 	}
 

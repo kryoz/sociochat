@@ -6,7 +6,6 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\Response\MessageResponse;
-use SocioChat\Utils\Lang;
 
 class BlacklistController extends ControllerBase
 {

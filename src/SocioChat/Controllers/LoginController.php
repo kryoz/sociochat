@@ -11,7 +11,6 @@ use SocioChat\Forms\Rules;
 use SocioChat\Forms\WrongRuleNameException;
 use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
-use SocioChat\Utils\Lang;
 
 class LoginController extends ControllerBase
 {

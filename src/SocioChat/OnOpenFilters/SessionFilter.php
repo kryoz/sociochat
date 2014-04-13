@@ -4,7 +4,6 @@ namespace SocioChat\OnOpenFilters;
 use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
-use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
@@ -13,9 +12,9 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Log;
+use SocioChat\Message\Lang;
 use SocioChat\MightyLoop;
 use SocioChat\Session\SessionHandler;
-use SocioChat\Utils\Lang;
 
 class SessionFilter implements ChainInterface
 {
@@ -33,7 +32,7 @@ class SessionFilter implements ChainInterface
 		$logger = Log::get()->fetch();
 		$clients = UserCollection::get();
 		$langCode = $newUserWrapper->getWSRequest()->getCookie('lang') ?: 'ru';
-		$lang = (new Lang())->setLexiconByHTTPpreference($langCode);
+		$lang = (new Lang())->setLangByCode($langCode);
 
 		$newUserWrapper
 			->setLastMsgId((float) $newUserWrapper->getWSRequest()->getCookie('lastMsgId'))
