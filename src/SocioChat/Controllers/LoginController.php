@@ -9,6 +9,7 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Forms\WrongRuleNameException;
+use SocioChat\Message\MsgToken;
 use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 
@@ -138,7 +139,7 @@ class LoginController extends ControllerBase
 		$response = (new MessageResponse())
 			->setChatId($user->getChatId())
 			->setTime(null)
-			->setMsg($user->getLang()->getPhrase('ProfileUpdated'));
+			->setMsg(MsgToken::create('ProfileUpdated'));
 		(new UserCollection())
 			->attach($user)
 			->setResponse($response)

@@ -11,8 +11,12 @@ abstract class Response
 	 * @var User
 	 */
 	protected $from;
+	/**
+	 * @var User
+	 */
+	protected $recipient;
 	protected $chatId;
-	protected $privateProperties = ['privateProperties', 'chatId', 'from'];
+	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient'];
 
 	public function setChatId($chatId)
 	{
@@ -74,6 +78,17 @@ abstract class Response
 	public function getFrom()
 	{
 		return $this->from;
+	}
+
+	public function setRecipient(User $user)
+	{
+		$this->recipient = $user;
+		return $this;
+	}
+
+	public function getRecipient()
+	{
+		return $this->recipient;
 	}
 
 	public function toString()

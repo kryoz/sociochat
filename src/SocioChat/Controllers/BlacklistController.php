@@ -5,6 +5,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
 class BlacklistController extends ControllerBase
@@ -65,7 +66,7 @@ class BlacklistController extends ControllerBase
 	private function banResponse(User $user, User $banUser)
 	{
 		$response = (new MessageResponse())
-			->setMsg($user->getLang()->getPhrase('UserBannedSuccessfully', $banUser->getProperties()->getName()))
+			->setMsg(MsgToken::create('UserBannedSuccessfully', $banUser->getProperties()->getName()))
 			->setTime(null)
 			->setChatId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
@@ -76,7 +77,7 @@ class BlacklistController extends ControllerBase
 			->notify(false);
 
 		$response = (new MessageResponse())
-			->setMsg($banUser->getLang()->getPhrase('UserBannedYou', $user->getProperties()->getName()))
+			->setMsg(MsgToken::create('UserBannedYou', $user->getProperties()->getName()))
 			->setChatId($banUser->getChatId())
 			->setTime(null);
 
@@ -89,7 +90,7 @@ class BlacklistController extends ControllerBase
 	private function unbanResponse(User $user, User $banUser)
 	{
 		$response = (new MessageResponse())
-			->setMsg($user->getLang()->getPhrase('UserIsUnbanned', $banUser->getProperties()->getName()))
+			->setMsg(MsgToken::create('UserIsUnbanned', $banUser->getProperties()->getName()))
 			->setTime(null)
 			->setChatId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
@@ -100,7 +101,7 @@ class BlacklistController extends ControllerBase
 			->notify(false);
 
 		$response = (new MessageResponse())
-			->setMsg($banUser->getLang()->getPhrase('UserUnbannedYou', $user->getProperties()->getName()))
+			->setMsg(MsgToken::create('UserUnbannedYou', $user->getProperties()->getName()))
 			->setChatId($banUser->getChatId())
 			->setTime(null);
 

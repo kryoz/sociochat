@@ -53,6 +53,7 @@ class User implements ConnectionInterface
 
 	public function update(Response $response)
 	{
+		$response->setRecipient($this);
 		$this->connection->send($response->toString());
 	}
 

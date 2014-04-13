@@ -8,6 +8,7 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Log;
+use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
 
 class MessageController extends ControllerBase
@@ -38,7 +39,7 @@ class MessageController extends ControllerBase
 	{
 		$response = (new MessageResponse())
 			->setFrom($from)
-			->setMsg($msg)
+			->setMsg(Msg::create($msg))
 			->setTime(null)
 			->setChatId($from->getChatId())
 			->setToUserName($recipient->getProperties()->getName());
@@ -54,7 +55,7 @@ class MessageController extends ControllerBase
 	{
 		$response = (new MessageResponse())
 			->setFrom($user)
-			->setMsg($msg)
+			->setMsg(Msg::create($msg))
 			->setTime(null)
 			->setChatId($user->getChatId());
 

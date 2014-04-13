@@ -10,6 +10,7 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Log;
+use SocioChat\Message\MsgToken;
 use SocioChat\MightyLoop;
 use SocioChat\Response\MessageResponse;
 
@@ -65,7 +66,7 @@ class DetachFilter implements ChainInterface
 		$response = new MessageResponse();
 
 		if ($user->isAsyncDetach()) {
-			$response->setMsg($user->getLang()->getPhrase('LeavesUs', $user->getProperties()->getName()));
+			$response->setMsg(MsgToken::create('LeavesUs', $user->getProperties()->getName()));
 		}
 
 		$response

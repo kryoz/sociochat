@@ -6,6 +6,7 @@ use SocioChat\Clients\ChatsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
 class MainChatController extends ControllerBase
@@ -49,7 +50,7 @@ class MainChatController extends ControllerBase
 
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setMsg($user->getLang()->getPhrase('UserLeftPrivate', $user->getProperties()->getName()))
+			->setMsg(MsgToken::create('UserLeftPrivate', $user->getProperties()->getName()))
 			->setDualChat('exit')
 			->setGuests($partners)
 			->setChatId($oldChatId);
@@ -86,7 +87,7 @@ class MainChatController extends ControllerBase
 			->setChatId($user->getChatId())
 			->setTime(null)
 			->setDualChat('exit')
-			->setMsg($user->getLang()->getPhrase('ExitDualQueue'));
+			->setMsg(MsgToken::create('ExitDualQueue'));
 
 		(new UserCollection())
 			->attach($user)
@@ -100,7 +101,7 @@ class MainChatController extends ControllerBase
 			->setChatId($user->getChatId())
 			->setTime(null)
 			->setDualChat('exit')
-			->setMsg($user->getLang()->getPhrase('ReturnedToMainChat'));
+			->setMsg(MsgToken::create('ReturnedToMainChat'));
 
 		(new UserCollection())
 			->attach($user)

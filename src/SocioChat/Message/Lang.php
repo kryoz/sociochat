@@ -23,7 +23,11 @@ class Lang
 
 	public function getPhrase()
 	{
-		$args = func_get_args();
+		return $this->getPhraseByArray(func_get_args());
+	}
+
+	public function getPhraseByArray(array $args)
+	{
 		$token = array_shift($args);
 
 		if (!$this->lexicon) {

@@ -8,6 +8,9 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\Enum\TimEnum;
+use SocioChat\Message\Msg;
+use SocioChat\Message\MsgContainer;
+use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
 class EnrollController extends ControllerBase
@@ -69,13 +72,13 @@ class EnrollController extends ControllerBase
 			$user->setChatId($newChatRoomId);
 			$user->save();
 
-			$this->sendMatchResponse($users->getUsersByChatId($newChatRoomId), $lang->getPhrase('DualIsFound'));
-			$this->renewGuestsList($oldChatId, $lang->getPhrase('DualizationStarted'));
+			$this->sendMatchResponse($users->getUsersByChatId($newChatRoomId), MsgToken::create('DualIsFound'));
+			$this->renewGuestsList($oldChatId, MsgToken::create('DualizationStarted'));
 			$this->sendRenewPositions($duals->getUsersByDualTim($tim));
 			return;
 		}
 
-		$this->sendPendingResponse($user, $lang->getPhrase('DualPending'), true);
+		$this->sendPendingResponse($user, MsgToken::create('DualPending'), true);
 		$this->dualGuestsList($user);
 	}
 
@@ -128,19 +131,19 @@ class EnrollController extends ControllerBase
 			$user->setChatId($newChatRoomId);
 			$user->save();
 
-			$this->sendMatchResponse($users->getUsersByChatId($newChatRoomId), $lang->getPhrase('InvitationAccepted'));
+			$this->sendMatchResponse($users->getUsersByChatId($newChatRoomId), MsgToken::create('InvitationAccepted'));
 			return;
 		}
 
-		$this->sendPendingResponse($user, $lang->getPhrase('SendInvitationFor', $desiredUser->getProperties()->getName()));
-		$this->sendPendingResponse($desiredUser, $lang->getPhrase('UserInvitesYou', $user->getProperties()->getName(), $user->getId()));
+		$this->sendPendingResponse($user, MsgToken::create('SendInvitationFor', $desiredUser->getProperties()->getName()));
+		$this->sendPendingResponse($desiredUser, MsgToken::create('UserInvitesYou', $user->getProperties()->getName(), $user->getId()));
 	}
 
 	private function getTimeoutCallableResponse()
 	{
 		return function(User $userInviter, User $desiredUser) {
 			$response = (new MessageResponse())
-				->setMsg($desiredUser->getLang()->getPhrase('UserInviteTimeout', $userInviter->getProperties()->getName()))
+				->setMsg(MsgToken::create('UserInviteTimeout', $userInviter->getProperties()->getName()))
 				->setChatId($desiredUser->getChatId())
 				->setTime(null);
 
@@ -150,7 +153,7 @@ class EnrollController extends ControllerBase
 				->notify(false);
 
 			$response = (new MessageResponse())
-				->setMsg($userInviter->getLang()->getPhrase('SelfInviteTimeout', $desiredUser->getProperties()->getName()))
+				->setMsg(MsgToken::create('SelfInviteTimeout', $desiredUser->getProperties()->getName()))
 				->setChatId($userInviter->getChatId())
 				->setTime(null);
 
@@ -161,7 +164,7 @@ class EnrollController extends ControllerBase
 		};
 	}
 
-	private function sendPendingResponse(User $user, $msg, $dualchat = false)
+	private function sendPendingResponse(User $user, MsgContainer $msg, $dualchat = false)
 	{
 		$response = (new MessageResponse())
 			->setMsg($msg)
@@ -179,7 +182,7 @@ class EnrollController extends ControllerBase
 			->notify(false);
 	}
 
-	private function sendMatchResponse(array $users, $msg)
+	private function sendMatchResponse(array $users, MsgContainer $msg)
 	{
 		$notification = new UserCollection();
 
@@ -200,7 +203,7 @@ class EnrollController extends ControllerBase
 			->notify();
 	}
 
-	private function renewGuestsList($oldChatId, $msg)
+	private function renewGuestsList($oldChatId, MsgContainer $msg)
 	{
 		$allUsers = UserCollection::get();
 		$newCommonList = $allUsers->getUsersByChatId($oldChatId);
@@ -240,7 +243,7 @@ class EnrollController extends ControllerBase
 		$response = (new MessageResponse())
 			->setTime(null)
 			->setChatId($user->getChatId())
-			->setMsg($user->getLang()->getPhrase('DualIsWanted', $dual->getShortName()));
+			->setMsg(MsgToken::create('DualIsWanted', $dual->getShortName()));
 
 		$collection
 			->setResponse($response)

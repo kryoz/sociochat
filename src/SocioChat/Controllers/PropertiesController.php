@@ -11,6 +11,7 @@ use SocioChat\Enum\TimEnum;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Forms\WrongRuleNameException;
+use SocioChat\Message\MsgToken;
 use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
@@ -124,7 +125,7 @@ class PropertiesController extends ControllerBase
 		$props = $user->getProperties();
 
 		if ($props->getName() != $oldName) {
-			$response->setMsg($user->getLang()->getPhrase('UserChangedName', $oldName, $props->getName()));
+			$response->setMsg(MsgToken::create('UserChangedName', $oldName, $props->getName()));
 		}
 
 		UserCollection::get()
@@ -136,7 +137,7 @@ class PropertiesController extends ControllerBase
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setMsg($user->getLang()->getPhrase('ProfileChangeForbiddenInDualization'))
+			->setMsg(MsgToken::create('ProfileChangeForbiddenInDualization'))
 			->setChatId($user->getChatId());
 
 		(new UserCollection())

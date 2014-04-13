@@ -8,6 +8,8 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Log;
+use SocioChat\Message\Msg;
+use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
 
@@ -44,7 +46,6 @@ class ResponseFilter implements ChainInterface
 	{
 		$chatId = $user->getChatId();
 		$usersCount = count($userCollection->getUsersByChatId($chatId));
-		$lang = $user->getLang();
 
 		Log::get()->fetch()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
@@ -60,15 +61,15 @@ class ResponseFilter implements ChainInterface
 			if ($usersCount > 1) {
 				$dualUsers = $userCollection;
 				$response
-					->setMsg($lang->getPhrase('PartnerIsOnline'))
+					->setMsg(MsgToken::create('PartnerIsOnline'))
 					->setDualChat('match');
 			} elseif ($num = PendingDuals::get()->getUserPosition($user)) {
 				$response
-					->setMsg($lang->getPhrase('StillInDualSearch', $num))
+					->setMsg(MsgToken::create('StillInDualSearch', $num))
 					->setDualChat('init');
 			} else {
 				$response
-					->setMsg($lang->getPhrase('YouAreAlone'))
+					->setMsg(MsgToken::create('YouAreAlone'))
 					->setDualChat('match');
 			}
 
@@ -86,7 +87,7 @@ class ResponseFilter implements ChainInterface
 				->setChatId($chatId);
 
 			if ($user->getLastMsgId() == 0) {
-				$response->setMsg($lang->getPhrase('WelcomeUser', $usersCount, $user->getProperties()->getName()));
+				$response->setMsg(MsgToken::create('WelcomeUser', $usersCount, $user->getProperties()->getName()));
 			}
 			$userCollection
 				->setResponse($response)
@@ -100,7 +101,7 @@ class ResponseFilter implements ChainInterface
 	{
 		if (!empty(PendingDuals::get()->getUsersByDualTim($user->getProperties()->getTim()))) {
 			$response = (new MessageResponse())
-				->setMsg($user->getLang()->getPhrase('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
+				->setMsg(MsgToken::create('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
 				->setTime(null)
 				->setChatId($user->getChatId());
 			(new UserCollection())
@@ -135,7 +136,7 @@ class ResponseFilter implements ChainInterface
 			$motd = file_get_contents(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt');
 			$response = (new MessageResponse())
 				->setChatId(1) // TODO chatRoom
-				->setMsg($motd);
+				->setMsg(Msg::create($motd));
 			$client
 				->setResponse($response)
 				->notify(false);

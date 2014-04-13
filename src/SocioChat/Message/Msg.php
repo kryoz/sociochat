@@ -13,6 +13,6 @@ class Msg extends MsgContainer
 {
 	public function getMsg(Lang $lang = null)
 	{
-		return $this->msg;
+		return $this->args[0];
 	}
 }

@@ -8,11 +8,18 @@ class MessageResponse extends Response
 {
 	const MAX_MSG_LENGTH = 1024;
 
+	/**
+	 * @var MsgContainer|null
+	 */
+	protected $msgObj;
+
 	protected $msg = null;
 	protected $time = null;
 	protected $dualChat = null;
 	protected $toName = null;
 	protected $lastMsgId = null;
+
+	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient', 'msgObj'];
 
 	/**
 	 * @param string $userName
@@ -34,19 +41,12 @@ class MessageResponse extends Response
 
 	public function getMsg()
 	{
-		return $this->msg;
+		return $this->msgObj;
 	}
 
 	public function setMsg(MsgContainer $msg)
 	{
-		$text = $msg->getMsg($this->getFrom()->getLang());
-		$text = strip_tags(htmlentities($text));
-
-		if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
-			$text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
-		}
-
-		$this->msg = $text;
+		$this->msgObj = $msg;
 		return $this;
 	}
 
@@ -68,5 +68,21 @@ class MessageResponse extends Response
 	public function setLastMsgId($lastMsgId)
 	{
 		$this->lastMsgId = $lastMsgId;
+	}
+
+	public function toString()
+	{
+		if ($text = $this->msgObj) {
+			$text = $this->msgObj->getMsg($this->getRecipient()->getLang());
+
+			$text = strip_tags(htmlentities($text));
+
+			if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
+				$text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
+			}
+			$this->msg = $text;
+		}
+
+		return parent::toString();
 	}
 }
