@@ -14,11 +14,12 @@ SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.o
 * Adaptive markup via Twitter Bootstrap 3
 * UI optimized to use with mobile devices
 * HTML5 Notifications
+* English/Russian language support (still in progress)
 * The concept "chat first - register later"
 * Private chatting and personal banning
 * Seamless reconnection on interruption of connection
 * Flood protection
-* Socionic dual chat roulette
+* Socionic/MBTI dual chat roulette
 
 ## Installation
 
