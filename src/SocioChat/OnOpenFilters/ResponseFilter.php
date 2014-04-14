@@ -7,7 +7,7 @@ use SocioChat\Clients\ChatsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
-use SocioChat\Log;
+use SocioChat\DI;
 use SocioChat\Message\Msg;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
@@ -47,7 +47,7 @@ class ResponseFilter implements ChainInterface
 		$chatId = $user->getChatId();
 		$usersCount = count($userCollection->getUsersByChatId($chatId));
 
-		Log::get()->fetch()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
+		DI::get()->container()->get('logger')->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
 		if ($user->isInPrivateChat()) {
 			$dualUsers = new UserCollection();

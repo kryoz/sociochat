@@ -7,7 +7,7 @@ use React\EventLoop\Timer\TimerInterface;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
-use SocioChat\Log;
+use SocioChat\DI;
 use SocioChat\Message\Lang;
 use SocioChat\Response\Response;
 
@@ -33,6 +33,8 @@ class User implements ConnectionInterface
 	 * @var Lang
 	 */
 	private $language;
+
+	private $ip;
 
 	public function __construct(ConnectionInterface $client)
 	{
@@ -205,6 +207,18 @@ class User implements ConnectionInterface
 		return $this->language;
 	}
 
+
+	public function setIp($ip)
+	{
+		$this->ip = $ip;
+		return $this;
+	}
+
+	public function getIp()
+	{
+		return $this->ip;
+	}
+
 	public function save()
 	{
 		try {
@@ -216,7 +230,7 @@ class User implements ConnectionInterface
 
 			$this->userDAO->save();
 		} catch (\PDOException $e) {
-			 Log::get()->fetch()->warn("PDO Exception: ".print_r($e, 1), [__CLASS__]);
+			DI::get()->container()->get('logger')->warn("PDO Exception: ".print_r($e, 1), [__CLASS__]);
 		}
 	}
 }

@@ -7,6 +7,7 @@ use SocioChat\Chain\ChainInterface;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\DI;
 use SocioChat\MightyLoop;
 use SocioChat\Response\ErrorResponse;
 use SocioChat\TSingleton;
@@ -79,9 +80,11 @@ class FloodFilter implements ChainInterface
 	 */
 	private function setTimer(User $user, array &$timers)
 	{
-		$loop = MightyLoop::get()->fetch();
-		$timeout = ChatConfig::get()->getConfig()->flood->timeout;
-		$penalty = ChatConfig::get()->getConfig()->flood->penalty;
+		$container = DI::get()->container();
+		$loop = $container->get('eventloop');
+		$config = $container->get('config');
+		$timeout = $config->flood->timeout;
+		$penalty = $config->flood->penalty;
 
 		$timerCallback = function () use ($user, &$timers) {
 			unset($timers[$user->getId()]);

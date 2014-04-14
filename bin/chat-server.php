@@ -1,18 +1,17 @@
 <?php
+use Monolog\Logger;
+use Orno\Di\Container;
 use SocioChat\Chat;
-use SocioChat\ChatConfig;
-use SocioChat\Log;
-use SocioChat\MightyLoop;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
 
 require_once 'config.php';
-
+/* @var $container Container */
 $pidFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'chat-server.pid';
-$logger = Log::get()->fetch();
-$config = ChatConfig::get()->getConfig();
+$logger = $container->get('logger');
+/* @var $logger Logger */
 
 if (file_exists($pidFile)) {
 	$pid = file_get_contents($pidFile);
@@ -32,7 +31,7 @@ fclose($fh);
 
 $app = new Chat();
 
-$loop = MightyLoop::get()->fetch();
+$loop = $container->get('eventloop');
 $webSock = new Server($loop);
 $webSock->listen($config->daemon->port, $config->daemon->host);
 

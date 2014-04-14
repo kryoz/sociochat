@@ -2,22 +2,21 @@
 
 namespace SocioChat\Message;
 
-use SocioChat\Log;
+use Monolog\Logger;
 use SocioChat\TSingleton;
 use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 
 class Dictionary
 {
-	use TSingleton;
-
 	private $dictionary;
+	private $logger;
 
-	public function __construct()
+	public function __construct(Logger $logger)
 	{
+		$this->logger = $logger;
 		$this->loadTranslations();
 	}
-
 
 	public function loadTranslations()
 	{
@@ -34,7 +33,7 @@ class Dictionary
 	public function getLang($code)
 	{
 		if (!isset($this->dictionary[$code])) {
-			Log::get()->fetch()->warn("No dictionary for language code '$code' found", [__CLASS__]);
+			$this->logger->warn("No dictionary for language code '$code' found", [__CLASS__]);
 			return;
 		}
 		return $this->dictionary[$code];

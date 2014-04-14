@@ -3,6 +3,7 @@
 namespace SocioChat\Clients;
 
 use SocioChat\ChatConfig;
+use SocioChat\DI;
 use SocioChat\MightyLoop;
 use SocioChat\TSingleton;
 
@@ -21,7 +22,7 @@ class PendingPrivates
 			$match = $this->createInvitation($userInviter, $desiredUser, $timoutResponse);
 			return [$match['inviterUserId'], null];
 		} elseif ($match['inviterUserId'] != $userInviter->getId()) {
-			MightyLoop::get()->fetch()->cancelTimer($match['timer']);
+			DI::get()->container()->get('eventloop')->cancelTimer($match['timer']);
 			$this->clearRequest($userInviter, $desiredUser);
 			return [null, null];
 		}
@@ -31,7 +32,7 @@ class PendingPrivates
 
 	public function getTTL()
 	{
-		return ChatConfig::get()->getConfig()->inviteTimeout;
+		return DI::get()->container()->get('config')->inviteTimeout;
 	}
 
 	protected function getToken(User $userInviter, User $desiredUser)
@@ -57,7 +58,7 @@ class PendingPrivates
 	 */
 	private function createInvitation(User $userInviter, User $desiredUser, callable $timoutResponse)
 	{
-		$timer = MightyLoop::get()->fetch()->addTimer(
+		$timer = DI::get()->container()->get('eventloop')->addTimer(
 			$this->getTTL(),
 			function() use ($userInviter, $desiredUser, $timoutResponse) {
 				$this->clearRequest($userInviter, $desiredUser);

@@ -4,16 +4,14 @@ namespace SocioChat\OnOpenFilters;
 use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
-use SocioChat\ChatConfig;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
-use SocioChat\Log;
 use SocioChat\Message\Lang;
-use SocioChat\MightyLoop;
 use SocioChat\Session\SessionHandler;
 
 class SessionFilter implements ChainInterface
@@ -28,20 +26,26 @@ class SessionFilter implements ChainInterface
 	public function handleRequest(ChainContainer $chain)
 	{
 		$newUserWrapper = $chain->getFrom();
+		$container = DI::get()->container();
 
-		$logger = Log::get()->fetch();
+		$logger = $container->get('logger');
+		/* @var $logger Logger */
 		$clients = UserCollection::get();
-		$langCode = $newUserWrapper->getWSRequest()->getCookie('lang') ?: 'ru';
-		$lang = (new Lang())->setLangByCode($langCode);
+		$socketRequest = $newUserWrapper->getWSRequest();
+		/* @var $socketRequest \Guzzle\Http\Message\Request */
 
+		$langCode = $socketRequest->getCookie('lang') ?: 'ru';
+		$lang = $container->get('lang')->setLangByCode($langCode);
+		/* @var $lang Lang */
 		$newUserWrapper
-			->setLastMsgId((float) $newUserWrapper->getWSRequest()->getCookie('lastMsgId'))
+			->setIp($socketRequest->getHeader('X-Real-IP'))
+			->setLastMsgId((float) $socketRequest->getCookie('lastMsgId'))
 			->setLanguage($lang);
 
 		$sessionHandler = $this->sessionHandler;
-		$sessionHandler->clean(ChatConfig::get()->getConfig()->session->lifetime);
+		$sessionHandler->clean($container->get('config')->session->lifetime);
 
-		if (!$token = $newUserWrapper->getWSRequest()->getCookie('PHPSESSID')) {
+		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);
 
 			$newUserWrapper->send(['msg' => $lang->getPhrase('UnAuthSession')]);
@@ -79,7 +83,6 @@ class SessionFilter implements ChainInterface
 				$logger->error("PDO Exception: ".print_r($e, 1), [__CLASS__]);
 			}
 
-
 			$logger->info("Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}", [__CLASS__]);
 		}
 
@@ -102,7 +105,7 @@ class SessionFilter implements ChainInterface
 		if ($oldClient = $clients->getClientById($user->getId())) {
 
 			if ($timer = $oldClient->getDisconnectTimer()) {
-				MightyLoop::get()->fetch()->cancelTimer($timer);
+				DI::get()->container()->get('eventloop')->cancelTimer($timer);
 				$logger->info(
 					"Deffered disconnection timer canceled: connection_id = {$newUserWrapper->getConnectionId(
 					)} for user_id = {$sessionInfo['user_id']}",

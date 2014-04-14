@@ -1,8 +1,8 @@
 <?php
 namespace SocioChat\Message;
 
-use SocioChat\Log;
-
+use Monolog\Logger;
+use SocioChat\DI;
 
 class Lang
 {
@@ -10,6 +10,16 @@ class Lang
 	 * @var \Zend\Config\Config
 	 */
 	private $lexicon;
+	/**
+	 * @var Dictionary
+	 */
+	private $dictionary;
+
+	public function __construct(Dictionary $dictionary)
+	{
+		$this->dictionary = $dictionary;
+	}
+
 
 	/**
 	 * @param $langCode
@@ -17,7 +27,7 @@ class Lang
 	 */
 	public function setLangByCode($langCode)
 	{
-		$this->lexicon = Dictionary::get()->getLang($langCode);
+		$this->lexicon = $this->dictionary->getLang($langCode);
 		return $this;
 	}
 
@@ -29,9 +39,11 @@ class Lang
 	public function getPhraseByArray(array $args)
 	{
 		$token = array_shift($args);
+		$logger = DI::get()->container()->get('logger');
+		/* @var $logger Logger */
 
 		if (!$this->lexicon) {
-			Log::get()->fetch()->warn('No localization was set', [__CLASS__]);
+			$logger->warn('No localization was set', [__CLASS__]);
 			return $token.' '.implode(', ', $args);
 		}
 
@@ -39,13 +51,12 @@ class Lang
 
 		foreach (explode('.', $token) as $part) {
 			if (!$newScope = $scope->get($part)) {
-				Log::get()->fetch()->warn('No localization was matched for '.$part, [__CLASS__]);
+				$logger->warn('No localization was matched for '.$part, [__CLASS__]);
 				return $token.' '.implode(', ', $args);
 			}
 
 			$scope = $newScope;
 		}
-
 
 		return vsprintf($scope, $args);
 	}

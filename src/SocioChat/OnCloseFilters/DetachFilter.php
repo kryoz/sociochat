@@ -9,6 +9,7 @@ use SocioChat\Clients\ChatsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\DI;
 use SocioChat\Log;
 use SocioChat\Message\MsgToken;
 use SocioChat\MightyLoop;
@@ -32,8 +33,8 @@ class DetachFilter implements ChainInterface
 
 	private function handleDisconnection(User $user)
 	{
-		$loop = MightyLoop::get()->fetch();
-		$logger = Log::get()->fetch();
+		$loop = DI::get()->container()->get('eventloop');
+		$logger = DI::get()->container()->get('logger');
 		$detacher = function() use ($user, $logger) {
 			$clients = UserCollection::get();
 			$clients->detach($user);
@@ -49,7 +50,7 @@ class DetachFilter implements ChainInterface
 		};
 
 		if ($user->isAsyncDetach()) {
-			$timeout = ChatConfig::get()->getConfig()->session->timeout;
+			$timeout = DI::get()->container()->get('config')->session->timeout;
 			$logger->info("OnClose: Detach deffered in $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
 			$timer = $loop->addTimer($timeout, $detacher);
 			$user->setDisconnectTimer($timer);

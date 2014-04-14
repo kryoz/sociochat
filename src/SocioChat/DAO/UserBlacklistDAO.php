@@ -48,7 +48,6 @@ class UserBlacklistDAO extends DAOBase
 	{
 		if (!isset($this->blacklist[$userId]) && $userId != $this->getUserId()) {
 			$this->blacklist[$userId] = 1;
-			Log::get()->fetch()->info("added userId = $userId to ban", [__CLASS__]);
 			return true;
 		}
 	}

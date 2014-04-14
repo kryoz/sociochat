@@ -5,23 +5,21 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
-use SocioChat\Log;
-use SocioChat\Message\Dictionary;
+use SocioChat\DI;
 
 class AdminController extends ControllerBase
 {
 	private $actionsMap = [
-		'reloadConfig' => 'processReload',
 		'kickUser' => 'processKick'
 	];
 
 	public function handleRequest(ChainContainer $chain)
 	{
 		$user = $chain->getFrom();
+		$container = DI::get()->container();
+		$container->get('logger')->alert('An attempt to use admin controller by userId = '.$user->getId());
 
-		Log::get()->fetch()->alert('An attempt to use admin controller by userId = '.$user->getId());
-
-		if ($user->getUserDAO()->getToken() != ChatConfig::get()->getConfig()->adminToken) {
+		if ($user->getUserDAO()->getToken() != $container->get('config')->adminToken) {
 			return;
 		}
 
@@ -40,13 +38,6 @@ class AdminController extends ControllerBase
 		return ['action'];
 	}
 
-	protected function processReload(ChainContainer $chain)
-	{
-		ChatConfig::get()->loadConfigs();
-		Dictionary::get()->loadTranslations();
-		Log::get()->fetch()->info('Configuration reloaded');
-	}
-
 	protected function processKick(ChainContainer $chain)
 	{
 		$request = $chain->getRequest();
@@ -58,6 +49,7 @@ class AdminController extends ControllerBase
 			return;
 		}
 
+		$assHole->getConnection()->
 		$assHole
 			->setAsyncDetach(false)
 			->send(

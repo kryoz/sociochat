@@ -4,11 +4,10 @@ namespace SocioChat;
 
 use PDO;
 use PDOException;
+use Zend\Config\Config;
 
 class DB
 {
-	use TSingleton;
-
 	const ERR_NO_CONNECTION = 'PDO connection fail';
 	const ERR_INIT_FAIL = 'PDO init error';
 	const ERR_SQL_ERROR = 'Query execution error';
@@ -24,13 +23,15 @@ class DB
 	protected $dbh;
 	protected $result;
 
-	public function __construct()
+	public function __construct(Config $config)
 	{
-		$config = ChatConfig::get()->getConfig()->db;
-		$this->scheme = $config->scheme;
-		$this->dbURL = "dbname=".$config->name.";host=".$config->host;
-		$this->user = $config->user;
-		$this->pass = $config->pass;
+		$settings = $config->db;
+
+		$this->scheme = $settings->scheme;
+		$this->dbURL = "dbname=".$settings->name.";host=".$settings->host;
+		$this->user = $settings->user;
+		$this->pass = $settings->pass;
+
 		$this->init();
 	}
 
@@ -153,7 +154,7 @@ class DB
 				]
 			);
 		} catch (PDOException $e) {
-			throw new PDOException(self::ERR_INIT_FAIL . ': ' . $e->getMessage());
+			throw new PDOException(self::ERR_INIT_FAIL . ': ' . $e->getMessage().'; '.$this->scheme);
 		}
 	}
 

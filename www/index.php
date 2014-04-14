@@ -1,18 +1,19 @@
 <?php
-use SocioChat\ChatConfig;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Message\Lang;
+use Zend\Config\Config;
 
 $DS = DIRECTORY_SEPARATOR;
 $root = dirname(__DIR__);
 
 require $root.$DS.'config.php';
 
-$config = ChatConfig::get()->getConfig();
+/* @var $config Config */
 
 $httpAcceptLanguage = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-$lang = (new Lang)->setLangByCode($httpAcceptLanguage);
+$lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
+/* @var $lang Lang */
 $lifetime = time() + $config->session->lifetime;
 
 session_start();

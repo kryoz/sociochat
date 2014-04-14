@@ -120,8 +120,6 @@ class PendingDuals
 			$this->queue[$tim->getId()] = [];
 		}
 		$this->queue[$tim->getId()][$user->getId()] = count($this->queue[$tim->getId()])+1;
-
-		Log::get()->fetch()->info("Updated pending duals with new user '{$user->getProperties()->getName()}':\n".print_r($this->queue,1), [__CLASS__]);
 	}
 
 	public function getDualTim(TimEnum $tim)

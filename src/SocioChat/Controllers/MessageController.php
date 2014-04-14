@@ -5,6 +5,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Log;
@@ -76,7 +77,7 @@ class MessageController extends ControllerBase
 
 		if (!$form->validate()) {
 			$this->errorResponse($from, $form->getErrors());
-			Log::get()->fetch()->warn("Trying to find userId = $userId for private message but not found", [__CLASS__]);
+			DI::get()->container()->get('logger')->warn("Trying to find userId = $userId for private message but not found", [__CLASS__]);
 			return false;
 		}
 

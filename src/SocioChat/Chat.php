@@ -28,13 +28,13 @@ class Chat implements MessageComponentInterface
 
 	public function __construct()
 	{
-		$config = ChatConfig::get()->getConfig();
+		$config = DI::get()->container()->get('config');
 		self::$sessionEngine = $config->session->driver == 'memory' ? MemorySessionHandler::get() : DBSessionHandler::get();
 	}
 
 	public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
 	{
-		Log::get()->fetch()->info("Opened new connectionId = {$conn->resourceId}", [__FUNCTION__]);
+		DI::get()->container()->get('logger')->info("Opened new connectionId = {$conn->resourceId}", [__FUNCTION__]);
 
 		(new ChainContainer())
 			->setFrom(new User($conn))
@@ -58,7 +58,7 @@ class Chat implements MessageComponentInterface
 		}
 
 		if (!$user = UserCollection::get()->getClientByConnectionId($from->resourceId)) {
-			Log::get()->fetch()->error("Got request from unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
+			DI::get()->container()->get('logger')->error("Got request from unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
 			return;
 		}
 
@@ -77,7 +77,7 @@ class Chat implements MessageComponentInterface
 
 	public function onError(ConnectionInterface $conn, \Exception $e)
 	{
-		Log::get()->fetch()->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
+		DI::get()->container()->get('logger')->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
 		$conn->close();
 	}
 

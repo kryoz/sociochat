@@ -3,6 +3,7 @@
 namespace SocioChat\Clients;
 
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DI;
 use SocioChat\Log;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
@@ -32,7 +33,7 @@ class UserCollection
 	{
 		foreach ($this->users as $n => $chatUser) {
 			if ($chatUser->getId() == $user->getId()) {
-				Log::get()->fetch()->info("Detach userId = {$user->getId()}", [__CLASS__]);
+				DI::get()->container()->get('logger')->info("Detach userId = {$user->getId()}", [__CLASS__]);
 				$user->close();
 				unset($this->users[$n]);
 			}

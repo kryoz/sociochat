@@ -2,6 +2,7 @@
 namespace SocioChat\DAO;
 
 use SocioChat\DB;
+use SocioChat\DI;
 use SocioChat\FixedArrayAccess;
 
 abstract class DAOBase extends FixedArrayAccess
@@ -20,7 +21,7 @@ abstract class DAOBase extends FixedArrayAccess
     {
         $properties = [self::ID];
         $properties = array_merge($properties, $propertyNames);
-        $this->db = DB::get();
+        $this->db = DI::get()->container()->get('db');;
 
         parent::__construct($properties);
     }
@@ -123,7 +124,7 @@ abstract class DAOBase extends FixedArrayAccess
 
     public function __wakeup()
     {
-        $this->db = DB::get();
+        $this->db = DI::get()->container()->get('db');
     }
 
     public function __sleep()
