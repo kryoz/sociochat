@@ -82,6 +82,8 @@ function dependencyInjectionSetup(Container $container)
 		->withArgument('dictionary');
 }
 
+basicSetup();
+
 $container = DI::get()->container();
 dependencyInjectionSetup($container);
 
