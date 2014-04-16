@@ -1,4 +1,6 @@
 <?php
+use SocioChat\DI;
+use SocioChat\DIBuilder;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Message\Lang;
@@ -8,7 +10,9 @@ $DS = DIRECTORY_SEPARATOR;
 $root = dirname(__DIR__);
 
 require $root.$DS.'config.php';
-
+$container = DI::get()->container();
+DIBuilder::setupNormal($container);
+$config = $container->get('config');
 /* @var $config Config */
 
 $httpAcceptLanguage = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);

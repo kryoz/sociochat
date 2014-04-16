@@ -1,11 +1,18 @@
 <?php
-use SocioChat\ChatConfig;
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
+use SocioChat\DIBuilder;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
+use Zend\Config\Config;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'config.php';
+$container = DI::get()->container();
+DIBuilder::setupNormal($container);
+$config = $container->get('config');
+/* @var $config Config */
+
 session_start();
 
 $email = isset($_REQUEST['email']) ? $_REQUEST['email'] : null;
@@ -57,7 +64,7 @@ if ($activation->getCode() != $code) {
 	exit;
 }
 
-if (strtotime($activation->getTimestamp()) + ChatConfig::get()->getConfig()->activationTTL < time()) {
+if (strtotime($activation->getTimestamp()) + $config->activationTTL < time()) {
 	$activation->setIsUsed(true);
 	$activation->save();
 	require_once "pages/activation_error.php";

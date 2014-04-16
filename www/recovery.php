@@ -1,13 +1,20 @@
 <?php
 
-use SocioChat\ChatConfig;
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
+use SocioChat\DIBuilder;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Utils\PasswordUtils;
+use Zend\Config\Config;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'config.php';
+$container = DI::get()->container();
+DIBuilder::setupNormal($container);
+$config = $container->get('config');
+/* @var $config Config */
+
 session_start();
 
 $email = isset($_POST['email']) ? trim($_POST['email']) : null;
@@ -68,7 +75,7 @@ $activation->fillParams(
 );
 $activation->save();
 
-$config = ChatConfig::get()->getConfig();
+
 $mailerName = 'СоциоЧат';
 $headers  = "MIME-Version: 1.0 \n"
 	."From: ".mb_encode_mimeheader($mailerName)

@@ -2,9 +2,7 @@
 
 namespace SocioChat\Clients;
 
-use SocioChat\ChatConfig;
 use SocioChat\DI;
-use SocioChat\MightyLoop;
 use SocioChat\TSingleton;
 
 class PendingPrivates

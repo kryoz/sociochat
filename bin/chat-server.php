@@ -6,12 +6,28 @@ use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
+use SocioChat\DI;
+use SocioChat\DIBuilder;
+use Zend\Config\Config;
+
+function CustomErrorHandler($errno, $errstr, $errfile, $errline)
+{
+	echo "ErrorHandler: $errfile line $errline: $errstr\n";
+	return true;
+}
+set_error_handler('CustomErrorHandler');
 
 require_once 'config.php';
-/* @var $container Container */
-$pidFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'chat-server.pid';
+$container = DI::get()->container();
+DIBuilder::setupNormal($container);
+$config = $container->get('config');
+/* @var $config Config */
 $logger = $container->get('logger');
 /* @var $logger Logger */
+
+ini_set("session.gc_maxlifetime", $config->session->lifetime);
+
+$pidFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'chat-server.pid';
 
 if (file_exists($pidFile)) {
 	$pid = file_get_contents($pidFile);

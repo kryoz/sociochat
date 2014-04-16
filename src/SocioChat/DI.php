@@ -2,8 +2,6 @@
 
 namespace SocioChat;
 
-use Orno\Cache\Adapter\ApcAdapter;
-use Orno\Cache\Cache;
 use Orno\Di\Container;
 
 class DI
@@ -15,10 +13,10 @@ class DI
 	 */
 	private $container;
 
-	function __construct()
+	public function __construct()
 	{
-		$cache = new Cache(new ApcAdapter());
-		$this->container = new Container($cache);
+		//$cache = new Cache(new ApcAdapter());
+		$this->container = new Container();
 	}
 
 	/**
