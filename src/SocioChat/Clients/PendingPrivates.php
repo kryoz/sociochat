@@ -2,6 +2,7 @@
 
 namespace SocioChat\Clients;
 
+use React\EventLoop\LoopInterface;
 use SocioChat\DI;
 use SocioChat\TSingleton;
 
@@ -20,7 +21,10 @@ class PendingPrivates
 			$match = $this->createInvitation($userInviter, $desiredUser, $timoutResponse);
 			return [$match['inviterUserId'], null];
 		} elseif ($match['inviterUserId'] != $userInviter->getId()) {
-			DI::get()->container()->get('eventloop')->cancelTimer($match['timer']);
+            /** @var $loop LoopInterface */
+            $loop = DI::get()->container()->get('eventloop');
+
+			$loop->cancelTimer($match['timer']);
 			$this->clearRequest($userInviter, $desiredUser);
 			return [null, null];
 		}

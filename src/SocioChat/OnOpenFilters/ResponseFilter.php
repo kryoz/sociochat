@@ -74,7 +74,7 @@ class ResponseFilter implements ChainInterface
 			}
 
 			if ($user->getLastMsgId() > 0) {
-				$response->setMsg(null);
+				$response->setMsg(Msg::create(null));
 			}
 
 			$dualUsers
