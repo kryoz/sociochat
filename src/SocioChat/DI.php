@@ -31,4 +31,11 @@ class DI
 	{
 		return [];
 	}
+
+	public function __wakeup()
+	{
+		$this->__construct();
+	}
+
+
 }

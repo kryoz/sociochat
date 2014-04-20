@@ -3,7 +3,6 @@
 namespace Test\SocioChat\Clients;
 
 use SocioChat\Clients\PendingPrivates;
-use SocioChat\Clients\User;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Test\SocioChat\Helpers\MockEventLoop;
@@ -24,7 +23,8 @@ class PendingPrivatesTest extends TestSuite
 
 	public function testGetToken()
 	{
-		list($user1, $user2) = $this->getMockUsers();
+		$user1 = $this->getMockUser();
+		$user2 = $this->getMockUser();
 
 		$refl = self::getMethod(PendingPrivates::class, 'getToken');
 		$token = $refl->invokeArgs($this->privates, [$user1, $user2]);
@@ -35,12 +35,10 @@ class PendingPrivatesTest extends TestSuite
 
     public function testInvite()
     {
-	    list($user1, $user2) = $this->getMockUsers();
+	    $user1 = $this->getMockUser();
+	    $user2 = $this->getMockUser();
 
-	    $container = DI::get()->container();
-		DIBuilder::setupConfig($container);
-
-	    $container->add('eventloop', MockEventLoop::class, true);
+	    DI::get()->container()->add('eventloop', MockEventLoop::class, true);
 
         $dummy = function() {};
 
@@ -62,18 +60,5 @@ class PendingPrivatesTest extends TestSuite
 	    $this->assertNull($user1id);
 	    $this->assertNull($time);
     }
-
-	/**
-	 * @return Array
-	 */
-	private function getMockUsers()
-	{
-		$user1 = $this->getMock(User::class, ['getId'], [], '', false);
-		$user1->expects($this->any())->method('getId')->willReturn('1');
-
-		$user2 = $this->getMock(User::class, ['getId'], [], '', false);
-		$user2->expects($this->any())->method('getId')->willReturn('2');
-		return [$user1, $user2];
-	}
 }
  
