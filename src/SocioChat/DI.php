@@ -27,5 +27,8 @@ class DI
 		return $this->container;
 	}
 
-
+	public function __sleep()
+	{
+		return [];
+	}
 }
