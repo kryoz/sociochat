@@ -8,6 +8,10 @@ See also official groups in <a href="http://vk.com/sociochat" target="_blank">VK
 
 SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
+## Project mission
+
+Bring comfortable communication to random people with a help of modern techonologies
+
 ## Features
 
 * Very fast and full async websocket handling
