@@ -2,8 +2,10 @@
 
 namespace SocioChat;
 
+use Monolog\Logger;
 use PDO;
 use PDOException;
+use PDOStatement;
 use Zend\Config\Config;
 
 class DB
@@ -17,10 +19,15 @@ class DB
 	protected $user;
 	protected $pass;
 
+	protected $isLogQueries = false;
+
 	/**
 	 * @var PDO
 	 */
 	protected $dbh;
+	/**
+	 * @var PDOStatement
+	 */
 	protected $result;
 
 	public function __construct(Config $config)
@@ -31,6 +38,7 @@ class DB
 		$this->dbURL = "dbname=".$settings->name.";host=".$settings->host;
 		$this->user = $settings->user;
 		$this->pass = $settings->pass;
+		$this->isLogQueries = $settings->logging;
 
 		$this->init();
 	}
@@ -54,6 +62,7 @@ class DB
 		try {
 			$sth = $this->dbh->prepare($sql);
 			$sth->execute($params);
+			$this->logQuery($sql, $params);
 			$result = $sth->fetchAll($fetchFlags);
 			$sth->closeCursor();
 		} catch (PDOException $e) {
@@ -97,6 +106,7 @@ class DB
 		try {
 			$sth = $this->dbh->prepare($sql);
 			$sth->execute($params);
+			$this->logQuery($sql, $params);
 			$sth->closeCursor();
 			unset($sth);
 		} catch (PDOException $e) {
@@ -135,7 +145,7 @@ class DB
 	{
 		try {
 			@$this->dbh->query('select 1');
-        } catch (\Exception $e) {
+		} catch (\Exception $e) {
 			$this->init();
 		}
 	}
@@ -149,7 +159,7 @@ class DB
 				$this->pass,
 				[
 					PDO::ATTR_PERSISTENT => true,
-					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+					1002 => "SET NAMES utf8", //MYSQL_ATTR_INIT_COMMAND
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				]
 			);
@@ -158,4 +168,12 @@ class DB
 		}
 	}
 
+	private function logQuery($sql, array $params)
+	{
+		if ($this->isLogQueries) {
+			/** @var $logger Logger */
+			$logger = DI::get()->container()->get('logger');
+			$logger->info('SQL:'.$sql, $params);
+		}
+	}
 }

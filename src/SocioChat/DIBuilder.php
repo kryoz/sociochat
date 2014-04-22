@@ -65,7 +65,7 @@ class DIBuilder
 			'logger',
 			function () use ($container) {
 				$logger = new Logger('Chat');
-				$type = $container->get('config')->logger ? : STDOUT;
+				$type = $container->get('config')->logger ? : fopen('php://stdout', 'w');
 				$logger->pushHandler(new StreamHandler($type));
 				return $logger;
 			},

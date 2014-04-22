@@ -138,16 +138,16 @@ require_once "pages/header.php";
 						</div>
 						<div class="col-md-4 btn-vert-block">
 							<select class="form-control" id="tim">
-								<? foreach (TimEnum::getList() as $tim) { ?>
+								<?php foreach (TimEnum::getList() as $tim) { ?>
 									<option value="<?=$tim->getId()?>"><?=$tim->getName()?></option>
-								<? } ?>
+								<?php } ?>
 							</select>
 						</div>
 						<div class="col-md-4 btn-vert-block">
 							<select class="form-control" id="sex">
-								<? foreach (SexEnum::getList() as $sex) { ?>
+								<?php foreach (SexEnum::getList() as $sex) { ?>
 									<option value="<?=$sex->getId()?>"><?=$sex->getName()?></option>
-								<? } ?>
+								<?php } ?>
 							</select>
 						</div>
 					</div>
