@@ -62,6 +62,11 @@ class SessionDAO extends DAOBase
 		return $this;
 	}
 
+	public function getUserId()
+	{
+		return $this[self::USER_ID];
+	}
+
 	public function getObsoleteUserIds($deadLine)
 	{
 		if (!$unregisteredList = UserDAO::create()->getUnregisteredUserIds()) {

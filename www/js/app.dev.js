@@ -206,7 +206,7 @@ var App = {
 			$this.connection.send(JSON.stringify(cmd));
 		}, 15000);
 
-		// Adress reset
+		// Address reset
 		$this.domElems.addressReset.click(function () {
 			$this.domElems.address.children().first().attr('selected', 'selected');
 			$this.domElems.address.data('id', '');
@@ -445,7 +445,6 @@ var ResponseHandler = function(json, $this) {
 				if (guest.banned) {
 					line += '<a class="btn btn-default unban">Разбан</a>';
 				} else {
-					//line += '<a class="btn btn-default whisper">Шепнуть</a>';
 					line += '<a class="btn btn-default invite">Приват</a>';
 					line += '<a class="btn btn-default ban">Бан</a>';
 				}
@@ -454,14 +453,6 @@ var ResponseHandler = function(json, $this) {
 
 				$this.domElems.guestList.append(line);
 			}
-
-			/*$this.domElems.guestList.find('.whisper').click(function() {
-				var userName = $(this).parentsUntil('#guests tbody').find('.user-name').text();
-				$this.domElems.address.text(userName);
-				$this.domElems.address.data('id', $this.getUserInfo(userName).user_id);
-				$this.domElems.addressReset.show();
-				$this.returnToChat();
-			});*/
 
 			$this.domElems.guestList.find('.ban').click(function() {
 				var userName = $(this).parentsUntil('#guests tbody').find('.user-name').text();

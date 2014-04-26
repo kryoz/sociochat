@@ -1,4 +1,8 @@
 <?php
+if (!defined('ROOT')) {
+	die('not allowed');
+}
+
 $title = 'Ошибка';
 require_once "header.php";
 ?>

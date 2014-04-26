@@ -1,4 +1,8 @@
 <?php
+if (!defined('ROOT')) {
+	die('not allowed');
+}
+
 $title = 'Восстановление пароля';
 require_once "header.php";
 ?>

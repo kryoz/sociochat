@@ -13,6 +13,7 @@ class PropertiesDAO extends DAOBase
 	const SEX = 'sex';
 	const TIM = 'tim';
 	const NOTIFICATIONS = 'notifications';
+	const AVATAR = 'avatar';
 
 	public function __construct()
 	{
@@ -23,6 +24,7 @@ class PropertiesDAO extends DAOBase
 				self::SEX,
 				self::TIM,
 				self::NOTIFICATIONS,
+				self::AVATAR,
 			]
 		);
 
@@ -64,6 +66,22 @@ class PropertiesDAO extends DAOBase
 	public function setUserId($id)
 	{
 		$this[self::USER_ID] = $id;
+		return $this;
+	}
+
+	public function getAvatarImg()
+	{
+		return $this[self::AVATAR].'.jpg';
+	}
+
+	public function getAvatarThumb()
+	{
+		return $this[self::AVATAR].'_t.png';
+	}
+
+	public function setAvatarImg($img)
+	{
+		$this[self::AVATAR] = $img;
 		return $this;
 	}
 

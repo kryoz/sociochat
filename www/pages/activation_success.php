@@ -1,4 +1,8 @@
 <?php
+if (!defined('ROOT')) {
+	die('not allowed');
+}
+
 $title = 'Пароль сменён';
 require_once "header.php";
 ?>

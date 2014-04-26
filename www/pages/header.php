@@ -1,4 +1,7 @@
 <?php
+if (!defined('ROOT')) {
+	die('not allowed');
+}
 $title = isset($title) ? $title : 'соционический чат с дуалами';
 $js = isset($js) ? $js : '';
 $domain = isset($domain) ? $domain : 'https://sociochat.me';

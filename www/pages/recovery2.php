@@ -1,4 +1,7 @@
 <?php
+if (!defined('ROOT')) {
+	die('not allowed');
+}
 $title = 'Письмо отправлено';
 require_once "header.php";
 ?>
