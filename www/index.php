@@ -15,7 +15,7 @@ DIBuilder::setupNormal($container);
 $config = $container->get('config');
 /* @var $config Config */
 
-$httpAcceptLanguage = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+$httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
 $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
 /* @var $lang Lang */
 $lifetime = time() + $config->session->lifetime;

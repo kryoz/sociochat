@@ -1,0 +1,23 @@
+paths:
+    migrations: %%PHINX_CONFIG_DIR%%/migrations
+
+environments:
+    default_migration_table: phinxlog
+    default_database: development
+    production:
+        adapter: mysql
+        host: localhost
+        name: chat
+        user: chat
+        pass: '123'
+        port: 3306
+        charset: utf8
+
+    development:
+        adapter: pgsql
+        host: localhost
+        name: chat
+        user: chat
+        pass: '123'
+        port: 5432
+        charset: utf8
