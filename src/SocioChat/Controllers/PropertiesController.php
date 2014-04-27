@@ -57,6 +57,11 @@ class PropertiesController extends ControllerBase
 		}
 
 		$properties = $user->getProperties();
+
+		@unlink($dir.$properties->getAvatarImg());
+		@unlink($dir.$properties->getAvatarThumb());
+		@unlink($dir.$properties->getAvatarThumb2X());
+
 		$properties
 			->setAvatarImg($image)
 			->save();

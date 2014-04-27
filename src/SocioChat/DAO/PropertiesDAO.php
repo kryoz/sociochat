@@ -80,6 +80,11 @@ class PropertiesDAO extends DAOBase
 		return $this[self::AVATAR] ? $this[self::AVATAR].'_t.png' : null;
 	}
 
+	public function getAvatarThumb2X()
+	{
+		return $this[self::AVATAR] ? $this[self::AVATAR].'_t@2x.png' : null;
+	}
+
 	public function setAvatarImg($img)
 	{
 		$this[self::AVATAR] = $img;
