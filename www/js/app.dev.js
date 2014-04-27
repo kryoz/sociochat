@@ -749,8 +749,8 @@ var AvatarUploadHandler = function($this, dim) {
 
         fileReader.readAsDataURL(file);
 
-        thumb.style.maxWidth = dim+'px';
-        thumb.style.maxHeight = dim+'px';
+        thumb.style.width = dim+'px';
+        thumb.style.height = dim+'px';
         image.style.maxWidth = 'inherit';
         image.style.maxHeight = 'inherit';
 
@@ -767,7 +767,6 @@ var AvatarUploadHandler = function($this, dim) {
         var progressbarContainer = avatar.find('.progress');
         var progressbar = avatar.find('.progress-bar');
         var percentage = progressbar.find('.sr-only');
-
 
         formData.append('img', file);
         formData.append('token', $this.token);

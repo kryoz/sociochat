@@ -26,6 +26,24 @@ function response($code, $message, $image = null)
 	echo json_encode(['success' => $code == 200, 'response' => $message, 'image' => $image]);
 }
 
+function makeImage($uploadedFile, $dim, $format, $extension, $isAdaptive = false)
+{
+	$imagick = new Imagick();
+	$imagick->readImage($uploadedFile);
+
+	if ($imagick->getimagewidth() > $dim || $imagick->getimageheight() > $dim) {
+		$imagick->adaptiveresizeimage($dim, $dim, $isAdaptive);
+	}
+
+	$imagick->setImageFormat($format);
+
+	$image = $uploadedFile.$extension;
+	if (file_exists($image)) {
+		unlink($image);
+	}
+	$imagick->writeImage($image);
+}
+
 $token = isset($_POST['token']) ? $_POST['token'] : null;
 $token = SessionDAO::create()->getBySessionId($token);
 
@@ -63,29 +81,10 @@ if ($img['error'] != UPLOAD_ERR_OK || !move_uploaded_file($img['tmp_name'], $upl
 	return;
 }
 
-function makeImage($uploadedFile, $dim, $format, $extension)
-{
-	$imagick = new Imagick();
-	$imagick->readImage($uploadedFile);
-
-	if ($imagick->getimagewidth() > $dim || $imagick->getimageheight() > $dim) {
-		$imagick->adaptiveresizeimage($dim, $dim, true);
-	}
-
-	$imagick->setImageFormat($format);
-
-	$image = $uploadedFile.$extension;
-	if (file_exists($image)) {
-		unlink($image);
-	}
-	$imagick->writeImage($image);
-}
-
 try {
 	makeImage($uploadedFile, $avatarsConfig->thumbdim, 'png', '_t.png');
 	makeImage($uploadedFile, $avatarsConfig->thumbdim * 2, 'png', '_t@2x.png');
-	makeImage($uploadedFile, $avatarsConfig->maxdim, 'jpeg', '.jpg');
-
+	makeImage($uploadedFile, $avatarsConfig->maxdim, 'jpeg', '.jpg', true);
 }
 catch (\Exception $e) {
 	$message = $lang->getPhrase('profile.ErrorProcessingImage').': '.$e->getMessage();
