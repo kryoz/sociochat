@@ -58,7 +58,15 @@ doesnotexist:-o-prefocus, #panel-chat {
     cursor: inherit;
     display: block;
 }
-
+.user-avatar {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    text-align: center;
+}
+.user-avatar .glyphicon {
+    color: #ddd;
+}
 .chat-container, .chat-container .panel-body {
 	height: 100%;
 }
@@ -143,6 +151,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 #log > div {
 	word-break: break-word;
+    line-height: 22px;
 }
 .vk {
 	position: absolute;

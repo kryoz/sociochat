@@ -2,6 +2,7 @@
 
 namespace SocioChat\DAO;
 
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Utils\DbQueryHelper;
@@ -71,12 +72,12 @@ class PropertiesDAO extends DAOBase
 
 	public function getAvatarImg()
 	{
-		return $this[self::AVATAR].'.jpg';
+		return $this[self::AVATAR] ? $this[self::AVATAR].'.jpg' : null;
 	}
 
 	public function getAvatarThumb()
 	{
-		return $this[self::AVATAR].'_t.png';
+		return $this[self::AVATAR] ? $this[self::AVATAR].'_t.png' : null;
 	}
 
 	public function setAvatarImg($img)
@@ -139,11 +140,14 @@ class PropertiesDAO extends DAOBase
 
 	public function toPublicArray()
 	{
+		$avatarDir = DI::get()->container()->get('config')->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
+
 		return [
 			self::USER_ID => $this->getUserId(),
 			self::NAME => $this->getName(),
 			self::TIM => $this->getTim()->getName(),
 			self::SEX => $this->getSex()->getName(),
+			self::AVATAR.'Thumb' => $this->getAvatarThumb() ? $avatarDir.$this->getAvatarThumb() : null,
 		];
 	}
 

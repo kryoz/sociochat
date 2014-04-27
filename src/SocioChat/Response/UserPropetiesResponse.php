@@ -3,6 +3,7 @@
 namespace SocioChat\Response;
 
 use SocioChat\Clients\User;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 
@@ -14,6 +15,8 @@ class UserPropetiesResponse extends Response
 	protected $sex = SexEnum::FIRST;
 	protected $msg = null;
 	protected $notifications = null;
+	protected $avatarImg = null;
+	protected $avatarThumb = null;
 
 	public function setName($name)
 	{
@@ -51,15 +54,32 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+	public function setAvatarImg($avatar)
+	{
+		$this->avatarImg = $avatar;
+		return $this;
+	}
+
+	public function setAvatarThumb($avatarThumb)
+	{
+		$this->avatarThumb = $avatarThumb;
+		return $this;
+	}
+
 	public function setUserProps(User $user)
 	{
 		$properties = $user->getProperties();
+		$dir = DI::get()->container()->get('config')->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
 
-		$this->setEmail($user->getUserDAO()->getEmail());
-		$this->setSex($properties->getSex()->getId());
-		$this->setTim($properties->getTim()->getId());
-		$this->setName($properties->getName());
-		$this->setNotifications($properties->getNotifications());
+		$this
+			->setEmail($user->getUserDAO()->getEmail())
+			->setSex($properties->getSex()->getId())
+			->setTim($properties->getTim()->getId())
+			->setName($properties->getName())
+			->setNotifications($properties->getNotifications())
+			->setAvatarImg($properties->getAvatarImg() ? $dir.$properties->getAvatarImg() : null)
+			->setAvatarThumb($properties->getAvatarThumb() ? $dir.$properties->getAvatarThumb() : null);
+
 		return $this;
 	}
 } 

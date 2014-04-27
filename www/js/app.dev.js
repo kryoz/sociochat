@@ -37,6 +37,7 @@ var setCookie = function (name, value, options) {
 var App = {
 	connection: null,
 	hostUrl: null,
+    token: null,
 	msgCount: 0,
 	guestCount: 0,
 	guests : [],
@@ -70,6 +71,7 @@ var App = {
 		sex: $('#sex'),
 		email: $('#email'),
 		password: $('#password'),
+        avatar: $('#avatar'),
 
 		loginName: $('#login-name'),
 		loginPassword: $('#login-password'),
@@ -89,14 +91,17 @@ var App = {
 		regPanel: $('#reg-panel')
 	},
 
-	Init: function(hostUrl) {
+	Init: function(hostUrl, token, avatarMaxDim) {
 		var $this = App;
 
 		$this.hostUrl = hostUrl;
+        $this.token = token;
 		$this.Connect();
 
 		$this.bindEvents();
 		$this.bindMenus();
+
+        AvatarUploadHandler($this, avatarMaxDim);
 	},
 
 	Connect : function() {
@@ -109,7 +114,7 @@ var App = {
 		this.addConnectionHandlers();
 	},
 	handleResponse: function (json) {
-		var handler = new ResponseHandler(json, this);
+		ResponseHandler(json, this);
 	},
 	addConnectionHandlers: function() {
 		var $this = this;
@@ -132,11 +137,9 @@ var App = {
 		};
 
 		$this.connection.onclose = function(e) {
-			console.log('onClose');
 			if ($this.disconnect) {
 				return;
 			}
-			console.log('onClose handled');
 
 			if (!$this.reconnectTimeout) {
 				setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
@@ -506,6 +509,20 @@ var ResponseHandler = function(json, $this) {
 		if (json.email) {
 			$this.domElems.email.val(json.email);
 		}
+
+        if (json.avatarImg) {
+            var image = document.createElement('img');
+            image.src = json.avatarImg;
+            image.style.maxWidth = 'inherit';
+            image.style.maxHeight = 'inherit';
+            $this.domElems.avatar.find('div.avatar-placeholder').html(image);
+        }
+
+        if (json.avatarThumb) {
+            var thumb = document.createElement('img');
+            thumb.src = json.avatarThumb;
+            $this.domElems.avatar.find('div.avatar-placeholder-mini').html(thumb);
+        }
 	}
 
 	var handleDualChat = function() {
@@ -540,6 +557,14 @@ var ResponseHandler = function(json, $this) {
 			var fromUser = $this.getUserInfo(json.fromName);
 			var user = fromUser;
 
+            msg = '<div class="user-avatar">';
+            if (fromUser.avatarThumb) {
+                msg += '<img src="'+ fromUser.avatarThumb +'">';
+            } else {
+                msg += '<span class="glyphicon glyphicon-user"></span>';
+            }
+            msg += '</div> ';
+
 			var span = '<span class="nickname ' + getSexClass(user) + '" title="' + (user ? user.tim : '') + '">';
 			var article = ' от ';
 
@@ -556,17 +581,17 @@ var ResponseHandler = function(json, $this) {
 
 				var senderOrReciever = article + span + user.name + '</span>';
 
-				msg = msg + '<span class="private"><b>(приватно ' + senderOrReciever + ')</b> '
+				msg += '<span class="private"><b>(приватно ' + senderOrReciever + ')</b> '
 			} else {
-				msg = msg + span + json.fromName + '</span>: <span>';
+				msg += span + json.fromName + '</span>: <span>';
 			}
 		} else {
-			msg = msg + '<span class="system">*** ';
+			msg += '<span class="system">*** ';
 		}
 
 		var incomingMessage = messageParsers(json.msg);
 
-		msg = msg + incomingMessage + '</span>';
+		msg += incomingMessage + '</span>';
 
 		if ($this.msgCount > $this.bufferSize) {
 			var $line = $this.domElems.chat.find('div').first();
@@ -696,3 +721,85 @@ var ResponseHandler = function(json, $this) {
 	handleMessage();
 	handleErrors();
 };
+
+var AvatarUploadHandler = function($this, dim) {
+    var avatar = $this.domElems.avatar;
+    var uploadButtonContainer = avatar.find('.do-upload');
+    var response = avatar.find('.alert');
+
+    avatar.find('.upload').change(function() {
+        var fileReader = new FileReader();
+        var file = this.files[0];
+        var image = document.createElement('img');
+        var thumb = document.createElement('img');
+
+        fileReader.onload = function(e) {
+            image.src = e.target.result;
+            thumb.src = image.src;
+        };
+
+        fileReader.readAsDataURL(file);
+
+        thumb.style.maxWidth = dim+'px';
+        thumb.style.maxHeight = dim+'px';
+        image.style.maxWidth = 'inherit';
+        image.style.maxHeight = 'inherit';
+
+        avatar.find('div.avatar-placeholder-mini').html(thumb);
+        avatar.find('div.avatar-placeholder').html(image);
+        uploadButtonContainer.data('file', file).show();
+        response.removeClass('.alert-success').removeClass('.alert-danger').hide();
+    });
+
+    uploadButtonContainer.find('a').click(function () {
+        var file = uploadButtonContainer.data('file');
+        var xhr = new XMLHttpRequest();
+        var formData = new FormData();
+        var progressbarContainer = avatar.find('.progress');
+        var progressbar = avatar.find('.progress-bar');
+        var percentage = progressbar.find('.sr-only');
+
+
+        formData.append('img', file);
+        formData.append('token', $this.token);
+
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                var percent = Math.round((e.loaded * 100) / e.total);
+                progressbar.css('width', percent+'%').attr('aria-valuenow', percent)
+                percentage.html(percent+"%");
+            }
+        };
+
+        xhr.upload.onloadstart = function(e) {
+            progressbarContainer.show();
+            progressbar.css('width', '0%').attr('aria-valuenow', 0)
+            percentage.html("0%");
+        }
+
+        xhr.upload.onload = function(e) {
+            progressbarContainer.hide();
+            uploadButtonContainer.hide();
+        }
+        xhr.onload = function(e) {
+            var responseText = JSON.parse(e.target.responseText);
+
+            if (e.target.status != 200) {
+                response.addClass('alert-danger').html(responseText.response).show();
+                return;
+            }
+
+            response.addClass('alert-success').html(responseText.response).show();
+
+            var command = {
+                subject: 'Properties',
+                action: 'uploadAvatar',
+                image: responseText.image
+            }
+            $this.send(command);
+        }
+
+        xhr.open("POST", "upload.php");
+        xhr.send(formData);
+    });
+}

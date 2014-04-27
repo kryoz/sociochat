@@ -35,23 +35,22 @@ if (!defined('ROOT')) {
 		</div>
 	</div>
 
-	<div class="panel-heading"><?=$lang->getPhrase('profile.AvatarTip')?> <?=$config->uploads->avatars->maxsize/1024?>KB</div>
+	<div class="panel-heading" style="border-top: 1px solid #ddd;">
+		<?=$lang->getPhrase('profile.AvatarTip')?> <?=$config->uploads->avatars->maxsize/1024?>KB
+	</div>
 	<div class="panel-body" id="avatar">
 		<div class="row btn-vert-block form-group">
 			<div class="col-sm-12 btn-vert-block">
 				<span class="btn btn-default btn-file">
-					<?=$lang->getPhrase('profile.Browse')?> <input type="file" class="upload" accept="image/*" onchange="handleFile(this.files)" name="img">
+					<?=$lang->getPhrase('profile.Browse')?> <input type="file" class="upload" accept="image/*" name="img">
 				</span>
 			</div>
 		</div>
 		<div class="row btn-vert-block form-group">
 			<div class="col-sm-12 btn-vert-block">
 				<p><?=$lang->getPhrase('profile.PreviewMini')?></p>
-
-				<div class="img-thumbnail avatar-placeholder-mini">
-
-				</div>
-
+				<div class="img-thumbnail avatar-placeholder-mini"></div>
+				<p></p>
 				<p><?=$lang->getPhrase('profile.Preview')?></p>
 				<div class="img-thumbnail avatar-placeholder" style="max-width: 100%; max-height: <?=$config->uploads->avatars->maxdim?>px"></div></p>
 			</div>
@@ -64,7 +63,7 @@ if (!defined('ROOT')) {
 		<div class="alert" style="display: none"></div>
 		<div class="row btn-vert-block do-upload" style="display: none">
 			<div class="btn-vert-block col-sm-12">
-				<a class="btn btn-block btn-success" onclick="uploadFile()"><?=$lang->getPhrase('Save')?></a>
+				<a class="btn btn-block btn-success"><?=$lang->getPhrase('Save')?></a>
 			</div>
 		</div>
 
@@ -88,80 +87,3 @@ if (!defined('ROOT')) {
 		</div>
 	</div>
 </div>
-
-<script>
-	var avatar = $('#avatar');
-	var progressbarContainer = avatar.find('.progress');
-	var progressbar = avatar.find('.progress-bar');
-	var percentage = progressbar.find('.sr-only');
-	var uploadButton = avatar.find('.do-upload');
-	var response = avatar.find('.alert');
-
-	function handleFile(files) {
-		var fileReader = new FileReader();
-		var file = files[0];
-		var image = document.createElement('img');
-		var thumb = document.createElement('img');
-
-		fileReader.onload = (function(img, thumb) {
-			return function(e) {
-				img.src = e.target.result;
-				thumb.src = img.src;
-			};
-		})(image, thumb);
-
-		fileReader.readAsDataURL(file);
-
-
-		thumb.style.maxWidth = '<?=$config->uploads->avatars->thumbdim?>px';
-		thumb.style.maxHeight = '<?=$config->uploads->avatars->thumbdim?>px';
-		image.style.maxWidth = 'inherit';
-		image.style.maxHeight = 'inherit';
-
-		avatar.find('div.avatar-placeholder-mini').html(thumb);
-		avatar.find('div.avatar-placeholder').html(image);
-		uploadButton.data('file', file).show();
-		response.removeClass('.alert-success').removeClass('.alert-danger').hide();
-	}
-
-	function uploadFile() {
-		var file = avatar.find('.do-upload').data('file');
-		var xhr = new XMLHttpRequest();
-		var formData = new FormData();
-
-		formData.append('img', file);
-		formData.append('token', '<?=session_id()?>');
-
-		xhr.upload.onprogress = function(e) {
-			if (e.lengthComputable) {
-				var percent = Math.round((e.loaded * 100) / e.total);
-				progressbar.css('width', percent+'%').attr('aria-valuenow', percent)
-				percentage.html(percent+"%");
-			}
-		};
-
-		xhr.upload.onloadstart = function(e) {
-			progressbarContainer.show();
-			progressbar.css('width', '0%').attr('aria-valuenow', 0)
-			percentage.html("0%");
-		}
-
-		xhr.upload.onload = function(e) {
-			progressbarContainer.hide();
-			uploadButton.hide();
-		}
-		xhr.onload = function(e) {
-			var responseText = JSON.parse(e.target.responseText);
-
-			if (e.target.status != 200) {
-				response.addClass('alert-danger').html(responseText.response).show();
-				return;
-			}
-
-			response.addClass('alert-success').html(responseText.response).show();
-		}
-
-		xhr.open("POST", "upload.php");
-		xhr.send(formData);
-	}
-</script>

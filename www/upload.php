@@ -1,7 +1,6 @@
 <?php
 
 use Monolog\Logger;
-use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
@@ -21,11 +20,10 @@ $httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERV
 /** @var $lang Lang */
 $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
 
-
-function response($code, $message)
+function response($code, $message, $image = null)
 {
 	http_response_code($code);
-	echo json_encode(['success' => $code == 200, 'response' => $message]);
+	echo json_encode(['success' => $code == 200, 'response' => $message, 'image' => $image]);
 }
 
 $token = isset($_POST['token']) ? $_POST['token'] : null;
@@ -68,18 +66,32 @@ if ($img['error'] != UPLOAD_ERR_OK || !move_uploaded_file($img['tmp_name'], $upl
 try {
 	$imagick = new Imagick();
 	$imagick->readImage($uploadedFile);
+
 	$imagick->thumbnailImage($avatarsConfig->thumbdim, $avatarsConfig->thumbdim);
 	$imagick->setImageFormat('PNG');
-	$imagick->writeImage($uploadedFile.'_t.png');
+
+	$image = $uploadedFile.'_t.png';
+	if (file_exists($image)) {
+		unlink($image);
+	}
+	$imagick->writeImage($image);
 
 	$imagick = new Imagick();
 	$imagick->readImage($uploadedFile);
-	$imagick->thumbnailImage($avatarsConfig->maxdim, $avatarsConfig->maxdim);
-	$imagick->setImageFormat('JPEG');
-	$imagick->writeImage($uploadedFile.'.jpg');
+
+	if ($imagick->getimagewidth() > $avatarsConfig->maxdim || $imagick->getimageheight() > $avatarsConfig->maxdim) {
+		$imagick->adaptiveresizeimage($avatarsConfig->maxdim, $avatarsConfig->maxdim , true);
+	}
+	$imagick->setBackgroundColor(new ImagickPixel('white'));
+	$imagick->setImageFormat('jpeg');
+	$image = $uploadedFile.'.jpg';
+	if (file_exists($image)) {
+		unlink($image);
+	}
+	$imagick->writeImage($image);
 }
 catch (\Exception $e) {
-	$message = $lang->getPhrase('profile.ErrorProcessingImage').' '.$e->getMessage();
+	$message = $lang->getPhrase('profile.ErrorProcessingImage').': '.$e->getMessage();
 	$logger->error($message, $logContext);
 	response(500, $message);
 	return;
@@ -87,9 +99,4 @@ catch (\Exception $e) {
 
 unlink($uploadedFile);
 
-$properties = PropertiesDAO::create()->getByUserId($token->getUserId());
-$properties
-	->setAvatarImg($uploadedName)
-	->save();
-
-response(200, 'OK');
+response(200, 'OK', $uploadedName);

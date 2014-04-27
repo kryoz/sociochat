@@ -20,7 +20,7 @@ $domain = isset($domain) ? $domain : 'https://sociochat.me';
 	<link rel="icon" href="<?=$domain?>/favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon" href="<?=$domain?>/img/sociochat.jpg">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/styles.css?v=2" >
+	<link rel="stylesheet" href="css/styles.css?v=3" >
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 <?=$js?>

@@ -6,6 +6,7 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Forms\Form;
@@ -16,11 +17,12 @@ use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
 use SocioChat\Utils\CharTranslator;
+use Zend\Config\Config;
 
 class PropertiesController extends ControllerBase
 {
 	private $actionsMap = [
-		'info' => 'processInfo',
+		'uploadAvatar' => 'processUpload',
 		'submit' => 'processSubmit'
 	];
 
@@ -38,6 +40,39 @@ class PropertiesController extends ControllerBase
 	protected function getFields()
 	{
 		return ['action'];
+	}
+
+	protected function processUpload(ChainContainer $chain)
+	{
+		$image = isset($chain->getRequest()['image']) ? $chain->getRequest()['image'] : null;
+		$user = $chain->getFrom();
+		$lang = $user->getLang();
+		/* @var $config Config */
+		$config = DI::get()->container()->get('config');
+		$dir = $config->uploads->avatars->dir.DIRECTORY_SEPARATOR;
+
+		if (!$image || !file_exists($dir.$image.'.jpg')) {
+			$this->errorResponse($user, ['image' => $lang->getPhrase('profile.IncorrectRequest')]);
+			return;
+		}
+
+		$properties = $user->getProperties();
+		$properties
+			->setAvatarImg($image)
+			->save();
+
+		$chatId = $user->getChatId();
+
+		$this->propertiesResponse($chain->getFrom());
+
+		$response = (new MessageResponse())
+			->setGuests(UserCollection::get()->getUsersByChatId($chatId))
+			->setChatId($chatId)
+			->setTime(null);
+
+		UserCollection::get()
+			->setResponse($response)
+			->notify();
 	}
 
 	protected function processSubmit(ChainContainer $chain)

@@ -93,10 +93,10 @@ require_once "pages/header.php";
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
-	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=5"></script>
+	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=7"></script>
 	<script type="text/javascript">
 		$(function() {
-			var app = new App.Init('<?=$config->domain->ws?>');
+			var app = new App.Init('<?=$config->domain->ws?>', '<?=session_id()?>', <?=$config->uploads->avatars->thumbdim?>);
 
 			$('#email_place_holder').replaceWith($('#login-name'));
 			$('#password_place_holder').replaceWith($('#login-password'));
