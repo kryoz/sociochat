@@ -38,6 +38,10 @@ var App = {
 	connection: null,
 	hostUrl: null,
     token: null,
+    isRetina: (
+                window.devicePixelRatio > 1 ||
+                    (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)
+                ),
 	msgCount: 0,
 	guestCount: 0,
 	guests : [],
@@ -559,7 +563,12 @@ var ResponseHandler = function(json, $this) {
 
             msg = '<div class="user-avatar">';
             if (fromUser.avatarThumb) {
-                msg += '<img src="'+ fromUser.avatarThumb +'">';
+                var imgsrc = fromUser.avatarThumb;
+                if ($this.isRetina) {
+                    var exp = /(\.\w+)/i
+                    imgsrc = fromUser.avatarThumb.replace(exp , "@2x$1");
+                }
+                msg += '<img src="'+ imgsrc +'">';
             } else {
                 msg += '<span class="glyphicon glyphicon-user"></span>';
             }

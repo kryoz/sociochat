@@ -61,8 +61,14 @@ doesnotexist:-o-prefocus, #panel-chat {
 .user-avatar {
     width: 20px;
     height: 20px;
+    max-width: 20px;
+    max-height: 20px;
     display: inline-block;
     text-align: center;
+}
+.user-avatar img {
+    max-width: inherit;
+    max-height: inherit;
 }
 .user-avatar .glyphicon {
     color: #ddd;

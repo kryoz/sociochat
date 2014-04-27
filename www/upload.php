@@ -63,32 +63,29 @@ if ($img['error'] != UPLOAD_ERR_OK || !move_uploaded_file($img['tmp_name'], $upl
 	return;
 }
 
+function makeImage($uploadedFile, $dim, $format, $extension)
+{
+	$imagick = new Imagick();
+	$imagick->readImage($uploadedFile);
+
+	if ($imagick->getimagewidth() > $dim || $imagick->getimageheight() > $dim) {
+		$imagick->adaptiveresizeimage($dim, $dim, true);
+	}
+
+	$imagick->setImageFormat($format);
+
+	$image = $uploadedFile.$extension;
+	if (file_exists($image)) {
+		unlink($image);
+	}
+	$imagick->writeImage($image);
+}
+
 try {
-	$imagick = new Imagick();
-	$imagick->readImage($uploadedFile);
+	makeImage($uploadedFile, $avatarsConfig->thumbdim, 'png', '_t.png');
+	makeImage($uploadedFile, $avatarsConfig->thumbdim * 2, 'png', '_t@2x.png');
+	makeImage($uploadedFile, $avatarsConfig->maxdim, 'jpeg', '.jpg');
 
-	$imagick->thumbnailImage($avatarsConfig->thumbdim, $avatarsConfig->thumbdim);
-	$imagick->setImageFormat('PNG');
-
-	$image = $uploadedFile.'_t.png';
-	if (file_exists($image)) {
-		unlink($image);
-	}
-	$imagick->writeImage($image);
-
-	$imagick = new Imagick();
-	$imagick->readImage($uploadedFile);
-
-	if ($imagick->getimagewidth() > $avatarsConfig->maxdim || $imagick->getimageheight() > $avatarsConfig->maxdim) {
-		$imagick->adaptiveresizeimage($avatarsConfig->maxdim, $avatarsConfig->maxdim , true);
-	}
-	$imagick->setBackgroundColor(new ImagickPixel('white'));
-	$imagick->setImageFormat('jpeg');
-	$image = $uploadedFile.'.jpg';
-	if (file_exists($image)) {
-		unlink($image);
-	}
-	$imagick->writeImage($image);
 }
 catch (\Exception $e) {
 	$message = $lang->getPhrase('profile.ErrorProcessingImage').': '.$e->getMessage();
