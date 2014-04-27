@@ -409,11 +409,13 @@ var App = {
 ////////////////////////////////////////////////
 
 var ResponseHandler = function(json, $this) {
-    var getAvatar = function (url) {
-        var text = '<div class="user-avatar">';
-        if (url) {
-            text += '<img src="'+ $this.getImgUrl(url) +'">';
+    var getAvatar = function (user) {
+        var text = '<div class="user-avatar"';
+        if (user.avatarThumb) {
+            text += ' data-src="'+user.avatarImg+'">';
+            text += '<img src="'+ $this.getImgUrl(user.avatarThumb) +'">';
         } else {
+            text += '>';
             text += '<span class="glyphicon glyphicon-user"></span>';
         }
 
@@ -462,7 +464,7 @@ var ResponseHandler = function(json, $this) {
 				}
 
 				var line = '<tr class="'+colorClass+'">';
-                line += '<td class="user-name">' + getAvatar(guest.avatarThumb) + ' ' + guest.name + '</td><td>'+guest.tim+'</td>';
+                line += '<td class="user-name">' + getAvatar(guest) + ' ' + guest.name + '</td><td>'+guest.tim+'</td>';
 				line += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
 				//line += '<a class="btn btn-default unban">Заметка</a>';
@@ -579,7 +581,7 @@ var ResponseHandler = function(json, $this) {
 			var fromUser = $this.getUserInfo(json.fromName);
 			var user = fromUser;
 
-            msg += getAvatar(fromUser.avatarThumb)+' ';
+            msg += getAvatar(fromUser)+' ';
 
 			var span = '<span class="nickname ' + getSexClass(user) + '" title="' + (user ? user.tim : '') + '">';
 			var article = ' от ';
@@ -729,6 +731,22 @@ var ResponseHandler = function(json, $this) {
 				$this.domElems.inputMessage.focus();
 			}
 		});
+
+        newLine.find('.user-avatar').click(function () {
+            var ava = $(this);
+            var imgFull = ava.data('src');
+            console.log(imgFull);
+            if (imgFull != null) {
+                var imgEl = $('<img src="'+imgFull+'" style="position:absolute: z-index:10">');
+                ava.parent().prepend(imgEl);
+                imgEl.click(function() {
+                    $(this).remove();
+                    ava.show();
+                });
+
+                ava.hide();
+            }
+        });
 	}
 
 	handleGuests();
