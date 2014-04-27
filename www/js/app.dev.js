@@ -38,8 +38,7 @@ var App = {
 	connection: null,
 	hostUrl: null,
     token: null,
-    isRetina: (
-                window.devicePixelRatio > 1 ||
+    isRetina: (window.devicePixelRatio > 1 ||
                     (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)
                 ),
 	msgCount: 0,
@@ -63,6 +62,7 @@ var App = {
 
 	ownSex: 0,
 	ownName: null,
+    chatLastFrom: null,
 
 	domElems : {
 		guestList: $('#guests'),
@@ -579,38 +579,37 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		if (json.fromName) {
-			var fromUser = $this.getUserInfo(json.fromName);
-			var user = fromUser;
+            if ($this.chatLastFrom != json.fromName) {
+                var fromUser = $this.getUserInfo(json.fromName);
 
-            msg += getAvatar(fromUser)+' ';
+                msg += getAvatar(fromUser)+' ';
 
-			var span = '<span class="nickname ' + getSexClass(user) + '" title="' + (user ? user.tim : '') + '">';
-			var article = ' от ';
+                var nickname = '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ json.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
 
-			if (json.toName) {
-				var toUser = $this.getUserInfo(json.toName);
+                if (json.toName) {
+                    var toUser = $this.getUserInfo(json.toName);
+                    var toWho = toUser.name;
 
-				if (fromUser && fromUser.name == $this.ownName) {
-					user = toUser;
-					article = 'для ';
-					span = '<span class="nickname '+ getSexClass(user) +'" title="' + (user ? user.tim : '') + '">';
-				} else {
-					$this.notify(json.msg, json.fromName, 'private', 5000);
-				}
+                    if (!(fromUser && fromUser.name == $this.ownName)) {
+                        $this.notify(json.msg, json.fromName, 'private', 5000);
+                        toWho = 'вас';
+                    }
 
-				var senderOrReciever = article + span + user.name + '</span>';
+                    msg += nickname + '<div class="private"><b>[приватно для '+toWho+']</b> '
+                } else {
+                    msg += nickname + '<div>';
+                }
+            } else {
+                msg += '<div>';
+            }
 
-				msg += '<span class="private"><b>(приватно ' + senderOrReciever + ')</b> '
-			} else {
-				msg += span + json.fromName + '</span>: <span>';
-			}
+
+            var incomingMessage = messageParsers(json.msg);
+
+            msg += incomingMessage + '</div>';
 		} else {
-			msg += '<span class="system">*** ';
+			msg += '<span class="system">[' + json.time + '] '+ json.msg + '</span>';
 		}
-
-		var incomingMessage = messageParsers(json.msg);
-
-		msg += incomingMessage + '</span>';
 
 		if ($this.msgCount > $this.bufferSize) {
 			var $line = $this.domElems.chat.find('div').first();
@@ -621,7 +620,7 @@ var ResponseHandler = function(json, $this) {
 		$this.msgCount++;
 
 		if ($this.timer == null && ($this.guestCount > 0)) {
-			$this.notify(json.msg, user ? user.name : '', 'msg');
+			$this.notify(json.msg, fromUser ? fromUser.name : '', 'msg');
 		}
 
 		// notifications timeout
@@ -630,6 +629,7 @@ var ResponseHandler = function(json, $this) {
 			$this.timer = null
 		}, $this.delay);
 
+        $this.chatLastFrom = json.fromName;
 		bindClicks();
 	}
 
@@ -738,7 +738,7 @@ var ResponseHandler = function(json, $this) {
             var imgFull = ava.data('src');
             console.log(imgFull);
             if (imgFull != null) {
-                var imgEl = $('<img src="'+imgFull+'" style="position:absolute: z-index:10">');
+                var imgEl = $('<img src="'+imgFull+'" style="margin-left:-38px">');
                 ava.parent().prepend(imgEl);
                 imgEl.click(function() {
                     $(this).remove();
