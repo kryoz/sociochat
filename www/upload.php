@@ -5,6 +5,7 @@ use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
+use SocioChat\Message\Lang;
 use Zend\Config\Config;
 
 require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'config.php';
@@ -16,6 +17,10 @@ $avatarsConfig = $config->uploads->avatars;
 /** @var $logger Logger  */
 $logger = $container->get('logger');
 $logContext = ['UPLOAD'];
+$httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
+/** @var $lang Lang */
+$lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
+
 
 function response($code, $message)
 {
@@ -32,30 +37,29 @@ $uploadedName = sha1(basename($img['name']));
 $uploadedFile = $uploadDir.$uploadedName;
 $allowedMIME = ['image/gif', 'image/png', 'image/jpeg'];
 
-
 if (!$token->getId() || !$img) {
-	$message = 'Incorrect request';
+	$message = $lang->getPhrase('profile.IncorrectRequest');
 	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if (!in_array($img['type'], $allowedMIME)) {
-	$message = 'Incorrect file type';
+	$message = $lang->getPhrase('profile.IncorrectFileType');
 	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if ($img['size'] > $avatarsConfig->maxsize) {
-	$message = 'File exceeds allowed max size of '.$avatarsConfig->maxsize.' bytes having '.$img['size'];
+	$message = $lang->getPhrase('profile.FileExceedsMaxSize').' '.$avatarsConfig->maxsize;
 	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if ($img['error'] != UPLOAD_ERR_OK || !move_uploaded_file($img['tmp_name'], $uploadedFile)) {
-	$message = 'Error uploading file '.$uploadedFile;
+	$message = $lang->getPhrase('profile.ErrorUploadingFile');
 	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
@@ -75,7 +79,7 @@ try {
 	$imagick->writeImage($uploadedFile.'.jpg');
 }
 catch (\Exception $e) {
-	$message = 'Error when transforming image:'. $e->getMessage();
+	$message = $lang->getPhrase('profile.ErrorProcessingImage').' '.$e->getMessage();
 	$logger->error($message, $logContext);
 	response(500, $message);
 	return;
@@ -88,4 +92,4 @@ $properties
 	->setAvatarImg($uploadedName)
 	->save();
 
-response(200, 'ok');
+response(200, 'OK');

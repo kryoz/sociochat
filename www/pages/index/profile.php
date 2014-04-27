@@ -35,26 +35,39 @@ if (!defined('ROOT')) {
 		</div>
 	</div>
 
-	<div class="panel-heading"><?=$lang->getPhrase('profile.AvatarTip')?></div>
+	<div class="panel-heading"><?=$lang->getPhrase('profile.AvatarTip')?> <?=$config->uploads->avatars->maxsize/1024?>KB</div>
 	<div class="panel-body" id="avatar">
 		<div class="row btn-vert-block form-group">
 			<div class="col-sm-12 btn-vert-block">
-				<input type="file" class="form-control upload" accept="image/*" onchange="handleFile(this.files)" name="img">
-			</div>
-			<br>
-			<div class="avatar-placeholder" style="max-width: 100%;height: auto"></div>
-
-			<div class="progress progress-striped active" style="display: none">
-				<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-					<span class="sr-only">0% Complete</span>
-				</div>
+				<span class="btn btn-default btn-file">
+					<?=$lang->getPhrase('profile.Browse')?> <input type="file" class="upload" accept="image/*" onchange="handleFile(this.files)" name="img">
+				</span>
 			</div>
 		</div>
+		<div class="row btn-vert-block form-group">
+			<div class="col-sm-12 btn-vert-block">
+				<p><?=$lang->getPhrase('profile.PreviewMini')?></p>
+
+				<div class="img-thumbnail avatar-placeholder-mini">
+
+				</div>
+
+				<p><?=$lang->getPhrase('profile.Preview')?></p>
+				<div class="img-thumbnail avatar-placeholder" style="max-width: 100%; max-height: <?=$config->uploads->avatars->maxdim?>px"></div></p>
+			</div>
+		</div>
+		<div class="progress progress-striped active" style="display: none">
+			<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+				<span class="sr-only">0% Complete</span>
+			</div>
+		</div>
+		<div class="alert" style="display: none"></div>
 		<div class="row btn-vert-block do-upload" style="display: none">
 			<div class="btn-vert-block col-sm-12">
 				<a class="btn btn-block btn-success" onclick="uploadFile()"><?=$lang->getPhrase('Save')?></a>
 			</div>
 		</div>
+
 	</div>
 
 	<div class="panel-heading" style="border-top: 1px solid #ddd;"><a href="#" id="reg-info"><?=$lang->getPhrase('profile.Registration')?> <span class="glyphicon glyphicon-info-sign"></span></a></div>
@@ -81,18 +94,34 @@ if (!defined('ROOT')) {
 	var progressbarContainer = avatar.find('.progress');
 	var progressbar = avatar.find('.progress-bar');
 	var percentage = progressbar.find('.sr-only');
-	var uploadButton = avatar.find('div.do-upload');
+	var uploadButton = avatar.find('.do-upload');
+	var response = avatar.find('.alert');
 
 	function handleFile(files) {
 		var fileReader = new FileReader();
 		var file = files[0];
-		var imageElem = document.createElement('img');
+		var image = document.createElement('img');
+		var thumb = document.createElement('img');
 
-		fileReader.onload = (function(img) { return function(e) { img.src = e.target.result; }; })(imageElem);
+		fileReader.onload = (function(img, thumb) {
+			return function(e) {
+				img.src = e.target.result;
+				thumb.src = img.src;
+			};
+		})(image, thumb);
+
 		fileReader.readAsDataURL(file);
 
-		avatar.find('div.avatar-placeholder').html(imageElem);
+
+		thumb.style.maxWidth = '<?=$config->uploads->avatars->thumbdim?>px';
+		thumb.style.maxHeight = '<?=$config->uploads->avatars->thumbdim?>px';
+		image.style.maxWidth = 'inherit';
+		image.style.maxHeight = 'inherit';
+
+		avatar.find('div.avatar-placeholder-mini').html(thumb);
+		avatar.find('div.avatar-placeholder').html(image);
 		uploadButton.data('file', file).show();
+		response.removeClass('.alert-success').removeClass('.alert-danger').hide();
 	}
 
 	function uploadFile() {
@@ -103,24 +132,34 @@ if (!defined('ROOT')) {
 		formData.append('img', file);
 		formData.append('token', '<?=session_id()?>');
 
-		xhr.upload.addEventListener("progress", function(e) {
+		xhr.upload.onprogress = function(e) {
 			if (e.lengthComputable) {
 				var percent = Math.round((e.loaded * 100) / e.total);
 				progressbar.css('width', percent+'%').attr('aria-valuenow', percent)
 				percentage.html(percent+"%");
 			}
-		}, false);
+		};
 
-		xhr.upload.addEventListener("loadstart", function(e) {
+		xhr.upload.onloadstart = function(e) {
 			progressbarContainer.show();
 			progressbar.css('width', '0%').attr('aria-valuenow', 0)
 			percentage.html("0%");
-		}, false);
+		}
 
-		xhr.upload.addEventListener("load", function(e) {
+		xhr.upload.onload = function(e) {
 			progressbarContainer.hide();
 			uploadButton.hide();
-		}, false);
+		}
+		xhr.onload = function(e) {
+			var responseText = JSON.parse(e.target.responseText);
+
+			if (e.target.status != 200) {
+				response.addClass('alert-danger').html(responseText.response).show();
+				return;
+			}
+
+			response.addClass('alert-success').html(responseText.response).show();
+		}
 
 		xhr.open("POST", "upload.php");
 		xhr.send(formData);
