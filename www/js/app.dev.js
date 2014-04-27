@@ -603,12 +603,16 @@ var ResponseHandler = function(json, $this) {
                 msg += '<div>';
             }
 
-
             var incomingMessage = messageParsers(json.msg);
 
             msg += incomingMessage + '</div>';
 		} else {
-			msg += '<span class="system">[' + json.time + '] '+ json.msg + '</span>';
+            var time = '';
+            if (json.time) {
+                time = '[' + json.time + '] ';
+            }
+
+			msg += '<span class="system">'+time + json.msg + '</span>';
 		}
 
 		if ($this.msgCount > $this.bufferSize) {

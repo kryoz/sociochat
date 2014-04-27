@@ -63,9 +63,13 @@ doesnotexist:-o-prefocus, #panel-chat {
     height: 32px;
     max-width: 32px;
     max-height: 32px;
+    display: inline-block;
+}
+#log .user-avatar {
     margin-left: -38px;
     float: left;
 }
+
 .user-avatar img {
     max-width: inherit;
     max-height: inherit;
