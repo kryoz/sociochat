@@ -148,6 +148,8 @@ doesnotexist:-o-prefocus, #panel-chat {
 .system {
 	color: #969320;
     margin-left: -38px;
+    padding-bottom: 2px;
+    display: block;
 }
 
 .private {
