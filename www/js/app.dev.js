@@ -397,12 +397,29 @@ var App = {
 
 			myNotification.show();
 		} catch (e) { }
-	}
+	},
+    getImgUrl: function (url) {
+        if (this.isRetina) {
+            var exp = /(\.\w+)/i
+            return url.replace(exp , "@2x$1");
+        }
+    }
 }
 
 ////////////////////////////////////////////////
 
 var ResponseHandler = function(json, $this) {
+    var getAvatar = function (url) {
+        var text = '<div class="user-avatar">';
+        if (url) {
+            text += '<img src="'+ $this.getImgUrl(url) +'">';
+        } else {
+            text += '<span class="glyphicon glyphicon-user"></span>';
+        }
+
+        return text+'</div>';
+    }
+
 	var getSexClass = function(user) {
 		var colorClass = null;
 		var sex = user ? user.sex : 'Аноним';
@@ -444,7 +461,8 @@ var ResponseHandler = function(json, $this) {
 					colorClass = 'warning';
 				}
 
-				var line = '<tr class="'+colorClass+'"><td class="user-name">' + guest.name + '</td><td>'+guest.tim+'</td>';
+				var line = '<tr class="'+colorClass+'">';
+                line += '<td class="user-name">' + getAvatar(guest.avatarThumb) + ' ' + guest.name + '</td><td>'+guest.tim+'</td>';
 				line += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
 				//line += '<a class="btn btn-default unban">Заметка</a>';
@@ -561,18 +579,7 @@ var ResponseHandler = function(json, $this) {
 			var fromUser = $this.getUserInfo(json.fromName);
 			var user = fromUser;
 
-            msg = '<div class="user-avatar">';
-            if (fromUser.avatarThumb) {
-                var imgsrc = fromUser.avatarThumb;
-                if ($this.isRetina) {
-                    var exp = /(\.\w+)/i
-                    imgsrc = fromUser.avatarThumb.replace(exp , "@2x$1");
-                }
-                msg += '<img src="'+ imgsrc +'">';
-            } else {
-                msg += '<span class="glyphicon glyphicon-user"></span>';
-            }
-            msg += '</div> ';
+            msg += getAvatar(fromUser.avatarThumb)+' ';
 
 			var span = '<span class="nickname ' + getSexClass(user) + '" title="' + (user ? user.tim : '') + '">';
 			var article = ' от ';
