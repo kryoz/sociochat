@@ -403,6 +403,7 @@ var App = {
             var exp = /(\.\w+)/i
             return url.replace(exp , "@2x$1");
         }
+        return url;
     }
 }
 
