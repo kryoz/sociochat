@@ -148,11 +148,10 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 .system {
 	color: #969320;
-    margin-left: -45px;
-    padding-bottom: 2px;
-    display: block;
 }
-
+#log > div.system {
+    margin-left: 0;
+}
 .private {
 	color: #439B43
 }
@@ -194,15 +193,15 @@ doesnotexist:-o-prefocus, #panel-chat {
 #log > div {
     word-break: break-word;
     margin-left: 45px;
-    margin-top: 2px;
+    margin-top: 5px;
+}
+#log > div.repeat {
+    margin-top: 0;
 }
 #log > div > div {
     line-height: 1.3em;
 }
 
-#log > div > div:last-child {
-    padding-bottom: 2px;
-}
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -222,9 +221,6 @@ doesnotexist:-o-prefocus, #panel-chat {
 	animation-duration: 0.2s;
 }
 
-#log > div:last-child > div:last-child {
-    border-bottom: none;
-}
 .navbar-default {
 	background-color: #ed9c28;
 	border-color: #b17f3a;

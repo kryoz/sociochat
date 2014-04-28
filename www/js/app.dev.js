@@ -151,10 +151,10 @@ var App = {
 
 			$this.retryTimer = setTimeout(function() {
 				if (!$this.reconnectTimeout) {
-					$this.addLog('<span class="glyphicon glyphicon-refresh rotate"></span>', 1);
+					$this.addLog('<span class="glyphicon glyphicon-refresh rotate"></span>', 'system');
 					$this.reconnectTimeout = setTimeout(function() {
 						$('.glyphicon-refresh').parent().remove();
-						$this.addLog('Попытки подключиться исчерпаны. Попробуйте зайти позднее.', 1);
+						$this.addLog('Попытки подключиться исчерпаны. Попробуйте зайти позднее.', 'system');
 						$this.connection = null;
 						$this.disconnect = 1;
 						clearTimeout($this.retryTimer);
@@ -349,8 +349,8 @@ var App = {
 			$(this).tab('show');
 		});
 	},
-	addLog: function (msg, local) {
-		var $div = $('<div' + (local ? ' class="system"' : '') + '>' + msg + '</div>');
+	addLog: function (msg, cssclass) {
+		var $div = $('<div class="'+cssclass+'">' + msg + '</div>');
 		this.domElems.chat.append($div);
 		this.scrollDown();
 	},
@@ -573,6 +573,7 @@ var ResponseHandler = function(json, $this) {
 			return;
 		}
 		var msg = '';
+        var msgCSStype = '';
 
 		if (json.lastMsgId) {
 			$this.lastMsgId = json.lastMsgId;
@@ -583,36 +584,33 @@ var ResponseHandler = function(json, $this) {
                 var fromUser = $this.getUserInfo(json.fromName);
 
                 msg += getAvatar(fromUser)+' ';
-
-                var nickname = '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ json.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
-
-                if (json.toName) {
-                    var toUser = $this.getUserInfo(json.toName);
-                    var toWho = toUser.name;
-
-                    if (!(fromUser && fromUser.name == $this.ownName)) {
-                        $this.notify(json.msg, json.fromName, 'private', 5000);
-                        toWho = 'вас';
-                    }
-
-                    msg += nickname + '<div class="private"><b>[приватно для '+toWho+']</b> '
-                } else {
-                    msg += nickname + '<div>';
-                }
+                msg += '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ json.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
             } else {
-                msg += '<div>';
+                msgCSStype = 'repeat';
+            }
+            if (json.toName) {
+                var toUser = $this.getUserInfo(json.toName);
+                var toWho = toUser.name;
+
+                if (!(fromUser && fromUser.name == $this.ownName)) {
+                    $this.notify(json.msg, json.fromName, 'private', 5000);
+                    toWho = 'вас';
+                }
+
+                msg += '<div class="private"><b>[приватно для '+toWho+']</b> '
+                msg += messageParsers(json.msg) + '</div>';
+            } else {
+                msg += messageParsers(json.msg);
             }
 
-            var incomingMessage = messageParsers(json.msg);
-
-            msg += incomingMessage + '</div>';
 		} else {
             var time = '';
             if (json.time) {
                 time = '[' + json.time + '] ';
             }
 
-			msg += '<span class="system">'+time + json.msg + '</span>';
+			msg += '<span>'+time + json.msg + '</span>';
+            msgCSStype = 'system';
 		}
 
 		if ($this.msgCount > $this.bufferSize) {
@@ -620,7 +618,7 @@ var ResponseHandler = function(json, $this) {
 			$line.unbind().remove();
 		}
 
-		$this.addLog(msg);
+		$this.addLog(msg, msgCSStype);
 		$this.msgCount++;
 
 		if ($this.timer == null && ($this.guestCount > 0)) {
@@ -698,7 +696,7 @@ var ResponseHandler = function(json, $this) {
 
 		if (json.errors) {
 			for (var i in json.errors) {
-				$this.addLog('*** Ошибка: ' + json.errors[i], 1);
+				$this.addLog('*** Ошибка: ' + json.errors[i], 'system');
 			}
 		}
 	}
