@@ -66,7 +66,8 @@ doesnotexist:-o-prefocus, #panel-chat {
     display: inline-block;
 }
 #log .user-avatar {
-    margin-left: -38px;
+    margin-left: -45px;
+	margin-top:2px;
     float: left;
 }
 
@@ -147,7 +148,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 .system {
 	color: #969320;
-    margin-left: -38px;
+    margin-left: -45px;
     padding-bottom: 2px;
     display: block;
 }
@@ -192,7 +193,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 #log > div {
     word-break: break-word;
-    margin-left: 38px;
+    margin-left: 45px;
     margin-top: 2px;
 }
 #log > div > div {
@@ -312,4 +313,11 @@ doesnotexist:-o-prefocus, #panel-chat {
     .message-input .col-xs-2 {
 	    padding-left: 0;
     }
+}
+
+@media (max-width: 480px) {
+	#wrapper {
+		padding-left: 0;
+		padding-right: 0;
+	}
 }

@@ -742,7 +742,7 @@ var ResponseHandler = function(json, $this) {
             var imgFull = ava.data('src');
             console.log(imgFull);
             if (imgFull != null) {
-                var imgEl = $('<img src="'+imgFull+'" style="margin-left:-38px">');
+                var imgEl = $('<img src="'+imgFull+'" style="margin-left:-45px">');
                 ava.parent().prepend(imgEl);
                 imgEl.click(function() {
                     $(this).remove();
