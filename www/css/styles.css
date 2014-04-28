@@ -65,6 +65,9 @@ doesnotexist:-o-prefocus, #panel-chat {
     max-height: 32px;
     display: inline-block;
 }
+#guests .user-avatar {
+    margin-right: 4px;
+}
 #log .user-avatar {
     margin-left: -45px;
 	margin-top:2px;
@@ -76,9 +79,15 @@ doesnotexist:-o-prefocus, #panel-chat {
     max-height: inherit;
 }
 .user-avatar .glyphicon {
+    color: #aaa;
+    font-size: 32px;
+}
+#guests .user-avatar .glyphicon {
+    display: inline;
+    vertical-align:middle;
+}
+#log .user-avatar .glyphicon {
     color: #ddd;
-    font-size: 28px;
-    top: 4px;
 }
 .chat-container, .chat-container .panel-body {
 	height: 100%;
@@ -221,6 +230,9 @@ doesnotexist:-o-prefocus, #panel-chat {
 	animation-duration: 0.2s;
 }
 
+#guests td {
+    vertical-align: middle;
+}
 .navbar-default {
 	background-color: #ed9c28;
 	border-color: #b17f3a;
