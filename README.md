@@ -31,11 +31,13 @@ Build the modern platform together to help to communicate random people.
 * Seamless reconnection on interruption of connection
 * Flood protection
 * Socionic/MBTI dual chat roulette
+* Avatars
 
 ## Installation
 
 * PHP 5.5
-* MySQL or PostgreSQL. Use corresponding schema sql files in <em>db</em> folder
+* MySQL or PostgreSQL. Use `phinx` utility to apply migrations.
+* Give write permissions to `www/uploads/avatars`
 * PECL extension 'libevent' is recommended to achieve the best speed
 ```bash
 sudo apt-get install libevent-dev
