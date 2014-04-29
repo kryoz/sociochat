@@ -816,9 +816,11 @@ var AvatarUploadHandler = function($this, dim) {
         xhr.upload.onload = function(e) {
             progressbarContainer.hide();
             uploadButtonContainer.hide();
+            response.addClass('alert-info').html('Фотография обрабатывается, подождите...').show();
         }
         xhr.onload = function(e) {
             var responseText = JSON.parse(e.target.responseText);
+            response.removeClass('alert-info');
 
             if (e.target.status != 200) {
                 response.addClass('alert-danger').html(responseText.response).show();

@@ -49,34 +49,34 @@ $token = SessionDAO::create()->getBySessionId($token);
 
 $img = isset($_FILES['img']) ? $_FILES['img'] : null;
 $uploadDir = ROOT.DIRECTORY_SEPARATOR.$avatarsConfig->dir.DIRECTORY_SEPARATOR;
-$uploadedName = sha1(basename($img['name']));
+$uploadedName = sha1(time().basename($img['name']));
 $uploadedFile = $uploadDir.$uploadedName;
 $allowedMIME = ['image/gif', 'image/png', 'image/jpeg'];
 
 if (!$token->getId() || !$img) {
 	$message = $lang->getPhrase('profile.IncorrectRequest');
-	$logger->error($message, $logContext);
+//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if (!in_array($img['type'], $allowedMIME)) {
 	$message = $lang->getPhrase('profile.IncorrectFileType');
-	$logger->error($message, $logContext);
+//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if ($img['size'] > $avatarsConfig->maxsize) {
 	$message = $lang->getPhrase('profile.FileExceedsMaxSize').' '.$avatarsConfig->maxsize;
-	$logger->error($message, $logContext);
+//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if ($img['error'] != UPLOAD_ERR_OK || !move_uploaded_file($img['tmp_name'], $uploadedFile)) {
 	$message = $lang->getPhrase('profile.ErrorUploadingFile');
-	$logger->error($message, $logContext);
+//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
@@ -88,7 +88,7 @@ try {
 }
 catch (\Exception $e) {
 	$message = $lang->getPhrase('profile.ErrorProcessingImage').': '.$e->getMessage();
-	$logger->error($message, $logContext);
+//	$logger->error($message, $logContext);
 	response(500, $message);
 	return;
 }
