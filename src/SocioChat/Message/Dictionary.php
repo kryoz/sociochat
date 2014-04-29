@@ -34,7 +34,7 @@ class Dictionary
 	{
 		if (!isset($this->dictionary[$code])) {
 			$this->logger->warn("No dictionary for language code '$code' found", [__CLASS__]);
-			return;
+			$code = 'en';
 		}
 		return $this->dictionary[$code];
 	}
