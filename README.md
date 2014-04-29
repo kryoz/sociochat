@@ -10,7 +10,7 @@ SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.o
 
 ## The story
 
-In the beginning of 2014 I was reading an article about ReactPHP and Ratchet. It looked really attractive and promising stack. At the same time I stumbled upon a yet another chat roulette which appeared a very buggy. It had all signs of poor code quality even without source code exposed. So if I decided to join that project it would result a complete rewrite. That's why SocioChat appeared as an alternative.
+In the beginning of 2014 I was reading an article about ReactPHP and Ratchet. It looked really attractive and promising stack. At the same time I stumbled upon a yet another chat roulette which appeared very buggy. It had all signs of poor code quality even without source code exposed. So if I decided to join that project it would result a complete rewrite. That's why SocioChat appeared as an alternative.
 At first it had closed source code but one day I realized that it's really stupid to hide this work. Because maybe one day I'll exit the project and it will die without any useful contribution to society. 
 So now thanks to that decision and GitHub, of course, you have an opportunity to learn something new and even influence to make the project better.
 
