@@ -399,7 +399,7 @@ var App = {
 		} catch (e) { }
 	},
     getImgUrl: function (url) {
-        if (this.isRetina) {
+        if (this.isRetina && url) {
             var exp = /(\.\w+)/i
             return url.replace(exp , "@2x$1");
         }
@@ -481,6 +481,8 @@ var ResponseHandler = function(json, $this) {
 
 				$this.domElems.guestList.append(line);
 			}
+
+            $this.domElems.address.find('option[value='+$this.domElems.address.data('id')+']').attr('selected', 'selected');
 
 			$this.domElems.guestList.find('.ban').click(function() {
 				var userName = $(this).parentsUntil('#guests tbody').find('.user-name').text();
@@ -580,9 +582,9 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		if (json.fromName) {
-            if ($this.chatLastFrom != json.fromName) {
-                var fromUser = $this.getUserInfo(json.fromName);
+            var fromUser = $this.getUserInfo(json.fromName);
 
+            if ($this.chatLastFrom != json.fromName) {
                 msg += getAvatar(fromUser)+' ';
                 msg += '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ json.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
             } else {
@@ -590,11 +592,11 @@ var ResponseHandler = function(json, $this) {
             }
             if (json.toName) {
                 var toUser = $this.getUserInfo(json.toName);
-                var toWho = toUser.name;
+                var toWho = 'вас';
 
-                if (!(fromUser && fromUser.name == $this.ownName)) {
+                if (fromUser && fromUser.name == $this.ownName) {
                     $this.notify(json.msg, json.fromName, 'private', 5000);
-                    toWho = 'вас';
+                    toWho = toUser.name;
                 }
 
                 msg += '<div class="private"><b>[приватно для '+toWho+']</b> '
@@ -650,7 +652,7 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		var replaceOwnName = function (text) {
-			var exp = new RegExp('('+$this.ownName+')', 'ig');
+			var exp = new RegExp('\b('+$this.ownName+')\b', 'ig');
 			return text.replace(exp , "<code class=\"private\">$1</code>");
 		}
 
@@ -696,7 +698,7 @@ var ResponseHandler = function(json, $this) {
 
 		if (json.errors) {
 			for (var i in json.errors) {
-				$this.addLog('*** Ошибка: ' + json.errors[i], 'system');
+				$this.addLog('Ошибка: ' + json.errors[i], 'system');
 			}
 		}
 	}
