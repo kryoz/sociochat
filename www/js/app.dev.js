@@ -38,9 +38,7 @@ var App = {
 	connection: null,
 	hostUrl: null,
     token: null,
-    isRetina: (window.devicePixelRatio > 1 ||
-                    (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)
-                ),
+    isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
 	msgCount: 0,
 	guestCount: 0,
 	guests : [],
@@ -446,12 +444,14 @@ var ResponseHandler = function(json, $this) {
 
 			$this.domElems.guestList.empty();
 			$this.domElems.address.empty();
-			$this.domElems.address.append('<option value="">Всем</option>');
+
+            var guestHMTL = '';
+            var guestDropdownHTML = '<option value="">Всем</option>';
 
 			for (var i in guests) {
 				var guest = guests[i];
 
-				$this.domElems.address.append('<option value="'+guest.user_id+'">'+guest.name+'</option>');
+                guestDropdownHTML += '<option value="'+guest.user_id+'">'+guest.name+'</option>';
 
 				var colorClass = null;
 				if (guest.sex == 'Мужчина') {
@@ -464,23 +464,24 @@ var ResponseHandler = function(json, $this) {
 					colorClass = 'warning';
 				}
 
-				var line = '<tr class="'+colorClass+'">';
-                line += '<td class="user-name">' + getAvatar(guest) + ' ' + guest.name + '</td><td>'+guest.tim+'</td>';
-				line += '<td><div class="pull-right btn-group btn-group-sm ilb">';
+				guestHMTL += '<tr class="'+colorClass+'">';
+                guestHMTL += '<td class="user-name">' + getAvatar(guest) + ' ' + guest.name + '</td><td>'+guest.tim+'</td>';
+				guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
-				//line += '<a class="btn btn-default unban">Заметка</a>';
+				//guestHMTL += '<a class="btn btn-default unban">Заметка</a>';
 
 				if (guest.banned) {
-					line += '<a class="btn btn-default unban">Разбан</a>';
+					guestHMTL += '<a class="btn btn-default unban">Разбан</a>';
 				} else {
-					line += '<a class="btn btn-default invite">Приват</a>';
-					line += '<a class="btn btn-default ban">Бан</a>';
+					guestHMTL += '<a class="btn btn-default invite">Приват</a>';
+					guestHMTL += '<a class="btn btn-default ban">Бан</a>';
 				}
 
-				line +='</div></td></tr>';
-
-				$this.domElems.guestList.append(line);
+				guestHMTL +='</div></td></tr>';
 			}
+
+            $this.domElems.guestList.append(guestHMTL);
+            $this.domElems.address.append(guestDropdownHTML);
 
             $this.domElems.address.find('option[value='+$this.domElems.address.data('id')+']').attr('selected', 'selected');
 
