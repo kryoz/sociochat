@@ -652,7 +652,7 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		var replaceOwnName = function (text) {
-			var exp = new RegExp('(?:\s|,|\.)('+$this.ownName+')(?:\s|,|\.)', 'ig');
+			var exp = new RegExp('(?:\\s||,||\\.)('+$this.ownName+')(?:\\s||,||\\.)', 'ig');
 			return text.replace(exp , "<code class=\"private\">$1</code>");
 		}
 
