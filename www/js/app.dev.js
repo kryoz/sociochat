@@ -465,7 +465,7 @@ var ResponseHandler = function(json, $this) {
 				}
 
 				guestHMTL += '<tr class="'+colorClass+'">';
-                guestHMTL += '<td class="user-name">' + getAvatar(guest) + ' ' + guest.name + '</td><td>'+guest.tim+'</td>';
+                guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td><td>'+guest.tim+'</td>';
 				guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
 				//guestHMTL += '<a class="btn btn-default unban">Заметка</a>';
