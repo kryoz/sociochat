@@ -9,6 +9,7 @@ if (!defined('ROOT')) {
 <div class="panel panel-default tab-pane" id="profile">
 	<div class="panel-heading"><?=$lang->getPhrase('index.ProfileTip')?></div>
 	<div class="panel-body">
+		<p><?=$lang->getPhrase('profile.NameChangePolicy', floor($config->nameChangeFreq/3600))?></p>
 		<div class="row btn-vert-block form-group">
 			<div class="col-md-4 btn-vert-block">
 				<input type="text" class="form-control" placeholder="<?=$lang->getPhrase('profile.Name')?>" id="nickname">
