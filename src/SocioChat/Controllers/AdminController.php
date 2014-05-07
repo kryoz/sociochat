@@ -75,7 +75,7 @@ class AdminController extends ControllerBase
 			return;
 		}
 
-		$list = NameChangeDAO::create()->getHistoryByUser($userId);
+		$list = NameChangeDAO::create()->getHistoryByUserId($userId);
 
 		$notify = (new UserCollection())->attach($chain->getFrom());
 		$response = (new MessageResponse())

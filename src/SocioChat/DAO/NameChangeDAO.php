@@ -30,7 +30,7 @@ class NameChangeDAO extends DAOBase
 
 	public function getDate()
 	{
-		return $this[self::DATE_CHANGE];
+		return strtotime($this[self::DATE_CHANGE]);
 	}
 
 	public function setUser(User $user)
@@ -41,9 +41,18 @@ class NameChangeDAO extends DAOBase
 		return $this;
 	}
 
-	public function getHistoryByUser($userId)
+	/**
+	 * @param User $user
+	 * @return $this
+	 */
+	public function getLastByUser(User $user)
 	{
-		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id", ['user_id' => $userId]);
+		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC LIMIT 1", ['user_id' => $user->getId()])[0];
+	}
+
+	public function getHistoryByUserId($userId)
+	{
+		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC", ['user_id' => $userId]);
 	}
 
 	protected function getForeignProperties()

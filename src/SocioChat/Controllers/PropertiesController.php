@@ -116,16 +116,24 @@ class PropertiesController extends ControllerBase
 			return;
 		}
 
-		$oldName = $user->getProperties()->getName();
-
-		$this->importProperties($user, $request);
-
 		if ($user->isInPrivateChat() || PendingDuals::get()->getUserPosition($user)) {
 			$this->forbiddenChangeInDualization($user);
 			$this->propertiesResponse($user);
 			return;
 		}
 
+		$lastChange = NameChangeDAO::create()->getLastByUser($user);
+		/** @var $config Config */
+		$config = DI::get()->container()->get('config');
+
+		if ($lastChange && $lastChange->getDate() < time() + $config->nameChangeFreq) {
+			$this->errorResponse($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
+			return;
+		}
+
+		$oldName = $user->getProperties()->getName();
+
+		$this->importProperties($user, $request);
 		$this->guestsUpdateResponse($user, $oldName);
 		$this->propertiesResponse($user);
 
@@ -193,8 +201,9 @@ class PropertiesController extends ControllerBase
 		$name = $request[PropertiesDAO::NAME];
 		$tim = TimEnum::create($request[PropertiesDAO::TIM]);
 		$guestName = $user->getLang()->getPhrase('Guest');
+		$isNewbie = mb_strpos($name, $guestName) !== false;
 
-		if (mb_strpos($name, $guestName) !== false) {
+		if ($isNewbie) {
 			$newname = str_replace($guestName, $tim->getShortName(), $name);
 			$duplUser = PropertiesDAO::create()->getByUserName($newname);
 
@@ -205,7 +214,7 @@ class PropertiesController extends ControllerBase
 
 		$properties = $user->getProperties();
 
-		if ($properties->getName()) {
+		if ($properties->getName() && !$isNewbie) {
 			NameChangeDAO::create()
 				->setUser($user)
 				->save();
