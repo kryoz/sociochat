@@ -6,8 +6,6 @@ use SocioChat\Message\MsgContainer;
 
 class MessageResponse extends Response
 {
-	const MAX_MSG_LENGTH = 1024;
-
 	/**
 	 * @var MsgContainer|null
 	 */
@@ -73,14 +71,7 @@ class MessageResponse extends Response
 	public function toString()
 	{
 		if ($text = $this->msgObj) {
-			$text = $this->msgObj->getMsg($this->getRecipient()->getLang());
-
-			$text = strip_tags(htmlentities($text));
-
-			if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
-				$text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
-			}
-			$this->msg = $text;
+			$this->msg = $this->msgObj->getMsg($this->getRecipient()->getLang());
 		}
 
 		return parent::toString();

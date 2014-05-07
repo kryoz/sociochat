@@ -5,6 +5,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
@@ -117,7 +118,6 @@ class PropertiesController extends ControllerBase
 
 		$oldName = $user->getProperties()->getName();
 
-
 		$this->importProperties($user, $request);
 
 		if ($user->isInPrivateChat() || PendingDuals::get()->getUserPosition($user)) {
@@ -204,6 +204,12 @@ class PropertiesController extends ControllerBase
 		}
 
 		$properties = $user->getProperties();
+
+		if ($properties->getName()) {
+			NameChangeDAO::create()
+				->setUser($user)
+				->save();
+		}
 
 		$properties
 			->setUserId($user->getId())

@@ -5,12 +5,17 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
+use SocioChat\DAO\DAOBase;
+use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DI;
+use SocioChat\Message\MsgRaw;
+use SocioChat\Response\MessageResponse;
 
 class AdminController extends ControllerBase
 {
 	private $actionsMap = [
-		'kickUser' => 'processKick'
+		'kickUser' => 'processKick',
+		'nameLog' => 'processNameChangeHistory',
 	];
 
 	public function handleRequest(ChainContainer $chain)
@@ -45,11 +50,10 @@ class AdminController extends ControllerBase
 		$users = UserCollection::get();
 
 		if (!$assHoleId || !$assHole = $users->getClientById($assHoleId)) {
-			$chain->getFrom()->send(['msg' => "User_id $assHoleId not found"]);
+			$chain->getFrom()->send(['msg' => "user_id $assHoleId not found"]);
 			return;
 		}
 
-		$assHole->getConnection()->
 		$assHole
 			->setAsyncDetach(false)
 			->send(
@@ -60,5 +64,43 @@ class AdminController extends ControllerBase
 			);
 
 		Chat::get()->onClose($assHole->getConnection());
+	}
+
+	protected function processNameChangeHistory(ChainContainer $chain)
+	{
+		$request = $chain->getRequest();
+		$userId = isset($request['user_id']) ? $request['user_id'] : null;
+		if (!$userId) {
+			$chain->getFrom()->send(['msg' => "user_id not specified"]);
+			return;
+		}
+
+		$list = NameChangeDAO::create()->getHistoryByUser($userId);
+
+		$notify = (new UserCollection())->attach($chain->getFrom());
+		$response = (new MessageResponse())
+			->setChatId($chain->getFrom()->getChatId())
+			->setMsg(MsgRaw::create($this->listFormatter($list)))
+			->setGuests(null);
+
+		$notify
+			->setResponse($response)
+			->notify(false);
+	}
+
+	private function listFormatter(array $list)
+	{
+		$html = '<table class="table table-striped">';
+
+		/** @var $row NameChangeDAO */
+		foreach ($list as $row) {
+			$html .= '<tr>';
+			$html .= '<td>'.$row->getDate().'</td>';
+			$html .= '<td>'.$row->getName().'</td>';
+			$html .= '</tr>';
+		}
+		$html .= '</table>';
+
+		return $html;
 	}
 }

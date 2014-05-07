@@ -9,6 +9,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DI;
 use SocioChat\Message\Msg;
+use SocioChat\Message\MsgRaw;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
@@ -135,8 +136,8 @@ class ResponseFilter implements ChainInterface
 		if (file_exists(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt') && $user->getLastMsgId() == 0) {
 			$motd = file_get_contents(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt');
 			$response = (new MessageResponse())
-				->setChatId(1) // TODO chatRoom
-				->setMsg(Msg::create($motd));
+				->setChatId($user->getChatId())
+				->setMsg(MsgRaw::create($motd));
 			$client
 				->setResponse($response)
 				->notify(false);
