@@ -262,7 +262,7 @@ class EnrollController extends ControllerBase
 		foreach ($userIds as $userId) {
 			$user = $users->getClientById($userId);
 			$response = (new MessageResponse())
-				->setMsg($user->getLang()->getPhrase('DualQueueShifted', count($userIds)))
+				->setMsg(MsgToken::create('DualQueueShifted', count($userIds)))
 				->setDualChat('init')
 				->setTime(null)
 				->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))
