@@ -47,7 +47,8 @@ class NameChangeDAO extends DAOBase
 	 */
 	public function getLastByUser(User $user)
 	{
-		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC LIMIT 1", ['user_id' => $user->getId()])[0];
+		$list = $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC LIMIT 1", ['user_id' => $user->getId()]);
+		return !empty($list) ? $list[0] : null;
 	}
 
 	public function getHistoryByUserId($userId)
