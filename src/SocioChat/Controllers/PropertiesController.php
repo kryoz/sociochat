@@ -122,15 +122,6 @@ class PropertiesController extends ControllerBase
 			return;
 		}
 
-		$lastChange = NameChangeDAO::create()->getLastByUser($user);
-		/** @var $config Config */
-		$config = DI::get()->container()->get('config');
-
-		if ($lastChange && $lastChange->getDate() < time() + $config->nameChangeFreq) {
-			$this->errorResponse($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
-			return;
-		}
-
 		$oldName = $user->getProperties()->getName();
 
 		$this->importProperties($user, $request);
@@ -198,10 +189,16 @@ class PropertiesController extends ControllerBase
 
 	private function importProperties(User $user, $request)
 	{
+		/** @var $config Config */
+		$config = DI::get()->container()->get('config');
 		$name = $request[PropertiesDAO::NAME];
 		$tim = TimEnum::create($request[PropertiesDAO::TIM]);
 		$guestName = $user->getLang()->getPhrase('Guest');
 		$isNewbie = mb_strpos($name, $guestName) !== false;
+
+		$lastChange = NameChangeDAO::create()->getLastByUser($user);
+		$isTimedOut = $lastChange && $lastChange->getDate() < time() + $config->nameChangeFreq;
+		$hasNameChanged = $name != $user->getProperties()->getName();
 
 		if ($isNewbie) {
 			$newname = str_replace($guestName, $tim->getShortName(), $name);
@@ -210,11 +207,14 @@ class PropertiesController extends ControllerBase
 			if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
 				$name = $newname;
 			}
+		} elseif ($hasNameChanged && $isTimedOut) {
+			$this->errorResponse($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
+			return;
 		}
 
 		$properties = $user->getProperties();
 
-		if ($properties->getName() && !$isNewbie) {
+		if ($hasNameChanged && !$isNewbie) {
 			NameChangeDAO::create()
 				->setUser($user)
 				->save();
