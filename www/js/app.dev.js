@@ -771,16 +771,14 @@ var AvatarUploadHandler = function($this) {
     var uploadButtonContainer = avatar.find('.do-upload');
     var response = avatar.find('.alert');
     var placeHolder = avatar.find('div.avatar-placeholder');
-    var cropHolder = $('<div></div>');
+    var cropHolder = null;
     var jcropAPI = null;
     var dim = null;
-
-
 
     avatar.find('.upload').change(function() {
         var fileReader = new FileReader();
         var file = this.files[0];
-        var image = document.createElement('img');
+        var image = new Image();
 
         if (jcropAPI) {
             jcropAPI.destroy();
@@ -793,8 +791,10 @@ var AvatarUploadHandler = function($this) {
         fileReader.onload = function(e) {
             placeHolder.hide();
             image.src = e.target.result;
+        };
 
-            cropHolder.Jcrop({
+        fileReader.onloadend = function() {
+            setTimeout(function() {cropHolder.Jcrop({
                 bgColor: '#fff',
                 minSize: [64, 64],
                 maxSize: [0, 0],
@@ -805,8 +805,9 @@ var AvatarUploadHandler = function($this) {
                 }
             },function(){
                 jcropAPI= this;
-            });
-        };
+            });}, 500);
+
+        }
 
         fileReader.readAsDataURL(file);
 
