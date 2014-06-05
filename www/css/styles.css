@@ -82,6 +82,9 @@ doesnotexist:-o-prefocus, #panel-chat {
     color: #aaa;
     font-size: 32px;
 }
+#avatar .avatar-placeholder {
+    padding: 0;
+}
 #guests .user-avatar .glyphicon {
     display: inline;
     vertical-align:middle;

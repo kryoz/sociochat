@@ -766,31 +766,54 @@ var ResponseHandler = function(json, $this) {
 	handleErrors();
 };
 
-var AvatarUploadHandler = function($this, dim) {
+var AvatarUploadHandler = function($this) {
     var avatar = $this.domElems.avatar;
     var uploadButtonContainer = avatar.find('.do-upload');
     var response = avatar.find('.alert');
+    var placeHolder = avatar.find('div.avatar-placeholder');
+    var cropHolder = $('<div></div>');
+    var jcropAPI = null;
+    var dim = null;
+
+
 
     avatar.find('.upload').change(function() {
         var fileReader = new FileReader();
         var file = this.files[0];
         var image = document.createElement('img');
-        var thumb = document.createElement('img');
+
+        if (jcropAPI) {
+            jcropAPI.destroy();
+        }
+
+        cropHolder = $('<div></div>');
+        cropHolder.attr('style', placeHolder.attr('style'));
+        placeHolder.after(cropHolder);
 
         fileReader.onload = function(e) {
+            placeHolder.hide();
             image.src = e.target.result;
-            thumb.src = image.src;
+
+            cropHolder.Jcrop({
+                bgColor: '#fff',
+                minSize: [64, 64],
+                maxSize: [0, 0],
+                setSelect: [0, 0, cropHolder.width(), cropHolder.height()],
+                aspectRatio: 1,
+                onSelect: function (coords){
+                    dim = coords;
+                }
+            },function(){
+                jcropAPI= this;
+            });
         };
 
         fileReader.readAsDataURL(file);
 
-        thumb.style.width = dim+'px';
-        thumb.style.height = dim+'px';
         image.style.maxWidth = 'inherit';
         image.style.maxHeight = 'inherit';
 
-        avatar.find('div.avatar-placeholder-mini').html(thumb);
-        avatar.find('div.avatar-placeholder').html(image);
+        cropHolder.html(image);
         uploadButtonContainer.data('file', file).show();
         response.removeClass('.alert-success').removeClass('.alert-danger').hide();
     });
@@ -803,8 +826,12 @@ var AvatarUploadHandler = function($this, dim) {
         var progressbar = avatar.find('.progress-bar');
         var percentage = progressbar.find('.sr-only');
 
+        var dim = jcropAPI.tellSelect();
+        dim = {x: dim.x, y: dim.y, w: dim.w, h: dim.h, portW: cropHolder.width(), portH: cropHolder.height()};
+
         formData.append('img', file);
         formData.append('token', $this.token);
+        formData.append('dim', JSON.stringify(dim));
 
         xhr.upload.onprogress = function(e) {
             if (e.lengthComputable) {
@@ -825,9 +852,19 @@ var AvatarUploadHandler = function($this, dim) {
             uploadButtonContainer.hide();
             response.addClass('alert-info').html('Фотография обрабатывается, подождите...').show();
         }
+
         xhr.onload = function(e) {
-            var responseText = JSON.parse(e.target.responseText);
-            response.removeClass('alert-info');
+            response.removeClass('alert-info').removeClass('alert-danger');
+
+            jcropAPI.destroy();
+            placeHolder.show();
+
+            try {
+                var responseText = JSON.parse(e.target.responseText);
+            } catch (e) {
+                response.addClass('alert-danger').html('Файл слишком велик').show();
+                return;
+            }
 
             if (e.target.status != 200) {
                 response.addClass('alert-danger').html(responseText.response).show();

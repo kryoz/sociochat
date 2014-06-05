@@ -17,11 +17,13 @@ $domain = isset($domain) ? $domain : 'https://sociochat.me';
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<meta name="description" content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства.">
 	<meta name="keywords" content="соционика, знакомства, дуал, тим, чат, дуалчат">
-	<link rel="icon" href="<?=$domain?>/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="http://sociochat.me/favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon" href="<?=$domain?>/img/sociochat.jpg">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/styles.css?v=3" >
+	<link rel="stylesheet" href="js/jcrop/jquery.Jcrop.min.css">
+	<link rel="stylesheet" href="css/styles.css" >
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
 <?=$js?>
 </head>

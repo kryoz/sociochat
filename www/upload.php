@@ -1,6 +1,5 @@
 <?php
 
-use Monolog\Logger;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
@@ -13,9 +12,7 @@ DIBuilder::setupNormal($container);
 /* @var $config Config */
 $config = $container->get('config');
 $avatarsConfig = $config->uploads->avatars;
-/** @var $logger Logger  */
-$logger = $container->get('logger');
-$logContext = ['UPLOAD'];
+
 $httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
 /** @var $lang Lang */
 $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
@@ -26,13 +23,31 @@ function response($code, $message, $image = null)
 	echo json_encode(['success' => $code == 200, 'response' => $message, 'image' => $image]);
 }
 
-function makeImage($uploadedFile, $dim, $format, $extension, $isAdaptive = false)
+function makeImage($uploadedFile, $dim, $format, $extension, array $coords)
 {
 	$imagick = new Imagick();
 	$imagick->readImage($uploadedFile);
+	$imgWidth = $imagick->getimagewidth();
+	$imgHeight = $imagick->getimageheight();
 
-	if ($imagick->getimagewidth() > $dim || $imagick->getimageheight() > $dim) {
-		$imagick->adaptiveresizeimage($dim, $dim, $isAdaptive);
+	if ($coords['w'] > $imgWidth || $coords['h'] > $imgHeight || $coords['x'] > $imgWidth || $coords['y'] > $imgHeight || $coords['portW'] > $imgWidth || $coords['portH'] > $imgHeight) {
+		throw new Exception('Invalid crop data');
+	}
+
+	$xFactor = $imgWidth / $coords['portW'];
+	$yFactor = $imgHeight / $coords['portH'];
+
+	$imagick->cropimage($xFactor * $coords['w'], $yFactor * $coords['h'], $xFactor * $coords['x'], $yFactor * $coords['y']);
+
+	$imgWidth = $imagick->getimagewidth();
+	$imgHeight = $imagick->getimageheight();
+
+	if ($imgHeight > $dim || $imgWidth > $dim) {
+		if ($imgHeight > $imgWidth) {
+			$imagick->resizeimage(0, $dim, imagick::FILTER_CATROM, 1);
+		} else {
+			$imagick->resizeimage($dim, 0, imagick::FILTER_CATROM, 1);
+		}
 	}
 
 	$imagick->setImageFormat($format);
@@ -53,42 +68,40 @@ $uploadedName = sha1(time().basename($img['name']));
 $uploadedFile = $uploadDir.$uploadedName;
 $allowedMIME = ['image/gif', 'image/png', 'image/jpeg'];
 
-if (!$token->getId() || !$img) {
+$dim = isset($_POST['dim']) ? $_POST['dim'] : null;
+$dim = json_decode($dim, true);
+
+if (!$token->getId() || !$img || $dim === null) {
 	$message = $lang->getPhrase('profile.IncorrectRequest');
-//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if (!in_array($img['type'], $allowedMIME)) {
 	$message = $lang->getPhrase('profile.IncorrectFileType');
-//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if ($img['size'] > $avatarsConfig->maxsize) {
 	$message = $lang->getPhrase('profile.FileExceedsMaxSize').' '.$avatarsConfig->maxsize;
-//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 if ($img['error'] != UPLOAD_ERR_OK || !move_uploaded_file($img['tmp_name'], $uploadedFile)) {
 	$message = $lang->getPhrase('profile.ErrorUploadingFile');
-//	$logger->error($message, $logContext);
 	response(403, $message);
 	return;
 }
 
 try {
-	makeImage($uploadedFile, $avatarsConfig->thumbdim, 'png', '_t.png');
-	makeImage($uploadedFile, $avatarsConfig->thumbdim * 2, 'png', '_t@2x.png');
-	makeImage($uploadedFile, $avatarsConfig->maxdim, 'jpeg', '.jpg', true);
+	makeImage($uploadedFile, $avatarsConfig->thumbdim, 'png', '_t.png', $dim);
+	makeImage($uploadedFile, $avatarsConfig->thumbdim * 2, 'png', '_t@2x.png', $dim);
+	makeImage($uploadedFile, $avatarsConfig->maxdim, 'jpeg', '.jpg', $dim);
 }
 catch (\Exception $e) {
 	$message = $lang->getPhrase('profile.ErrorProcessingImage').': '.$e->getMessage();
-//	$logger->error($message, $logContext);
 	response(500, $message);
 	return;
 }

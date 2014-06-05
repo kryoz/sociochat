@@ -49,9 +49,6 @@ if (!defined('ROOT')) {
 		</div>
 		<div class="row btn-vert-block form-group">
 			<div class="col-sm-12 btn-vert-block">
-				<p><?=$lang->getPhrase('profile.PreviewMini')?></p>
-				<div class="img-thumbnail avatar-placeholder-mini"></div>
-				<p></p>
 				<p><?=$lang->getPhrase('profile.Preview')?></p>
 				<div class="img-thumbnail avatar-placeholder" style="max-width: 100%; max-height: <?=$config->uploads->avatars->maxdim?>px"></div></p>
 			</div>
