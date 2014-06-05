@@ -368,6 +368,13 @@ var App = {
 			}
 		}
 	},
+	getUserInfoById : function(id) {
+		for (var i in this.guests) {
+			if (this.guests[i].id == id) {
+				return this.guests[i];
+			}
+		}
+	},
 	togglePrivate : function(userId) {
 		var command = {
 			subject: 'Enroll',
@@ -612,6 +619,13 @@ var ResponseHandler = function(json, $this) {
                 time = '[' + json.time + '] ';
             }
 
+			var found = json.msg.match(/приглашает вас в приват\. #(\d+)# предложение/ig);
+			if (found) {
+				var userName = $this.getUserInfoById(found[1]);
+				$this.notify('Вас пригласил в приват пользователь '+userName+'!', $this.ownName, 'private', 30000);
+				json.msg = json.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" onclick="App.togglePrivate($1)">Принять</a> предложение');
+			}
+
 			msg += '<span>'+time + json.msg + '</span>';
             msgCSStype = 'system';
 		}
@@ -657,15 +671,7 @@ var ResponseHandler = function(json, $this) {
 			return text.replace(exp , "<code class=\"private\">$1</code>");
 		}
 
-		var notifyOnInvite = function (text) {
-			var found = text.match(/(.+) приглашает вас в приват\. #(\d+)# предложение/i);
-			if (found) {
-				$this.notify('Вас пригласили в приват пользователь '+found[1]+'!', $this.ownName, 'private', 30000);
-				text = text.replace(/#(\d+)# предложение/i, '<a href="#" class="accept-private" onclick="App.togglePrivate($1)">Принять</a> предложение');
-			}
 
-			return text;
-		}
 
 		var notifyOnNewUser = function (text) {
 			var exp = /^Нас теперь (\d+)! Поприветствуем (.*)$/;
@@ -676,8 +682,6 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		notifyOnNewUser(json.msg);
-
-		incomingMessage = notifyOnInvite(incomingMessage);
 		incomingMessage = replaceOwnName(incomingMessage);
 
 		var res = replaceWithImgLinks(incomingMessage);
