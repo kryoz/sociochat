@@ -233,6 +233,16 @@ doesnotexist:-o-prefocus, #panel-chat {
 	animation-duration: 0.2s;
 }
 
+#log .video {
+	display: block;
+	background: #000 url(/img/play_hover.png) 50% 50% no-repeat;
+	width: 480px;
+	height: 360px;
+}
+#log .video img {
+	opacity:.60;
+}
+
 #guests td {
     vertical-align: middle;
 }

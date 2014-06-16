@@ -666,12 +666,17 @@ var ResponseHandler = function(json, $this) {
 			return text.replace(exp, replacement);
 		}
 
+		var replaceWithYoutube = function (text) {
+			var exp = /\b((?:http:\/\/)www\.youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
+			var replacement = '<a href="$1" class="video" target="_blank"><img src="http://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
+
+			return text.replace(exp, replacement);
+		}
+
 		var replaceOwnName = function (text) {
 			var exp = new RegExp('(?:\\s||,||\\.)('+$this.ownName+')(?:\\s||,||\\.)', 'ig');
 			return text.replace(exp , "<code class=\"private\">$1</code>");
 		}
-
-
 
 		var notifyOnNewUser = function (text) {
 			var exp = /^Нас теперь (\d+)! Поприветствуем (.*)$/;
@@ -685,6 +690,7 @@ var ResponseHandler = function(json, $this) {
 		incomingMessage = replaceOwnName(incomingMessage);
 
 		var res = replaceWithImgLinks(incomingMessage);
+		res = replaceWithYoutube(res);
 
 		if (res == incomingMessage) {
 			incomingMessage = replaceURL(incomingMessage);
