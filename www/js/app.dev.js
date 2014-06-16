@@ -668,7 +668,7 @@ var ResponseHandler = function(json, $this) {
 
 		var replaceWithYoutube = function (text) {
 			var exp = /\b((?:http:\/\/)www\.youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
-			var replacement = '<a href="$1" class="video" target="_blank"><img src="http://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
+			var replacement = '<a href="$1" class="video" target="_blank"><img src="https://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
 
 			return text.replace(exp, replacement);
 		}

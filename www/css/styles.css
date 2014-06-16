@@ -236,11 +236,13 @@ doesnotexist:-o-prefocus, #panel-chat {
 #log .video {
 	display: block;
 	background: #000 url(/img/play_hover.png) 50% 50% no-repeat;
-	width: 480px;
-	height: 360px;
+	max-width: 480px;
+	height: auto;
 }
 #log .video img {
 	opacity:.60;
+	max-width: 100%;
+	height: auto;
 }
 
 #guests td {
