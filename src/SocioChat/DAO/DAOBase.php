@@ -1,89 +1,89 @@
 <?php
-namespace SocioChat\DAO;
+namespace Sociochat\DAO;
 
-use SocioChat\DB;
-use SocioChat\DI;
-use SocioChat\FixedArrayAccess;
+use Sociochat\DB;
+use Sociochat\DI;
+use Sociochat\FixedArrayAccess;
 
 abstract class DAOBase extends FixedArrayAccess
 {
-    const ID = 'id';
+	const ID = 'id';
 
-    /**
-     * @var DB
-     */
-    protected $db;
-    protected $relativeProperties = [];
+	/**
+	 * @var DB
+	 */
+	protected $db;
+	protected $relativeProperties = [];
+	protected $dbTable;
+	protected $types = [];
 
-    protected $dbTable;
+	public function __construct($propertyNames = null)
+	{
+		$properties = [self::ID];
+		$properties = array_merge($properties, $propertyNames);
+		$this->db = DI::get()->container()->get('db');
 
-    public function __construct($propertyNames = null)
-    {
-        $properties = [self::ID];
-        $properties = array_merge($properties, $propertyNames);
-        $this->db = DI::get()->container()->get('db');
+		parent::__construct($properties);
+	}
 
-        parent::__construct($properties);
-    }
+	public static function create()
+	{
+		return new static();
+	}
 
-    public static function create()
-    {
-        return new static();
-    }
+	public function getById($id)
+	{
+		$query = "SELECT * FROM {$this->dbTable} WHERE id = :".static::ID;
+		if ($data = $this->db->query($query, [static::ID => $id])) {
+			$this->fillParams($data[0]);
+		}
 
-    public function getById($id)
-    {
-        $query = "SELECT * FROM {$this->dbTable} WHERE id = ?";
-        if ($data = $this->db->query($query, [$id])) {
-            $this->fillParams($data[0]);
-        }
+		return $this;
+	}
 
-        return $this;
-    }
+	public function fillParams(array $params)
+	{
+		foreach ($params as $property => $value) {
+			$this[$property] = $value;
+		}
+	}
 
-    public function fillParams(array $params)
-    {
-        foreach ($params as $property => $value) {
-            $this[$property] = $value;
-        }
-    }
+	public function getId()
+	{
+		return $this[self::ID];
+	}
 
-    public function getId()
-    {
-        return $this[self::ID];
-    }
+	public function save()
+	{
+		$params = array_diff_key($this->properties, $this->relativeProperties + [self::ID => null]);
+		$sequence = null;
 
-    public function save()
-    {
-        $params = array_diff_key($this->properties, $this->relativeProperties + [self::ID => null]);
+		if (!$this->getId()) {
+			$keys = array_keys($params);
 
-        if (!$this->getId()) {
-            $keys = array_keys($params);
+			$query = "INSERT INTO {$this->dbTable} (".implode(', ', $keys).") VALUES ";
 
-            $query = "INSERT INTO {$this->dbTable} (".implode(', ', $keys).") VALUES ";
+			foreach ($keys as &$key) {
+				$key = ':'.$key;
+			}
+			$query .= "(".implode(', ', $keys). ")";
+			$sequence = $this->dbTable.'_id_seq';
+		} else {
+			$query = "UPDATE {$this->dbTable} SET ";
+			$queryParts = [];
 
-	        foreach ($keys as &$key) {
-		        $key = ':'.$key;
-	        }
-            $query .= "(".implode(', ', $keys). ")";
+			foreach ($params as $key => $val) {
+				$queryParts[] = "$key = :{$key}";
+			}
 
-            $this[self::ID] = $this->db->exec($query, $params, $this->dbTable.'_id_seq');
-        } else {
-            $query = "UPDATE {$this->dbTable} SET ";
-            $queryParts = [];
+			$query .= implode(", ", $queryParts). " WHERE id = :".self::ID;
+			$params += [self::ID => $this->getId()];
+		}
 
-            foreach ($params as $key => $val) {
-                $queryParts[] = "$key = :{$key}";
-            }
+		$this[self::ID] = $this->db->exec($query, $params, $sequence, $this->types);
 
-            $query .= implode(", ", $queryParts). " WHERE id = :".self::ID;
-	        $params += [self::ID => $this->getId()];
-
-            $this->db->exec($query, $params);
-        }
-
-	    $this->flushRelatives($this->getForeignProperties());
-}
+		$this->flushRelatives($this->getForeignProperties());
+	}
 
 	public function getAllList()
 	{
@@ -122,15 +122,15 @@ abstract class DAOBase extends FixedArrayAccess
 		$this->db->exec("DELETE FROM {$this->dbTable} WHERE $dbKey = :id", ['id' => $id]);
 	}
 
-    public function __wakeup()
-    {
-        $this->db = DI::get()->container()->get('db');
-    }
+	public function __wakeup()
+	{
+		$this->db = DI::get()->container()->get('db');
+	}
 
-    public function __sleep()
-    {
-        return array('properties', 'propertyNames');
-    }
+	public function __sleep()
+	{
+		return array('properties', 'propertyNames');
+	}
 
 	protected function addRelativeProperty($propertyName)
 	{
@@ -144,8 +144,8 @@ abstract class DAOBase extends FixedArrayAccess
 			throw new \Exception('Undefined property name '.$propName);
 		}
 
-		$query = "SELECT * FROM {$this->dbTable} WHERE $propName = ?";
-		if ($data = $this->db->query($query, [$id])) {
+		$query = "SELECT * FROM {$this->dbTable} WHERE $propName = :$propName";
+		if ($data = $this->db->query($query, [$propName => $id])) {
 			$this->fillParams($data[0]);
 		}
 

@@ -17,7 +17,7 @@ function CustomErrorHandler($errno, $errstr, $errfile, $errline)
 }
 set_error_handler('CustomErrorHandler');
 
-require_once 'config.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 $config = $container->get('config');
