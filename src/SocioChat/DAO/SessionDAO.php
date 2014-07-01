@@ -76,7 +76,7 @@ class SessionDAO extends DAOBase
 		$queryParams = array_merge([$deadLine], $unregisteredList);
 
 		return $this->db->query(
-			"SELECT user_id FROM {$this->dbTable} WHERE access < ? AND user_id IN (".DbQueryHelper::commaSeparatedHolders($unregisteredList).")",
+			"SELECT user_id FROM {$this->dbTable} WHERE access < :0 AND user_id IN (".DbQueryHelper::commaSeparatedHolders($unregisteredList, 1).")",
 			$queryParams,
 			PDO::FETCH_COLUMN
 		);
