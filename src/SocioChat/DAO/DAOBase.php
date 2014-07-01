@@ -1,9 +1,10 @@
 <?php
 namespace Sociochat\DAO;
 
-use Sociochat\DB;
-use Sociochat\DI;
-use Sociochat\FixedArrayAccess;
+use SocioChat\DB;
+use SocioChat\DI;
+use SocioChat\FixedArrayAccess;
+
 
 abstract class DAOBase extends FixedArrayAccess
 {
