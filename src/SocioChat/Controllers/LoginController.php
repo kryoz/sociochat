@@ -5,6 +5,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\UserDAO;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
@@ -25,7 +26,7 @@ class LoginController extends ControllerBase
 		$action = $chain->getRequest()['action'];
 
 		if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
+			RespondError::make($chain->getFrom());
 			return;
 		}
 
@@ -38,12 +39,12 @@ class LoginController extends ControllerBase
 				->addRule('login', Rules::email(), 'Некорректный формат email')
 				->addRule('password', Rules::password(), 'Пароль должен быть от 8 до 20 символов');
 		} catch (WrongRuleNameException $e) {
-			$this->errorResponse($user, ['property' => 'Некорректно указано свойство']);
+			RespondError::make($user, ['property' => 'Некорректно указано свойство']);
 			return;
 		}
 
 		if (!$form->validate()) {
-			$this->errorResponse($user, $form->getErrors());
+			RespondError::make($user, $form->getErrors());
 			return;
 		}
 
@@ -62,7 +63,7 @@ class LoginController extends ControllerBase
 		$lang = $user->getLang();
 
 		if (!$userDAO = $this->validateLogin($request)) {
-			$this->errorResponse($user, ['email' => $lang->getPhrase('InvalidLogin')]);
+			RespondError::make($user, ['email' => $lang->getPhrase('InvalidLogin')]);
 			return;
 		}
 
@@ -70,7 +71,7 @@ class LoginController extends ControllerBase
 		$clients = UserCollection::get();
 
 		if ($oldUserId == $userDAO->getId()) {
-			$this->errorResponse($user, ['email' => $lang->getPhrase('AlreadyAuthorized')]);
+			RespondError::make($user, ['email' => $lang->getPhrase('AlreadyAuthorized')]);
 			return;
 		}
 
@@ -100,7 +101,7 @@ class LoginController extends ControllerBase
 		$duplUser = UserDAO::create()->getByEmail($email);
 
 		if ($duplUser->getId() && $duplUser->getId() != $user->getId()) {
-			$this->errorResponse($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
+			RespondError::make($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
 			return;
 		}
 

@@ -9,6 +9,10 @@ class ActivationsDAO extends DAOBase
 	const TIMESTAMP = 'timestamp';
 	const USED = 'used';
 
+	protected $types = [
+		self::USED => \PDO::PARAM_BOOL,
+	];
+
 	public function __construct()
 	{
 		parent::__construct(
@@ -74,7 +78,12 @@ class ActivationsDAO extends DAOBase
 
 	public function getActivation($email, $code)
 	{
-		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE email = :email AND code = :code LIMIT 1", ['email' => $email, 'code' => $code]);
+		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE email = :email AND code = :code AND used = :used LIMIT 1", ['email' => $email, 'code' => $code, 'used' => 'false']);
+	}
+
+	public function dropUsedActivations()
+	{
+		return $this->db->exec("DELETE FROM {$this->dbTable} WHERE used = :used", ['used' => 'false']);
 	}
 
 	protected function getForeignProperties()

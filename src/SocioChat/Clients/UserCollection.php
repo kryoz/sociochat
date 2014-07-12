@@ -25,18 +25,16 @@ class UserCollection
 
 	public function attach(User $user)
 	{
-		$this->users[] = $user;
+		$this->users[$user->getId()] = $user;
 		return $this;
 	}
 
 	public function detach(User $user)
 	{
-		foreach ($this->users as $n => $chatUser) {
-			if ($chatUser->getId() == $user->getId()) {
-				DI::get()->container()->get('logger')->info("Detach userId = {$user->getId()}", [__CLASS__]);
-				$user->close();
-				unset($this->users[$n]);
-			}
+		if (isset($this->users[$user->getId()])) {
+			DI::get()->container()->get('logger')->info("Detach userId = {$user->getId()}", [__CLASS__]);
+			$user->close();
+			unset($this->users[$user->getId()]);
 		}
 
 		return $this;
@@ -70,7 +68,7 @@ class UserCollection
 
 		if ($isMessage && $log) {
 			/* @var $response MessageResponse */
-			$lastMsgId = ChatsCollection::get()->addLine($response);
+			$lastMsgId = ChannelsCollection::get()->pushToHistory($response);
 			$response->setLastMsgId($lastMsgId);
 		}
 
@@ -97,7 +95,7 @@ class UserCollection
 	 */
 	public function getUsersByChatId($chatId)
 	{
-		$chatUsers = [];
+		$chatUsers = null;
 		foreach ($this->users as $user) {
 			if ($user->getChatId() == $chatId) {
 				$chatUsers[] = $user;
@@ -125,10 +123,8 @@ class UserCollection
 	 */
 	public function getClientById($userId)
 	{
-		foreach ($this->users as $user) {
-			if ($user->getId() == $userId) {
-				return $user;
-			}
+		if (isset($this->users[$userId])) {
+			return $this->users[$userId];
 		}
 	}
 

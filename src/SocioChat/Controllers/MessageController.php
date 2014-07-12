@@ -4,6 +4,7 @@ namespace SocioChat\Controllers;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
 use SocioChat\Forms\Form;
@@ -73,10 +74,10 @@ class MessageController extends ControllerBase
 
 		$form = (new Form())
 			->import([UserDAO::ID => $userId])
-			->addRule(UserDAO::ID, Rules::UserOnline(), $from->getLang()->getPhrase('UserIsNotOnline'));
+			->addRule(UserDAO::ID, Rules::isUserOnline(), $from->getLang()->getPhrase('UserIsNotOnline'));
 
 		if (!$form->validate()) {
-			$this->errorResponse($from, $form->getErrors());
+			RespondError::make($from, $form->getErrors());
 			DI::get()->container()->get('logger')->warn("Trying to find userId = $userId for private message but not found", [__CLASS__]);
 			return false;
 		}

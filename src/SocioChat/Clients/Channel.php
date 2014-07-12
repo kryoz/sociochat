@@ -5,15 +5,40 @@ namespace SocioChat\Clients;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
 
-class ChatRoom
+class Channel
 {
 	const BUFFER_LENGTH = 100;
 
+	private $id;
 	/**
 	 * @var Response[]
 	 */
 	protected $history = [];
 	protected $lastMsgId = 1;
+	protected $name;
+	protected $isPrivate = true;
+	protected $ownerId = 1;
+
+	public function __construct($id, $name = null, $isPrivate = true)
+	{
+		$this->id = $id;
+		$this->name = $name;
+		$this->isPrivate = $isPrivate;
+	}
+
+	public function setId($id)
+	{
+		$this->id = $id;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 	/**
 	 * @param MessageResponse $response
@@ -52,6 +77,48 @@ class ChatRoom
 
 		return $history;
 	}
+
+	public function setIsPrivate($isPrivate)
+	{
+		$this->isPrivate = $isPrivate;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isPrivate()
+	{
+		return $this->isPrivate;
+	}
+
+	public function setName($name)
+	{
+		$this->name = $name;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name ?: $this->getId();
+	}
+
+	// for the future
+	public function setOwnerId($ownerId)
+	{
+		$this->ownerId = $ownerId;
+		return $this;
+	}
+
+	// for the future
+	public function getOwnerId()
+	{
+		return $this->ownerId;
+	}
+
 
 	private function filterMessages(MessageResponse $response)
 	{

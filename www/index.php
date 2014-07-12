@@ -57,14 +57,15 @@ require_once "pages/header.php";
 						<li style="display: none">
 							<a href="#" id="menu-exit" class="tip" title="<?=$lang->getPhrase('index.ReturnToPublicTip')?>"><span class="glyphicon glyphicon-home"></span> <?=$lang->getPhrase('index.ReturnToPublic')?></a>
 						</li>
-						<!--<li class="dropdown">
-							<a href="#publics" data-toggle="dropdown" class="dropdown-toggle">Паблики <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">1 <span class="glyphicon glyphicon-ok-sign"></span></a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
+						<li class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle">Паблики <b class="caret"></b></a>
+							<ul class="dropdown-menu" id="menu-channels">
+								<li><a href="#" data-id="1">1 <span class="glyphicon glyphicon-ok-sign"></span></a></li>
+								<li><a href="#" data-id="2">2</a></li>
+								<li><a href="#" data-id="3">3</a></li>
+								<li><a href="#" data-id="4">4</a></li>
 							</ul>
-						</li>-->
+						</li>
 						<li>
 							<a href="http://vk.com/topic-66015624_29370149" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
 						</li>
@@ -89,7 +90,7 @@ require_once "pages/header.php";
 	<div id="dont_forget" style="display: none">
 		<form action="" method="post">
 			<input type="email" class="form-control" placeholder="<?=$lang->getPhrase('Email')?>" id="login-name">
-			<input type="password" class="form-control" placeholder="<?=$lang->getPhrase('Password')?>" id="login-password">
+			<input type="password" class="form-control" autocomplete="on" placeholder="<?=$lang->getPhrase('Password')?>" id="login-password">
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>

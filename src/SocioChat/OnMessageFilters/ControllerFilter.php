@@ -7,7 +7,7 @@ use SocioChat\Chain\ChainInterface;
 use SocioChat\Controllers\AdminController;
 use SocioChat\Controllers\BlacklistController;
 use SocioChat\Controllers\ControllerBase;
-use SocioChat\Controllers\EnrollController;
+use SocioChat\Controllers\ChannelController;
 use SocioChat\Controllers\LoginController;
 use SocioChat\Controllers\MainChatController;
 use SocioChat\Controllers\MessageController;
@@ -19,7 +19,7 @@ class ControllerFilter implements ChainInterface
 	protected $map = [
 		'Message' => MessageController::class,
 		'Properties' => PropertiesController::class,
-		'Enroll' => EnrollController::class,
+		'Channel' => ChannelController::class,
 		'MainChat' => MainChatController::class,
 		'Ping' => PingController::class,
 		'Login' => LoginController::class,

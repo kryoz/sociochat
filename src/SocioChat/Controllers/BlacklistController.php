@@ -4,6 +4,7 @@ namespace SocioChat\Controllers;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
@@ -18,8 +19,8 @@ class BlacklistController extends ControllerBase
 	public function handleRequest(ChainContainer $chain)
 	{
 		$action = $chain->getRequest()['action'];
-			if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
+		if (!isset($this->actionsMap[$action])) {
+			RespondError::make($chain->getFrom());
 			return;
 		}
 
@@ -37,7 +38,7 @@ class BlacklistController extends ControllerBase
 		$user = $chain->getFrom();
 
 		if (!$banUser = UserCollection::get()->getClientById($request[PropertiesDAO::USER_ID])) {
-			$this->errorResponse($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
+			RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
 			return;
 		}
 
@@ -53,7 +54,7 @@ class BlacklistController extends ControllerBase
 		$user = $chain->getFrom();
 
 		if (!$unbanUser = UserCollection::get()->getClientById($request['user_id'])) {
-			$this->errorResponse($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
+			RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
 			return;
 		}
 

@@ -5,6 +5,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\DAOBase;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DI;
@@ -31,7 +32,7 @@ class AdminController extends ControllerBase
 		$action = $chain->getRequest()['action'];
 
 		if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
+			RespondError::make($chain->getFrom());
 			return;
 		}
 
