@@ -3,10 +3,11 @@ namespace SocioChat\OnOpenFilters;
 
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
-use SocioChat\Clients\ChatsCollection;
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\ChannelNotifier;
 use SocioChat\DI;
 use SocioChat\Message\Msg;
 use SocioChat\Message\MsgRaw;
@@ -46,9 +47,8 @@ class ResponseFilter implements ChainInterface
 	public function notifyChat(User $user, UserCollection $userCollection)
 	{
 		$chatId = $user->getChatId();
-		$usersCount = count($userCollection->getUsersByChatId($chatId));
 
-		DI::get()->container()->get('logger')->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
+		DI::get()->getLogger()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
 		if ($user->isInPrivateChat()) {
 			$dualUsers = new UserCollection();
@@ -59,7 +59,7 @@ class ResponseFilter implements ChainInterface
 				->setGuests($userCollection->getUsersByChatId($chatId))
 				->setChatId($chatId);
 
-			if ($usersCount > 1) {
+			if ($userCollection->getClientsCount($chatId) > 1) {
 				$dualUsers = $userCollection;
 				$response
 					->setMsg(MsgToken::create('PartnerIsOnline'))
@@ -82,59 +82,19 @@ class ResponseFilter implements ChainInterface
 				->setResponse($response)
 				->notify(false);
 		} else {
-			$response = (new MessageResponse())
-				->setTime(null)
-				->setGuests($userCollection->getUsersByChatId($chatId))
-				->setChatId($chatId);
-
-			if ($user->getLastMsgId() == 0) {
-				$response->setMsg(MsgToken::create('WelcomeUser', $usersCount, $user->getProperties()->getName()));
-			}
-			$userCollection
-				->setResponse($response)
-				->notify();
-
-			$this->notifyOnPendingDuals($user);
-		}
-	}
-
-	public function notifyOnPendingDuals(User $user)
-	{
-		if (!empty(PendingDuals::get()->getUsersByDualTim($user->getProperties()->getTim()))) {
-			$response = (new MessageResponse())
-				->setMsg(MsgToken::create('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
-				->setTime(null)
-				->setChatId($user->getChatId());
-			(new UserCollection())
-				->attach($user)
-				->setResponse($response)
-				->notify(false);
+			ChannelNotifier::welcome($user, $userCollection, $chatId);
 		}
 	}
 
 	private function handleHistory(User $user)
 	{
-		$history = ChatsCollection::get();
-		$log = $history->getHistory($user);
-		$client = (new UserCollection())
-			->attach($user);
-
-		foreach ($log as $response) {
-			/* @var $response MessageResponse */
-
-			if ($response->getToUserName()) {
-				$name = $user->getProperties()->getName();
-				if ($response->getToUserName() == $name || $response->getFromName() == $name) {
-					$client->setResponse($response)->notify(false);
-				}
-				continue;
-			}
-
-			$client->setResponse($response)->notify(false);
-		}
+		ChannelNotifier::uploadHistory($user);
 
 		if (file_exists(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt') && $user->getLastMsgId() == 0) {
 			$motd = file_get_contents(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt');
+
+			$client = (new UserCollection())
+				->attach($user);
 			$response = (new MessageResponse())
 				->setChatId($user->getChatId())
 				->setMsg(MsgRaw::create($motd));

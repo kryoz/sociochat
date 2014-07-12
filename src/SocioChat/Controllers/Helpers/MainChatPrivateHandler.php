@@ -2,8 +2,7 @@
 
 namespace SocioChat\Controllers\Helpers;
 
-
-use SocioChat\Clients\ChatsCollection;
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Message\MsgToken;
@@ -11,7 +10,7 @@ use SocioChat\Response\MessageResponse;
 
 class MainChatPrivateHandler
 {
-	public static function run(User $user, UserCollection $users, ChatsCollection $chats)
+	public static function run(User $user, UserCollection $users, ChannelsCollection $chats)
 	{
 		if (!$user->isInPrivateChat()) {
 			return;
@@ -31,9 +30,6 @@ class MainChatPrivateHandler
 	 */
 	private static function moveUsersToPublic(User $user, UserCollection $users)
 	{
-		$oldChatId = $user->getChatId();
-		$user->setChatId(1);
-
 		$partners = $users->getUsersByChatId($user->getChatId());
 
 		$response = (new MessageResponse())
@@ -41,7 +37,7 @@ class MainChatPrivateHandler
 			->setMsg(MsgToken::create('UserLeftPrivate', $user->getProperties()->getName()))
 			->setDualChat('exit')
 			->setGuests($partners)
-			->setChatId($oldChatId);
+			->setChatId($user->getChatId());
 
 		$users
 			->setResponse($response)
@@ -53,11 +49,11 @@ class MainChatPrivateHandler
 		}
 	}
 
-	private function refreshGuestListOnNewChat(User $user, UserCollection $users)
+	private static function refreshGuestListOnNewChat(User $user, UserCollection $users)
 	{
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setGuests($users->getUsersByChatId(1))
+			->setGuests($users->getUsersByChatId($user->getChatId()))
 			->setChatId($user->getChatId());
 
 		$users
@@ -65,7 +61,7 @@ class MainChatPrivateHandler
 			->notify(false);
 	}
 
-	private function informYouselfOnExit(User $user)
+	private static function informYouselfOnExit(User $user)
 	{
 		$response = (new MessageResponse())
 			->setChatId($user->getChatId())
@@ -78,6 +74,4 @@ class MainChatPrivateHandler
 			->setResponse($response)
 			->notify(false);
 	}
-
-
 } 

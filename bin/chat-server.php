@@ -6,6 +6,8 @@ use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
+use SocioChat\Clients\Channel;
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
@@ -57,5 +59,11 @@ $server = new IoServer(
 );
 
 $logger->info("Starting chat server daemon on ".$config->daemon->host.":".$config->daemon->port, ['CHAT-SERVER']);
+
+$channels = ChannelsCollection::get()
+	->addChannel(new Channel(1, 'Первый', false))
+	->addChannel(new Channel(2, 'Второй', false))
+	->addChannel(new Channel(3, 'Третий', false))
+	->addChannel(new Channel(4, 'Четвертый', false));
 
 $loop->run();

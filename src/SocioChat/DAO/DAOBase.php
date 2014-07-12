@@ -81,9 +81,12 @@ abstract class DAOBase extends FixedArrayAccess
 			$params += [self::ID => $this->getId()];
 		}
 
-		$this[self::ID] = $this->db->exec($query, $params, $sequence, $this->types);
+		$id = $this->db->exec($query, $params, $sequence, $this->types);
 
-		$this->flushRelatives($this->getForeignProperties());
+		if ($id !== false && $this[self::ID] != $id) {
+			$this[self::ID] = $id;
+			$this->flushRelatives($this->getForeignProperties());
+		}
 	}
 
 	public function getAllList()

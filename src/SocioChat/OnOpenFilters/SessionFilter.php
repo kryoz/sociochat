@@ -43,7 +43,6 @@ class SessionFilter implements ChainInterface
 			->setLanguage($lang);
 
 		$sessionHandler = $this->sessionHandler;
-		$sessionHandler->clean($container->get('config')->session->lifetime);
 
 		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);
@@ -60,7 +59,7 @@ class SessionFilter implements ChainInterface
 				->setChatId(1)
 				->setDateRegister(date('Y-m-d H:i:s'));
 
-			$user->save();
+			$user->save(false);
 
 			$id = $user->getId();
 			$guestName = $lang->getPhrase('Guest').$id;
@@ -148,9 +147,7 @@ class SessionFilter implements ChainInterface
 					)} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}",
 					[__CLASS__]
 				);
-				return $user;
 			}
-			return $user;
 		}
 		return $user;
 	}

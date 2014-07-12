@@ -75,6 +75,10 @@ class UserBlacklistDAO extends DAOBase
 
 	public function save($sequence = null)
 	{
+		if (empty($this->blacklist)) {
+			return;
+		}
+
 		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :0", [$this->getUserId()]);
 
 		$list = [];
@@ -82,9 +86,8 @@ class UserBlacklistDAO extends DAOBase
 			$list[] = '('.$this->getUserId().', '.$bannedId.')';
 		}
 
-		if (!empty($this->blacklist)) {
-			$this->db->exec("INSERT INTO {$this->dbTable} (".self::USER_ID.", ".self::IGNORED_ID.") VALUES ".implode(', ', $list));
-		}
+		$this->db->exec("INSERT INTO {$this->dbTable} (".self::USER_ID.", ".self::IGNORED_ID.") VALUES ".implode(', ', $list));
+
 	}
 
 	protected function getForeignProperties()

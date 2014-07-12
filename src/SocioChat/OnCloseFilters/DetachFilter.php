@@ -5,7 +5,7 @@ namespace SocioChat\OnCloseFilters;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
 use SocioChat\ChatConfig;
-use SocioChat\Clients\ChatsCollection;
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
@@ -34,7 +34,8 @@ class DetachFilter implements ChainInterface
 	private function handleDisconnection(User $user)
 	{
 		$loop = DI::get()->container()->get('eventloop');
-		$logger = DI::get()->container()->get('logger');
+		$logger = DI::get()->getLogger();
+
 		$detacher = function() use ($user, $logger) {
 			$clients = UserCollection::get();
 			$clients->detach($user);
@@ -43,14 +44,14 @@ class DetachFilter implements ChainInterface
 			$this->notifyOnClose($user, $clients);
 			$this->cleanPendingQueue($user);
 
-			ChatsCollection::get()->clean($user);
+			ChannelsCollection::get()->clean($user);
 
 			$user->save();
 			unset($user);
 		};
 
 		if ($user->isAsyncDetach()) {
-			$timeout = DI::get()->container()->get('config')->session->timeout;
+			$timeout = DI::get()->getConfig()->session->timeout;
 			$logger->info("OnClose: Detach deffered in $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
 			$timer = $loop->addTimer($timeout, $detacher);
 			$user->setDisconnectTimer($timer);

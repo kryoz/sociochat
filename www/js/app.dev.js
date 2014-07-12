@@ -88,6 +88,7 @@ var App = {
 		menuDualizeStop : $('#menu-dualize-stop'),
 		menuExit : $('#menu-exit'),
 		menuChat : $('.navbar-brand'),
+        menuChannels: $('#menu-channels'),
 		navbar: $('.navbar-nav'),
 		regLink: $('#reg-info'),
 		regPanel: $('#reg-panel')
@@ -314,11 +315,20 @@ var App = {
 
 		$this.domElems.menuDualize.click(function (e) {
 			var command = {
-				subject: 'Enroll',
-				action: 'submit'
+				subject: 'Channel',
+				action: 'dualSearch'
 			}
 			$this.send(command);
 		});
+
+        $this.domElems.menuChannels.find('li a').click(function (e) {
+            var command = {
+                subject: 'Channel',
+                action: 'join',
+                channelId: $(this).data('id')
+            }
+            $this.send(command);
+        });
 
 		$this.domElems.menuDualizeStop.click(function (e) {
 			var command = {
@@ -377,8 +387,8 @@ var App = {
 	},
 	togglePrivate : function(userId) {
 		var command = {
-			subject: 'Enroll',
-			action: 'invite',
+			subject: 'Channel',
+			action: 'join',
 			user_id: userId
 		}
 		this.send(command);
@@ -578,55 +588,55 @@ var ResponseHandler = function(json, $this) {
 		}
 	}
 
-	var handleMessage = function() {
-		if (!json.msg) {
+	var handleMessage = function(response) {
+		if (!response.msg) {
 			return;
 		}
 		var msg = '';
         var msgCSStype = '';
 
-		if (json.lastMsgId) {
-			$this.lastMsgId = json.lastMsgId;
+		if (response.lastMsgId) {
+			$this.lastMsgId = response.lastMsgId;
 		}
 
-		if (json.fromName) {
-            var fromUser = $this.getUserInfo(json.fromName);
+		if (response.fromName) {
+            var fromUser = $this.getUserInfo(response.fromName);
 
-            if ($this.chatLastFrom != json.fromName) {
+            if ($this.chatLastFrom != response.fromName) {
                 msg += getAvatar(fromUser)+' ';
-                msg += '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ json.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
+                msg += '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ response.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
             } else {
                 msgCSStype = 'repeat';
             }
-            if (json.toName) {
-                var toUser = $this.getUserInfo(json.toName);
+            if (response.toName) {
+                var toUser = $this.getUserInfo(response.toName);
                 var toWho = 'вас';
 
                 if (fromUser && fromUser.name == $this.ownName) {
-                    $this.notify(json.msg, json.fromName, 'private', 5000);
+                    $this.notify(response.msg, response.fromName, 'private', 5000);
                     toWho = toUser.name;
                 }
 
                 msg += '<div class="private"><b>[приватно для '+toWho+']</b> '
-                msg += messageParsers(json.msg) + '</div>';
+                msg += messageParsers(response.msg) + '</div>';
             } else {
-                msg += messageParsers(json.msg);
+                msg += messageParsers(response.msg);
             }
 
 		} else {
             var time = '';
-            if (json.time) {
-                time = '[' + json.time + '] ';
+            if (response.time) {
+                time = '[' + response.time + '] ';
             }
 
-			var found = json.msg.match(/приглашает вас в приват\. #(\d+)# предложение/ig);
+			var found = response.msg.match(/приглашает вас в приват\. #(\d+)# предложение/ig);
 			if (found) {
 				var userName = $this.getUserInfoById(found[1]);
 				$this.notify('Вас пригласил в приват пользователь '+userName+'!', $this.ownName, 'private', 30000);
-				json.msg = json.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" onclick="App.togglePrivate($1)">Принять</a> предложение');
+				response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" onclick="App.togglePrivate($1)">Принять</a> предложение');
 			}
 
-			msg += '<span>'+time + json.msg + '</span>';
+			msg += '<span>'+time + response.msg + '</span>';
             msgCSStype = 'system';
 		}
 
@@ -639,7 +649,7 @@ var ResponseHandler = function(json, $this) {
 		$this.msgCount++;
 
 		if ($this.timer == null && ($this.guestCount > 0)) {
-			$this.notify(json.msg, fromUser ? fromUser.name : '', 'msg');
+			$this.notify(response.msg, fromUser ? fromUser.name : '', 'msg');
 		}
 
 		// notifications timeout
@@ -648,11 +658,13 @@ var ResponseHandler = function(json, $this) {
 			$this.timer = null
 		}, $this.delay);
 
-        $this.chatLastFrom = json.fromName;
+        $this.chatLastFrom = response.fromName;
 		bindClicks();
 	}
 
 	var messageParsers = function(incomingMessage) {
+        var originalText = incomingMessage;
+
 		var replaceURL = function (text) {
 			var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|])/ig;
 			return text.replace(exp, "<a target='_blank' href='$1'>$1</a>");
@@ -667,7 +679,7 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		var replaceWithYoutube = function (text) {
-			var exp = /\b((?:http:\/\/)www\.youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
+			var exp = /\b((?:https?:\/\/)www\.youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
 			var replacement = '<a href="$1" class="video" target="_blank"><img src="https://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
 
 			return text.replace(exp, replacement);
@@ -686,7 +698,7 @@ var ResponseHandler = function(json, $this) {
 			}
 		}
 
-		notifyOnNewUser(json.msg);
+		notifyOnNewUser(originalText);
 		incomingMessage = replaceOwnName(incomingMessage);
 
 		var res = replaceWithImgLinks(incomingMessage);
@@ -765,10 +777,20 @@ var ResponseHandler = function(json, $this) {
         });
 	}
 
+    var handleHistory = function() {
+        if (json.history) {
+            $this.domElems.chat.empty();
+            for (var i in json.history) {
+                handleMessage(json.history[i]);
+            }
+        }
+    };
+
+    handleHistory();
 	handleGuests();
 	handleOwnProperties();
 	handleDualChat();
-	handleMessage();
+	handleMessage(json);
 	handleErrors();
 };
 

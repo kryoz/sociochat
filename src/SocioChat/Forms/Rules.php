@@ -2,6 +2,7 @@
 
 namespace SocioChat\Forms;
 
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
@@ -22,12 +23,14 @@ class Rules
 		};
 	}
 
-	public static function namePattern()
+	public static function namePattern($c = 20, $hasSpaces = false)
 	{
-		return function ($val) {
+		return function ($val) use ($c, $hasSpaces) {
 			$name = trim($val);
-			if (preg_match("~^([\d\w]+)$~uis", $name)) {
-				return mb_strlen($name) <= 20;
+			$pattern = "~^([A-Za-zА-Яа-я0-9_-".($hasSpaces ? '\s' : '')."]+)$~uis";
+
+			if (preg_match($pattern, $name)) {
+				return mb_strlen($name) <= $c;
 			}
 		};
 	}
@@ -70,10 +73,26 @@ class Rules
 		};
 	}
 
-	public static function UserOnline()
+	public static function isUserOnline()
 	{
 		return function ($userId) {
-			return UserCollection::get()->getClientById($userId);
+			return UserCollection::get()->getClientById(trim($userId));
 		};
 	}
+
+	public static function existsChannel()
+	{
+		return function ($id) {
+			$channel = ChannelsCollection::get()->getChannelById(trim($id));
+			return $channel && !$channel->isPrivate();
+		};
+	}
+
+	public static function channelNameDuplication()
+	{
+		return function ($name) {
+			return ChannelsCollection::get()->getChannelByName(trim($name));
+		};
+	}
+
 }

@@ -3,6 +3,7 @@
 namespace SocioChat\Session;
 
 use SocioChat\Clients\User;
+use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserBlacklistDAO;
@@ -60,8 +61,9 @@ class DBSessionHandler implements SessionHandler
 
 		$session->save();
 
-		UserDAO::create()->dropById($oldUserId);
 		PropertiesDAO::create()->dropByUserId($oldUserId);
 		UserBlacklistDAO::create()->dropByUserId($oldUserId);
+		NameChangeDAO::create()->dropByUserId($oldUserId);
+		UserDAO::create()->dropById($oldUserId);
 	}
 }

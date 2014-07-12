@@ -24,6 +24,7 @@ class User implements ConnectionInterface
 	private $timer;
 	private $asyncDetach = true;
 	private $lastMsgId = 0;
+	private $publicChannels = [1, 2, 3 ,4];
 
 	/**
 	 * @var UserDAO
@@ -39,7 +40,7 @@ class User implements ConnectionInterface
 	public function __construct(ConnectionInterface $client)
 	{
 		$this->connection = $client;
-		ChatsCollection::get()->fetchRoom(1);
+		ChannelsCollection::get()->createChannel(1);
 	}
 
 	public function send($data)
@@ -95,7 +96,7 @@ class User implements ConnectionInterface
 	 */
 	public function setChatId($chatId)
 	{
-		ChatsCollection::get()->fetchRoom($chatId);
+		ChannelsCollection::get()->createChannel($chatId);
 		$this->userDAO->setChatId($chatId);
 		return $this;
 	}
@@ -186,7 +187,7 @@ class User implements ConnectionInterface
 
 	public function isInPrivateChat()
 	{
-		return $this->getChatId() != 1;
+		return in_array($this->getChatId(), $this->publicChannels, true);
 	}
 
 	/**
@@ -219,18 +220,20 @@ class User implements ConnectionInterface
 		return $this->ip;
 	}
 
-	public function save()
+	public function save($fullSave = true)
 	{
 		try {
-			$properties = $this->getProperties();
-			$properties->save();
+			if ($fullSave) {
+				$properties = $this->getProperties();
+				$properties->save();
 
-			$blacklist = $this->getBlacklist();
-			$blacklist->save();
+				$blacklist = $this->getBlacklist();
+				$blacklist->save();
+			}
 
 			$this->userDAO->save();
 		} catch (\PDOException $e) {
-			DI::get()->container()->get('logger')->warn("PDO Exception: ".print_r($e, 1), [__CLASS__]);
+			DI::get()->getLogger()->warn("User onSave PDO Exception: ".print_r($e, 1), [__CLASS__]);
 		}
 	}
 }
