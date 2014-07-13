@@ -210,7 +210,7 @@ class PropertiesController extends ControllerBase
 				$name = $newname;
 			}
 		} elseif ($hasNameChanged && $isTimedOut) {
-			$this->errorResponse($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
+			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDateRaw() + $config->nameChangeFreq)));
 			return;
 		}
 

@@ -19,7 +19,7 @@ class MainChatPrivateHandler
 		self::moveUsersToPublic($user, $users);
 		self::informYouselfOnExit($user);
 
-		ChannelNotifier::uploadHistory($user);
+		ChannelNotifier::uploadHistory($user, $users);
 		ChannelNotifier::indentifyChat($user, 1);
 
 		$chats->clean($user);

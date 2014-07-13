@@ -19,12 +19,12 @@ class ResponseFilter implements ChainInterface
 {
 	public function handleRequest(ChainContainer $chain)
 	{
-		$clients = UserCollection::get();
+		$users = UserCollection::get();
 		$user = $chain->getFrom();
 
-		$this->sendNickname($user, $clients);
-		$this->handleHistory($user);
-		$this->notifyChat($user, $clients);
+		$this->sendNickname($user, $users);
+		$this->handleHistory($user, $users);
+		$this->notifyChat($user, $users);
 	}
 
 	public function sendNickname(User $user, UserCollection $clients)
@@ -87,9 +87,9 @@ class ResponseFilter implements ChainInterface
 		}
 	}
 
-	private function handleHistory(User $user)
+	private function handleHistory(User $user, UserCollection $users)
 	{
-		ChannelNotifier::uploadHistory($user);
+		ChannelNotifier::uploadHistory($user, $users);
 
 		if (file_exists(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt') && $user->getLastMsgId() == 0) {
 			$motd = file_get_contents(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt');

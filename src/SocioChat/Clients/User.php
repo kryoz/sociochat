@@ -95,7 +95,6 @@ class User implements ConnectionInterface
 	 */
 	public function setChatId($chatId)
 	{
-		ChannelsCollection::get()->createChannel($chatId);
 		$this->userDAO->setChatId($chatId);
 		return $this;
 	}

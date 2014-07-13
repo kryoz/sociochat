@@ -42,6 +42,7 @@ class ChannelHandler
 			$desiredUser->setChatId($newChatRoomId);
 			$desiredUser->save();
 
+			ChannelsCollection::get()->createChannel($newChatRoomId);
 			$user->setChatId($newChatRoomId);
 			$user->save();
 
@@ -77,7 +78,7 @@ class ChannelHandler
 		$user->setChatId($channelId);
 		$user->save(false);
 
-		ChannelNotifier::uploadHistory($user);
+		ChannelNotifier::uploadHistory($user, $users);
 		ChannelNotifier::welcome($user, $users, $channelId, true);
 		ChannelNotifier::indentifyChat($user, $channelId);
 	}

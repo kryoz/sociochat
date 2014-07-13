@@ -18,7 +18,6 @@ class ChannelNotifier
 	{
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setGuests($userCollection->getUsersByChatId($chatId))
 			->setChannelId($chatId);
 
 		if ($user->getLastMsgId() == 0 || $override) {
@@ -74,8 +73,17 @@ class ChannelNotifier
 		}
 	}
 
-	public static function uploadHistory(User $user)
+	public static function uploadHistory(User $user, UserCollection $userCollection)
 	{
+		$response = (new MessageResponse())
+			->setTime(null)
+			->setGuests($userCollection->getUsersByChatId($user->getChatId()))
+			->setChannelId($user->getChatId());
+
+		$userCollection
+			->setResponse($response)
+			->notify();
+
 		$history = ChannelsCollection::get();
 		$log = $history->getHistory($user);
 		$client = (new UserCollection())
@@ -89,8 +97,9 @@ class ChannelNotifier
 			if ($response->getToUserName()) {
 				$name = $user->getProperties()->getName();
 				if (!($response->getToUserName() == $name || $response->getFromName() == $name)) {
-					continue;
+					$historyResponse->addResponse($response);
 				}
+				continue;
 			}
 
 			$historyResponse->addResponse($response);
