@@ -71,7 +71,7 @@ class PropertiesController extends ControllerBase
 			->setAvatarImg($image)
 			->save();
 
-		$chatId = $user->getChatId();
+		$chatId = $user->getChannelId();
 
 		$this->propertiesResponse($chain->getFrom());
 
@@ -150,7 +150,7 @@ class PropertiesController extends ControllerBase
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setChannelId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		(new UserCollection())
 			->attach($user)
@@ -161,8 +161,8 @@ class PropertiesController extends ControllerBase
 	private function guestsUpdateResponse(User $user, $oldName)
 	{
 		$response = (new MessageResponse())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))
-			->setChannelId($user->getChatId())
+			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()))
+			->setChannelId($user->getChannelId())
 			->setTime(null);
 
 		$props = $user->getProperties();
@@ -181,7 +181,7 @@ class PropertiesController extends ControllerBase
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
 			->setMsg(MsgToken::create('ProfileChangeForbiddenInDualization'))
-			->setChannelId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		(new UserCollection())
 			->attach($user)
@@ -199,7 +199,7 @@ class PropertiesController extends ControllerBase
 		$isNewbie = mb_strpos($name, $guestName) !== false;
 
 		$lastChange = NameChangeDAO::create()->getLastByUser($user);
-		$isTimedOut = $lastChange && $lastChange->getDate() < time() + $config->nameChangeFreq;
+		$isTimedOut = $lastChange && $lastChange->getDateRaw() < time() + $config->nameChangeFreq;
 		$hasNameChanged = $name != $user->getProperties()->getName();
 
 		if ($isNewbie) {

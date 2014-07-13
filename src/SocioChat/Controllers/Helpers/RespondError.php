@@ -12,7 +12,7 @@ class RespondError
 	{
 		$response = (new ErrorResponse())
 			->setErrors(is_array($errors) ? $errors : [$errors ?: $user->getLang()->getPhrase('RequiredActionNotSpecified')])
-			->setChannelId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		(new UserCollection())
 			->attach($user)

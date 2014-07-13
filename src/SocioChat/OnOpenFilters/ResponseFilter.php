@@ -22,17 +22,16 @@ class ResponseFilter implements ChainInterface
 		$users = UserCollection::get();
 		$user = $chain->getFrom();
 
-		$this->sendNickname($user, $users);
+		$this->sendNickname($user);
 		$this->handleHistory($user, $users);
 		$this->notifyChat($user, $users);
 	}
 
-	public function sendNickname(User $user, UserCollection $clients)
+	public function sendNickname(User $user)
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setChannelId($user->getChatId())
-			->setGuests($clients->getUsersByChatId($user->getChatId()));
+			->setChannelId($user->getChannelId());
 
 		(new UserCollection())
 			->attach($user)
@@ -46,7 +45,7 @@ class ResponseFilter implements ChainInterface
 	 */
 	public function notifyChat(User $user, UserCollection $userCollection)
 	{
-		$channelId = $user->getChatId();
+		$channelId = $user->getChannelId();
 
 		DI::get()->getLogger()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
@@ -82,8 +81,8 @@ class ResponseFilter implements ChainInterface
 				->setResponse($response)
 				->notify(false);
 		} else {
-			ChannelNotifier::welcome($user, $userCollection, $channelId);
-			ChannelNotifier::indentifyChat($user, $channelId, true);
+			ChannelNotifier::welcome($user, $userCollection);
+			ChannelNotifier::indentifyChat($user, true);
 		}
 	}
 
@@ -97,7 +96,7 @@ class ResponseFilter implements ChainInterface
 			$client = (new UserCollection())
 				->attach($user);
 			$response = (new MessageResponse())
-				->setChannelId($user->getChatId())
+				->setChannelId($user->getChannelId())
 				->setMsg(MsgRaw::create($motd));
 			$client
 				->setResponse($response)

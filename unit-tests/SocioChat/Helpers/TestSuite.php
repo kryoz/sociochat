@@ -29,7 +29,7 @@ class TestSuite extends \PHPUnit_Framework_TestCase
 	 */
 	protected function getMockUser($timId = TimEnum::ILE)
 	{
-		$user = $this->getMock(User::class, ['getId', 'getChanelId', 'getProperties'], [], '', false);
+		$user = $this->getMock(User::class, ['getId', 'getChannelId', 'getProperties'], [], '', false);
 		$user->expects($this->any())->method('getId')->willReturn($this->userSeq);
 		$user->expects($this->any())->method('getProperties')->willReturn($this->getMockProperties($timId));
 		$this->userSeq++;

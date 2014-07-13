@@ -11,11 +11,11 @@ class MessageResponse extends Response
 	 */
 	protected $msgObj;
 
-	protected $msg = null;
-	protected $time = null;
-	protected $dualChat = null;
-	protected $toName = null;
-	protected $lastMsgId = null;
+	protected $msg;
+	protected $time;
+	protected $dualChat;
+	protected $toName;
+	protected $lastMsgId;
 
 	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient', 'msgObj'];
 

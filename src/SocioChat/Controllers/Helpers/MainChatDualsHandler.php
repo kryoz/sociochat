@@ -25,7 +25,7 @@ class MainChatDualsHandler
 	private static function informOnPendingExit(User $user)
 	{
 		$response = (new MessageResponse())
-			->setChannelId($user->getChatId())
+			->setChannelId($user->getChannelId())
 			->setTime(null)
 			->setDualChat('exit')
 			->setMsg(MsgToken::create('ExitDualQueue'));
@@ -47,8 +47,8 @@ class MainChatDualsHandler
 		foreach ($userIds as $userId) {
 			$user = $users->getClientById($userId);
 			$response = (new MessageResponse())
-				->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))
-				->setChannelId($user->getChatId());
+				->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()))
+				->setChannelId($user->getChannelId());
 
 			$notification
 				->attach($user)
