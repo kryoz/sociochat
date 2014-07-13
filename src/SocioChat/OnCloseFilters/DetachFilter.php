@@ -73,8 +73,8 @@ class DetachFilter implements ChainInterface
 
 		$response
 			->setTime(null)
-			->setGuests($clients->getUsersByChatId($user->getChatId()))
-			->setChannelId($user->getChatId());
+			->setGuests($clients->getUsersByChatId($user->getChannelId()))
+			->setChannelId($user->getChannelId());
 
 		$clients
 			->setResponse($response)

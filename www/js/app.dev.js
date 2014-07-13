@@ -419,7 +419,7 @@ var App = {
 var ResponseHandler = function(json, $this) {
     var getAvatar = function (user) {
         var text = '<div class="user-avatar"';
-        if (user.avatarThumb) {
+        if (user && user.avatarThumb) {
             text += ' data-src="'+user.avatarImg+'">';
             text += '<img src="'+ $this.getImgUrl(user.avatarThumb) +'">';
         } else {
@@ -446,7 +446,7 @@ var ResponseHandler = function(json, $this) {
 		return colorClass;
 	}
 
-	var handleGuests = function() {
+	var handleGuests = function(json) {
 		if (json.guests) {
 			$this.guests = json.guests;
 			var guests = $this.guests;
@@ -596,7 +596,7 @@ var ResponseHandler = function(json, $this) {
 
             if ($this.chatLastFrom != response.fromName) {
                 msg += getAvatar(fromUser)+' ';
-                msg += '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ response.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+fromUser.name+'</div>';
+                msg += '<div class="nickname ' + getSexClass(fromUser) + '" title="['+ response.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+ response.fromName +'</div>';
             } else {
                 msgCSStype = 'repeat';
             }
@@ -771,8 +771,13 @@ var ResponseHandler = function(json, $this) {
 
     var handleHistory = function() {
         if (json.history) {
-            $this.domElems.chat.empty();
+            if (json.clear) {
+                $this.msgCount = 0;
+                $this.domElems.chat.empty();
+            }
+
             for (var i in json.history) {
+                handleGuests(json.history[i]);
                 handleMessage(json.history[i]);
             }
         }
@@ -815,9 +820,9 @@ var ResponseHandler = function(json, $this) {
 
     };
 
-    handleHistory();
-	handleGuests();
+	handleGuests(json);
 	handleOwnProperties();
+    handleHistory();
 	handleDualChat();
 	handleMessage(json);
 	handleErrors();

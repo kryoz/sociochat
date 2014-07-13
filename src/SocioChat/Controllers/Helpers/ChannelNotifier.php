@@ -14,13 +14,15 @@ use SocioChat\Response\MessageResponse;
 class ChannelNotifier
 {
 
-	public static function welcome(User $user, UserCollection $userCollection, $chatId, $override = false)
+	public static function welcome(User $user, UserCollection $userCollection)
 	{
+		$chatId = $user->getChannelId();
+
 		$response = (new MessageResponse())
 			->setTime(null)
 			->setChannelId($chatId);
 
-		if ($user->getLastMsgId() == 0 || $override) {
+		if ($user->getLastMsgId() == 0) {
 			$response->setMsg(MsgToken::create('WelcomeUser', $userCollection->getClientsCount($chatId), $user->getProperties()->getName()));
 		}
 
@@ -31,9 +33,10 @@ class ChannelNotifier
 		self::notifyOnPendingDuals($user);
 	}
 
-	public static function indentifyChat(User $user, $channelId, $silent = false)
+	public static function indentifyChat(User $user, $silent = false)
 	{
 		$channels = ChannelsCollection::get();
+		$channelId = $user->getChannelId();
 
 		if (!$silent) {
 			$response = (new MessageResponse())
@@ -65,7 +68,7 @@ class ChannelNotifier
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
 				->setTime(null)
-				->setChannelId($user->getChatId());
+				->setChannelId($user->getChannelId());
 			(new UserCollection())
 				->attach($user)
 				->setResponse($response)
@@ -73,30 +76,25 @@ class ChannelNotifier
 		}
 	}
 
-	public static function uploadHistory(User $user, UserCollection $userCollection)
+	public static function uploadHistory(User $user, UserCollection $users, $clear = null)
 	{
-		$response = (new MessageResponse())
-			->setTime(null)
-			->setGuests($userCollection->getUsersByChatId($user->getChatId()))
-			->setChannelId($user->getChatId());
-
-		$userCollection
-			->setResponse($response)
-			->notify();
-
 		$history = ChannelsCollection::get();
+
 		$log = $history->getHistory($user);
 		$client = (new UserCollection())
 			->attach($user);
 
-		$historyResponse = (new HistoryResponse)->setChannelId($user->getChatId());
+		$historyResponse = (new HistoryResponse)
+			->setClear($clear)
+			->setGuests($users->getUsersByChatId($user->getChannelId()))
+			->setChannelId($user->getChannelId());
 
 		foreach ($log as $response) {
 			/* @var $response MessageResponse */
 
 			if ($response->getToUserName()) {
 				$name = $user->getProperties()->getName();
-				if (!($response->getToUserName() == $name || $response->getFromName() == $name)) {
+				if ($response->getToUserName() == $name || $response->getFromName() == $name) {
 					$historyResponse->addResponse($response);
 				}
 				continue;
@@ -105,6 +103,8 @@ class ChannelNotifier
 			$historyResponse->addResponse($response);
 		}
 
-		$client->setResponse($historyResponse)->notify(false);
+		$client
+			->setResponse($historyResponse)
+			->notify(false);
 	}
 } 

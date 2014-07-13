@@ -43,7 +43,7 @@ class MessageController extends ControllerBase
 			->setFrom($from)
 			->setMsg(Msg::create($msg))
 			->setTime(null)
-			->setChannelId($from->getChatId())
+			->setChannelId($from->getChannelId())
 			->setToUserName($recipient->getProperties()->getName());
 
 		(new UserCollection())
@@ -59,7 +59,7 @@ class MessageController extends ControllerBase
 			->setFrom($user)
 			->setMsg(Msg::create($msg))
 			->setTime(null)
-			->setChannelId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		$clients
 			->setResponse($response)

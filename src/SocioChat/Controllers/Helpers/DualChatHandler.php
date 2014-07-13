@@ -41,14 +41,14 @@ class DualChatHandler
 
 		if ($dualUserId = $duals->matchDual($user)) {
 			$dualUser = $users->getClientById($dualUserId);
-			$oldChatId = $user->getChatId();
+			$oldChatId = $user->getChannelId();
 			$newChatRoomId = uniqid('_', 1);
 
 			ChannelsCollection::get()->createChannel($newChatRoomId);
-			$dualUser->setChatId($newChatRoomId);
+			$dualUser->setChannelId($newChatRoomId);
 			$dualUser->save();
 
-			$user->setChatId($newChatRoomId);
+			$user->setChannelId($newChatRoomId);
 			$user->save();
 
 			self::sendMatchResponse($users->getUsersByChatId($newChatRoomId), MsgToken::create('DualIsFound'));
@@ -78,7 +78,7 @@ class DualChatHandler
 
 	private static function dualGuestsList(User $user)
 	{
-		$dualUsers = UserCollection::get()->getUsersByChatId($user->getChatId());
+		$dualUsers = UserCollection::get()->getUsersByChatId($user->getChannelId());
 		if (!$dual = TimEnum::create(PendingDuals::get()->getDualTim($user->getProperties()->getTim()))) {
 			return;
 		}
@@ -100,7 +100,7 @@ class DualChatHandler
 
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setChannelId($user->getChatId())
+			->setChannelId($user->getChannelId())
 			->setMsg(MsgToken::create('DualIsWanted', $dual->getShortName()));
 
 		$collection
@@ -123,7 +123,7 @@ class DualChatHandler
 				->setMsg(MsgToken::create('DualQueueShifted', count($userIds)))
 				->setDualChat('init')
 				->setTime(null)
-				->setChannelId($user->getChatId());
+				->setChannelId($user->getChannelId());
 
 			$notification
 				->attach($user)
@@ -138,7 +138,7 @@ class DualChatHandler
 		$response = (new MessageResponse())
 			->setMsg($msg)
 			->setTime(null)
-			->setChannelId($user->getChatId())
+			->setChannelId($user->getChannelId())
 			->setDualChat('init');
 
 		(new UserCollection())
@@ -161,8 +161,8 @@ class DualChatHandler
 		$response = (new MessageResponse())
 			->setDualChat('match')
 			->setMsg($msg)
-			->setChannelId($user->getChatId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
+			->setChannelId($user->getChannelId())
+			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()));
 
 		$notification
 			->setResponse($response)

@@ -80,7 +80,7 @@ class AdminController extends ControllerBase
 
 		$notify = (new UserCollection())->attach($chain->getFrom());
 		$response = (new MessageResponse())
-			->setChannelId($chain->getFrom()->getChatId())
+			->setChannelId($chain->getFrom()->getChannelId())
 			->setMsg(MsgRaw::create($this->listFormatter($list)))
 			->setGuests(null);
 

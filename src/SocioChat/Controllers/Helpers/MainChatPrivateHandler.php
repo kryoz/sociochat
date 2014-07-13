@@ -19,11 +19,10 @@ class MainChatPrivateHandler
 		self::moveUsersToPublic($user, $users);
 		self::informYouselfOnExit($user);
 
-		ChannelNotifier::uploadHistory($user, $users);
-		ChannelNotifier::indentifyChat($user, 1);
+		ChannelNotifier::uploadHistory($user, $users, true);
+		ChannelNotifier::indentifyChat($user);
 
 		$chats->clean($user);
-		$user->save();
 	}
 
 	/**
@@ -32,21 +31,21 @@ class MainChatPrivateHandler
 	 */
 	private static function moveUsersToPublic(User $user, UserCollection $users)
 	{
-		$partners = $users->getUsersByChatId($user->getChatId());
+		$partners = $users->getUsersByChatId($user->getChannelId());
 
 		$response = (new MessageResponse())
 			->setTime(null)
 			->setMsg(MsgToken::create('UserLeftPrivate', $user->getProperties()->getName()))
 			->setDualChat('exit')
 			->setGuests($partners)
-			->setChannelId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		$users
 			->setResponse($response)
 			->notify();
 
 		foreach ($partners as $pUser) {
-			$pUser->setChatId(1);
+			$pUser->setChannelId(1);
 			$pUser->save();
 		}
 	}
@@ -55,8 +54,8 @@ class MainChatPrivateHandler
 	{
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setGuests($users->getUsersByChatId($user->getChatId()))
-			->setChannelId($user->getChatId());
+			->setGuests($users->getUsersByChatId($user->getChannelId()))
+			->setChannelId($user->getChannelId());
 
 		$users
 			->setResponse($response)
@@ -66,7 +65,7 @@ class MainChatPrivateHandler
 	private static function informYouselfOnExit(User $user)
 	{
 		$response = (new MessageResponse())
-			->setChannelId($user->getChatId())
+			->setChannelId($user->getChannelId())
 			->setTime(null)
 			->setDualChat('exit')
 			->setMsg(MsgToken::create('ReturnedToMainChat'));

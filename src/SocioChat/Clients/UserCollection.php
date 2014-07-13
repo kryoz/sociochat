@@ -47,7 +47,7 @@ class UserCollection
 
 		foreach ($this->users as $user) {
 			/* @var $user User */
-			if ($response->getChanelId() == $user->getChatId()) {
+			if ($response->getChannelId() == $user->getChannelId()) {
 				// Filter responses from banned users
 				$saveGuests = $response->getGuests();
 
@@ -97,7 +97,7 @@ class UserCollection
 	{
 		$chatUsers = null;
 		foreach ($this->users as $user) {
-			if ($user->getChatId() == $chatId) {
+			if ($user->getChannelId() == $chatId) {
 				$chatUsers[] = $user;
 			}
 		}
@@ -145,7 +145,7 @@ class UserCollection
 	{
 		$counter = 0;
 		foreach ($this->users as $user) {
-			if ($user->getChatId() == $chatId) {
+			if ($user->getChannelId() == $chatId) {
 				$counter++;
 			}
 		}

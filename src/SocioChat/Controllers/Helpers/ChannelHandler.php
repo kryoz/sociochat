@@ -39,11 +39,11 @@ class ChannelHandler
 		} elseif (!$time && !$inviterUserId) {
 			$newChatRoomId = uniqid('_', 1);
 
-			$desiredUser->setChatId($newChatRoomId);
+			$desiredUser->setChannelId($newChatRoomId);
 			$desiredUser->save();
 
 			ChannelsCollection::get()->createChannel($newChatRoomId);
-			$user->setChatId($newChatRoomId);
+			$user->setChannelId($newChatRoomId);
 			$user->save();
 
 			self::sendMatchResponse($users->getUsersByChatId($newChatRoomId), MsgToken::create('InvitationAccepted'));
@@ -75,12 +75,14 @@ class ChannelHandler
 		}
 
 		$channelId = trim($form->getValue('channelId'));
-		$user->setChatId($channelId);
+		$user->setChannelId($channelId);
 		$user->save(false);
 
-		ChannelNotifier::uploadHistory($user, $users);
-		ChannelNotifier::welcome($user, $users, $channelId, true);
-		ChannelNotifier::indentifyChat($user, $channelId);
+		$user->setLastMsgId(0);
+
+		ChannelNotifier::uploadHistory($user, $users, true);
+		ChannelNotifier::welcome($user, $users);
+		ChannelNotifier::indentifyChat($user);
 	}
 
 	public static function setChannelName(ChainContainer $chain)
@@ -159,7 +161,7 @@ class ChannelHandler
 		return function(User $userInviter, User $desiredUser) {
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('UserInviteTimeout', $userInviter->getProperties()->getName()))
-				->setChannelId($desiredUser->getChatId())
+				->setChannelId($desiredUser->getChannelId())
 				->setTime(null);
 
 			(new UserCollection())
@@ -169,7 +171,7 @@ class ChannelHandler
 
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('SelfInviteTimeout', $desiredUser->getProperties()->getName()))
-				->setChannelId($userInviter->getChatId())
+				->setChannelId($userInviter->getChannelId())
 				->setTime(null);
 
 			(new UserCollection())
@@ -184,8 +186,8 @@ class ChannelHandler
 		$response = (new MessageResponse())
 			->setMsg($msg)
 			->setTime(null)
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId())) // список для нового чата
-			->setChannelId($user->getChatId());
+			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId())) // список для нового чата
+			->setChannelId($user->getChannelId());
 
 
 		(new UserCollection())
@@ -207,8 +209,8 @@ class ChannelHandler
 		$response = (new MessageResponse())
 			->setDualChat('match')
 			->setMsg($msg)
-			->setChannelId($user->getChatId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
+			->setChannelId($user->getChannelId())
+			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()));
 
 		$notification
 			->setResponse($response)

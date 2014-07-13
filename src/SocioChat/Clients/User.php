@@ -93,7 +93,7 @@ class User implements ConnectionInterface
 	 * @param string $chatId
 	 * @return $this
 	 */
-	public function setChatId($chatId)
+	public function setChannelId($chatId)
 	{
 		$this->userDAO->setChatId($chatId);
 		return $this;
@@ -102,7 +102,7 @@ class User implements ConnectionInterface
 	/**
 	 * @return int
 	 */
-	public function getChatId()
+	public function getChannelId()
 	{
 		return $this->userDAO->getChatId();
 	}
@@ -185,7 +185,7 @@ class User implements ConnectionInterface
 
 	public function isInPrivateChat()
 	{
-		return $this->getChatId()[0] == '_';
+		return $this->getChannelId()[0] == '_';
 	}
 
 	/**

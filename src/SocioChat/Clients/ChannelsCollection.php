@@ -38,22 +38,22 @@ class ChannelsCollection
 	 */
 	public function clean(User $user)
 	{
-		$roomId = $user->getChatId();
+		$roomId = $user->getChannelId();
 		if (UserCollection::get()->getClientsCount($roomId) == 0) {
 			if (isset($this->channels[$roomId]) && $user->isInPrivateChat()) {
 				unset($this->channels[$roomId]);
-				$user->setChatId(1);
+				$user->setChannelId(1);
 			}
 		}
 	}
 
 	public function getHistory(User $user)
 	{
-		if (!isset($this->channels[$user->getChatId()])) {
+		if (!isset($this->channels[$user->getChannelId()])) {
 			return [];
 		}
 
-		$room = $this->channels[$user->getChatId()];
+		$room = $this->channels[$user->getChannelId()];
 		/* @var $room Channel */
 
 		return $room->getHistory($user->getLastMsgId());
@@ -61,9 +61,11 @@ class ChannelsCollection
 
 	public function pushToHistory(Response $response)
 	{
-		$this->createChannel($response->getChanelId());
+		if (!isset($this->channels[$response->getChannelId()])) {
+			throw new \Exception('Channel id = '.$response->getChannelId().' has not been initialized');
+		}
 		/* @var $room Channel */
-		$room = $this->channels[$response->getChanelId()];
+		$room = $this->channels[$response->getChannelId()];
 
 		return $room->pushResponse($response);
 	}

@@ -24,7 +24,7 @@ abstract class Response
 		return $this;
 	}
 
-	public function getChanelId()
+	public function getChannelId()
 	{
 		return $this->chatId;
 	}
