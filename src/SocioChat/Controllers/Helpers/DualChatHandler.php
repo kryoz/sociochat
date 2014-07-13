@@ -65,7 +65,7 @@ class DualChatHandler
 		$newCommonList = $allUsers->getUsersByChatId($oldChatId);
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setChatId($oldChatId)
+			->setChannelId($oldChatId)
 			->setMsg($msg)
 			->setGuests($newCommonList);
 
@@ -98,7 +98,7 @@ class DualChatHandler
 
 		$response = (new MessageResponse())
 			->setTime(null)
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setMsg(MsgToken::create('DualIsWanted', $dual->getShortName()));
 
 		$collection
@@ -121,8 +121,7 @@ class DualChatHandler
 				->setMsg(MsgToken::create('DualQueueShifted', count($userIds)))
 				->setDualChat('init')
 				->setTime(null)
-				->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))
-				->setChatId($user->getChatId());
+				->setChannelId($user->getChatId());
 
 			$notification
 				->attach($user)
@@ -137,8 +136,7 @@ class DualChatHandler
 		$response = (new MessageResponse())
 			->setMsg($msg)
 			->setTime(null)
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId())) // список для нового чата
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setDualChat('init');
 
 		(new UserCollection())
@@ -161,7 +159,7 @@ class DualChatHandler
 		$response = (new MessageResponse())
 			->setDualChat('match')
 			->setMsg($msg)
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
 
 		$notification

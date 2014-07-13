@@ -64,7 +64,7 @@ class FloodFilter implements ChainInterface
 	private function respondFloodError(User $user)
 	{
 		$response = (new ErrorResponse())
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setErrors(['flood' => $user->getLang()->getPhrase('FloodDetected')]);
 
 		(new UserCollection())

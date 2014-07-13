@@ -69,7 +69,7 @@ class BlacklistController extends ControllerBase
 		$response = (new MessageResponse())
 			->setMsg(MsgToken::create('UserBannedSuccessfully', $banUser->getProperties()->getName()))
 			->setTime(null)
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
 
 		(new UserCollection())
@@ -79,7 +79,7 @@ class BlacklistController extends ControllerBase
 
 		$response = (new MessageResponse())
 			->setMsg(MsgToken::create('UserBannedYou', $user->getProperties()->getName()))
-			->setChatId($banUser->getChatId())
+			->setChannelId($banUser->getChatId())
 			->setTime(null);
 
 		(new UserCollection())
@@ -93,7 +93,7 @@ class BlacklistController extends ControllerBase
 		$response = (new MessageResponse())
 			->setMsg(MsgToken::create('UserIsUnbanned', $banUser->getProperties()->getName()))
 			->setTime(null)
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
 
 		(new UserCollection())
@@ -103,7 +103,7 @@ class BlacklistController extends ControllerBase
 
 		$response = (new MessageResponse())
 			->setMsg(MsgToken::create('UserUnbannedYou', $user->getProperties()->getName()))
-			->setChatId($banUser->getChatId())
+			->setChannelId($banUser->getChatId())
 			->setTime(null);
 
 		(new UserCollection())

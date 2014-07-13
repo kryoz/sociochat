@@ -18,13 +18,13 @@ abstract class Response
 	protected $chatId;
 	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient'];
 
-	public function setChatId($chatId)
+	public function setChannelId($chatId)
 	{
 		$this->chatId = $chatId;
 		return $this;
 	}
 
-	public function getChatId()
+	public function getChanelId()
 	{
 		return $this->chatId;
 	}

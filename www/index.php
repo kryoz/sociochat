@@ -1,4 +1,5 @@
 <?php
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 use SocioChat\Message\Lang;
@@ -60,10 +61,7 @@ require_once "pages/header.php";
 						<li class="dropdown">
 							<a href="#" data-toggle="dropdown" class="dropdown-toggle">Паблики <b class="caret"></b></a>
 							<ul class="dropdown-menu" id="menu-channels">
-								<li><a href="#" data-id="1">1 <span class="glyphicon glyphicon-ok-sign"></span></a></li>
-								<li><a href="#" data-id="2">2</a></li>
-								<li><a href="#" data-id="3">3</a></li>
-								<li><a href="#" data-id="4">4</a></li>
+
 							</ul>
 						</li>
 						<li>

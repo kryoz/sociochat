@@ -60,6 +60,10 @@ class ChannelHandler
 		$lang = $user->getLang();
 		$request = $chain->getRequest();
 
+		if ($user->isInPrivateChat()) {
+			RespondError::make($user,[PropertiesDAO::USER_ID => $lang->getPhrase('YouCantLeavePrivate')]);
+			return;
+		}
 		try {
 			$form = (new Form())
 				->import($request)
@@ -154,7 +158,7 @@ class ChannelHandler
 		return function(User $userInviter, User $desiredUser) {
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('UserInviteTimeout', $userInviter->getProperties()->getName()))
-				->setChatId($desiredUser->getChatId())
+				->setChannelId($desiredUser->getChatId())
 				->setTime(null);
 
 			(new UserCollection())
@@ -164,7 +168,7 @@ class ChannelHandler
 
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('SelfInviteTimeout', $desiredUser->getProperties()->getName()))
-				->setChatId($userInviter->getChatId())
+				->setChannelId($userInviter->getChatId())
 				->setTime(null);
 
 			(new UserCollection())
@@ -180,7 +184,7 @@ class ChannelHandler
 			->setMsg($msg)
 			->setTime(null)
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId())) // список для нового чата
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChatId());
 
 
 		(new UserCollection())
@@ -202,7 +206,7 @@ class ChannelHandler
 		$response = (new MessageResponse())
 			->setDualChat('match')
 			->setMsg($msg)
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
 
 		$notification

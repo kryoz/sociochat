@@ -77,7 +77,7 @@ class PropertiesController extends ControllerBase
 
 		$response = (new MessageResponse())
 			->setGuests(UserCollection::get()->getUsersByChatId($chatId))
-			->setChatId($chatId)
+			->setChannelId($chatId)
 			->setTime(null);
 
 		UserCollection::get()
@@ -150,7 +150,7 @@ class PropertiesController extends ControllerBase
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChatId());
 
 		(new UserCollection())
 			->attach($user)
@@ -162,7 +162,7 @@ class PropertiesController extends ControllerBase
 	{
 		$response = (new MessageResponse())
 			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setTime(null);
 
 		$props = $user->getProperties();
@@ -181,7 +181,7 @@ class PropertiesController extends ControllerBase
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
 			->setMsg(MsgToken::create('ProfileChangeForbiddenInDualization'))
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChatId());
 
 		(new UserCollection())
 			->attach($user)

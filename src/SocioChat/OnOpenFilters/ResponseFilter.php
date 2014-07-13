@@ -31,7 +31,7 @@ class ResponseFilter implements ChainInterface
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setGuests($clients->getUsersByChatId($user->getChatId()));
 
 		(new UserCollection())
@@ -46,7 +46,7 @@ class ResponseFilter implements ChainInterface
 	 */
 	public function notifyChat(User $user, UserCollection $userCollection)
 	{
-		$chatId = $user->getChatId();
+		$channelId = $user->getChatId();
 
 		DI::get()->getLogger()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
@@ -56,10 +56,10 @@ class ResponseFilter implements ChainInterface
 
 			$response = (new MessageResponse())
 				->setTime(null)
-				->setGuests($userCollection->getUsersByChatId($chatId))
-				->setChatId($chatId);
+				->setGuests($userCollection->getUsersByChatId($channelId))
+				->setChannelId($channelId);
 
-			if ($userCollection->getClientsCount($chatId) > 1) {
+			if ($userCollection->getClientsCount($channelId) > 1) {
 				$dualUsers = $userCollection;
 				$response
 					->setMsg(MsgToken::create('PartnerIsOnline'))
@@ -82,7 +82,8 @@ class ResponseFilter implements ChainInterface
 				->setResponse($response)
 				->notify(false);
 		} else {
-			ChannelNotifier::welcome($user, $userCollection, $chatId);
+			ChannelNotifier::welcome($user, $userCollection, $channelId);
+			ChannelNotifier::indentifyChat($user, $channelId, true);
 		}
 	}
 
@@ -96,7 +97,7 @@ class ResponseFilter implements ChainInterface
 			$client = (new UserCollection())
 				->attach($user);
 			$response = (new MessageResponse())
-				->setChatId($user->getChatId())
+				->setChannelId($user->getChatId())
 				->setMsg(MsgRaw::create($motd));
 			$client
 				->setResponse($response)

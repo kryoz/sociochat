@@ -138,7 +138,7 @@ class LoginController extends ControllerBase
 	private function sendNotifyResponse(User $user)
 	{
 		$response = (new MessageResponse())
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setTime(null)
 			->setMsg(MsgToken::create('ProfileUpdated'));
 		(new UserCollection())

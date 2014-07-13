@@ -11,7 +11,7 @@ class PingController extends ControllerBase
 	{
 		$user = $chain->getFrom();
 		$response = (new PingResponse())
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChatId());
 
 		(new UserCollection())
 			->attach($user)

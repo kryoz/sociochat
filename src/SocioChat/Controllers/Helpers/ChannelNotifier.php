@@ -7,6 +7,7 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Message\MsgToken;
+use SocioChat\Response\ChannelsResponse;
 use SocioChat\Response\HistoryResponse;
 use SocioChat\Response\MessageResponse;
 
@@ -18,7 +19,7 @@ class ChannelNotifier
 		$response = (new MessageResponse())
 			->setTime(null)
 			->setGuests($userCollection->getUsersByChatId($chatId))
-			->setChatId($chatId);
+			->setChannelId($chatId);
 
 		if ($user->getLastMsgId() == 0 || $override) {
 			$response->setMsg(MsgToken::create('WelcomeUser', $userCollection->getClientsCount($chatId), $user->getProperties()->getName()));
@@ -30,13 +31,27 @@ class ChannelNotifier
 		self::notifyOnPendingDuals($user);
 	}
 
-	public static function indentifyChat(User $user, $channelId)
+	public static function indentifyChat(User $user, $channelId, $silent = false)
 	{
-		$response = (new MessageResponse())
-			->setTime(null)
-			->setChatId($channelId);
+		$channels = ChannelsCollection::get();
 
-		$response->setMsg(MsgToken::create('IdentifyChannel', $channelId));
+		if (!$silent) {
+			$response = (new MessageResponse())
+				->setTime(null)
+				->setChannelId($channelId);
+
+			$channel = $channels->getChannelById($channelId);
+			$response->setMsg(MsgToken::create('IdentifyChannel', $channel->getName()));
+
+			(new UserCollection)
+				->attach($user)
+				->setResponse($response)
+				->notify(false);
+		}
+
+		$response = (new ChannelsResponse())
+			->setChannels($channels)
+			->setChannelId($channelId);
 
 		(new UserCollection)
 			->attach($user)
@@ -50,7 +65,7 @@ class ChannelNotifier
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
 				->setTime(null)
-				->setChatId($user->getChatId());
+				->setChannelId($user->getChatId());
 			(new UserCollection())
 				->attach($user)
 				->setResponse($response)
@@ -65,7 +80,7 @@ class ChannelNotifier
 		$client = (new UserCollection())
 			->attach($user);
 
-		$historyResponse = (new HistoryResponse)->setChatId($user->getChatId());
+		$historyResponse = (new HistoryResponse)->setChannelId($user->getChatId());
 
 		foreach ($log as $response) {
 			/* @var $response MessageResponse */
