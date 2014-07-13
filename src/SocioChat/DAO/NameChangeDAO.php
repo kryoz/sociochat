@@ -28,6 +28,11 @@ class NameChangeDAO extends DAOBase
 		return $this[self::OLD_NAME];
 	}
 
+	public function getDateRaw()
+	{
+		return $this[self::DATE_CHANGE];
+	}
+
 	public function getDate()
 	{
 		return date('Y-m-d H:i:s', $this[self::DATE_CHANGE]);

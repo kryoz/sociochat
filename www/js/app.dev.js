@@ -42,7 +42,7 @@ var App = {
 	msgCount: 0,
 	guestCount: 0,
 	guests : [],
-    channels: [],
+    currentChannel: 1,
 	notificationProperties : [],
 	bufferSize: 100,
 
@@ -797,13 +797,20 @@ var ResponseHandler = function(json, $this) {
             $channels.append(item);
         }
 
+        $this.currentChannel = json.chatId;
+
         $channels.find('li a').click(function (e) {
-            var command = {
-                subject: 'Channel',
-                action: 'join',
-                channelId: $(this).data('id')
-            };
-            $this.send(command);
+            var channelId = $(this).data('id');
+
+            if (channelId != $this.currentChannel) {
+                var command = {
+                    subject: 'Channel',
+                    action: 'join',
+                    channelId: channelId
+                };
+                $this.send(command);
+            }
+
         });
 
     };
