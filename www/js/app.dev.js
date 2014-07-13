@@ -42,6 +42,7 @@ var App = {
 	msgCount: 0,
 	guestCount: 0,
 	guests : [],
+    channels: [],
 	notificationProperties : [],
 	bufferSize: 100,
 
@@ -320,15 +321,6 @@ var App = {
 			}
 			$this.send(command);
 		});
-
-        $this.domElems.menuChannels.find('li a').click(function (e) {
-            var command = {
-                subject: 'Channel',
-                action: 'join',
-                channelId: $(this).data('id')
-            }
-            $this.send(command);
-        });
 
 		$this.domElems.menuDualizeStop.click(function (e) {
 			var command = {
@@ -775,7 +767,7 @@ var ResponseHandler = function(json, $this) {
                 ava.hide();
             }
         });
-	}
+	};
 
     var handleHistory = function() {
         if (json.history) {
@@ -786,12 +778,43 @@ var ResponseHandler = function(json, $this) {
         }
     };
 
+    var handleChannels = function() {
+        if (!json.channels) {
+            return;
+        }
+
+        var $channels = $this.domElems.menuChannels;
+
+        $channels.empty();
+
+        for (var channelId in json.channels) {
+            var item = '<li><a href="#" data-id="' + channelId + '">' + json.channels[channelId];
+            if (channelId == json.chatId) {
+                item += ' <span class="glyphicon glyphicon-ok-sign"></span>';
+            }
+            item += '</a></li>';
+
+            $channels.append(item);
+        }
+
+        $channels.find('li a').click(function (e) {
+            var command = {
+                subject: 'Channel',
+                action: 'join',
+                channelId: $(this).data('id')
+            };
+            $this.send(command);
+        });
+
+    };
+
     handleHistory();
 	handleGuests();
 	handleOwnProperties();
 	handleDualChat();
 	handleMessage(json);
 	handleErrors();
+    handleChannels();
 };
 
 var AvatarUploadHandler = function($this) {

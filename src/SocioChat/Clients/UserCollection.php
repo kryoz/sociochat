@@ -47,7 +47,7 @@ class UserCollection
 
 		foreach ($this->users as $user) {
 			/* @var $user User */
-			if ($response->getChatId() == $user->getChatId()) {
+			if ($response->getChanelId() == $user->getChatId()) {
 				// Filter responses from banned users
 				$saveGuests = $response->getGuests();
 

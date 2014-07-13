@@ -11,24 +11,24 @@ class ChannelsCollection
 	/**
 	 * @var Channel[]
 	 */
-	private $chatRooms;
+	private $channels;
 
 	/**
-	 * @param string $roomId
+	 * @param string $channelId
 	 * @return $this
 	 */
-	public function createChannel($roomId)
+	public function createChannel($channelId)
 	{
-		if (!isset($this->chatRooms[$roomId])) {
-			$this->chatRooms[$roomId] = new Channel($roomId);
+		if (!isset($this->channels[$channelId])) {
+			$this->channels[$channelId] = new Channel($channelId);
 		}
 		return $this;
 	}
 
 	public function addChannel(Channel $channel)
 	{
-		if (!isset($this->chatRooms[$channel->getId()])) {
-			$this->chatRooms[$channel->getId()] = $channel;
+		if (!isset($this->channels[$channel->getId()])) {
+			$this->channels[$channel->getId()] = $channel;
 		}
 		return $this;
 	}
@@ -40,8 +40,8 @@ class ChannelsCollection
 	{
 		$roomId = $user->getChatId();
 		if (UserCollection::get()->getClientsCount($roomId) == 0) {
-			if (isset($this->chatRooms[$roomId]) && $user->isInPrivateChat()) {
-				unset($this->chatRooms[$roomId]);
+			if (isset($this->channels[$roomId]) && $user->isInPrivateChat()) {
+				unset($this->channels[$roomId]);
 				$user->setChatId(1);
 			}
 		}
@@ -49,11 +49,11 @@ class ChannelsCollection
 
 	public function getHistory(User $user)
 	{
-		if (!isset($this->chatRooms[$user->getChatId()])) {
+		if (!isset($this->channels[$user->getChatId()])) {
 			return [];
 		}
 
-		$room = $this->chatRooms[$user->getChatId()];
+		$room = $this->channels[$user->getChatId()];
 		/* @var $room Channel */
 
 		return $room->getHistory($user->getLastMsgId());
@@ -61,9 +61,9 @@ class ChannelsCollection
 
 	public function pushToHistory(Response $response)
 	{
-		$this->createChannel($response->getChatId());
+		$this->createChannel($response->getChanelId());
 		/* @var $room Channel */
-		$room = $this->chatRooms[$response->getChatId()];
+		$room = $this->channels[$response->getChanelId()];
 
 		return $room->pushResponse($response);
 	}
@@ -74,7 +74,7 @@ class ChannelsCollection
 	 */
 	public function getChannelById($id)
 	{
-		return isset($this->chatRooms[$id]) ? $this->chatRooms[$id] : null;
+		return isset($this->channels[$id]) ? $this->channels[$id] : null;
 	}
 
 	/**
@@ -83,10 +83,15 @@ class ChannelsCollection
 	 */
 	public function getChannelByName($channelName)
 	{
-		foreach ($this->chatRooms as $channel) {
+		foreach ($this->channels as $channel) {
 			if ($channel->getName() == $channelName) {
 				return $channel;
 			}
 		}
+	}
+
+	public function getChannels()
+	{
+		return $this->channels;
 	}
 }

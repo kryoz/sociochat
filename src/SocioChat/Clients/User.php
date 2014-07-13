@@ -24,7 +24,6 @@ class User implements ConnectionInterface
 	private $timer;
 	private $asyncDetach = true;
 	private $lastMsgId = 0;
-	private $publicChannels = [1, 2, 3 ,4];
 
 	/**
 	 * @var UserDAO
@@ -187,7 +186,7 @@ class User implements ConnectionInterface
 
 	public function isInPrivateChat()
 	{
-		return in_array($this->getChatId(), $this->publicChannels, true);
+		return $this->getChatId()[0] == '_';
 	}
 
 	/**

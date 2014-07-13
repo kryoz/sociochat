@@ -18,7 +18,9 @@ class MainChatPrivateHandler
 
 		self::moveUsersToPublic($user, $users);
 		self::informYouselfOnExit($user);
-		self::refreshGuestListOnNewChat($user, $users);
+
+		ChannelNotifier::uploadHistory($user);
+		ChannelNotifier::indentifyChat($user, 1);
 
 		$chats->clean($user);
 		$user->save();
@@ -37,7 +39,7 @@ class MainChatPrivateHandler
 			->setMsg(MsgToken::create('UserLeftPrivate', $user->getProperties()->getName()))
 			->setDualChat('exit')
 			->setGuests($partners)
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChatId());
 
 		$users
 			->setResponse($response)
@@ -54,7 +56,7 @@ class MainChatPrivateHandler
 		$response = (new MessageResponse())
 			->setTime(null)
 			->setGuests($users->getUsersByChatId($user->getChatId()))
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChatId());
 
 		$users
 			->setResponse($response)
@@ -64,7 +66,7 @@ class MainChatPrivateHandler
 	private static function informYouselfOnExit(User $user)
 	{
 		$response = (new MessageResponse())
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChatId())
 			->setTime(null)
 			->setDualChat('exit')
 			->setMsg(MsgToken::create('ReturnedToMainChat'));
