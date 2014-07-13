@@ -54,12 +54,13 @@ class SessionFilter implements ChainInterface
 
 		if ($sessionInfo = $sessionHandler->read($token)) {
 			$user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
+			$logger->info('Handling know user_id = '.$user->getId());
 		} else {
 			$user = UserDAO::create()
 				->setChatId(1)
 				->setDateRegister(date('Y-m-d H:i:s'));
 
-			$user->save(false);
+			$user->save();
 
 			$id = $user->getId();
 			$guestName = $lang->getPhrase('Guest').$id;
@@ -101,6 +102,7 @@ class SessionFilter implements ChainInterface
 	{
 		$user = UserDAO::create()->getById($sessionInfo['user_id']);
 		$lang = $newUserWrapper->getLang();
+
 		if ($oldClient = $clients->getClientById($user->getId())) {
 
 			if ($timer = $oldClient->getDisconnectTimer()) {

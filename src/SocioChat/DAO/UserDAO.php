@@ -2,6 +2,7 @@
 
 namespace SocioChat\DAO;
 
+use SocioChat\DI;
 use SocioChat\Utils\DbQueryHelper;
 
 class UserDAO extends DAOBase
@@ -99,12 +100,17 @@ class UserDAO extends DAOBase
 	}
 
 	/**
+	 * @throws \Exception
 	 * @return PropertiesDAO
 	 */
 	public function getPropeties()
 	{
 		if (!$this[self::PROPERTIES] && $this->getId()) {
 			$this[self::PROPERTIES] = PropertiesDAO::create()->getByUserId($this->getId());
+		}
+
+		if (!$this->getId()) {
+			throw new \Exception('Incorrect DAO request, id is null'.debug_print_backtrace());
 		}
 
 		return $this[self::PROPERTIES];
