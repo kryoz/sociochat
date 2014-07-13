@@ -92,7 +92,7 @@ require_once "pages/header.php";
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
-	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=1"></script>
+	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=2"></script>
 	<script type="text/javascript">
 		$(function() {
 			var app = new App.Init('<?=$config->domain->ws?>', '<?=session_id()?>', <?=$config->uploads->avatars->thumbdim?>);

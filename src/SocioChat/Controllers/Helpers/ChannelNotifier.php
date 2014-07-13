@@ -24,6 +24,7 @@ class ChannelNotifier
 		if ($user->getLastMsgId() == 0 || $override) {
 			$response->setMsg(MsgToken::create('WelcomeUser', $userCollection->getClientsCount($chatId), $user->getProperties()->getName()));
 		}
+
 		$userCollection
 			->setResponse($response)
 			->notify();
