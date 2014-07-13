@@ -51,13 +51,15 @@ abstract class DAOBase extends FixedArrayAccess
 
 	public function getId()
 	{
-		return $this[self::ID];
+		return $this[static::ID];
 	}
 
 	public function save()
 	{
-		$params = array_diff_key($this->properties, $this->relativeProperties + [self::ID => null]);
+		$params = array_diff_key($this->properties, $this->relativeProperties + [static::ID => null]);
 		$sequence = null;
+
+		$oldId = $this[static::ID];
 
 		if (!$this->getId()) {
 			$keys = array_keys($params);
@@ -69,6 +71,8 @@ abstract class DAOBase extends FixedArrayAccess
 			}
 			$query .= "(".implode(', ', $keys). ")";
 			$sequence = $this->dbTable.'_id_seq';
+
+			$this[static::ID] = $this->db->exec($query, $params, $sequence, $this->types);
 		} else {
 			$query = "UPDATE {$this->dbTable} SET ";
 			$queryParts = [];
@@ -77,14 +81,13 @@ abstract class DAOBase extends FixedArrayAccess
 				$queryParts[] = "$key = :{$key}";
 			}
 
-			$query .= implode(", ", $queryParts). " WHERE id = :".self::ID;
-			$params += [self::ID => $this->getId()];
+			$query .= implode(", ", $queryParts). " WHERE id = :".static::ID;
+			$params += [static::ID => $this->getId()];
+
+			$this->db->exec($query, $params);
 		}
 
-		$id = $this->db->exec($query, $params, $sequence, $this->types);
-
-		if ($id !== false && $this[self::ID] != $id) {
-			$this[self::ID] = $id;
+		if ($this[self::ID] != $oldId) {
 			$this->flushRelatives($this->getForeignProperties());
 		}
 	}
