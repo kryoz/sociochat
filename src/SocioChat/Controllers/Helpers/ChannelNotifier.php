@@ -94,7 +94,8 @@ class ChannelNotifier
 		$channel = ChannelsCollection::get()->getChannelById($user->getChannelId());
 
 		if (!$channel) {
-			throw new \Exception('No channel exists '.$user->getChannelId());
+			$channel = new Channel($user->getChannelId(), 'Приват_'.$user->getChannelId());
+			ChannelsCollection::get()->addChannel($channel);
 		}
 		$log = $channel->getHistory($user->getLastMsgId());
 
