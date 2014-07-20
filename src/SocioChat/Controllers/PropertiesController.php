@@ -209,7 +209,7 @@ class PropertiesController extends ControllerBase
 			if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
 				$name = $newname;
 			}
-		} elseif ($hasNameChanged && !$isTimedOut) {
+		} elseif ($lastChange && $hasNameChanged && !$isTimedOut) {
 			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
 			return;
 		}
