@@ -2,6 +2,7 @@
 
 namespace SocioChat\Controllers\Helpers;
 
+use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
@@ -16,24 +17,21 @@ class ChannelNotifier
 
 	public static function welcome(User $user, UserCollection $userCollection)
 	{
-		$chatId = $user->getChannelId();
-
-		$response = (new MessageResponse())
-			->setTime(null)
-			->setChannelId($chatId);
-
 		if ($user->getLastMsgId() == 0) {
-			$response->setMsg(MsgToken::create('WelcomeUser', $userCollection->getClientsCount($chatId), $user->getProperties()->getName()));
+			$channelId = $user->getChannelId();
+			$response = (new MessageResponse())
+				->setTime(null)
+				->setChannelId($channelId)
+				->setMsg(MsgToken::create('WelcomeUser', $userCollection->getClientsCount($channelId), $user->getProperties()->getName()));
+			$userCollection
+				->setResponse($response)
+				->notify();
 		}
-
-		$userCollection
-			->setResponse($response)
-			->notify();
 
 		self::notifyOnPendingDuals($user);
 	}
 
-	public static function indentifyChat(User $user, $silent = false)
+	public static function indentifyChat(User $user, UserCollection $userCollection, $silent = false)
 	{
 		$channels = ChannelsCollection::get();
 		$channelId = $user->getChannelId();
@@ -52,6 +50,7 @@ class ChannelNotifier
 				->notify(false);
 		}
 
+		// Update user channel info
 		$response = (new ChannelsResponse())
 			->setChannels($channels)
 			->setChannelId($channelId);
@@ -59,6 +58,20 @@ class ChannelNotifier
 		(new UserCollection)
 			->attach($user)
 			->setResponse($response)
+			->notify(false);
+
+		// Refresh everybody's guest list in the new channel
+		self::updateGuestsList($userCollection, $channelId);
+	}
+
+	public static function updateGuestsList(UserCollection $userCollection, $channelId)
+	{
+		$userCollection
+			->setResponse(
+				(new MessageResponse)
+					->setGuests($userCollection->getUsersByChatId($channelId))
+					->setChannelId($channelId)
+			)
 			->notify(false);
 	}
 
@@ -76,25 +89,26 @@ class ChannelNotifier
 		}
 	}
 
-	public static function uploadHistory(User $user, UserCollection $users, $clear = null)
+	public static function uploadHistory(User $user, $clear = null)
 	{
-		$history = ChannelsCollection::get();
+		$channel = ChannelsCollection::get()->getChannelById($user->getChannelId());
 
-		$log = $history->getHistory($user);
+		if (!$channel) {
+			throw new \Exception('No channel exists '.$user->getChannelId());
+		}
+		$log = $channel->getHistory($user->getLastMsgId());
+
 		$client = (new UserCollection())
 			->attach($user);
 
 		$historyResponse = (new HistoryResponse)
 			->setClear($clear)
-			->setGuests($users->getUsersByChatId($user->getChannelId()))
 			->setChannelId($user->getChannelId());
 
 		foreach ($log as $response) {
-			/* @var $response MessageResponse */
-
-			if ($response->getToUserName()) {
+			if (isset($response[Channel::TO_NAME])) {
 				$name = $user->getProperties()->getName();
-				if ($response->getToUserName() == $name || $response->getFromName() == $name) {
+				if ($response[Channel::TO_NAME] == $name || $response[Channel::FROM_NAME] == $name) {
 					$historyResponse->addResponse($response);
 				}
 				continue;
@@ -102,6 +116,8 @@ class ChannelNotifier
 
 			$historyResponse->addResponse($response);
 		}
+
+		$historyResponse->setLastMsgId($channel->getLastMsgId());
 
 		$client
 			->setResponse($historyResponse)

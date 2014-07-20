@@ -199,7 +199,7 @@ class PropertiesController extends ControllerBase
 		$isNewbie = mb_strpos($name, $guestName) !== false;
 
 		$lastChange = NameChangeDAO::create()->getLastByUser($user);
-		$isTimedOut = $lastChange && $lastChange->getDateRaw() < time() + $config->nameChangeFreq;
+		$isTimedOut = $lastChange && ($lastChange->getDate() + $config->nameChangeFreq) < time();
 		$hasNameChanged = $name != $user->getProperties()->getName();
 
 		if ($isNewbie) {
@@ -209,8 +209,8 @@ class PropertiesController extends ControllerBase
 			if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
 				$name = $newname;
 			}
-		} elseif ($hasNameChanged && $isTimedOut) {
-			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDateRaw() + $config->nameChangeFreq)));
+		} elseif ($hasNameChanged && !$isTimedOut) {
+			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
 			return;
 		}
 

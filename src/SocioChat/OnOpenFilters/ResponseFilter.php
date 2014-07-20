@@ -23,7 +23,7 @@ class ResponseFilter implements ChainInterface
 		$user = $chain->getFrom();
 
 		$this->sendNickname($user);
-		$this->handleHistory($user, $users);
+		$this->handleHistory($user);
 		$this->notifyChat($user, $users);
 	}
 
@@ -82,13 +82,13 @@ class ResponseFilter implements ChainInterface
 				->notify(false);
 		} else {
 			ChannelNotifier::welcome($user, $userCollection);
-			ChannelNotifier::indentifyChat($user, true);
+			ChannelNotifier::indentifyChat($user, $userCollection, true);
 		}
 	}
 
-	private function handleHistory(User $user, UserCollection $users)
+	private function handleHistory(User $user)
 	{
-		ChannelNotifier::uploadHistory($user, $users);
+		ChannelNotifier::uploadHistory($user);
 
 		if (file_exists(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt') && $user->getLastMsgId() == 0) {
 			$motd = file_get_contents(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt');
