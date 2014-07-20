@@ -64,13 +64,13 @@ abstract class Response
 
 	public function getFromName()
 	{
-		return $this->from->getProperties()->getName();
+		return $this->fromName;
 	}
 
 	public function setFrom(User $user)
 	{
 		$this->from = $user;
-		$this->fromName = $this->getFromName();
+		$this->fromName = $user->getProperties()->getName();
 
 		return $this;
 	}

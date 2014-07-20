@@ -2,6 +2,7 @@
 
 namespace SocioChat\Clients;
 
+use SocioChat\DI;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
 
@@ -10,11 +11,26 @@ class Channel
 	const BUFFER_LENGTH = 100;
 
 	private $id;
-	/**
-	 * @var Response[]
-	 */
+	const TO_NAME = 'toName';
+	const FROM_NAME = 'fromName';
+	const TIM = 'tim';
+	const SEX = 'sex';
+	const AVATAR_THUMB = 'avatarThumb';
+	const AVATAR_IMG = 'avatarImg';
+	const TIME = 'time';
+	const MSG = 'msg';
+	const USER_INFO = 'userInfo';
+
 	protected $history = [];
 	protected $lastMsgId = 1;
+
+	/**
+	 * @return int
+	 */
+	public function getLastMsgId()
+	{
+		return $this->lastMsgId;
+	}
 	protected $name;
 	protected $isPrivate = true;
 	protected $ownerId = 1;
@@ -50,7 +66,37 @@ class Channel
 			return;
 		}
 
-		$this->history[$this->lastMsgId] = $response;
+		$record = [
+			self::FROM_NAME => $response->getFromName(),
+			self::TIME => $response->getTime(),
+			self::MSG => $response->getMsg(),
+		];
+
+		if ($from = $response->getFrom()) {
+			$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
+			$info = [
+				self::TIM => $from->getProperties()->getTim()->getName(),
+				self::SEX => $from->getProperties()->getSex()->getName(),
+			];
+
+
+			if ($from->getProperties()->getAvatarThumb()) {
+				$info += [
+					self::AVATAR_THUMB => $dir.$from->getProperties()->getAvatarThumb(),
+					self::AVATAR_IMG => $dir.$from->getProperties()->getAvatarImg(),
+				];
+			}
+
+			$record += [
+				self::USER_INFO => $info
+			];
+		}
+
+		if ($response->getToUserName()) {
+			$record += [self::TO_NAME => $response->getToUserName()];
+		}
+
+		$this->history[$this->lastMsgId] = $record;
 		$keys = array_keys($this->history);
 
 		if (count($this->history) > self::BUFFER_LENGTH) {

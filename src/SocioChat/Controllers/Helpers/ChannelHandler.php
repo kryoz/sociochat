@@ -75,14 +75,17 @@ class ChannelHandler
 		}
 
 		$channelId = trim($form->getValue('channelId'));
+		$oldChannelId = $user->getChannelId();
+
 		$user->setChannelId($channelId);
 		$user->save(false);
 
 		$user->setLastMsgId(0);
 
-		ChannelNotifier::uploadHistory($user, $users, true);
+		ChannelNotifier::uploadHistory($user, true);
 		ChannelNotifier::welcome($user, $users);
-		ChannelNotifier::indentifyChat($user);
+		ChannelNotifier::updateGuestsList($users, $oldChannelId);
+		ChannelNotifier::indentifyChat($user, $users);
 	}
 
 	public static function setChannelName(ChainContainer $chain)
@@ -210,7 +213,7 @@ class ChannelHandler
 			->setDualChat('match')
 			->setMsg($msg)
 			->setChannelId($user->getChannelId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()));
+			->setGuests($users);
 
 		$notification
 			->setResponse($response)

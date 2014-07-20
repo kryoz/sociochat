@@ -592,7 +592,7 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		if (response.fromName) {
-            var fromUser = $this.getUserInfo(response.fromName);
+            var fromUser = response.userInfo ? response.userInfo : $this.getUserInfo(response.fromName);
 
             if ($this.chatLastFrom != response.fromName) {
                 msg += getAvatar(fromUser)+' ';
@@ -777,7 +777,6 @@ var ResponseHandler = function(json, $this) {
             }
 
             for (var i in json.history) {
-                handleGuests(json.history[i]);
                 handleMessage(json.history[i]);
             }
         }

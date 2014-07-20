@@ -35,7 +35,7 @@ class NameChangeDAO extends DAOBase
 
 	public function getDate()
 	{
-		return date('Y-m-d H:i:s', $this[self::DATE_CHANGE]);
+		return strtotime($this[self::DATE_CHANGE]);
 	}
 
 	public function setUser(User $user)

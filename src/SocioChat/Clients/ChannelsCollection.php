@@ -2,6 +2,7 @@
 
 namespace SocioChat\Clients;
 
+use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
 use SocioChat\TSingleton;
 
@@ -53,21 +54,21 @@ class ChannelsCollection
 			return [];
 		}
 
-		$room = $this->channels[$user->getChannelId()];
-		/* @var $room Channel */
+		$channel = $this->channels[$user->getChannelId()];
+		/* @var $channel Channel */
 
-		return $room->getHistory($user->getLastMsgId());
+		return $channel->getHistory($user->getLastMsgId());
 	}
 
-	public function pushToHistory(Response $response)
+	public function pushToHistory(MessageResponse $response)
 	{
 		if (!isset($this->channels[$response->getChannelId()])) {
 			throw new \Exception('Channel id = '.$response->getChannelId().' has not been initialized');
 		}
-		/* @var $room Channel */
-		$room = $this->channels[$response->getChannelId()];
+		/* @var $channel Channel */
+		$channel = $this->channels[$response->getChannelId()];
 
-		return $room->pushResponse($response);
+		return $channel->pushResponse($response);
 	}
 
 	/**

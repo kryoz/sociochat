@@ -54,6 +54,11 @@ class MessageResponse extends Response
 		return $this;
 	}
 
+	public function getTime()
+	{
+		return $this->time;
+	}
+
 	public function setDualChat($dualChat)
 	{
 		$this->dualChat = $dualChat;
@@ -71,6 +76,9 @@ class MessageResponse extends Response
 	public function toString()
 	{
 		if ($text = $this->msgObj) {
+			if (!$this->getRecipient()) {
+				throw new \Exception('Something weird happened: no user was set as recipient');
+			}
 			$this->msg = $this->msgObj->getMsg($this->getRecipient()->getLang());
 		}
 

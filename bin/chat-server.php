@@ -61,9 +61,10 @@ $server = new IoServer(
 $logger->info("Starting chat server daemon on ".$config->daemon->host.":".$config->daemon->port, ['CHAT-SERVER']);
 
 $channels = ChannelsCollection::get()
-	->addChannel(new Channel(1, 'Первый', false))
-	->addChannel(new Channel(2, 'Второй', false))
-	->addChannel(new Channel(3, 'Третий', false))
-	->addChannel(new Channel(4, 'Четвертый', false));
+	->addChannel(new Channel(1, 'Общий', false))
+	->addChannel(new Channel(2, 'Альфа', false))
+	->addChannel(new Channel(3, 'Бета', false))
+	->addChannel(new Channel(4, 'Гамма', false))
+	->addChannel(new Channel(5, 'Дельта', false));
 
 $loop->run();
