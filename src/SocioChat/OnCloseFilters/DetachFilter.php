@@ -8,6 +8,7 @@ use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\ChannelNotifier;
 use SocioChat\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
@@ -76,6 +77,8 @@ class DetachFilter implements ChainInterface
 		$clients
 			->setResponse($response)
 			->notify();
+
+		ChannelNotifier::updateChannelInfo($clients, ChannelsCollection::get());
 	}
 
 	private function cleanPendingQueue(User $user)

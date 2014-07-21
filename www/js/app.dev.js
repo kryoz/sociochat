@@ -779,6 +779,8 @@ var ResponseHandler = function(json, $this) {
             for (var i in json.history) {
                 handleMessage(json.history[i]);
             }
+
+	        $this.scrollDown();
         }
     };
 
@@ -792,7 +794,7 @@ var ResponseHandler = function(json, $this) {
         $channels.empty();
 
         for (var channelId in json.channels) {
-            var item = '<li><a href="#" data-id="' + channelId + '">' + json.channels[channelId];
+            var item = '<li><a href="#" data-id="' + channelId + '">' + json.channels[channelId].name + ' ['+json.channels[channelId].usersCount+']';
             if (channelId == json.chatId) {
                 item += ' <span class="glyphicon glyphicon-ok-sign"></span>';
             }

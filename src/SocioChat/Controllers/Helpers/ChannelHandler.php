@@ -52,6 +52,7 @@ class ChannelHandler
 
 		self::sendPendingResponse($user, MsgToken::create('SendInvitationFor', $desiredUser->getProperties()->getName()));
 		self::sendPendingResponse($desiredUser, MsgToken::create('UserInvitesYou', $user->getProperties()->getName(), $user->getId()));
+		ChannelNotifier::updateChannelInfo($users, ChannelsCollection::get());
 	}
 
 	public static function joinPublic(ChainContainer $chain)
