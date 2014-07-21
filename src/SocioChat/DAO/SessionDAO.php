@@ -84,7 +84,7 @@ class SessionDAO extends DAOBase
 
 	public function dropByUserId($userId)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = ?", [$userId]);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = :id", ['id' => $userId]);
 	}
 
 	public function dropByUserIdList(array $userIds)
