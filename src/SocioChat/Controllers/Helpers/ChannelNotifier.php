@@ -103,8 +103,11 @@ class ChannelNotifier
 			->attach($user);
 
 		$historyResponse = (new HistoryResponse)
-			->setClear($clear)
 			->setChannelId($user->getChannelId());
+
+		if ($user->getLastMsgId() > 0) {
+			$historyResponse->setClear($clear);
+		}
 
 		foreach ($log as $response) {
 			if (isset($response[Channel::TO_NAME])) {
