@@ -44,6 +44,12 @@ require_once "pages/header.php";
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul role="navigation" class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle" title="<?=$lang->getPhrase('index.Channels')?>"><span class="glyphicon glyphicon-th-list"></span> <?=$lang->getPhrase('index.Channels')?> <b class="caret"></b></a>
+							<ul class="dropdown-menu" id="menu-channels">
+
+							</ul>
+						</li>
 
 						<li>
 							<a href="#profile" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.ProfileTip')?>"><span class="glyphicon glyphicon-cog"></span> <?=$lang->getPhrase('index.Profile')?></a>
@@ -58,12 +64,7 @@ require_once "pages/header.php";
 						<li style="display: none">
 							<a href="#" id="menu-exit" class="tip" title="<?=$lang->getPhrase('index.ReturnToPublicTip')?>"><span class="glyphicon glyphicon-home"></span> <?=$lang->getPhrase('index.ReturnToPublic')?></a>
 						</li>
-						<li class="dropdown">
-							<a href="#" data-toggle="dropdown" class="dropdown-toggle">Паблики <b class="caret"></b></a>
-							<ul class="dropdown-menu" id="menu-channels">
 
-							</ul>
-						</li>
 						<li>
 							<a href="http://vk.com/topic-66015624_29370149" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
 						</li>
