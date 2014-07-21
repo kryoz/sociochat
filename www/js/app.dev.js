@@ -130,7 +130,7 @@ var App = {
 
 		$this.connection.onopen = function(e) {
 			$('.glyphicon-refresh').parent().remove();
-			setCookie('lastMsgId', $this.lastMsgId, {expires: 1});
+			setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
 
 			clearTimeout($this.reconnectTimeout);
 			$this.reconnectTimeout = null;
