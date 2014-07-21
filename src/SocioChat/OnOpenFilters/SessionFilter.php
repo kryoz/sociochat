@@ -44,6 +44,8 @@ class SessionFilter implements ChainInterface
 
 		$sessionHandler = $this->sessionHandler;
 
+		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}), lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
+
 		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);
 
@@ -89,7 +91,6 @@ class SessionFilter implements ChainInterface
 		$newUserWrapper->setUserDAO($user);
 		$sessionHandler->store($token, $user->getId());
 		$clients->attach($newUserWrapper);
-		$logger->info("User with id = $id attached (IP = {$newUserWrapper->getIp()})", [__CLASS__]);
 	}
 
 	/**
@@ -145,7 +146,7 @@ class SessionFilter implements ChainInterface
 
 			if ($newUserWrapper->getLastMsgId()) {
 				$logger->info(
-					"Re-established connection_id = {$newUserWrapper->getConnectionId()} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}",
+					"Re-established connection for user_id = {$sessionInfo['user_id']}, lastMsgId = {$newUserWrapper->getLastMsgId()}",
 					[__CLASS__]
 				);
 			}
