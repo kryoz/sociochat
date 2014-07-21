@@ -50,18 +50,22 @@ class ChannelNotifier
 				->notify(false);
 		}
 
-		// Update user channel info
-		$response = (new ChannelsResponse())
-			->setChannels($channels)
-			->setChannelId($channelId);
-
-		(new UserCollection)
-			->attach($user)
-			->setResponse($response)
-			->notify(false);
-
+		self::updateChannelInfo($userCollection, $channels, $user);
 		// Refresh everybody's guest list in the new channel
 		self::updateGuestsList($userCollection, $channelId);
+	}
+
+	public static function updateChannelInfo(UserCollection $userCollection, ChannelsCollection $channels)
+	{
+		foreach ($channels->getChannels() as $channel) {
+			$response = (new ChannelsResponse())
+				->setChannels($channels)
+				->setChannelId($channel->getId());
+
+			$userCollection
+				->setResponse($response)
+				->notify(false);
+		}
 	}
 
 	public static function updateGuestsList(UserCollection $userCollection, $channelId)
@@ -105,7 +109,7 @@ class ChannelNotifier
 		$historyResponse = (new HistoryResponse)
 			->setChannelId($user->getChannelId());
 
-		if ($user->getLastMsgId() > 0) {
+		if (!$user->getLastMsgId()) {
 			$historyResponse->setClear($clear);
 		}
 
