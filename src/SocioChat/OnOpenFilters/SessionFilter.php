@@ -89,6 +89,7 @@ class SessionFilter implements ChainInterface
 		$newUserWrapper->setUserDAO($user);
 		$sessionHandler->store($token, $user->getId());
 		$clients->attach($newUserWrapper);
+		$logger->info("User with id = $id attached (IP = {$newUserWrapper->getIp()})", [__CLASS__]);
 	}
 
 	/**
@@ -132,11 +133,12 @@ class SessionFilter implements ChainInterface
 					->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
 				$clients->detach($oldClient);
 
-				$newUserWrapper->setLastMsgId(0);
+				if ($oldClient->getIp() == $newUserWrapper->getIp()) {
+					$newUserWrapper->setLastMsgId(0);
+				}
 
-				//@TODO when ip changes (wifi->cellular) it should be handled as reconnect
 				$logger->info(
-					"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId()} for user_id = {$oldClient->getId()}, IP = {$oldClient->getIp()}",
+					"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId()} for user_id = {$oldClient->getId()}}",
 					[__CLASS__]
 				);
 			}
