@@ -19,6 +19,7 @@ class Channel
 	const TIME = 'time';
 	const MSG = 'msg';
 	const USER_INFO = 'userInfo';
+	const FROM_USER_ID = 'fromUserId';
 
 	protected $history = [];
 	protected $lastMsgId = 1;
@@ -66,6 +67,7 @@ class Channel
 		}
 
 		$record = [
+			self::FROM_USER_ID => null,
 			self::FROM_NAME => $response->getFromName(),
 			self::TIME => $response->getTime(),
 			self::MSG => $response->getMsg(),
@@ -89,6 +91,7 @@ class Channel
 			$record += [
 				self::USER_INFO => $info
 			];
+			$record[self::FROM_USER_ID] = $response->getFrom()->getId();
 		}
 
 		if ($response->getToUserName()) {

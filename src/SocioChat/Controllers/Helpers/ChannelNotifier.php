@@ -114,9 +114,11 @@ class ChannelNotifier
 		}
 
 		foreach ($log as $response) {
+			if ($user->getBlacklist()->isBanned($response[Channel::FROM_USER_ID])) {
+				continue;
+			}
 			if (isset($response[Channel::TO_NAME])) {
-				$name = $user->getProperties()->getName();
-				if ($response[Channel::TO_NAME] == $name || $response[Channel::FROM_NAME] == $name) {
+				if ($response[Channel::FROM_USER_ID] == $user->getId() || $response[Channel::TO_NAME] == $user->getProperties()->getName()) {
 					$historyResponse->addResponse($response);
 				}
 				continue;
