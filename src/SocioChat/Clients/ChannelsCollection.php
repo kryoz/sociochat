@@ -40,11 +40,8 @@ class ChannelsCollection
 	public function clean(User $user)
 	{
 		$roomId = $user->getChannelId();
-		if (UserCollection::get()->getClientsCount($roomId) == 0) {
-			if (isset($this->channels[$roomId]) && $user->isInPrivateChat()) {
-				unset($this->channels[$roomId]);
-				$user->setChannelId(1);
-			}
+		if (UserCollection::get()->getClientsCount($roomId) == 0 && isset($this->channels[$roomId])) {
+			unset($this->channels[$roomId]);
 		}
 	}
 

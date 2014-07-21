@@ -32,7 +32,7 @@ class UserCollection
 	public function detach(User $user)
 	{
 		if (isset($this->users[$user->getId()])) {
-			DI::get()->container()->get('logger')->info("Detach userId = {$user->getId()}", [__CLASS__]);
+			DI::get()->getLogger()->info("UserCollection::detach({$user->getId()})", [__CLASS__]);
 			$user->close();
 			unset($this->users[$user->getId()]);
 		}
@@ -57,6 +57,18 @@ class UserCollection
 				}
 
 				$response->setGuestsRaw($saveGuests);
+			}
+		}
+	}
+
+	public function updateKeyOfUserId($oldUserId)
+	{
+		if (isset($this->users[$oldUserId])) {
+			$user = $this->users[$oldUserId];
+			if ($user->getId() != $oldUserId) {
+				DI::get()->getLogger()->info("UserCollection::updateKey($oldUserId)");
+				$this->users[$user->getId()] = $user;
+				unset($this->users[$oldUserId]);
 			}
 		}
 	}
