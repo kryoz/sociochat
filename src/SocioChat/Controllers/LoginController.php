@@ -7,6 +7,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Forms\WrongRuleNameException;
@@ -83,8 +84,10 @@ class LoginController extends ControllerBase
 		}
 
 		$user->setUserDAO($userDAO);
-		Chat::getSessionEngine()->updateSessionId($user, $oldUserId);
+		$clients->updateKeyOfUserId($oldUserId);
 
+		Chat::getSessionEngine()->updateSessionId($user, $oldUserId);
+		DI::get()->getLogger()->info("LoginController::login success for ".$user->getId());
 		$this->sendNotifyResponse($user);
 
 		$responseFilter = new ResponseFilter();
