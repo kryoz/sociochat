@@ -39,9 +39,9 @@ class ChannelsCollection
 	 */
 	public function clean(User $user)
 	{
-		$roomId = $user->getChannelId();
-		if (UserCollection::get()->getClientsCount($roomId) == 0 && isset($this->channels[$roomId])) {
-			unset($this->channels[$roomId]);
+		$channelId = $user->getChannelId();
+		if (UserCollection::get()->getClientsCount($channelId) == 0 && isset($this->channels[$channelId]) && $this->channels[$channelId]->isPrivate()) {
+			unset($this->channels[$channelId]);
 		}
 	}
 
