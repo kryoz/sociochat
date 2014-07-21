@@ -39,7 +39,7 @@ class SessionFilter implements ChainInterface
 		/* @var $lang Lang */
 		$newUserWrapper
 			->setIp($socketRequest->getHeader('X-Real-IP'))
-			->setLastMsgId((float) $socketRequest->getCookie('lastMsgId'))
+			->setLastMsgId((int) $socketRequest->getCookie('lastMsgId'))
 			->setLanguage($lang);
 
 		$sessionHandler = $this->sessionHandler;
@@ -54,7 +54,7 @@ class SessionFilter implements ChainInterface
 
 		if ($sessionInfo = $sessionHandler->read($token)) {
 			$user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
-			$logger->info('Handling know user_id = '.$user->getId());
+			$logger->info('Handled known user_id = '.$user->getId());
 		} else {
 			$user = UserDAO::create()
 				->setChatId(1)
@@ -121,32 +121,29 @@ class SessionFilter implements ChainInterface
 
 					$newUserWrapper->setLastMsgId(-1);
 				}
-			} else {
+			} elseif ($oldClient->getConnectionId()) {
 				// If there is no timer set, then
 				// 1) it's regular user visit
 				// 2) an attempt to open another browser tab
 				// 3) window reload
 
-				if ($oldClient->getConnectionId()) {
-					$oldClient
-						->setAsyncDetach(false)
-						->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
-					$clients->detach($oldClient);
+				$oldClient
+					->setAsyncDetach(false)
+					->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
+				$clients->detach($oldClient);
 
-					$newUserWrapper->setLastMsgId(-1);
+				$newUserWrapper->setLastMsgId(0);
 
-					$logger->info(
-						"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId(
-						)} for user_id = {$oldClient->getId()}",
-						[__CLASS__]
-					);
-				}
+				//@TODO when ip changes (wifi->cellular) it should be handled as reconnect
+				$logger->info(
+					"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId()} for user_id = {$oldClient->getId()}, IP = {$oldClient->getIp()}",
+					[__CLASS__]
+				);
 			}
 
-			if ($newUserWrapper->getLastMsgId() != 0) {
+			if ($newUserWrapper->getLastMsgId()) {
 				$logger->info(
-					"Re-established connection_id = {$newUserWrapper->getConnectionId(
-					)} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}",
+					"Re-established connection_id = {$newUserWrapper->getConnectionId()} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}",
 					[__CLASS__]
 				);
 			}

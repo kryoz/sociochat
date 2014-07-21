@@ -72,7 +72,7 @@ class ResponseFilter implements ChainInterface
 					->setDualChat('match');
 			}
 
-			if ($user->getLastMsgId() > 0) {
+			if ($user->getLastMsgId()) {
 				$response->setMsg(Msg::create(null));
 			}
 
@@ -89,7 +89,7 @@ class ResponseFilter implements ChainInterface
 	{
 		ChannelNotifier::uploadHistory($user);
 
-		if (file_exists(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt') && $user->getLastMsgId() == 0) {
+		if (file_exists(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt') && !$user->getLastMsgId()) {
 			$motd = file_get_contents(ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'motd.txt');
 
 			$client = (new UserCollection())
