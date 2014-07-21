@@ -124,7 +124,6 @@ var App = {
 		var $this = this;
 
 		$(window).unload(function() {
-			setCookie('lastMsgId', -1, {expires: 30});
 			$this.connection.close();
 		});
 
@@ -779,6 +778,8 @@ var ResponseHandler = function(json, $this) {
             for (var i in json.history) {
                 handleMessage(json.history[i]);
             }
+
+	        $this.lastMsgId(json.lastMsgId);
 
 	        $this.scrollDown();
         }

@@ -116,7 +116,7 @@ class Channel
 	{
 		$history = $this->history;
 
-		if ($lastMsgId > 0 && $lastMsgId < count($history)) {
+		if ($lastMsgId > 0 && $lastMsgId <= count($history)) {
 			$history = array_slice($this->history, $lastMsgId, null, true);
 		}
 
