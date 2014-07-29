@@ -121,7 +121,7 @@ if ($trackId) {
 	);
 
 	if ($response['success'] == true) {
-		$url = 'http://pleer.sociochat.me/'.str_replace('http://', '', $response['url']);
+		$url = 'http://pleer.sociochat.me/'.str_replace('http://', '', $response['url'].'?track_id='.$trackId);
 
 		$dao = \SocioChat\DAO\MusicDAO::create()->getByTrackId($trackId);
 

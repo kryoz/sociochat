@@ -103,6 +103,6 @@ if (!$response['success']) {
 	return;
 }
 
-$trackInfo['url'] = 'http://pleer.sociochat.me/'.str_replace('http://', '', $response['url']);
+$trackInfo['url'] = 'http://pleer.sociochat.me/'.str_replace('http://', '', $response['url'].'?track_id='.$trackId);
 
 response(200, $trackInfo);
