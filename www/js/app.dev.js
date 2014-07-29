@@ -663,37 +663,80 @@ var ResponseHandler = function(json, $this) {
 
 		var replaceWithImgLinks = function (text) {
 			var exp = /([-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)(\w+)\.(?:jpg|jpeg|gif|png))/ig;
-			var replacement = '<div class="img-thumbnail"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
+			var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
 			replacement += '<img src="$1" style="max-width:100%; height: auto; display: none"></div>';
 
 			return text.replace(exp, replacement);
 		}
 
 		var replaceWithYoutube = function (text) {
-			var exp = /\b((?:https?:\/\/)www\.youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
+			var exp = /\bhttps?:\/\/(?:www\.)?youtube\.com\/watch\?v=(.*)&?(?:.*)\b/ig;
 			var replacement = '<a href="$1" class="video" target="_blank"><img src="https://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
 
 			return text.replace(exp, replacement);
 		}
+
+        var replaceWithAudio = function (text) {
+            var exp = /\bhttps:\/\/sociochat\.me\/audio\.php\?(?:token=.*)?track_id=(.*)\b/ig;
+            var track_id = exp.exec(text);
+
+            if (track_id) {
+                track_id = track_id[1];
+
+                var musicElId = 'music-'+track_id+'-'+Math.floor(Math.random()*100000);
+                var replacement = '<div class="img-thumbnail">' +
+                    '<a id="'+musicElId+
+                    '" class="music" href="#" title="Воспроизвести музыку">' +
+                    '<span class="glyphicon glyphicon-play-circle" style="font-size: 18px"></span> ...</a>';
+
+                $.ajax({
+                    type: "GET",
+                    url: '/audio_player.php',
+                    data: {
+                        'track_id' : track_id
+                    },
+                    success: function(response) {
+                        var $realTrackEl = $('#'+musicElId);
+                        var player = '<audio style="display: none"></audio>';
+
+                        $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track + player));
+                        $realTrackEl.data('url', response.url);
+
+                        $realTrackEl.click(function() {
+                            var $audio = $(this).find('audio');
+
+                            if ($audio.attr('src') == undefined) {
+                                $audio.attr('src', $(this).data('url'));
+                            }
+
+                            if ($audio.get(0).paused) {
+                                $(this).find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
+                                $audio.get(0).play();
+                            } else {
+                                $(this).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+                                $audio.get(0).pause();
+                            }
+                        });
+                    },
+                    dataType: 'json'
+                });
+
+                return text.replace(exp, replacement);
+            }
+
+            return text;
+        }
 
 		var replaceOwnName = function (text) {
 			var exp = new RegExp('(?:\\s||,||\\.)('+$this.ownName+')(?:\\s||,||\\.)', 'ig');
 			return text.replace(exp , "<code class=\"private\">$1</code>");
 		}
 
-		var notifyOnNewUser = function (text) {
-			var exp = /^Нас теперь (\d+)! Поприветствуем (.*)$/;
-			var found = text.match(exp);
-			if (found) {
-				$this.notify('В чате появился новый участник', found[2], 'new_guest');
-			}
-		}
-
-		notifyOnNewUser(originalText);
 		incomingMessage = replaceOwnName(incomingMessage);
 
 		var res = replaceWithImgLinks(incomingMessage);
 		res = replaceWithYoutube(res);
+        res = replaceWithAudio(res);
 
 		if (res == incomingMessage) {
 			incomingMessage = replaceURL(incomingMessage);
@@ -721,7 +764,7 @@ var ResponseHandler = function(json, $this) {
 		var newLine = $this.domElems.chat.find('div:last-child');
 		var newNameOnLine = newLine.find('.nickname');
 
-		newLine.find('.img-thumbnail').click(function() {
+		newLine.find('.image-clickable').click(function() {
 			$(this).find('img').toggle();
 			$(this).find('a').toggle();
 			$this.scrollDown();
@@ -779,7 +822,7 @@ var ResponseHandler = function(json, $this) {
                 handleMessage(json.history[i]);
             }
 
-	        $this.lastMsgId(json.lastMsgId);
+	        $this.lastMsgId = json.lastMsgId;
 
 	        $this.scrollDown();
         }
