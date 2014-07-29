@@ -1,5 +1,4 @@
 <?php
-use SocioChat\Clients\ChannelsCollection;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 use SocioChat\Message\Lang;
@@ -66,7 +65,7 @@ require_once "pages/header.php";
 						</li>
 
 						<li>
-							<a href="http://vk.com/topic-66015624_29370149" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
+							<a href="/faq.php" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
 						</li>
 						<li>
 							<a href="#login" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.LoginTip')?>"><span class="glyphicon glyphicon-lock"></span> <?=$lang->getPhrase('index.Login')?></a>
