@@ -150,6 +150,7 @@ if ($trackId) {
 	<br>
 	<a href="<?=$url?>">Скачать</a>
 	<a href="https://sociochat.me/audio.php">Искать другую композицию</a>
+		<p><small>СоциоЧат не хранит звуковые файлы. Источником данных служит сервис pleer.com</small></p>
 	<script src="js/zeroclipboard.min.js"></script>
 	<script>
 		var client = new ZeroClipboard( document.getElementById("copy-button") );
