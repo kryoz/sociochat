@@ -148,6 +148,7 @@ if ($trackId) {
 	<input type="text" id="url-container" value="https://sociochat.me/audio.php?track_id=<?=$dao->getTrackId()?>"/>
 	<button id="copy-button" data-clipboard-target="url-container" data-clipboard-text="Default clipboard text from attribute" data-copied-hint="Скопировано!" title="Скопировать ссылку в буфер обмена">Скопировать ссылку в буфер обмена</button>
 	<br>
+	<a href="<?=$url?>">Скачать</a>
 	<a href="https://sociochat.me/audio.php">Искать другую композицию</a>
 	<script src="js/zeroclipboard.min.js"></script>
 	<script>
