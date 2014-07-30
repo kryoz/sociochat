@@ -714,8 +714,12 @@ var ResponseHandler = function(json, $this) {
                         $realTrackEl.click(function() {
 	                        var audioElRaw = $audio.get(0);
 
-                            if (audioElRaw.paused || audioElRaw.ended) {
+                            if (audioElRaw.paused || audioElRaw.ended || $audio.data('current-track-id') != $(this).attr('id')) {
+	                            $('#'+$audio.data('current-track-id')).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+
 	                            $audio.attr('src', $(this).data('url'));
+	                            $audio.data('current-track-id', $(this).attr('id'));
+
                                 $(this).find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
 	                            audioElRaw.play();
                             } else {
