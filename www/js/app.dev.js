@@ -670,7 +670,7 @@ var ResponseHandler = function(json, $this) {
 		}
 
 		var replaceWithYoutube = function (text) {
-			var exp = /\bhttps?:\/\/(?:www\.)?youtube\.com\/watch\?v=(.*)&?(?:.*)\b/ig;
+			var exp = /\b(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
 			var replacement = '<a href="$1" class="video" target="_blank"><img src="https://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
 
 			return text.replace(exp, replacement);
@@ -687,7 +687,7 @@ var ResponseHandler = function(json, $this) {
                 var replacement = '<div class="img-thumbnail">' +
                     '<a id="'+musicElId+
                     '" class="music" href="#" title="Воспроизвести музыку">' +
-                    '<span class="glyphicon glyphicon-play-circle" style="font-size: 18px"></span> ...</a>';
+                    '<span class="glyphicon glyphicon-play-circle"></span> ...</a>';
 
                 $.ajax({
                     type: "GET",
