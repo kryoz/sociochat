@@ -697,14 +697,21 @@ var ResponseHandler = function(json, $this) {
                     },
                     success: function(response) {
                         var $realTrackEl = $('#'+musicElId);
-                        var player = '<audio style="display: none"></audio>';
+	                    var $audio = $('#player');
 
-                        $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track + player));
+                        $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track));
                         $realTrackEl.data('url', response.url);
 
-                        $realTrackEl.click(function() {
-                            var $audio = $(this).find('audio');
+	                    if ($audio.length == 0) {
+		                    $('body').append('<audio id="player" style="display: none"></audio>');
+		                    $audio = $('#player');
+	                    }
 
+	                    $audio.get(0).addEventListener('ended', function() {
+		                    $realTrackEl.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+	                    });
+
+                        $realTrackEl.click(function() {
                             if ($audio.attr('src') == undefined) {
                                 $audio.attr('src', $(this).data('url'));
                             }
