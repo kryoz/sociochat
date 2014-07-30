@@ -712,16 +712,15 @@ var ResponseHandler = function(json, $this) {
 	                    });
 
                         $realTrackEl.click(function() {
-                            if ($audio.attr('src') == undefined) {
-                                $audio.attr('src', $(this).data('url'));
-                            }
+	                        var audioElRaw = $audio.get(0);
 
-                            if ($audio.get(0).paused) {
+                            if (audioElRaw.paused || audioElRaw.ended) {
+	                            $audio.attr('src', $(this).data('url'));
                                 $(this).find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
-                                $audio.get(0).play();
+	                            audioElRaw.play();
                             } else {
                                 $(this).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
-                                $audio.get(0).pause();
+	                            audioElRaw.pause();
                             }
                         });
                     },
