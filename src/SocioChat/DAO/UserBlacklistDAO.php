@@ -2,7 +2,6 @@
 
 namespace SocioChat\DAO;
 
-use SocioChat\Log;
 use SocioChat\Utils\DbQueryHelper;
 
 class UserBlacklistDAO extends DAOBase
@@ -75,11 +74,11 @@ class UserBlacklistDAO extends DAOBase
 
 	public function save($sequence = null)
 	{
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :0", [$this->getUserId()]);
+
 		if (empty($this->blacklist)) {
 			return;
 		}
-
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :0", [$this->getUserId()]);
 
 		$list = [];
 		foreach ($this->blacklist as $bannedId => $v) {
@@ -87,7 +86,6 @@ class UserBlacklistDAO extends DAOBase
 		}
 
 		$this->db->exec("INSERT INTO {$this->dbTable} (".self::USER_ID.", ".self::IGNORED_ID.") VALUES ".implode(', ', $list));
-
 	}
 
 	protected function getForeignProperties()
