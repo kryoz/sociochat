@@ -63,7 +63,7 @@ logger =
 domain.web = chat
 domain.ws = ws://chat:8080
 
-jsappfile = app.dev.js
+jsappfile = main.js
 metrika = 0
 ```
 * Run from project root with command for development purpose

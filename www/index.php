@@ -23,6 +23,7 @@ setcookie(session_name(), session_id(), $lifetime, '/', '.'.$config->domain->web
 setcookie('lang', $httpAcceptLanguage, $lifetime, '/', '.'.$config->domain->web);
 
 $js = '
+	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
 	<script type="text/javascript" src="js/notify.min.js"></script>
 ';
 
@@ -93,11 +94,26 @@ require_once "pages/header.php";
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
+<<<<<<< HEAD
 	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=1"></script>
+=======
+	<script src="js/require.js"></script>
+>>>>>>> 22060aa... requireJS experiment
 	<script type="text/javascript">
-		$(function() {
-			var app = new App.Init('<?=$config->domain->ws?>', '<?=session_id()?>', <?=$config->uploads->avatars->thumbdim?>);
+		require.config({
+			baseUrl: 'js/app'
+		});
 
+		define('config', function() {
+			return {
+				wsDomain: '<?=$config->domain->ws?>',
+				sessionId: '<?=session_id()?>'
+			};
+		});
+
+		var App = requirejs(['./main']);
+
+		$(function() {
 			$('#email_place_holder').replaceWith($('#login-name'));
 			$('#password_place_holder').replaceWith($('#login-password'));
 			$('#dont_forget').remove();

@@ -14,6 +14,6 @@ if (!defined('ROOT')) {
 		</table>
 	</div>
 	<div class="panel-footer">
-		<a class="btn btn-block btn-success" onclick="App.returnToChat()"><?=$lang->getPhrase('index.Return')?></a>
+		<a class="btn btn-block btn-success return-to-chat"><?=$lang->getPhrase('index.Return')?></a>
 	</div>
 </div>
