@@ -1,5 +1,6 @@
 <?php
 
+use SocioChat\DAO\MusicDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 
@@ -8,56 +9,19 @@ if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUE
 }
 
 require_once '../config.php';
+require_once 'pages/audio/common.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 
-function curl($url, $postParams, $auth = false) {
-	$options = [
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_CONNECTTIMEOUT => 30,
-		CURLOPT_TIMEOUT        => 30,
-		CURLOPT_POST            => true,
-		CURLOPT_POSTFIELDS     => http_build_query($postParams),
-		CURLOPT_VERBOSE        => 1,
-	];
-
-	if ($auth) {
-		$options += [
-			//CURLOPT_HTTPHEADER      => ['Expect:'],
-			CURLOPT_HTTPAUTH        => CURLAUTH_BASIC,
-            CURLOPT_USERPWD         => DI::get()->getConfig()->music->secret
-		];
-	}
-
-	$curl = curl_init($url);
-	curl_setopt_array($curl, $options);
-
-	$response = curl_exec($curl);
-	curl_close($curl);
-
-	return json_decode($response, 1);
-}
-
-function response($code, $message)
-{
-	http_response_code($code);
-	echo json_encode($message);
-}
-
 $trackId = isset($_GET['track_id']) ? urldecode($_GET['track_id']) : null;
-$token = isset($_GET['token']) ? urldecode($_GET['token']) : null;
+$token = getToken();
 
 if (!$trackId) {
 	response(400, 'no track_id specified');
 	return;
 }
 
-if (!$token) {
-	$response = curl('http://api.pleer.com/token.php', ['grant_type' => 'client_credentials'], true);
-	$token = $response['access_token'];
-}
-
-$dao = \SocioChat\DAO\MusicDAO::create()->getByTrackId($trackId);
+$dao = MusicDAO::create()->getByTrackId($trackId);
 
 if (!$dao->getId()) {
 	$trackInfo = curl('http://api.pleer.com/resource.php',

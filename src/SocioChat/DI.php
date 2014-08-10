@@ -5,6 +5,7 @@ namespace SocioChat;
 use Monolog\Logger;
 use Orno\Di\Container;
 use ReflectionClass;
+use SocioChat\Cache\Cache;
 use Zend\Config\Config;
 
 class DI
@@ -36,6 +37,14 @@ class DI
 	public function getConfig()
 	{
 		return $this->container->get('config');
+	}
+
+	/**
+	 * @return Cache
+	 */
+	public function getCache()
+	{
+		return $this->container->get('cache');
 	}
 
 	public function spawn($className)

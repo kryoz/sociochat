@@ -24,7 +24,7 @@ $sessionToken = isset($_SESSION['token']) ? $_SESSION['token'] : null;
 function showFirst($email, $validation = null, Form $form = null) {
 	$token = PasswordUtils::get(20);
 	$_SESSION['token'] = $token;
-	require_once "pages/recovery1.php";
+	require_once "pages/recovery/recovery1.php";
 }
 
 if (!$email || !$token) {
@@ -91,4 +91,4 @@ $msg = "<h2>Восстановление пароля в Социочате</h2>
 <p>Данная ссылка действительна до ".date('Y-m-d H:i', time() + $config->activationTTL)."</p>";
 
 mb_send_mail($email, 'SocioChat - Восстановление пароля', $msg, $headers);
-require_once "pages/recovery2.php";
+require_once "pages/recovery/recovery2.php";

@@ -2,9 +2,8 @@
 if (!defined('ROOT')) {
 	die('not allowed');
 }
-
-$title = 'Ошибка';
-require_once "header.php";
+$title = 'Письмо отправлено';
+require_once dirname(__DIR__).DIRECTORY_SEPARATOR."header.php";
 ?>
 <body>
 	<div class="container" id="wrapper">
@@ -12,7 +11,7 @@ require_once "header.php";
 			<div class="container">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span><span class="glyphicon glyphicon-cog"></span>
+						<span class="sr-only">Toggle navigation</span><<span class="glyphicon glyphicon-cog"></span>
 					</button>
 					<a href="#chat" class="navbar-brand navbar-left tab-panel" data-toggle="tab">СоциоЧат</a>
 				</div>
@@ -30,9 +29,8 @@ require_once "header.php";
 				Восстановление пароля
 			</div>
 			<div class="panel-body">
-				<h3>Ошибка!</h3>
-				<p>Либо неправильный формат ссылки, либо активация просрочена.</p>
-				<p>Повторите процедуру сначала.</p>
+				<p>На ваш почтовый ящик <?=$email?> отправлено письмо с необходимыми данными для восстановления. Оно будет действительно только в течении часа.</p>
+				<p>Теперь это окно можно закрыть.</p>
 			</div>
 		</div>
 	</div>
