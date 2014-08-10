@@ -23,7 +23,7 @@ $passwordRepeat = isset($_REQUEST['password-repeat']) ? $_REQUEST['password-repe
 $validation = null;
 
 if (!$email || !$code) {
-	require_once "pages/activation_error.php";
+	require_once "pages/activation/error.php";
 	exit;
 }
 
@@ -44,7 +44,7 @@ $form
 $validation = $form->validate();
 
 if (!$validation) {
-	require_once "pages/activation_error.php";
+	require_once "pages/activation/error.php";
 	exit;
 }
 
@@ -55,24 +55,24 @@ $activation = $result[0];
 /* @var $activation ActivationsDAO */
 
 if (!$activation->getId() || $activation->getIsUsed()) {
-	require_once "pages/activation_error.php";
+	require_once "pages/activation/error.php";
 	exit;
 }
 
 if ($activation->getCode() != $code) {
-	require_once "pages/activation_error.php";
+	require_once "pages/activation/error.php";
 	exit;
 }
 
 if (strtotime($activation->getTimestamp()) + $config->activationTTL < time()) {
 	$activation->setIsUsed(true);
 	$activation->save();
-	require_once "pages/activation_error.php";
+	require_once "pages/activation/error.php";
 	exit;
 }
 
 if (!$password) {
-	require_once "pages/activation_prepare.php";
+	require_once "pages/activation/prepare.php";
 	exit;
 }
 
@@ -85,14 +85,14 @@ $form
 $validation = $form->validate();
 
 if (!$validation) {
-	require_once "pages/activation_prepare.php";
+	require_once "pages/activation/prepare.php";
 	exit;
 }
 
 if ($password != $passwordRepeat) {
 	$validation = false;
 	$form->markWrong('password', 'Введенные пароли не совпадают');
-	require_once "pages/activation_prepare.php";
+	require_once "pages/activation/prepare.php";
 	exit;
 }
 
@@ -103,4 +103,4 @@ $user->save();
 $activation->setIsUsed(true);
 $activation->save();
 
-require_once "pages/activation_success.php";
+require_once "pages/activation/success.php";

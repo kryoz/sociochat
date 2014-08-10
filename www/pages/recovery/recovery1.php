@@ -4,7 +4,7 @@ if (!defined('ROOT')) {
 }
 
 $title = 'Восстановление пароля';
-require_once "header.php";
+require_once dirname(__DIR__).DIRECTORY_SEPARATOR."header.php";
 ?>
 <body>
 	<div class="container" id="wrapper">
@@ -30,26 +30,25 @@ require_once "header.php";
 				Восстановление пароля
 			</div>
 			<div class="panel-body">
-				<p>Задайте новый пароль.</p>
-				<form action="activation.php" method="post">
-					<input type="hidden" name="email" value="<?=$email?>"/>
-					<input type="hidden" name="code" value="<?=$code?>"/>
-					<? if ($validation === false) { ?>
-					<div class="has-error">
-						<? foreach ($form->getErrors() as $ruleName => $errMsg) { ?>
-							<label class="control-label"><?=$errMsg?></label>
-						<? } ?>
-					</div>
-					<? } ?>
+				<p>Введите ваш email, на который была произведена регистрация учётной записи.</p>
+				<p>На него прийдет письмо с дальнейшими инструкциями для восстановления доступа.</p>
+				<form action="recovery.php" method="post">
 					<div class="row btn-vert-block form-group <?=$validation === false ? 'has-error' : ''?>">
 						<div class="btn-vert-block col-md-6">
-							<input type="password" class="form-control" placeholder="Пароль" name="password" id="password">
+								<input type="text" class="form-control" placeholder="E-mail" name="email" id="email" value="<?=$email?>">
+							<?php if ($validation === false) {
+									foreach ($form->getErrors() as $ruleName => $errMsg) {
+							?>
+								<label class="control-label" for="email"><?=$errMsg?></label>
+							<?php      }
+								}
+							?>
+							<input type="hidden" name="token" value="<?=$token?>"/>
 						</div>
 						<div class="btn-vert-block col-md-6">
-							<input type="password" class="form-control" placeholder="Повторите пароль" name="password-repeat" id="password-repeat">
+							<button type="submit" class="btn btn-block btn-success">Выслать</button>
 						</div>
 					</div>
-					<button type="submit" class="btn btn-block btn-success">Сменить</button>
 				</form>
 			</div>
 		</div>
