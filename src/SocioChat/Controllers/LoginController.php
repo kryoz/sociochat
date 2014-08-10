@@ -69,6 +69,8 @@ class LoginController extends ControllerBase
 		}
 
 		$oldUserId = $user->getId();
+		$oldChannelId = $user->getChannelId();
+
 		$clients = UserCollection::get();
 
 		if ($oldUserId == $userDAO->getId()) {
@@ -82,6 +84,8 @@ class LoginController extends ControllerBase
 				->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
 			Chat::get()->onClose($duplicatedUser->getConnection());
 		}
+
+		$userDAO->setChatId($oldChannelId);
 
 		$user->setUserDAO($userDAO);
 		$clients->updateKeyOfUserId($oldUserId);
