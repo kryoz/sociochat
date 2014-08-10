@@ -1,4 +1,8 @@
 <?php
+if (!defined('ROOT')) {
+	die('not allowed');
+}
+
 use SocioChat\DI;
 
 function curl($url, $postParams, $auth = false) {
