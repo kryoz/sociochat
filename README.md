@@ -1,10 +1,10 @@
 SocioChat
 =========
 
-This is source code of  <a href="https://sociochat.me" target="_blank">SocioChat</a> in an actual state.
+This is source code of  <a href="https://sociochat.me" target="_blank">SocioChat</a>.
 The code is a bit rough in some places, lacking of tests, but pretty readable and managable.
-I'll be happy with your feedback in form of <a href="https://github.com/kryoz/sociochat/issues">bugreports</a> or pull requests. 
-See also official groups in <a href="http://vk.com/sociochat" target="_blank">VK</a> and <a href="https://www.facebook.com/groups/sociochat/" target="_blank">Facebook</a> 
+
+This repository has stopped updating since July 2014. The sources moved to a private repository due to lack of volunteers and starting of commercial features.
 
 SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -14,10 +14,6 @@ In the beginning of 2014 I was reading an article about ReactPHP and Ratchet. It
 
 At first it had closed source code but one day I realized that it's really stupid to hide this work. Because maybe one day I'll exit the project and it will die without any useful contribution to society. 
 So now thanks to that decision and GitHub, of course, you have an opportunity to learn something new and even influence to make the project better.
-
-## Project mission
-
-Build the modern platform together to help to communicate random people.
 
 ## Features
 
