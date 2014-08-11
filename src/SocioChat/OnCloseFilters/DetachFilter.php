@@ -18,19 +18,7 @@ class DetachFilter implements ChainInterface
 {
 	public function handleRequest(ChainContainer $chain)
 	{
-		$clients = UserCollection::get();
-		$conn = $chain->getFrom()->getConnectionId();
-
-		if (!$user = $clients->getClientByConnectionId($conn)) {
-			return;
-		}
-
-		/* @var $user User */
-		$this->handleDisconnection($user);
-	}
-
-	private function handleDisconnection(User $user)
-	{
+		$user = $chain->getFrom();
 		$loop = DI::get()->container()->get('eventloop');
 		$logger = DI::get()->getLogger();
 

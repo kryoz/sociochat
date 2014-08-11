@@ -168,6 +168,17 @@ require_once "pages/header.php";
 						</div>
 					</div>
 
+					<div class="panel panel-default">
+						<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+						<!-- SocioChat -->
+						<ins class="adsbygoogle"
+						     style="display:inline-block;width:320px;height:50px"
+						     data-ad-client="ca-pub-1352019659330191"
+						     data-ad-slot="9172675664"></ins>
+						<script>
+							(adsbygoogle = window.adsbygoogle || []).push({});
+						</script>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -2,6 +2,7 @@
 namespace SocioChat\Controllers;
 
 use SocioChat\Chain\ChainContainer;
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
@@ -9,7 +10,6 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
-use SocioChat\Log;
 use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
 
@@ -24,12 +24,14 @@ class MessageController extends ControllerBase
 
 		if ($recipient) {
 			$this->sendPrivate($from, $recipient, $request['msg']);
+			$this->updateLastMsgId($from);
 			return;
 		} elseif ($recipient === false) {
 			return;
 		}
 
 		$this->sendPublic($clients, $from, $request['msg']);
+		$this->updateLastMsgId($from);
 	}
 
 	protected function getFields()
@@ -78,7 +80,7 @@ class MessageController extends ControllerBase
 
 		if (!$form->validate()) {
 			RespondError::make($from, $form->getErrors());
-			DI::get()->container()->get('logger')->warn("Trying to find userId = $userId for private message but not found", [__CLASS__]);
+			DI::get()->getLogger()->warn("Trying to find userId = $userId for private message but not found", [__CLASS__]);
 			return false;
 		}
 
@@ -86,5 +88,10 @@ class MessageController extends ControllerBase
 		/* @var $recipient User */
 
 		return $recipient;
+	}
+
+	private function updateLastMsgId(User $user)
+	{
+		$user->setLastMsgId(ChannelsCollection::get()->getChannelById($user->getChannelId())->getLastMsgId());
 	}
 } 

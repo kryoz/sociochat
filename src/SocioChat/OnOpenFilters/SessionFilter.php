@@ -44,7 +44,7 @@ class SessionFilter implements ChainInterface
 
 		$sessionHandler = $this->sessionHandler;
 
-		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}), lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
+		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 
 		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);
