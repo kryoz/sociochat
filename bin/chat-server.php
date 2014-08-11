@@ -6,6 +6,8 @@ use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
+use SocioChat\Clients\Channel;
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
@@ -17,7 +19,7 @@ function CustomErrorHandler($errno, $errstr, $errfile, $errline)
 }
 set_error_handler('CustomErrorHandler');
 
-require_once 'config.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 $config = $container->get('config');
@@ -57,5 +59,12 @@ $server = new IoServer(
 );
 
 $logger->info("Starting chat server daemon on ".$config->daemon->host.":".$config->daemon->port, ['CHAT-SERVER']);
+
+$channels = ChannelsCollection::get()
+	->addChannel(new Channel(1, 'Общий', false))
+	->addChannel(new Channel(2, 'Альфа', false))
+	->addChannel(new Channel(3, 'Бета', false))
+	->addChannel(new Channel(4, 'Гамма', false))
+	->addChannel(new Channel(5, 'Дельта', false));
 
 $loop->run();

@@ -39,11 +39,12 @@ class SessionFilter implements ChainInterface
 		/* @var $lang Lang */
 		$newUserWrapper
 			->setIp($socketRequest->getHeader('X-Real-IP'))
-			->setLastMsgId((float) $socketRequest->getCookie('lastMsgId'))
+			->setLastMsgId((int) $socketRequest->getCookie('lastMsgId'))
 			->setLanguage($lang);
 
 		$sessionHandler = $this->sessionHandler;
-		$sessionHandler->clean($container->get('config')->session->lifetime);
+
+		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}), lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 
 		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);
@@ -55,6 +56,7 @@ class SessionFilter implements ChainInterface
 
 		if ($sessionInfo = $sessionHandler->read($token)) {
 			$user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
+			$logger->info('Handled known user_id = '.$user->getId());
 		} else {
 			$user = UserDAO::create()
 				->setChatId(1)
@@ -102,6 +104,7 @@ class SessionFilter implements ChainInterface
 	{
 		$user = UserDAO::create()->getById($sessionInfo['user_id']);
 		$lang = $newUserWrapper->getLang();
+
 		if ($oldClient = $clients->getClientById($user->getId())) {
 
 			if ($timer = $oldClient->getDisconnectTimer()) {
@@ -120,37 +123,33 @@ class SessionFilter implements ChainInterface
 
 					$newUserWrapper->setLastMsgId(-1);
 				}
-			} else {
+			} elseif ($oldClient->getConnectionId()) {
 				// If there is no timer set, then
 				// 1) it's regular user visit
 				// 2) an attempt to open another browser tab
 				// 3) window reload
 
-				if ($oldClient->getConnectionId()) {
-					$oldClient
-						->setAsyncDetach(false)
-						->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
-					$clients->detach($oldClient);
+				$oldClient
+					->setAsyncDetach(false)
+					->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
+				$clients->detach($oldClient);
 
-					$newUserWrapper->setLastMsgId(-1);
-
-					$logger->info(
-						"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId(
-						)} for user_id = {$oldClient->getId()}",
-						[__CLASS__]
-					);
+				if ($oldClient->getIp() == $newUserWrapper->getIp()) {
+					$newUserWrapper->setLastMsgId(0);
 				}
-			}
 
-			if ($newUserWrapper->getLastMsgId() != 0) {
 				$logger->info(
-					"Re-established connection_id = {$newUserWrapper->getConnectionId(
-					)} for user_id = {$sessionInfo['user_id']} lastMsgId = {$newUserWrapper->getLastMsgId()}",
+					"Probably tabs duplication detected: detaching = {$oldClient->getConnectionId()} for user_id = {$oldClient->getId()}}",
 					[__CLASS__]
 				);
-				return $user;
 			}
-			return $user;
+
+			if ($newUserWrapper->getLastMsgId()) {
+				$logger->info(
+					"Re-established connection for user_id = {$sessionInfo['user_id']}, lastMsgId = {$newUserWrapper->getLastMsgId()}",
+					[__CLASS__]
+				);
+			}
 		}
 		return $user;
 	}

@@ -25,18 +25,16 @@ class UserCollection
 
 	public function attach(User $user)
 	{
-		$this->users[] = $user;
+		$this->users[$user->getId()] = $user;
 		return $this;
 	}
 
 	public function detach(User $user)
 	{
-		foreach ($this->users as $n => $chatUser) {
-			if ($chatUser->getId() == $user->getId()) {
-				DI::get()->container()->get('logger')->info("Detach userId = {$user->getId()}", [__CLASS__]);
-				$user->close();
-				unset($this->users[$n]);
-			}
+		if (isset($this->users[$user->getId()])) {
+			DI::get()->getLogger()->info("UserCollection::detach({$user->getId()})", [__CLASS__]);
+			$user->close();
+			unset($this->users[$user->getId()]);
 		}
 
 		return $this;
@@ -49,7 +47,7 @@ class UserCollection
 
 		foreach ($this->users as $user) {
 			/* @var $user User */
-			if ($response->getChatId() == $user->getChatId()) {
+			if ($response->getChannelId() == $user->getChannelId()) {
 				// Filter responses from banned users
 				$saveGuests = $response->getGuests();
 
@@ -63,6 +61,18 @@ class UserCollection
 		}
 	}
 
+	public function updateKeyOfUserId($oldUserId)
+	{
+		if (isset($this->users[$oldUserId])) {
+			$user = $this->users[$oldUserId];
+			if ($user->getId() != $oldUserId) {
+				DI::get()->getLogger()->info("UserCollection::updateKey($oldUserId)");
+				$this->users[$user->getId()] = $user;
+				unset($this->users[$oldUserId]);
+			}
+		}
+	}
+
 	protected function handleLog(Response $response, $log)
 	{
 		$isMessage = $response instanceof MessageResponse;
@@ -70,7 +80,7 @@ class UserCollection
 
 		if ($isMessage && $log) {
 			/* @var $response MessageResponse */
-			$lastMsgId = ChatsCollection::get()->addLine($response);
+			$lastMsgId = ChannelsCollection::get()->pushToHistory($response);
 			$response->setLastMsgId($lastMsgId);
 		}
 
@@ -97,9 +107,9 @@ class UserCollection
 	 */
 	public function getUsersByChatId($chatId)
 	{
-		$chatUsers = [];
+		$chatUsers = null;
 		foreach ($this->users as $user) {
-			if ($user->getChatId() == $chatId) {
+			if ($user->getChannelId() == $chatId) {
 				$chatUsers[] = $user;
 			}
 		}
@@ -125,10 +135,8 @@ class UserCollection
 	 */
 	public function getClientById($userId)
 	{
-		foreach ($this->users as $user) {
-			if ($user->getId() == $userId) {
-				return $user;
-			}
+		if (isset($this->users[$userId])) {
+			return $this->users[$userId];
 		}
 	}
 
@@ -149,7 +157,7 @@ class UserCollection
 	{
 		$counter = 0;
 		foreach ($this->users as $user) {
-			if ($user->getChatId() == $chatId) {
+			if ($user->getChannelId() == $chatId) {
 				$counter++;
 			}
 		}

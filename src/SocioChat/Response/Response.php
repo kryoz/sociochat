@@ -18,13 +18,13 @@ abstract class Response
 	protected $chatId;
 	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient'];
 
-	public function setChatId($chatId)
+	public function setChannelId($chatId)
 	{
 		$this->chatId = $chatId;
 		return $this;
 	}
 
-	public function getChatId()
+	public function getChannelId()
 	{
 		return $this->chatId;
 	}
@@ -64,13 +64,13 @@ abstract class Response
 
 	public function getFromName()
 	{
-		return $this->from->getProperties()->getName();
+		return $this->fromName;
 	}
 
 	public function setFrom(User $user)
 	{
 		$this->from = $user;
-		$this->fromName = $this->getFromName();
+		$this->fromName = $user->getProperties()->getName();
 
 		return $this;
 	}

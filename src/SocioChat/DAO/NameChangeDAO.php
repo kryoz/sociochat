@@ -28,6 +28,11 @@ class NameChangeDAO extends DAOBase
 		return $this[self::OLD_NAME];
 	}
 
+	public function getDateRaw()
+	{
+		return $this[self::DATE_CHANGE];
+	}
+
 	public function getDate()
 	{
 		return strtotime($this[self::DATE_CHANGE]);
@@ -54,6 +59,11 @@ class NameChangeDAO extends DAOBase
 	public function getHistoryByUserId($userId)
 	{
 		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC", ['user_id' => $userId]);
+	}
+
+	public function dropByUserId($id)
+	{
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = :0", [$id]);
 	}
 
 	protected function getForeignProperties()

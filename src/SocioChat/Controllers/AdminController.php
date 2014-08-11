@@ -5,6 +5,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\DAOBase;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DI;
@@ -31,7 +32,7 @@ class AdminController extends ControllerBase
 		$action = $chain->getRequest()['action'];
 
 		if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
+			RespondError::make($chain->getFrom());
 			return;
 		}
 
@@ -79,7 +80,7 @@ class AdminController extends ControllerBase
 
 		$notify = (new UserCollection())->attach($chain->getFrom());
 		$response = (new MessageResponse())
-			->setChatId($chain->getFrom()->getChatId())
+			->setChannelId($chain->getFrom()->getChannelId())
 			->setMsg(MsgRaw::create($this->listFormatter($list)))
 			->setGuests(null);
 
@@ -95,7 +96,7 @@ class AdminController extends ControllerBase
 		/** @var $row NameChangeDAO */
 		foreach ($list as $row) {
 			$html .= '<tr>';
-			$html .= '<td>'.$row->getDate().'</td>';
+			$html .= '<td>'.$row->getDateRaw().'</td>';
 			$html .= '<td>'.$row->getName().'</td>';
 			$html .= '</tr>';
 		}

@@ -5,7 +5,9 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
 use SocioChat\Forms\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Forms\WrongRuleNameException;
@@ -25,7 +27,7 @@ class LoginController extends ControllerBase
 		$action = $chain->getRequest()['action'];
 
 		if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
+			RespondError::make($chain->getFrom());
 			return;
 		}
 
@@ -38,12 +40,12 @@ class LoginController extends ControllerBase
 				->addRule('login', Rules::email(), 'Некорректный формат email')
 				->addRule('password', Rules::password(), 'Пароль должен быть от 8 до 20 символов');
 		} catch (WrongRuleNameException $e) {
-			$this->errorResponse($user, ['property' => 'Некорректно указано свойство']);
+			RespondError::make($user, ['property' => 'Некорректно указано свойство']);
 			return;
 		}
 
 		if (!$form->validate()) {
-			$this->errorResponse($user, $form->getErrors());
+			RespondError::make($user, $form->getErrors());
 			return;
 		}
 
@@ -62,15 +64,17 @@ class LoginController extends ControllerBase
 		$lang = $user->getLang();
 
 		if (!$userDAO = $this->validateLogin($request)) {
-			$this->errorResponse($user, ['email' => $lang->getPhrase('InvalidLogin')]);
+			RespondError::make($user, ['email' => $lang->getPhrase('InvalidLogin')]);
 			return;
 		}
 
 		$oldUserId = $user->getId();
+		$oldChannelId = $user->getChannelId();
+
 		$clients = UserCollection::get();
 
 		if ($oldUserId == $userDAO->getId()) {
-			$this->errorResponse($user, ['email' => $lang->getPhrase('AlreadyAuthorized')]);
+			RespondError::make($user, ['email' => $lang->getPhrase('AlreadyAuthorized')]);
 			return;
 		}
 
@@ -81,9 +85,13 @@ class LoginController extends ControllerBase
 			Chat::get()->onClose($duplicatedUser->getConnection());
 		}
 
-		$user->setUserDAO($userDAO);
-		Chat::getSessionEngine()->updateSessionId($user, $oldUserId);
+		$userDAO->setChatId($oldChannelId);
 
+		$user->setUserDAO($userDAO);
+		$clients->updateKeyOfUserId($oldUserId);
+
+		Chat::getSessionEngine()->updateSessionId($user, $oldUserId);
+		DI::get()->getLogger()->info("LoginController::login success for ".$user->getId());
 		$this->sendNotifyResponse($user);
 
 		$responseFilter = new ResponseFilter();
@@ -100,7 +108,7 @@ class LoginController extends ControllerBase
 		$duplUser = UserDAO::create()->getByEmail($email);
 
 		if ($duplUser->getId() && $duplUser->getId() != $user->getId()) {
-			$this->errorResponse($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
+			RespondError::make($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
 			return;
 		}
 
@@ -137,7 +145,7 @@ class LoginController extends ControllerBase
 	private function sendNotifyResponse(User $user)
 	{
 		$response = (new MessageResponse())
-			->setChatId($user->getChatId())
+			->setChannelId($user->getChannelId())
 			->setTime(null)
 			->setMsg(MsgToken::create('ProfileUpdated'));
 		(new UserCollection())

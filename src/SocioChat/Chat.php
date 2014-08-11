@@ -34,7 +34,7 @@ class Chat implements MessageComponentInterface
 
 	public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
 	{
-		DI::get()->container()->get('logger')->info("Opened new connectionId = {$conn->resourceId}", [__FUNCTION__]);
+		DI::get()->getLogger()->info("Opened new connectionId = {$conn->resourceId}", [__FUNCTION__]);
 
 		(new ChainContainer())
 			->setFrom(new User($conn))
@@ -93,7 +93,7 @@ class Chat implements MessageComponentInterface
 	{
 		$response = (new ErrorResponse())
 			->setErrors(['request' => $from->getLang()->getPhrase('MalformedJsonRequest')])
-			->setChatId($from->getChatId());
+			->setChannelId($from->getChannelId());
 
 		(new UserCollection())
 			->attach($from)

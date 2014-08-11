@@ -23,6 +23,7 @@ setcookie(session_name(), session_id(), $lifetime, '/', '.'.$config->domain->web
 setcookie('lang', $httpAcceptLanguage, $lifetime, '/', '.'.$config->domain->web);
 
 $js = '
+	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
 	<script type="text/javascript" src="js/notify.min.js"></script>
 ';
 
@@ -43,6 +44,12 @@ require_once "pages/header.php";
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul role="navigation" class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle" title="<?=$lang->getPhrase('index.Channels')?>"><span class="glyphicon glyphicon-th-list"></span> <?=$lang->getPhrase('index.Channels')?> <b class="caret"></b></a>
+							<ul class="dropdown-menu" id="menu-channels">
+
+							</ul>
+						</li>
 
 						<li>
 							<a href="#profile" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.ProfileTip')?>"><span class="glyphicon glyphicon-cog"></span> <?=$lang->getPhrase('index.Profile')?></a>
@@ -57,16 +64,9 @@ require_once "pages/header.php";
 						<li style="display: none">
 							<a href="#" id="menu-exit" class="tip" title="<?=$lang->getPhrase('index.ReturnToPublicTip')?>"><span class="glyphicon glyphicon-home"></span> <?=$lang->getPhrase('index.ReturnToPublic')?></a>
 						</li>
-						<!--<li class="dropdown">
-							<a href="#publics" data-toggle="dropdown" class="dropdown-toggle">Паблики <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">1 <span class="glyphicon glyphicon-ok-sign"></span></a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-							</ul>
-						</li>-->
+
 						<li>
-							<a href="http://vk.com/topic-66015624_29370149" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
+							<a href="/faq.php" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
 						</li>
 						<li>
 							<a href="#login" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.LoginTip')?>"><span class="glyphicon glyphicon-lock"></span> <?=$lang->getPhrase('index.Login')?></a>
@@ -89,15 +89,26 @@ require_once "pages/header.php";
 	<div id="dont_forget" style="display: none">
 		<form action="" method="post">
 			<input type="email" class="form-control" placeholder="<?=$lang->getPhrase('Email')?>" id="login-name">
-			<input type="password" class="form-control" placeholder="<?=$lang->getPhrase('Password')?>" id="login-password">
+			<input type="password" class="form-control" autocomplete="on" placeholder="<?=$lang->getPhrase('Password')?>" id="login-password">
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
-	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=1"></script>
+	<script src="js/require.js"></script>
 	<script type="text/javascript">
-		$(function() {
-			var app = new App.Init('<?=$config->domain->ws?>', '<?=session_id()?>', <?=$config->uploads->avatars->thumbdim?>);
+		require.config({
+			baseUrl: 'js/app'
+		});
 
+		define('config', function() {
+			return {
+				wsDomain: '<?=$config->domain->ws?>',
+				sessionId: '<?=session_id()?>'
+			};
+		});
+
+		var App = requirejs(['./main']);
+
+		$(function() {
 			$('#email_place_holder').replaceWith($('#login-name'));
 			$('#password_place_holder').replaceWith($('#login-password'));
 			$('#dont_forget').remove();

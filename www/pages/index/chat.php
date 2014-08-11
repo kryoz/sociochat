@@ -18,7 +18,7 @@ if (!defined('ROOT')) {
 			<div class="col-xs-10">
 				<div class="input-group">
 					<div class="form-inline">
-						<input tabindex="1" type="text" class="form-control" placeholder="<?=$lang->getPhrase('index.Message')?>" id="message">
+						<input tabindex="1" autocomplete="off" type="text" class="form-control" placeholder="<?=$lang->getPhrase('index.Message')?>" id="message">
 					</div>
 					<div class="input-group-btn">
 						<button type="button" class="btn btn-info" id="address-reset" title="<?=$lang->getPhrase('index.AddressReset')?>" style="display: none"><span class="glyphicon glyphicon-remove"></span></button>

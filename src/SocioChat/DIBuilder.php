@@ -5,6 +5,9 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orno\Di\Container;
 use React\EventLoop\Factory as Loop;
+use SocioChat\Cache\Cache;
+use SocioChat\Cache\CacheApc;
+use SocioChat\Cache\CacheException;
 use SocioChat\Message\Dictionary;
 use SocioChat\Message\Lang;
 use Zend\Config\Config;
@@ -21,6 +24,7 @@ class DIBuilder
 		self::setupDB($container);
 		self::setupDictionary($container);
 		self::setupLang($container);
+		self::setupCache($container);
 	}
 
 	public static function setupConfig(Container $container)
@@ -98,6 +102,27 @@ class DIBuilder
 	{
 		$container->add('lang', Lang::class)
 			->withArgument('dictionary');
+	}
+
+	/**
+	 * @param Container $container
+	 */
+	public static function setupCache(Container $container)
+	{
+		$container->add(
+			'cache',
+			function () use ($container) {
+				try {
+					$cache = new Cache(new CacheApc());
+				} catch (CacheException $e) {
+					$cache = [];
+					$container->get('logger')->err('Unable to initialize APC cache!');
+				}
+
+				return $cache;
+			},
+			true
+		);
 	}
 }
 

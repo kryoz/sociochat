@@ -2,7 +2,6 @@
 
 namespace SocioChat\DAO;
 
-use SocioChat\Log;
 use SocioChat\Utils\DbQueryHelper;
 
 class UserBlacklistDAO extends DAOBase
@@ -31,7 +30,7 @@ class UserBlacklistDAO extends DAOBase
 
 	public function getByUserId($userId)
 	{
-		$list = $this->db->query("SELECT ignored_user_id FROM {$this->dbTable} WHERE user_id = ?", [$userId]);
+		$list = $this->db->query("SELECT ignored_user_id FROM {$this->dbTable} WHERE user_id = :0", [$userId]);
 		$this->blacklist = array_flip(array_column($list, 'ignored_user_id'));
 
 		$this[self::USER_ID] = $userId;
@@ -64,7 +63,7 @@ class UserBlacklistDAO extends DAOBase
 
 	public function dropByUserId($id)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = ? OR ignored_user_id = ?", [$id, $id]);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = :0 OR ignored_user_id = :1", [$id, $id]);
 	}
 
 	public function dropByUserIdList(array $userIds)
@@ -75,16 +74,18 @@ class UserBlacklistDAO extends DAOBase
 
 	public function save($sequence = null)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = ?", [$this->getUserId()]);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :0", [$this->getUserId()]);
+
+		if (empty($this->blacklist)) {
+			return;
+		}
 
 		$list = [];
 		foreach ($this->blacklist as $bannedId => $v) {
 			$list[] = '('.$this->getUserId().', '.$bannedId.')';
 		}
 
-		if (!empty($this->blacklist)) {
-			$this->db->exec("INSERT INTO {$this->dbTable} (".self::USER_ID.", ".self::IGNORED_ID.") VALUES ".implode(', ', $list));
-		}
+		$this->db->exec("INSERT INTO {$this->dbTable} (".self::USER_ID.", ".self::IGNORED_ID.") VALUES ".implode(', ', $list));
 	}
 
 	protected function getForeignProperties()

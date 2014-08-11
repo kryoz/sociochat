@@ -5,6 +5,8 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\ChannelNotifier;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DI;
@@ -30,8 +32,8 @@ class PropertiesController extends ControllerBase
 	public function handleRequest(ChainContainer $chain)
 	{
 		$action = $chain->getRequest()['action'];
-			if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
+		if (!isset($this->actionsMap[$action])) {
+			RespondError::make($chain->getFrom());
 			return;
 		}
 
@@ -53,7 +55,7 @@ class PropertiesController extends ControllerBase
 		$dir = $config->uploads->avatars->dir.DIRECTORY_SEPARATOR;
 
 		if (!$image || !file_exists($dir.$image.'.jpg')) {
-			$this->errorResponse($user, ['image' => $lang->getPhrase('profile.IncorrectRequest')]);
+			RespondError::make($user, ['image' => $lang->getPhrase('profile.IncorrectRequest')]);
 			return;
 		}
 
@@ -69,13 +71,13 @@ class PropertiesController extends ControllerBase
 			->setAvatarImg($image)
 			->save();
 
-		$chatId = $user->getChatId();
+		$chatId = $user->getChannelId();
 
 		$this->propertiesResponse($chain->getFrom());
 
 		$response = (new MessageResponse())
 			->setGuests(UserCollection::get()->getUsersByChatId($chatId))
-			->setChatId($chatId)
+			->setChannelId($chatId)
 			->setTime(null);
 
 		UserCollection::get()
@@ -97,12 +99,12 @@ class PropertiesController extends ControllerBase
 				->addRule(PropertiesDAO::SEX, Rules::sexPattern(), $lang->getPhrase('InvalidSexFormat'));
 				//->addRule(PropertiesDAO::NOTIFICATIONS, Rules::notNull(), 'Не заполнены настройки уведомлений');
 		} catch (WrongRuleNameException $e) {
-			$this->errorResponse($user, ['property' => $lang->getPhrase('InvalidProperty')]);
+			RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty')]);
 			return;
 		}
 
 		if (!$form->validate()) {
-			$this->errorResponse($user, $form->getErrors());
+			RespondError::make($user, $form->getErrors());
 			return;
 		}
 
@@ -128,7 +130,7 @@ class PropertiesController extends ControllerBase
 		$this->guestsUpdateResponse($user, $oldName);
 		$this->propertiesResponse($user);
 
-		(new ResponseFilter())->notifyOnPendingDuals($user);
+		ChannelNotifier::notifyOnPendingDuals($user);
 	}
 
 	private function checkIfAlreadyRegisteredName($userName, User $user)
@@ -136,7 +138,7 @@ class PropertiesController extends ControllerBase
 		$duplUser = PropertiesDAO::create()->getByUserName($userName);
 
 		if ($duplUser->getId() && $duplUser->getUserId() != $user->getId()) {
-			$this->errorResponse($user, [PropertiesDAO::NAME => $user->getLang()->getPhrase('NameAlreadyRegistered', $userName)]);
+			RespondError::make($user, [PropertiesDAO::NAME => $user->getLang()->getPhrase('NameAlreadyRegistered', $userName)]);
 			$this->propertiesResponse($user);
 			return;
 		}
@@ -148,7 +150,7 @@ class PropertiesController extends ControllerBase
 	{
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		(new UserCollection())
 			->attach($user)
@@ -159,8 +161,8 @@ class PropertiesController extends ControllerBase
 	private function guestsUpdateResponse(User $user, $oldName)
 	{
 		$response = (new MessageResponse())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()))
-			->setChatId($user->getChatId())
+			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()))
+			->setChannelId($user->getChannelId())
 			->setTime(null);
 
 		$props = $user->getProperties();
@@ -179,7 +181,7 @@ class PropertiesController extends ControllerBase
 		$response = (new UserPropetiesResponse())
 			->setUserProps($user)
 			->setMsg(MsgToken::create('ProfileChangeForbiddenInDualization'))
-			->setChatId($user->getChatId());
+			->setChannelId($user->getChannelId());
 
 		(new UserCollection())
 			->attach($user)
@@ -197,7 +199,7 @@ class PropertiesController extends ControllerBase
 		$isNewbie = mb_strpos($name, $guestName) !== false;
 
 		$lastChange = NameChangeDAO::create()->getLastByUser($user);
-		$isTimedOut = $lastChange && $lastChange->getDate() < time() + $config->nameChangeFreq;
+		$isTimedOut = $lastChange && ($lastChange->getDate() + $config->nameChangeFreq) < time();
 		$hasNameChanged = $name != $user->getProperties()->getName();
 
 		if ($isNewbie) {
@@ -207,8 +209,8 @@ class PropertiesController extends ControllerBase
 			if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
 				$name = $newname;
 			}
-		} elseif ($hasNameChanged && $isTimedOut) {
-			$this->errorResponse($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
+		} elseif ($lastChange && $hasNameChanged && !$isTimedOut) {
+			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
 			return;
 		}
 

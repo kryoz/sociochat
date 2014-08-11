@@ -69,7 +69,7 @@ class UserPropetiesResponse extends Response
 	public function setUserProps(User $user)
 	{
 		$properties = $user->getProperties();
-		$dir = DI::get()->container()->get('config')->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
+		$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
 
 		$this
 			->setEmail($user->getUserDAO()->getEmail())

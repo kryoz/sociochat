@@ -4,7 +4,6 @@ namespace Test\SocioChat\Clients;
 
 use SocioChat\Clients\PendingPrivates;
 use SocioChat\DI;
-use SocioChat\DIBuilder;
 use Test\SocioChat\Helpers\MockEventLoop;
 use Test\SocioChat\Helpers\TestSuite;
 
