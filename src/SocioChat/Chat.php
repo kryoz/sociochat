@@ -40,7 +40,7 @@ class Chat implements MessageComponentInterface
 			->setFrom(new User($conn))
 			->addHandler(new OnOpenFilters\SessionFilter(self::$sessionEngine))
 			->addHandler(new ResponseFilter())
-			->addHandler(AdsFilter::get())
+			//->addHandler(AdsFilter::get())
 			->run();
 	}
 
@@ -49,7 +49,7 @@ class Chat implements MessageComponentInterface
 		(new ChainContainer())
 			->setFrom(new User($conn))
 			->addHandler(new UserFetchFilter())
-			->addHandler(new \SocioChat\OnCloseFilters\AdsFilter())
+			//->addHandler(new \SocioChat\OnCloseFilters\AdsFilter())
 			->addHandler(new DetachFilter())
 			->run();
 	}
@@ -74,7 +74,7 @@ class Chat implements MessageComponentInterface
 			->setRequest($request)
 			->addHandler(new SessionFilter())
 			->addHandler(FloodFilter::get())
-			->addHandler(AdsFilter::get())
+			//->addHandler(AdsFilter::get())
 			->addHandler(new ControllerFilter())
 			->run();
 	}
