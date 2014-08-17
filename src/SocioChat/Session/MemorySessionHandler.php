@@ -3,11 +3,11 @@
 namespace SocioChat\Session;
 
 use SocioChat\Clients\User;
-use SocioChat\TSingleton;
+use Core\TSingleton;
 
 class MemorySessionHandler implements SessionHandler
 {
-	use TSingleton;
+	use \Core\TSingleton;
 	private $storage = [];
 
 	public function read($id)

@@ -8,11 +8,11 @@ use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
-use SocioChat\TSingleton;
+use Core\TSingleton;
 
 class DBSessionHandler implements SessionHandler
 {
-	use TSingleton;
+	use \Core\TSingleton;
 
 	const TIMESTAMP = 'Y-m-d H:i:s';
 

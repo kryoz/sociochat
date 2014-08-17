@@ -1,6 +1,6 @@
 <?php
 
-namespace SocioChat\Enum;
+namespace Core\Enum;
 
 abstract class Enum
 {

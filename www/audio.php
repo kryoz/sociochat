@@ -1,7 +1,7 @@
 <?php
 
 use SocioChat\DAO\MusicDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
 
 require_once '../config.php';

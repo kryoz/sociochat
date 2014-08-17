@@ -1,16 +1,16 @@
 <?php
 
-namespace SocioChat;
+namespace Core;
 
 use Monolog\Logger;
 use Orno\Di\Container;
 use ReflectionClass;
-use SocioChat\Cache\Cache;
+use Core\Cache\Cache;
 use Zend\Config\Config;
 
 class DI
 {
-	use TSingleton;
+	use \Core\TSingleton;
 
 	/**
 	 * @var \Orno\Di\Container

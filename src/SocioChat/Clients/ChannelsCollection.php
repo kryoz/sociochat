@@ -4,11 +4,11 @@ namespace SocioChat\Clients;
 
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
-use SocioChat\TSingleton;
+use Core\TSingleton;
 
 class ChannelsCollection
 {
-	use TSingleton;
+	use \Core\TSingleton;
 	/**
 	 * @var Channel[]
 	 */

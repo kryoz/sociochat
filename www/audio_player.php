@@ -1,7 +1,7 @@
 <?php
 
 use SocioChat\DAO\MusicDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
 
 if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {

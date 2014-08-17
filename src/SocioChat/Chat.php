@@ -1,6 +1,8 @@
 <?php
 namespace SocioChat;
 
+use Core\DI;
+use Core\TSingleton;
 use Guzzle\Http\Message\RequestInterface;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;

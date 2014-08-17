@@ -7,14 +7,14 @@ use SocioChat\Chain\ChainInterface;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\MightyLoop;
 use SocioChat\Response\ErrorResponse;
-use SocioChat\TSingleton;
+use Core\TSingleton;
 
 class FloodFilter implements ChainInterface
 {
-	use TSingleton;
+	use \Core\TSingleton;
 	private $otherTimers = [];
 	private $pingTimers = [];
 

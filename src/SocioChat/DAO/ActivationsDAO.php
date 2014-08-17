@@ -2,6 +2,8 @@
 
 namespace SocioChat\DAO;
 
+use Core\DAO\DAOBase;
+
 class ActivationsDAO extends DAOBase
 {
 	const EMAIL = 'email';

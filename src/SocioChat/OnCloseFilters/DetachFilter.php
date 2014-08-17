@@ -9,7 +9,7 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\ChannelNotifier;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 

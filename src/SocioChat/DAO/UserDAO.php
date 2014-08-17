@@ -2,8 +2,9 @@
 
 namespace SocioChat\DAO;
 
-use SocioChat\DI;
-use SocioChat\Utils\DbQueryHelper;
+use Core\DAO\DAOBase;
+use Core\DI;
+use Core\Utils\DbQueryHelper;
 
 class UserDAO extends DAOBase
 {

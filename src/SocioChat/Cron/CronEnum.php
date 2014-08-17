@@ -2,8 +2,8 @@
 
 namespace SocioChat\Cron;
 
-use SocioChat\DI;
-use SocioChat\Enum\Enum;
+use Core\DI;
+use Core\Enum\Enum;
 
 class CronEnum extends Enum
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace SocioChat\Forms;
+namespace Core\Form;
 
-use SocioChat\Utils\WrongArgumentException;
+use Core\Utils\WrongArgumentException;
 
 class Form
 {

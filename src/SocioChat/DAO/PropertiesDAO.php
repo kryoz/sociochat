@@ -2,10 +2,11 @@
 
 namespace SocioChat\DAO;
 
-use SocioChat\DI;
+use Core\DAO\DAOBase;
+use Core\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
-use SocioChat\Utils\DbQueryHelper;
+use Core\Utils\DbQueryHelper;
 
 class PropertiesDAO extends DAOBase
 {

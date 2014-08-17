@@ -2,7 +2,7 @@
 
 namespace SocioChat\Cron;
 
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Session\DBSessionHandler;
 
 class ServiceSessionCleaner implements CronService

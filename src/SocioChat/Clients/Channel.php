@@ -2,7 +2,7 @@
 
 namespace SocioChat\Clients;
 
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Response\MessageResponse;
 
 class Channel

@@ -1,6 +1,6 @@
 <?php
 
-namespace SocioChat\Cache;
+namespace Core\Cache;
 
 
 class CacheException extends \Exception{

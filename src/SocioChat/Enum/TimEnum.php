@@ -2,6 +2,8 @@
 
 namespace SocioChat\Enum;
 
+use Core\Enum\Enum;
+
 class TimEnum extends Enum
 {
 	const ANY = 1;

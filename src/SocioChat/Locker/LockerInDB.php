@@ -3,7 +3,7 @@
 namespace SocioChat\Locker;
 
 use SocioChat\DAO\LockerDAO;
-use SocioChat\Utils\DbQueryHelper;
+use Core\Utils\DbQueryHelper;
 
 class LockerInDB implements Locker
 {

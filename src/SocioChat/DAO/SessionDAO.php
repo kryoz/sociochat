@@ -2,8 +2,9 @@
 
 namespace SocioChat\DAO;
 
+use Core\DAO\DAOBase;
 use PDO;
-use SocioChat\Utils\DbQueryHelper;
+use Core\Utils\DbQueryHelper;
 
 class SessionDAO extends DAOBase
 {

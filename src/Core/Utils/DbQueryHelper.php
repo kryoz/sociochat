@@ -1,6 +1,6 @@
 <?php
 
-namespace SocioChat\Utils;
+namespace Core\Utils;
 
 
 class DbQueryHelper 

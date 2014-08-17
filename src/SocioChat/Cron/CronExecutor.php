@@ -3,10 +3,10 @@
 namespace SocioChat\Cron;
 
 
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Locker\AlreadyLockedException;
 use SocioChat\Locker\LockerInDB;
-use SocioChat\Utils\CMDUtils;
+use Core\Utils\CMDUtils;
 
 class CronExecutor
 {

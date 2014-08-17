@@ -1,6 +1,6 @@
 <?php
 
-namespace SocioChat;
+namespace Core;
 
 trait TSingleton
 {

@@ -2,6 +2,8 @@
 
 namespace SocioChat\DAO;
 
+use Core\DAO\DAOBase;
+
 class MusicDAO extends DAOBase
 {
 	const TRACK_ID = 'track_id';

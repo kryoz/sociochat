@@ -1,13 +1,14 @@
 <?php
 namespace SocioChat;
 
+use Core\DB;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orno\Di\Container;
 use React\EventLoop\Factory as Loop;
-use SocioChat\Cache\Cache;
-use SocioChat\Cache\CacheApc;
-use SocioChat\Cache\CacheException;
+use Core\Cache\Cache;
+use Core\Cache\CacheApc;
+use Core\Cache\CacheException;
 use SocioChat\Message\Dictionary;
 use SocioChat\Message\Lang;
 use Zend\Config\Config;

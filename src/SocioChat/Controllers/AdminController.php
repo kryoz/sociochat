@@ -6,9 +6,9 @@ use SocioChat\Chat;
 use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
-use SocioChat\DAO\DAOBase;
+use Core\DAO\DAOBase;
 use SocioChat\DAO\NameChangeDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Message\MsgRaw;
 use SocioChat\Response\MessageResponse;
 

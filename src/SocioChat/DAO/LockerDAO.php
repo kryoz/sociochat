@@ -2,6 +2,8 @@
 
 namespace SocioChat\DAO;
 
+use Core\DAO\DAOBase;
+
 class LockerDAO extends DAOBase
 {
 	const KEY = 'uid';

@@ -3,7 +3,7 @@ if (!defined('ROOT')) {
 	die('not allowed');
 }
 
-use SocioChat\DI;
+use Core\DI;
 
 function curl($url, $postParams, $auth = false) {
 	$options = [

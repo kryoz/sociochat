@@ -2,7 +2,7 @@
 
 use Monolog\Logger;
 use SocioChat\Cron\CronExecutor;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 

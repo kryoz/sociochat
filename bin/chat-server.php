@@ -8,7 +8,7 @@ use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
 use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 
