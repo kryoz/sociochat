@@ -7,7 +7,7 @@ use React\EventLoop\Timer\TimerInterface;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Message\Lang;
 use SocioChat\Response\Response;
 

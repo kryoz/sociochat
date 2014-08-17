@@ -6,7 +6,7 @@ use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 

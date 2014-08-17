@@ -6,7 +6,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionClass;
 use SocioChat\Clients\User;
 use SocioChat\DAO\PropertiesDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
 use SocioChat\Enum\TimEnum;
 

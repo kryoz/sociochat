@@ -3,8 +3,7 @@
 namespace Test\SocioChat\Clients;
 
 use SocioChat\Clients\PendingPrivates;
-use SocioChat\DI;
-use SocioChat\DIBuilder;
+use Core\DI;
 use Test\SocioChat\Helpers\MockEventLoop;
 use Test\SocioChat\Helpers\TestSuite;
 

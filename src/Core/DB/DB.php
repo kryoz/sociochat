@@ -1,6 +1,6 @@
 <?php
 
-namespace SocioChat;
+namespace Core;
 
 use Monolog\Logger;
 use PDO;
@@ -159,7 +159,7 @@ class DB
 				$this->pass,
 				[
 					PDO::ATTR_PERSISTENT => true,
-					1002 => "SET NAMES utf8", //MYSQL_ATTR_INIT_COMMAND
+					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				]
 			);

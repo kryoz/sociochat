@@ -3,12 +3,10 @@
 namespace SocioChat\Clients;
 
 use SocioChat\Enum\TimEnum;
-use SocioChat\Log;
-use SocioChat\TSingleton;
 
 class PendingDuals
 {
-	use TSingleton;
+	use \Core\TSingleton;
 
 	private $dualsMap = [
 		TimEnum::EIE => TimEnum::LSI,

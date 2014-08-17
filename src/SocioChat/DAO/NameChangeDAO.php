@@ -2,6 +2,7 @@
 
 namespace SocioChat\DAO;
 
+use Core\DAO\DAOBase;
 use SocioChat\Clients\User;
 
 class NameChangeDAO extends DAOBase

@@ -1,9 +1,9 @@
 <?php
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\DIBuilder;
-use SocioChat\Forms\Form;
+use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use Zend\Config\Config;
 

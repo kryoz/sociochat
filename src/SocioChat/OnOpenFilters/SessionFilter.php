@@ -8,7 +8,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Message\Lang;

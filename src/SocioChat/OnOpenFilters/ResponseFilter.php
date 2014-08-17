@@ -7,7 +7,7 @@ use SocioChat\Clients\ChatsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
-use SocioChat\DI;
+use Core\DI;
 use SocioChat\Message\Msg;
 use SocioChat\Message\MsgRaw;
 use SocioChat\Message\MsgToken;

@@ -4,15 +4,12 @@ namespace SocioChat\OnCloseFilters;
 
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
-use SocioChat\ChatConfig;
 use SocioChat\Clients\ChatsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
-use SocioChat\DI;
-use SocioChat\Log;
+use Core\DI;
 use SocioChat\Message\MsgToken;
-use SocioChat\MightyLoop;
 use SocioChat\Response\MessageResponse;
 
 

@@ -3,12 +3,11 @@
 namespace SocioChat\Clients;
 
 use React\EventLoop\LoopInterface;
-use SocioChat\DI;
-use SocioChat\TSingleton;
+use Core\DI;
 
 class PendingPrivates
 {
-	use TSingleton;
+	use \Core\TSingleton;
 
 	const TTL = 60;
 	private $queue = [];

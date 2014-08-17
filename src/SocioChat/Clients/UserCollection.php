@@ -3,15 +3,13 @@
 namespace SocioChat\Clients;
 
 use SocioChat\DAO\PropertiesDAO;
-use SocioChat\DI;
-use SocioChat\Log;
+use Core\DI;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
-use SocioChat\TSingleton;
 
 class UserCollection
 {
-	use TSingleton;
+	use \Core\TSingleton;
 
 	/**
 	 * @var User[]

@@ -2,7 +2,7 @@
 namespace SocioChat\Message;
 
 use Monolog\Logger;
-use SocioChat\DI;
+use Core\DI;
 
 class Lang
 {

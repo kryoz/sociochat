@@ -2,6 +2,8 @@
 
 namespace SocioChat\Enum;
 
+use Core\Enum\Enum;
+
 class SexEnum extends Enum
 {
 	const MALE = 1;

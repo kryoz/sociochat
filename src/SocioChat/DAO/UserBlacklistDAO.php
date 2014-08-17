@@ -2,8 +2,8 @@
 
 namespace SocioChat\DAO;
 
-use SocioChat\Log;
-use SocioChat\Utils\DbQueryHelper;
+use Core\DAO\DAOBase;
+use Core\Utils\DbQueryHelper;
 
 class UserBlacklistDAO extends DAOBase
 {

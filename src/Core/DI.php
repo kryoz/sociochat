@@ -1,12 +1,12 @@
 <?php
 
-namespace SocioChat;
+namespace Core;
 
 use Orno\Di\Container;
 
 class DI
 {
-	use TSingleton;
+	use \Core\TSingleton;
 
 	/**
 	 * @var \Orno\Di\Container
@@ -36,6 +36,4 @@ class DI
 	{
 		$this->__construct();
 	}
-
-
 }
