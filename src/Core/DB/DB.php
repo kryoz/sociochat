@@ -1,7 +1,8 @@
 <?php
 
-namespace Core;
+namespace Core\DB;
 
+use Core\DI;
 use Monolog\Logger;
 use PDO;
 use PDOException;
@@ -159,7 +160,7 @@ class DB
 				$this->pass,
 				[
 					PDO::ATTR_PERSISTENT => true,
-					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+					1002 => "SET NAMES utf8",
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				]
 			);

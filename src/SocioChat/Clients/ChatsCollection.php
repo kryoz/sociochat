@@ -3,8 +3,8 @@
 namespace SocioChat\Clients;
 
 
+use Core\TSingleton;
 use SocioChat\Response\Response;
-use SocioChat\TSingleton;
 
 class ChatsCollection
 {
