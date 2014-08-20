@@ -5,11 +5,8 @@ define(function () {
 				if (!$this.connection || $this.connection.readyState != 1) {
 					return;
 				}
-				var cmd = {
-					subject: 'Ping'
-				};
 
-				$this.connection.send(JSON.stringify(cmd));
+				$this.send({subject: 'Ping'});
 			}, 15000);
 
 			// Address reset
