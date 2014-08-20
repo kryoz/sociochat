@@ -67,7 +67,7 @@ define(function () {
 			regPanel: $('#reg-panel')
 		},
 
-		Init: function(hostUrl, token, avatarMaxDim) {
+		Init: function(hostUrl, token) {
 			var $this = this;
 
 			$this.hostUrl = hostUrl;
