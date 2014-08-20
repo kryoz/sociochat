@@ -58,14 +58,6 @@ require_once "pages/header.php";
 						<li style="display: none">
 							<a href="#" id="menu-exit" class="tip" title="<?=$lang->getPhrase('index.ReturnToPublicTip')?>"><span class="glyphicon glyphicon-home"></span> <?=$lang->getPhrase('index.ReturnToPublic')?></a>
 						</li>
-						<!--<li class="dropdown">
-							<a href="#publics" data-toggle="dropdown" class="dropdown-toggle">Паблики <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">1 <span class="glyphicon glyphicon-ok-sign"></span></a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-							</ul>
-						</li>-->
 						<li>
 							<a href="http://vk.com/topic-66015624_29370149" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
 						</li>
@@ -94,11 +86,7 @@ require_once "pages/header.php";
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
-<<<<<<< HEAD
-	<script type="text/javascript" src="js/<?=$config->jsappfile?>?v=1"></script>
-=======
 	<script src="js/require.js"></script>
->>>>>>> 22060aa... requireJS experiment
 	<script type="text/javascript">
 		require.config({
 			baseUrl: 'js/app'
