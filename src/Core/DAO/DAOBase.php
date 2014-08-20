@@ -1,7 +1,7 @@
 <?php
 namespace Core\DAO;
 
-use Core\DB;
+use Core\DB\DB;
 use Core\DI;
 use Core\FixedArrayAccess;
 

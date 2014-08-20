@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat;
 
-use Core\DB;
+use Core\DB\DB;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orno\Di\Container;

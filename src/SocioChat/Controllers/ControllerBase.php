@@ -2,10 +2,7 @@
 namespace SocioChat\Controllers;
 
 use SocioChat\Chain\ChainContainer;
-use SocioChat\Clients\User;
-use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
-use SocioChat\Response\ErrorResponse;
 
 abstract class ControllerBase
 {

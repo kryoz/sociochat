@@ -16,7 +16,6 @@ use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use Core\Form\WrongRuleNameException;
 use SocioChat\Message\MsgToken;
-use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
 use SocioChat\Utils\CharTranslator;
@@ -51,7 +50,7 @@ class PropertiesController extends ControllerBase
 		$user = $chain->getFrom();
 		$lang = $user->getLang();
 		/* @var $config Config */
-		$config = DI::get()->container()->get('config');
+		$config = DI::get()->getConfig();
 		$dir = $config->uploads->avatars->dir.DIRECTORY_SEPARATOR;
 
 		if (!$image || !file_exists($dir.$image.'.jpg')) {
