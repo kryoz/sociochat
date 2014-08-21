@@ -85,7 +85,9 @@ define(function () {
 
         Connect : function() {
             try {
-	            this.addLog('Подключаемся...', 1);
+	            if ($this.isFirstConnect) {
+	                this.addLog('Подключаемся...', 1);
+	            }
                 this.connection = new WebSocket(this.hostUrl);
             } catch (e) {
                 this.addLog('Простите, но ваш браузер не поддерживается. Используйте свежую версию Chrome, Opera или Firefox', 1);

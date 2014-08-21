@@ -5,4 +5,5 @@ app.min.js
 composer.lock
 composer.phar
 chat.log
-www/uploads/avatars
+www/uploads/avatars/
+www/chatlog.txt

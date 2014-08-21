@@ -1,2 +1,63 @@
-<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[14:57:40] Аноним">Аноним1</div>привет</div>
-<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[14:57:42] Аноним">Аноним1</div>как дела чувак?</div>
+
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:03:04] Джек Лондон (ЛИЭ)">Саня</div>ну дело житейское</div>
+<div class="system">Нас теперь 4! Поприветствуем тленный_ТАНК.</div>
+<div class="system">Нас теперь 5! Поприветствуем Алёнушка_Ира.</div>
+<div class="system">тленный_ТАНК покинул чат</div>
+<div class="system">Нас теперь 5! Поприветствуем Гость11465.</div>
+<div class="system">Гость11465 покинул чат</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:12:53] Джек Лондон (ЛИЭ)">Саня</div>все замолчали</div>
+<div class="system">Нас теперь 5! Поприветствуем ИспекиМнеПирог.</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:14:51] Джек Лондон (ЛИЭ)">Саня</div>тогда будем слушать музыку</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:16:08] Джек Лондон (ЛИЭ)">Саня</div>https://sociochat.me/audio.php?track_id=8450202nHkx</div>
+<div class="system">Нас теперь 6! Поприветствуем Guest11466.</div>
+<div class="system">Фугенфюллер покинул чат</div>
+<div class="system">Guest11466 покинул чат</div>
+<div class="system">Нас теперь 5! Поприветствуем Fugen.</div>
+<div class="system">Нас теперь 6! Поприветствуем Гость11467.</div>
+<div class="system">Нас теперь 7! Поприветствуем Guest11468.</div>
+<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[15:25:48] Аноним">Guest11468</div>hello</div>
+<div class="system">Гость11467 покинул чат</div>
+<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[15:26:28] Аноним">Fugen</div>aloha</div>
+<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[15:26:31] Аноним">Fugen</div>rodnoy</div>
+<div class="system">Guest11468 покинул чат</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:27:42] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>gohome</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:34:01] Джек Лондон (ЛИЭ)">Саня</div>этого я ещё не видал)) http://www.youtube.com/watch?v=StkwrmZQjYY</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:34:08] Джек Лондон (ЛИЭ)">Саня</div>дариус пропал)</div>
+<div class="system">Нас теперь 6! Поприветствуем тленный_ТАНК.</div>
+<div class="system">Нас теперь 7! Поприветствуем Гость11469.</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:34:56] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>славно, что пропал</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:35:08] Джек Лондон (ЛИЭ)">Саня</div>а по-моему он забавный))</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:35:25] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>трава его окончательно упорола </div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:36:12] Джек Лондон (ЛИЭ)">Саня</div>да, трава его погубила</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:37:05] Бальзак (ИЛИ)">Синий_Лес</div>Оо дариус</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:37:08] Бальзак (ИЛИ)">Синий_Лес</div>вСЕМ ПРИВЕТ</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:37:58] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>кусочек дариуса в чате</div>
+<div class="system">тленный_ТАНК покинул чат</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:38:02] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>привееет</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:38:33] Бальзак (ИЛИ)">Синий_Лес</div>Как ваши дела? Давно меня тут небыло </div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:38:39] Бальзак (ИЛИ)">Синий_Лес</div>Как дариус?</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:39:00] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>и правда давно, его нет, дела авхтлищно</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:40:37] Бальзак (ИЛИ)">Синий_Лес</div>Я как то писала, что он пропал , а он говорил что на неделю. я думала фейк</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:42:00] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>он сказал, что уйдет, но тусил тут еще</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:42:02] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>сейчас троллей не видно</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:42:20] Бальзак (ИЛИ)">Синий_Лес</div>Побегу я обрабатывать прокол :) </div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:43:12] Бальзак (ИЛИ)">Синий_Лес</div>И всё же ушёл ._. кто же срачь разводить  будет  теперь.</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:43:57] Джек Лондон (ЛИЭ)">Саня</div>вообще он хорошую идею подал - видеоблоггинг))</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:44:41] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>видеоблоггинг давно был :D</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:44:52] Джек Лондон (ЛИЭ)">Саня</div>да, но для чата)</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:44:55] Бальзак (ИЛИ)">Синий_Лес</div>ИспекиМнеПирог, +</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:45:01] Джек Лондон (ЛИЭ)">Саня</div>интригует попробовать тоже, но я не завсегдатай чата, фиг знает что гнать</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226.jpg"><img src="/uploads/avatars/d854b70833d4539fa13a79f6f8eeb54bed35d226_t.png"></div> <div class="nickname" title="[15:45:39] Дон Кихот (ИЛЭ)">ИспекиМнеПирог</div>тыжсоздатель</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:45:40] Бальзак (ИЛИ)">Синий_Лес</div>надо говорить , что все плохие </div>
+<div><div class="user-avatar" data-src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17.jpg"><img src="/uploads/avatars/f2d087f767959a022dab940036699906da15be17_t.png"></div> <div class="nickname" title="[15:45:55] Бальзак (ИЛИ)">Синий_Лес</div>Я тоже подумала про это</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:46:17] Джек Лондон (ЛИЭ)">Саня</div>да я тут подсел на канал Дена Борисова, он гонит в формате &quot;я знаю ответы на все ваши вопросы&quot;</div>
+<div class="system">Нас теперь 7! Поприветствуем Гость11470.</div>
+<div class="system">Синий_Лес покинул чат</div>
+<div class="system">Гость11470 покинул чат</div>
+<div><div class="user-avatar" data-src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307.jpg"><img src="/uploads/avatars/a2eca882fbff22f02b17ca8bed5498eee3ff2307_t.png"></div> <div class="nickname" title="[15:47:30] Джек Лондон (ЛИЭ)">Саня</div>хотя начинал он как эксперт по бодибилдингу</div>
+<div class="system">Нас теперь 6! Поприветствуем DZYO.</div>
+<div class="system">DZYO покинул чат</div>
+<div class="system">Алёнушка_Ира покинул чат</div>
+<div class="system">Нас теперь 5! Поприветствуем Синий_Лес.</div>
+<div class="system">Синий_Лес покинул чат</div>
+<div class="system">Нас теперь 5! Поприветствуем Lithiume.</div>
