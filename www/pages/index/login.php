@@ -6,14 +6,14 @@ if (!defined('ROOT')) {
 <div class="panel panel-default tab-pane" id="login">
 	<div class="panel-heading"><?=$lang->getPhrase('index.Login')?></div>
 	<div class="panel-body">
-		<form action="dummy.html" method="post" target="dummy">
+		<form action="dummy.html" method="post" target="dummy" autocomplete="on">
 			<p><?=$lang->getPhrase('login.Tip')?> <a href="recovery.php" target="_blank"><?=$lang->getPhrase('login.Forgot')?></a></p>
 			<div class="row btn-vert-block form-group">
 				<div class="btn-vert-block col-md-6">
-					<span id="email_place_holder"></span>
+					<input type="text" id="email_place_holder" autocomplete="on"/>
 				</div>
 				<div class="btn-vert-block col-md-6">
-					<span id="password_place_holder"></span>
+					<input type="password" id="password_place_holder" autocomplete="on" />
 				</div>
 			</div>
 			<div class="row btn-vert-block">

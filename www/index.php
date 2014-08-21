@@ -87,9 +87,9 @@ require_once "pages/header.php";
 
 	</div>
 	<div id="dont_forget" style="display: none">
-		<form action="" method="post">
-			<input type="email" class="form-control" placeholder="<?=$lang->getPhrase('Email')?>" id="login-name">
-			<input type="password" class="form-control" autocomplete="on" placeholder="<?=$lang->getPhrase('Password')?>" id="login-password">
+		<form action="" method="post" autocomplete="on">
+			<input type="email" required class="form-control" autocomplete="on" placeholder="<?=$lang->getPhrase('Email')?>" id="login-name">
+			<input type="password" required class="form-control" autocomplete="on" placeholder="<?=$lang->getPhrase('Password')?>" id="login-password">
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
