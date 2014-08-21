@@ -34,6 +34,7 @@ define(function () {
         ownSex: 0,
         ownName: null,
         chatLastFrom: null,
+	    isFirstConnect: true,
 
         domElems : {
             guestList: $('#guests'),
@@ -84,6 +85,7 @@ define(function () {
 
         Connect : function() {
             try {
+	            this.addLog('Подключаемся...', 1);
                 this.connection = new WebSocket(this.hostUrl);
             } catch (e) {
                 this.addLog('Простите, но ваш браузер не поддерживается. Используйте свежую версию Chrome, Opera или Firefox', 1);
@@ -105,6 +107,10 @@ define(function () {
             });
 
             $this.connection.onopen = function(e) {
+	            if ($this.isFirstConnect) {
+		            $this.domElems.chat.empty();
+		            $this.isFirstConnect = false;
+	            }
                 $('.glyphicon-refresh').parent().remove();
                 $this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
 
