@@ -73,6 +73,7 @@ define(function () {
 
             $this.hostUrl = hostUrl;
             $this.token = token;
+	        this.addLog('Подключаемся...', 1);
             $this.Connect();
 
             require(['init_events'], function(binders) {
@@ -85,9 +86,6 @@ define(function () {
 
         Connect : function() {
             try {
-	            if ($this.isFirstConnect) {
-	                this.addLog('Подключаемся...', 1);
-	            }
                 this.connection = new WebSocket(this.hostUrl);
             } catch (e) {
                 this.addLog('Простите, но ваш браузер не поддерживается. Используйте свежую версию Chrome, Opera или Firefox', 1);
