@@ -7,7 +7,9 @@ if (!defined('ROOT')) {
 	<div class="panel panel-default chat-container">
 		<div class="panel-body">
 			<div id="log">
-				<div class="system"><?=$lang->getPhrase('index.Connect')?></div>
+				<div class="system">
+					<?=$lang->getPhrase('index.Connect')?>
+				</div>
 			</div>
 
 		</div>
