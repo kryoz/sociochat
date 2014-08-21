@@ -39,8 +39,7 @@ class Lang
 	public function getPhraseByArray(array $args)
 	{
 		$token = array_shift($args);
-		$logger = DI::get()->container()->get('logger');
-		/* @var $logger Logger */
+		$logger = DI::get()->getLogger();
 
 		if (!$this->lexicon) {
 			$logger->warn('No localization was set', [__CLASS__]);

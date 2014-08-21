@@ -8,6 +8,7 @@ use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\OnCloseFilters\DetachFilter;
+use SocioChat\OnCloseFilters\UserFetchFilter;
 use SocioChat\OnMessageFilters\ControllerFilter;
 use SocioChat\OnMessageFilters\FloodFilter;
 use SocioChat\OnMessageFilters\SessionFilter;
@@ -30,18 +31,17 @@ class Chat implements MessageComponentInterface
 
 	public function __construct()
 	{
-		$config = DI::get()->container()->get('config');
+		$config = DI::get()->getConfig();
 		self::$sessionEngine = $config->session->driver == 'memory' ? MemorySessionHandler::get() : DBSessionHandler::get();
 	}
 
 	public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
 	{
-		DI::get()->getLogger()->info("Opened new connectionId = {$conn->resourceId}", [__FUNCTION__]);
-
 		(new ChainContainer())
 			->setFrom(new User($conn))
 			->addHandler(new OnOpenFilters\SessionFilter(self::$sessionEngine))
 			->addHandler(new ResponseFilter())
+			//->addHandler(AdsFilter::get())
 			->run();
 	}
 
@@ -49,6 +49,8 @@ class Chat implements MessageComponentInterface
 	{
 		(new ChainContainer())
 			->setFrom(new User($conn))
+			->addHandler(new UserFetchFilter())
+			//->addHandler(new \SocioChat\OnCloseFilters\AdsFilter())
 			->addHandler(new DetachFilter())
 			->run();
 	}
@@ -60,7 +62,7 @@ class Chat implements MessageComponentInterface
 		}
 
 		if (!$user = UserCollection::get()->getClientByConnectionId($from->resourceId)) {
-			DI::get()->container()->get('logger')->error("Got request from unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
+			DI::get()->getLogger()->error("Got request from unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
 			return;
 		}
 
@@ -73,13 +75,14 @@ class Chat implements MessageComponentInterface
 			->setRequest($request)
 			->addHandler(new SessionFilter())
 			->addHandler(FloodFilter::get())
+			//->addHandler(AdsFilter::get())
 			->addHandler(new ControllerFilter())
 			->run();
 	}
 
 	public function onError(ConnectionInterface $conn, \Exception $e)
 	{
-		DI::get()->container()->get('logger')->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
+		DI::get()->getLogger()->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
 		$conn->close();
 	}
 

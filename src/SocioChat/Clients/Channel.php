@@ -76,7 +76,7 @@ class Channel
 		if ($from = $response->getFrom()) {
 			$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
 			$info = [
-				self::TIM => $from->getProperties()->getTim()->getName(),
+				self::TIM => $from->getProperties()->getTim()->getName(), //@TODO wrong lang
 				self::SEX => $from->getProperties()->getSex()->getName(),
 			];
 

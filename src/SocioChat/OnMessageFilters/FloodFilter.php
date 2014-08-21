@@ -2,19 +2,17 @@
 
 namespace SocioChat\OnMessageFilters;
 
+use Core\DI;
+use Core\TSingleton;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
-use SocioChat\ChatConfig;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
-use Core\DI;
-use SocioChat\MightyLoop;
 use SocioChat\Response\ErrorResponse;
-use Core\TSingleton;
 
 class FloodFilter implements ChainInterface
 {
-	use \Core\TSingleton;
+	use TSingleton;
 	private $otherTimers = [];
 	private $pingTimers = [];
 

@@ -2,6 +2,7 @@
 
 namespace SocioChat\OnCloseFilters;
 
+use Core\DI;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
 use SocioChat\Clients\ChannelsCollection;
@@ -9,7 +10,6 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\ChannelNotifier;
-use Core\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
@@ -18,19 +18,7 @@ class DetachFilter implements ChainInterface
 {
 	public function handleRequest(ChainContainer $chain)
 	{
-		$clients = UserCollection::get();
-		$conn = $chain->getFrom()->getConnectionId();
-
-		if (!$user = $clients->getClientByConnectionId($conn)) {
-			return;
-		}
-
-		/* @var $user User */
-		$this->handleDisconnection($user);
-	}
-
-	private function handleDisconnection(User $user)
-	{
+		$user = $chain->getFrom();
 		$loop = DI::get()->container()->get('eventloop');
 		$logger = DI::get()->getLogger();
 

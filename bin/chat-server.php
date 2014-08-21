@@ -1,6 +1,5 @@
 <?php
 use Monolog\Logger;
-use Orno\Di\Container;
 use SocioChat\Chat;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
@@ -10,6 +9,7 @@ use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
 use Core\DI;
 use SocioChat\DIBuilder;
+use SocioChat\Message\MsgContainer;
 use Zend\Config\Config;
 
 function CustomErrorHandler($errno, $errstr, $errfile, $errline)
@@ -66,5 +66,50 @@ $channels = ChannelsCollection::get()
 	->addChannel(new Channel(3, 'Бета', false))
 	->addChannel(new Channel(4, 'Гамма', false))
 	->addChannel(new Channel(5, 'Дельта', false));
+
+
+$dumperCallback = function () use ($config) {
+	$logger = DI::get()->getLogger();
+	$logger->info('Dumping chat log', ['CHATLOG']);
+	$fn = ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'chatlog.txt';
+
+	if (!$fh = fopen($fn, 'w')) {
+		$logger->err('Unable to open file '.$fn.' to dump!');
+		return;
+	}
+
+	$responses = ChannelsCollection::get()->getChannelById(1)->getHistory(0);
+
+	foreach ($responses as $response) {
+		if (!isset($response[Channel::TO_NAME])) {
+			if (isset($response[Channel::USER_INFO])) {
+				$info = $response[Channel::USER_INFO];
+				$line = '<div>';
+				if (isset($info[Channel::AVATAR_IMG])) {
+					$line .= '<div class="user-avatar" data-src="/uploads/avatars/'.$info[Channel::AVATAR_IMG].'">';
+					$line .= '<img src="/uploads/avatars/'.$info[Channel::AVATAR_THUMB].'"></div>';
+				} else {
+					$line .= '<div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div>';
+				}
+
+				$line .= ' <div class="nickname" title="['.$response[Channel::TIME].'] '.$info[Channel::TIM].'">'.$response[Channel::FROM_NAME].'</div>';
+			} else {
+				$line = '<div class="system">';
+			}
+
+			/** @var $msg MsgContainer */
+			$msg = $response[Channel::MSG];
+			$lang = DI::get()->container()->get('lang');
+			$lang->setLangByCode('ru');
+			$line .= $msg->getMsg($lang);
+			$line .= "</div>\n";
+			fputs($fh, $line);
+		}
+	}
+
+	fclose($fh);
+};
+
+$timer = $loop->addPeriodicTimer($config->chatlog->interval, $dumperCallback);
 
 $loop->run();

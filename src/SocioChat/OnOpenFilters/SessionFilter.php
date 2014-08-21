@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat\OnOpenFilters;
 
+use Core\DI;
 use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
@@ -8,7 +9,6 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
-use Core\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Message\Lang;
@@ -44,7 +44,7 @@ class SessionFilter implements ChainInterface
 
 		$sessionHandler = $this->sessionHandler;
 
-		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}), lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
+		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 
 		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
 			$logger->error("Unauthorized session, dropped", [__CLASS__]);

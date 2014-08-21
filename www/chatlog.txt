@@ -1,0 +1,2 @@
+<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[14:57:40] Аноним">Аноним1</div>привет</div>
+<div><div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div> <div class="nickname" title="[14:57:42] Аноним">Аноним1</div>как дела чувак?</div>

@@ -3,7 +3,6 @@
 namespace SocioChat\Clients;
 
 use SocioChat\Response\MessageResponse;
-use SocioChat\Response\Response;
 use Core\TSingleton;
 
 class ChannelsCollection
