@@ -86,8 +86,8 @@ $dumperCallback = function () use ($config) {
 				$info = $response[Channel::USER_INFO];
 				$line = '<div>';
 				if (isset($info[Channel::AVATAR_IMG])) {
-					$line .= '<div class="user-avatar" data-src="/uploads/avatars/'.$info[Channel::AVATAR_IMG].'">';
-					$line .= '<img src="/uploads/avatars/'.$info[Channel::AVATAR_THUMB].'"></div>';
+					$line .= '<div class="user-avatar" data-src="'.$info[Channel::AVATAR_IMG].'">';
+					$line .= '<img src="'.$info[Channel::AVATAR_THUMB].'"></div>';
 				} else {
 					$line .= '<div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div>';
 				}
