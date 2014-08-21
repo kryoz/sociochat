@@ -5,6 +5,7 @@ if (!defined('ROOT')) {
 $title = isset($title) ? $title : 'соционический чат с дуалами';
 $js = isset($js) ? $js : '';
 $domain = isset($domain) ? $domain : 'https://sociochat.me';
+$meta = isset($meta) ? $meta : '';
 ?><!doctype html>
 <html>
 <head>
@@ -17,6 +18,7 @@ $domain = isset($domain) ? $domain : 'https://sociochat.me';
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<meta name="description" content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства.">
 	<meta name="keywords" content="соционика, мобильные знакомства, чат, дуалчат">
+	<?=$meta?>
 	<link rel="icon" href="<?=$domain?>/favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon" href="<?=$domain?>/img/sociochat.jpg">
 	<link rel="stylesheet" href="<?=$domain?>/css/bootstrap.min.css">
