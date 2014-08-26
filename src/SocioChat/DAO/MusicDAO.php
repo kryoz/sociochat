@@ -10,6 +10,7 @@ class MusicDAO extends DAOBase
 	const ARTIST = 'artist';
 	const SONG = 'song';
 	const QUALITY = 'quality';
+	const URL = 'url';
 
 	public function __construct()
 	{
@@ -19,6 +20,7 @@ class MusicDAO extends DAOBase
 				self::ARTIST,
 				self::SONG,
 				self::QUALITY,
+				self::URL,
 			]
 		);
 
@@ -39,6 +41,11 @@ class MusicDAO extends DAOBase
 	{
 		return $this[self::SONG];
 	}
+
+    public function getUrl()
+    {
+        return $this[self::URL];
+    }
 
 	public function getQuality()
 	{
@@ -67,6 +74,12 @@ class MusicDAO extends DAOBase
 		$this[self::SONG] = $song;
 		return $this;
 	}
+
+    public function setUrl($url)
+    {
+        $this[self::URL] = $url;
+        return $this;
+    }
 
 	public function setQuality($quality)
 	{
