@@ -87,7 +87,7 @@ define(function() {
             }
 
             var replaceWithImgLinks = function (text) {
-                var exp = /\b(https?:\/\/(?:[a-z\-]+\.)+[a-z]{2,6}(?:\/[^/#?]+)+\.(?:jpg|gif|png))\b/ig;
+                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|gif|png))\b/ig;
                 var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
                 replacement += '<img src="$1" style="max-width:100%; height: auto; display: none"></div>';
 
