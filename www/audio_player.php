@@ -24,6 +24,20 @@ if (!$trackId) {
 $dao = MusicDAO::create()->getByTrackId($trackId);
 
 if (!$dao->getId()) {
+	$response = curl('http://api.pleer.com/resource.php',
+		[
+			'access_token' => $token,
+			'method' => 'tracks_get_download_link',
+			'track_id' => $trackId,
+			'reason' => 'listen'
+		]
+	);
+
+	if (!$response['success']) {
+		response(400, 'invalid track_id specified');
+		return;
+	}
+
 	$trackInfo = curl('http://api.pleer.com/resource.php',
 		[
 			'access_token' => $token,
@@ -33,7 +47,7 @@ if (!$dao->getId()) {
 	);
 
 	if (!isset($trackInfo['data'])) {
-		response(400, 'invalid track_id specified');
+		response(400, 'invalid service response, try request again');
 		return;
 	}
 
@@ -43,7 +57,8 @@ if (!$dao->getId()) {
 		->setTrackId($trackId)
 		->setArtist($trackInfo['artist'])
 		->setSong($trackInfo['track'])
-		->setQuality($trackInfo['bitrate']);
+		->setQuality($trackInfo['bitrate'])
+		->setUrl($response['url']);
 	$dao->save();
 } else {
 	$trackInfo = [
@@ -53,20 +68,6 @@ if (!$dao->getId()) {
 	];
 }
 
-$response = curl('http://api.pleer.com/resource.php',
-	[
-		'access_token' => $token,
-		'method' => 'tracks_get_download_link',
-		'track_id' => $trackId,
-		'reason' => 'listen'
-	]
-);
-
-if (!$response['success']) {
-	response(400, 'invalid track_id specified');
-	return;
-}
-
-$trackInfo['url'] = 'http://pleer.sociochat.me/'.str_replace('http://', '', $response['url'].'?track_id='.$trackId);
+$trackInfo['url'] = 'http://pleer.sociochat.me/'.str_replace('http://', '', $dao->getUrl().'?track_id='.$trackId);
 
 response(200, $trackInfo);

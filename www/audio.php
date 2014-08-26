@@ -44,7 +44,7 @@ if ($trackId) {
 	);
 
 	if (!isset($trackInfo['data'])) {
-		die('invalid track_id');
+		die('invalid service response, try request again');
 	}
 
 	$trackInfo = $trackInfo['data'];
@@ -68,7 +68,8 @@ if ($trackId) {
 				->setTrackId($trackId)
 				->setArtist($trackInfo['artist'])
 				->setSong($trackInfo['track'])
-				->setQuality($trackInfo['bitrate']);
+				->setQuality($trackInfo['bitrate'])
+				->setUrl($response['url']);
 			$dao->save();
 		}
 
