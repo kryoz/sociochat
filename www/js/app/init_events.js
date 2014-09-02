@@ -78,6 +78,33 @@ define(function () {
                 $this.returnToChat();
             });
 
+            $this.domElems.doMusicSearch.click(function (e) {
+                var songName = $("#music input[name=song]").val();
+                var trackList = $("#tracks");
+
+                $.ajax({
+                    type: "POST",
+                    url: '/audio2.php',
+                    data: {
+                        'song' : songName
+                    },
+                    success: function(response) {
+                        var html = '';
+
+                        for (var id in response) {
+                            var trackInfo = response[id];
+                            html += "<tr>";
+                            html += "<td><a href=?track_id="+trackInfo.id+"'>"+trackInfo.artist+" - "+trackInfo.track+"</td>";
+                            html += "<td>"+trackInfo.bitrate+"</td>";
+                            html += "</tr>";
+                        }
+
+                        trackList.html(html);
+                    },
+                    dataType: 'json'
+                });
+            });
+
             $(window).resize(function() {
                 $this.scrollDown();
             });
@@ -147,6 +174,7 @@ define(function () {
                 $this.returnToChat();
             });
         },
+
         AvatarUploadHandler: function($this) {
             var avatar = $this.domElems.avatar;
             var uploadButtonContainer = avatar.find('.do-upload');

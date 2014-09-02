@@ -57,6 +57,7 @@ define(function () {
             setProperties: $('#set-profile-info'),
             setRegInfo: $('#set-reg-info'),
             doLogin: $('#do-login'),
+            doMusicSearch: $('#do-music-search'),
 
             menuDualize : $('#menu-dualize'),
             menuDualizeStop : $('#menu-dualize-stop'),
