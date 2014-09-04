@@ -66,7 +66,8 @@ define(function () {
             menuChannels: $('#menu-channels'),
             navbar: $('.navbar-nav'),
             regLink: $('#reg-info'),
-            regPanel: $('#reg-panel')
+            regPanel: $('#reg-panel'),
+	        audioPlayer : $('#player')
         },
 
         Init: function(hostUrl, token) {
@@ -272,6 +273,32 @@ define(function () {
             }
 
             document.cookie = updatedCookie;
-        }
+        },
+	    playMusic: function(e, musicElId) {
+		    var $audio = this.domElems.audioPlayer;
+		    var audioElRaw = $audio.get(0);
+		    var $realTrackEl = $('#'+musicElId);
+		    var $$this = $(e.currentTarget);
+
+		    audioElRaw.addEventListener('ended', function() {
+			    $realTrackEl.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+		    });
+
+		    if (audioElRaw.paused || audioElRaw.ended || $audio.data('current-track-id') != $$this.attr('id')) {
+			    $('#'+$audio.data('current-track-id')).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+
+			    if ($audio.data('current-track-id') != $$this.attr('id')) {
+				    $audio.attr('src', $$this.data('src'));
+			    }
+
+			    $audio.data('current-track-id', $$this.attr('id'));
+
+			    $$this.find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
+			    audioElRaw.play();
+		    } else {
+			    $$this.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+			    audioElRaw.pause();
+		    }
+	    }
     }
 });

@@ -19,14 +19,12 @@ if (!defined('ROOT')) {
 	</div>
 
 	<div class="panel-body">
+		<ul class="pagination"></ul>
 		<table class="table table-striped">
-			<thead>
-			<th>Песня</th>
-			<th>Качество (кбит/сек)</th>
-			</thead>
-			<tbody id="tracks">
+			<tbody>
 			</tbody>
 		</table>
+		<ul class="pagination"></ul>
 	</div>
 	<div class="panel-footer">
 		<a class="btn btn-block btn-success return-to-chat"><?=$lang->getPhrase('index.Return')?></a>

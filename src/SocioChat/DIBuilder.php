@@ -116,8 +116,8 @@ class DIBuilder
 				try {
 					$cache = new Cache(new CacheApc());
 				} catch (CacheException $e) {
-					$cache = [];
 					$container->get('logger')->err('Unable to initialize APC cache!');
+					die($e->getMessage());
 				}
 
 				return $cache;

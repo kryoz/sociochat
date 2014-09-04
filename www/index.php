@@ -100,6 +100,7 @@ require_once "pages/header.php";
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>
+	<audio id="player" style="display: none"></audio>
 	<script src="js/require.js"></script>
 	<script type="text/javascript">
 		require.config({

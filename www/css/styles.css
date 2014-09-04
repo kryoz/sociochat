@@ -252,7 +252,8 @@ doesnotexist:-o-prefocus, #panel-chat {
     line-height: 1em;
 }
 
-#log .music .glyphicon {
+#log .music .glyphicon,
+#music .glyphicon {
     font-size: 16px;
 }
 

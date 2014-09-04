@@ -2,8 +2,6 @@
 
 namespace Core\Cache;
 
-use Core\Cache\CacheException;
-
 class CacheApc implements ICache
 {
 

@@ -80,27 +80,105 @@ define(function () {
 
             $this.domElems.doMusicSearch.click(function (e) {
                 var songName = $("#music input[name=song]").val();
-                var trackList = $("#tracks");
+                var trackList = $("#music .table");
+	            var pagination = $("#music .pagination");
+				var sourceUrl = '/audio2.php';
+
+	            var renderSongSearchResponse = function(response) {
+		            var trackCount = response.count;
+		            var page = response.page;
+		            var pageCount = response.pageCount;
+		            response = response.tracks;
+
+		            var html = '<thead><th>Песня</th><th>Качество (кбит/сек)</th></thead>';
+
+		            for (var id in response) {
+			            var trackInfo = response[id];
+
+			            var musicElId = 'music-'+trackInfo.id+'-'+Math.floor(Math.random()*100000);
+
+			            html += "<tr>";
+			            html += '<td>';
+			            html += '<a href="#" data-id="'+trackInfo.id+'" id="'+musicElId+'" class="music"><span class="glyphicon glyphicon-play-circle"></span></a>';
+			            html += ' <a href="#" data-src="https://sociochat.me/audio.php?track_id='+trackInfo.id+'" class="share"><span class="glyphicon glyphicon-bullhorn"></span></a> '+trackInfo.artist+' - '+trackInfo.track+'</td>';
+			            html += "<td>"+trackInfo.bitrate+"</td>";
+			            html += "</tr>";
+		            }
+
+		            trackList.html(html);
+
+		            html = '';
+		            for (var i=1;i < Math.floor(trackCount/pageCount); i++) {
+			            var currentClass = '';
+			            var src = '?song='+songName+'&page='+i;
+
+			            if (i == page) {
+				            currentClass = 'active';
+				            src = '';
+			            }
+
+			            html += '<li class="'+currentClass+'">';
+			            html += '<a data-src="'+src+'" href="#">'+i+'</a></li>';
+		            }
+
+		            pagination.html(html);
+
+		            pagination.find('a').click(function(e) {
+			            var src = $(this).data('src');
+			            if (src) {
+				            $.ajax({
+					            type: "POST",
+					            url: sourceUrl+src,
+					            success: function(r) {
+						            renderSongSearchResponse(r);
+					            },
+					            dataType: 'json'
+				            });
+			            }
+		            });
+
+		            trackList.find('.music').click(function(e) {
+			            var $realTrackEl = $(this);
+
+			            if (!$realTrackEl.data('src')) {
+				            $.ajax({
+					            type: "GET",
+					            url: '/audio_player.php',
+					            data: {
+						            'track_id' : $realTrackEl.data('id')
+					            },
+					            success: function(response) {
+						            $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track));
+						            $realTrackEl.data('src', response.url);
+						            $this.playMusic(e, $realTrackEl.attr('id'));
+					            },
+					            dataType: 'json'
+				            });
+			            } else {
+				            $this.playMusic(e, $realTrackEl.attr('id'));
+			            }
+			            return false;
+		            });
+
+		            trackList.find('.share').click(function() {
+			            var $val = $this.domElems.inputMessage.val();
+						$this.domElems.inputMessage.val($val + $(this).data('src'));
+			            $this.returnToChat();
+		            });
+	            }
 
                 $.ajax({
                     type: "POST",
-                    url: '/audio2.php',
+                    url: sourceUrl,
                     data: {
                         'song' : songName
                     },
                     success: function(response) {
-                        var html = '';
-
-                        for (var id in response) {
-                            var trackInfo = response[id];
-                            html += "<tr>";
-                            html += "<td><a href=?track_id="+trackInfo.id+"'>"+trackInfo.artist+" - "+trackInfo.track+"</td>";
-                            html += "<td>"+trackInfo.bitrate+"</td>";
-                            html += "</tr>";
-                        }
-
-                        trackList.html(html);
+	                    renderSongSearchResponse(response);
                     },
+	                error: function(response) {
+		                trackList.html('<td>'+response.status+' '+response.statusText+' '+response.responseText+'</td>');
+	                },
                     dataType: 'json'
                 });
             });

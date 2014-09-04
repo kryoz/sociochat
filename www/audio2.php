@@ -4,11 +4,16 @@ use SocioChat\DAO\MusicDAO;
 use Core\DI;
 use SocioChat\DIBuilder;
 
+if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+	die('only internal requests allowed');
+}
+
 require_once '../config.php';
 require_once 'pages/audio/common.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 
+$pageCount = $container->get('config')->music->tracksOnPage;
 $song = isset($_REQUEST['song']) ? urldecode($_REQUEST['song']) : null;
 $trackId = isset($_GET['track_id']) ? urldecode($_GET['track_id']) : null;
 $token = getToken();
@@ -23,12 +28,17 @@ if ($song) {
 		[
 			'access_token' => $token,
 			'method' => 'tracks_search',
-			'result_on_page' => 30,
+			'result_on_page' => $pageCount,
 			'page' => $page,
 			'query' => $song
 		]
 	);
-	echo json_encode($response['tracks']);
+
+	$response += [
+		'page' => $page,
+		'pageCount' => $pageCount,
+	];
+	echo json_encode($response);
 	return;
 }
 

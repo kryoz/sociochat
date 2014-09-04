@@ -5,7 +5,7 @@ use Core\DI;
 use SocioChat\DIBuilder;
 
 if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-	die('only ajax requests allowed');
+	die('only internal requests allowed');
 }
 
 require_once '../config.php';
