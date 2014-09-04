@@ -23,9 +23,9 @@ if (!defined('ROOT')) {
 					<p>Постепено вы обнаружите, что в нём реализовано множество приятных мелочей, выгодно отличающих СоциоЧат от конкурентов :)</p>
 				</div>
 				<?php
-				$fn = ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'chatlog.txt';
+				//$fn = ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'chatlog.txt';
 
-				echo file_get_contents($fn);
+				//echo file_get_contents($fn);
 				?>
 			</div>
 		</div>

@@ -6,16 +6,14 @@ if (!defined('ROOT')) {
 <div class="panel panel-default tab-pane" id="music">
 	<div class="panel-heading">Музыка</div>
 	<div class="panel-body">
-		<form action="" method="post" autocomplete="on">
-			<div class="row btn-vert-block form-group">
-				<div class="btn-vert-block col-md-6">
-					<input type="text" class="form-control" placeholder="Введите имя артиста и/или название песни" name="song">
-				</div>
-				<div class="btn-vert-block col-md-6">
-					<a class="btn btn-block btn-success" id="do-music-search">Искать</a>
-				</div>
+		<div class="row btn-vert-block form-group">
+			<div class="btn-vert-block col-md-6">
+				<input type="text" class="form-control" placeholder="Введите имя артиста и/или название песни" name="song">
 			</div>
-		</form>
+			<div class="btn-vert-block col-md-6">
+				<a class="btn btn-block btn-success" id="do-music-search">Искать</a>
+			</div>
+		</div>
 	</div>
 
 	<div class="panel-body">
