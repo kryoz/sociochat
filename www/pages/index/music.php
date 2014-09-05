@@ -11,7 +11,7 @@ if (!defined('ROOT')) {
 				<input type="text" class="form-control" placeholder="Введите имя артиста и/или название песни" name="song">
 			</div>
 			<div class="btn-vert-block col-md-6">
-				<a class="btn btn-block btn-success" id="do-music-search">Искать</a>
+				<button class="btn btn-block btn-success ladda-button" data-style="zoom-out" id="do-music-search"><span class="ladda-label">Искать</span></button>
 			</div>
 		</div>
 	</div>

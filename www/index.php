@@ -27,6 +27,7 @@ $js = '
 	<link rel="stylesheet" href="js/jcrop/jquery.Jcrop.min.css">
 	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
 	<script type="text/javascript" src="js/notify.min.js"></script>
+	<script type="text/javascript" src="js/ladda.js"></script>
 ';
 
 require_once "pages/header.php";

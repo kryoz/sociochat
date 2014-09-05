@@ -126,6 +126,9 @@ define(function() {
                             $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track));
                             $realTrackEl.data('src', response.url);
                             $realTrackEl.click(function(e) {
+	                            require(['audio'], function(audio) {
+		                            audio.playMusic($this.domElems.audioPlayer, e, musicElId);
+	                            });
                                 $this.playMusic(e, musicElId);
                             });
                         },
