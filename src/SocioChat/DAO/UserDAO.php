@@ -7,11 +7,12 @@ use Core\Utils\DbQueryHelper;
 
 class UserDAO extends DAOBase
 {
-	const SOCIAL_TOKEN = 'social_token';
 	const EMAIL = 'email';
 	const PASSWORD = 'password';
 	const DATE_REGISTER = 'date_register';
 	const CHAT = 'chat_id';
+	const MESSAGES_COUNT = 'messages_count';
+	const ROLE = 'role';
 
 	const PROPERTIES = 'properties';
 	const BLACKLIST = 'blacklist';
@@ -20,11 +21,12 @@ class UserDAO extends DAOBase
 	{
 		parent::__construct(
 			[
-				self::SOCIAL_TOKEN,
 				self::EMAIL,
 				self::PASSWORD,
 				self::DATE_REGISTER,
 				self::CHAT,
+				self::MESSAGES_COUNT,
+				self::ROLE,
 			]
 		);
 
@@ -32,17 +34,6 @@ class UserDAO extends DAOBase
 
 		$this->addRelativeProperty(self::PROPERTIES);
 		$this->addRelativeProperty(self::BLACKLIST);
-	}
-
-	public function getToken()
-	{
-		return $this[self::SOCIAL_TOKEN];
-	}
-
-	public function setToken($token)
-	{
-		$this[self::SOCIAL_TOKEN] = $token;
-		return $this;
 	}
 
 	public function getEmail()
@@ -92,6 +83,28 @@ class UserDAO extends DAOBase
 	public function getByEmail($email)
 	{
 		return $this->getByPropId(self::EMAIL, $email);
+	}
+
+	public function setMessagesCount($count)
+	{
+		$this[self::MESSAGES_COUNT] = $count;
+		return $this;
+	}
+
+	public function getMessagesCount()
+	{
+		return $this[self::MESSAGES_COUNT];
+	}
+
+	public function setRole($role)
+	{
+		$this[self::ROLE] = $role;
+		return $this;
+	}
+
+	public function getRole()
+	{
+		return $this[self::ROLE];
 	}
 
 	public function getUnregisteredUserIds()

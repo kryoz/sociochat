@@ -8,6 +8,7 @@ use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
 use Core\DI;
+use SocioChat\Enum\UserRoleEnum;
 use SocioChat\Message\Lang;
 use SocioChat\Response\Response;
 
@@ -33,7 +34,6 @@ class User implements ConnectionInterface
 	 * @var Lang
 	 */
 	private $language;
-
 	private $ip;
 
 	public function __construct(ConnectionInterface $client)
@@ -221,6 +221,42 @@ class User implements ConnectionInterface
 	public function isRegistered()
 	{
 		return (bool) $this->getUserDAO()->getEmail();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getMessagesCount()
+	{
+		return $this->getUserDAO()->getMessagesCount();
+	}
+
+	/**
+	 * @internal param mixed $messagesCount
+	 * @return $this
+	 */
+	public function incMessagesCount()
+	{
+		$this->getUserDAO()->setMessagesCount($this->getMessagesCount() + 1);
+		return $this;
+	}
+
+	/**
+	 * @return UserRoleEnum
+	 */
+	public function getRole()
+	{
+		return $this->getUserDAO()->getRole();
+	}
+
+	/**
+	 * @param mixed $role
+	 * @return $this
+	 */
+	public function setRole(UserRoleEnum $role)
+	{
+		$this->getUserDAO()->setRole($role->getId());
+		return $this;
 	}
 
 	public function save($fullSave = true)

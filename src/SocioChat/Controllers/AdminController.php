@@ -3,12 +3,9 @@ namespace SocioChat\Controllers;
 
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chat;
-use SocioChat\ChatConfig;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
-use Core\DAO\DAOBase;
 use SocioChat\DAO\NameChangeDAO;
-use Core\DI;
 use SocioChat\Message\MsgRaw;
 use SocioChat\Response\MessageResponse;
 
@@ -22,10 +19,8 @@ class AdminController extends ControllerBase
 	public function handleRequest(ChainContainer $chain)
 	{
 		$user = $chain->getFrom();
-		$container = DI::get()->container();
-		$container->get('logger')->alert('An attempt to use admin controller by userId = '.$user->getId());
 
-		if ($user->getUserDAO()->getToken() != $container->get('config')->adminToken) {
+		if ($user->getRole()->isAdmin() || $user->getRole()->isCreator()) {
 			return;
 		}
 

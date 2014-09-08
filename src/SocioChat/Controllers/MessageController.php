@@ -59,6 +59,8 @@ class MessageController extends ControllerBase
 
 	private function sendPublic(UserCollection $clients, User $user, $msg)
 	{
+		$user->incMessagesCount();
+
 		$response = (new MessageResponse())
 			->setFrom($user)
 			->setMsg(Msg::create($msg))

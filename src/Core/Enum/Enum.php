@@ -4,6 +4,7 @@ namespace Core\Enum;
 
 abstract class Enum
 {
+	const ANY = 1;
 	protected static $names = [];
 	protected $id;
 

@@ -66,7 +66,7 @@ $logger->info("Starting chat server daemon on ".$config->daemon->host.":".$confi
 
 $channels = ChannelsCollection::get()
 	->addChannel(new Channel(1, 'Гостевая', false))
-	->addChannel(new Channel(2, 'Для зарегистрированных', false));
+	->addChannel(new Channel(2, 'Посиделки', false));
 
 
 $dumperCallback = function () use ($config) {
