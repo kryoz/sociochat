@@ -3,6 +3,7 @@
 namespace SocioChat\Clients;
 
 use Core\DI;
+use Core\Form\Form;
 use SocioChat\Response\MessageResponse;
 
 class Channel
@@ -24,6 +25,8 @@ class Channel
 	protected $history = [];
 	protected $lastMsgId = 1;
 
+	private $onJoinRule;
+
 	/**
 	 * @return int
 	 */
@@ -40,6 +43,9 @@ class Channel
 		$this->id = $id;
 		$this->name = $name;
 		$this->isPrivate = $isPrivate;
+		$this->onJoinRule = function (Form $form, User $user) {
+			return true;
+		};
 	}
 
 	public function setId($id)
@@ -66,39 +72,7 @@ class Channel
 			return;
 		}
 
-		$record = [
-			self::FROM_USER_ID => null,
-			self::FROM_NAME => $response->getFromName(),
-			self::TIME => $response->getTime(),
-			self::MSG => $response->getMsg(),
-		];
-
-		if ($from = $response->getFrom()) {
-			$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
-			$info = [
-				self::TIM => $from->getProperties()->getTim()->getName(), //@TODO wrong lang
-				self::SEX => $from->getProperties()->getSex()->getName(),
-			];
-
-
-			if ($from->getProperties()->getAvatarThumb()) {
-				$info += [
-					self::AVATAR_THUMB => $dir.$from->getProperties()->getAvatarThumb(),
-					self::AVATAR_IMG => $dir.$from->getProperties()->getAvatarImg(),
-				];
-			}
-
-			$record += [
-				self::USER_INFO => $info
-			];
-			$record[self::FROM_USER_ID] = $response->getFrom()->getId();
-		}
-
-		if ($response->getToUserName()) {
-			$record += [self::TO_NAME => $response->getToUserName()];
-		}
-
-		$this->history[$this->lastMsgId] = $record;
+		$this->history[$this->lastMsgId] = $this->makeRecord($response);
 		$keys = array_keys($this->history);
 
 		if (count($this->history) > self::BUFFER_LENGTH) {
@@ -106,7 +80,10 @@ class Channel
 		}
 
 		$id = $this->lastMsgId;
-		$this->lastMsgId++;
+
+		if ($id < self::BUFFER_LENGTH) {
+			$this->lastMsgId++;
+		}
 
 		return $id;
 	}
@@ -167,6 +144,16 @@ class Channel
 		return $this->ownerId;
 	}
 
+	public function setOnJoinRule(callable $rule)
+	{
+		$this->onJoinRule = $rule;
+		return $this;
+	}
+
+	public function verifyOnJoinRule()
+	{
+		return $this->onJoinRule;
+	}
 
 	private function filterMessages(MessageResponse $response)
 	{
@@ -175,5 +162,46 @@ class Channel
 		if (!$response->getMsg()) {
 			return false;
 		}
+	}
+
+	/**
+	 * @param MessageResponse $response
+	 * @return array
+	 */
+	private function makeRecord(MessageResponse $response)
+	{
+		$record = [
+			self::FROM_USER_ID => null,
+			self::FROM_NAME    => $response->getFromName(),
+			self::TIME         => $response->getTime(),
+			self::MSG          => $response->getMsg(),
+		];
+
+		if ($from = $response->getFrom()) {
+			$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
+			$info = [
+				self::TIM => $from->getProperties()->getTim()->getName(), //@TODO wrong lang
+				self::SEX => $from->getProperties()->getSex()->getName(),
+			];
+
+
+			if ($from->getProperties()->getAvatarThumb()) {
+				$info += [
+					self::AVATAR_THUMB => $dir . $from->getProperties()->getAvatarThumb(),
+					self::AVATAR_IMG   => $dir . $from->getProperties()->getAvatarImg(),
+				];
+			}
+
+			$record += [
+				self::USER_INFO => $info
+			];
+			$record[self::FROM_USER_ID] = $response->getFrom()->getId();
+		}
+
+		if ($response->getToUserName()) {
+			$record += [self::TO_NAME => $response->getToUserName()];
+			return $record;
+		}
+		return $record;
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+use Core\Form\Form;
 use Monolog\Logger;
 use SocioChat\Chat;
 use Ratchet\Http\HttpServer;
@@ -8,6 +9,7 @@ use React\Socket\Server;
 use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
 use Core\DI;
+use SocioChat\Clients\User;
 use SocioChat\DIBuilder;
 use SocioChat\Message\MsgContainer;
 use Zend\Config\Config;
@@ -62,10 +64,19 @@ $server = new IoServer(
 
 $logger->info("Starting chat server daemon on ".$config->daemon->host.":".$config->daemon->port, ['CHAT-SERVER']);
 
+$reg = new Channel(2, 'Для зарегистрированных', false);
+$reg->setOnJoinRule(function (Form $form, User $user) {
+		if (!$user->isRegistered()) {
+			$form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
+		}
+
+		return !$user->isRegistered();
+	}
+);
+
 $channels = ChannelsCollection::get()
-	->addChannel(new Channel(1, 'Флудильня', false))
-	->addChannel(new Channel(2, 'Серьёзные темы', false))
-	->addChannel(new Channel(3, 'Музыка', false));
+	->addChannel(new Channel(1, 'Гостевая', false))
+	->addChannel($reg);
 
 
 $dumperCallback = function () use ($config) {

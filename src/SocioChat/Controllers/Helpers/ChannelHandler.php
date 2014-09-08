@@ -66,12 +66,19 @@ class ChannelHandler
 			RespondError::make($user,[PropertiesDAO::USER_ID => $lang->getPhrase('YouCantLeavePrivate')]);
 			return;
 		}
+
 		try {
 			$form = (new Form())
 				->import($request)
-				->addRule('channelId', Rules::existsChannel(), $lang->getPhrase('ChannelNotExists'));
+				->addRule('channelId', Rules::existsChannel(), $lang->getPhrase('ChannelNotExists'))
+				->addRule('channelId', Rules::verifyOnJoinRule($user));
 		} catch (WrongRuleNameException $e) {
 			RespondError::make($user);
+			return;
+		}
+
+		if (!$form->validate()) {
+			RespondError::make($user, $form->getErrors());
 			return;
 		}
 

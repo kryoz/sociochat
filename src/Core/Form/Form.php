@@ -45,7 +45,7 @@ class Form
 			$property = $ruleData['property'];
 
 			// @TODO pass Form in callable
-			if (!$result = $rule($this->input[$property])) {
+			if (!$result = $rule($this->input[$property], $this)) {
 				$this->errors[$ruleName] = $this->rulesMessages[$ruleName];
 				break;
 			}

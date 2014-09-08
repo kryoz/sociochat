@@ -3,7 +3,6 @@
 namespace SocioChat\DAO;
 
 use Core\DAO\DAOBase;
-use Core\DI;
 use Core\Utils\DbQueryHelper;
 
 class UserDAO extends DAOBase

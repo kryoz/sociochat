@@ -2,7 +2,9 @@
 
 namespace SocioChat\Forms;
 
+use Core\Form\Form;
 use SocioChat\Clients\ChannelsCollection;
+use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
@@ -37,6 +39,15 @@ class Rules extends \Core\Form\Rules
 		return function ($id) {
 			$channel = ChannelsCollection::get()->getChannelById(trim($id));
 			return $channel && !$channel->isPrivate();
+		};
+	}
+
+	public static function verifyOnJoinRule(User $user)
+	{
+		return function ($id, Form $form) use ($user) {
+			$channel = ChannelsCollection::get()->getChannelById(trim($id));
+			$rule = $channel->verifyOnJoinRule();
+			return $rule($form, $user);
 		};
 	}
 

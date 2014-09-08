@@ -218,6 +218,11 @@ class User implements ConnectionInterface
 		return $this->ip;
 	}
 
+	public function isRegistered()
+	{
+		return (bool) $this->getUserDAO()->getEmail();
+	}
+
 	public function save($fullSave = true)
 	{
 		try {
