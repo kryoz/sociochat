@@ -70,7 +70,7 @@ $reg->setOnJoinRule(function (Form $form, User $user) {
 			$form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
 		}
 
-		return !$user->isRegistered();
+		return $user->isRegistered();
 	}
 );
 

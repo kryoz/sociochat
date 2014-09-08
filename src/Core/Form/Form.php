@@ -11,6 +11,7 @@ class Form
 	protected $errors;
 	protected $input;
 	protected $results;
+	private $errorMessages;
 
 	public function import(array $input)
 	{
@@ -44,9 +45,10 @@ class Form
 			$rule = $ruleData['rule'];
 			$property = $ruleData['property'];
 
-			// @TODO pass Form in callable
+			$this->errorMessages[$ruleName] = $this->rulesMessages[$ruleName];
+
 			if (!$result = $rule($this->input[$property], $this)) {
-				$this->errors[$ruleName] = $this->rulesMessages[$ruleName];
+				$this->errors[$ruleName] = true;
 				break;
 			}
 			$this->results[$ruleName] = $result;
@@ -65,7 +67,7 @@ class Form
 
 	public function getErrors()
 	{
-		return $this->errors;
+		return array_intersect_key($this->errorMessages, $this->errors);
 	}
 
 	/**
@@ -92,7 +94,8 @@ class Form
 
 	public function markWrong($property, $errMsg)
 	{
-		$this->errors[$property] = $errMsg;
+		$this->errorMessages[$property] = $errMsg;
+		$this->errors[$property] = true;
 	}
 
 	public function getValue($property)

@@ -20,28 +20,39 @@ class Rules
 
 	public static function namePattern($c = 20, $hasSpaces = false)
 	{
-		return function ($val) use ($c, $hasSpaces) {
+		return function ($val, Form $form) use ($c, $hasSpaces) {
 			$name = trim($val);
 			$pattern = "~^([A-Za-zА-Яа-я0-9_-".($hasSpaces ? '\s' : '')."]+)$~uis";
 
-			if (preg_match($pattern, $name)) {
-				return mb_strlen($name) <= $c;
+			$isCorrect = preg_match($pattern, $name) && mb_strlen($name) <= $c;
+			if (!$isCorrect) {
+				$form->markWrong($val, 'Некорректный формат email');
 			}
+			return $isCorrect;
 		};
 	}
 
 	public static function email()
 	{
-		return function ($val) {
-			return preg_match("~^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$~uis", trim($val));
+		return function ($val, Form $form) {
+			$isCorrect = preg_match("~^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$~uis", trim($val));
+			if (!$isCorrect) {
+				$form->markWrong($val, 'Некорректный формат email');
+			}
+			return $isCorrect;
 		};
 	}
 
 	public static function password()
 	{
-		return function ($val) {
+		return function ($val, Form $form) {
 			$len = mb_strlen(trim($val));
-			return $len >= 8 && $len <= 20;
+			$isCorrect =  $len >= 8 && $len <= 20;
+
+			if (!$isCorrect) {
+				$form->markWrong($val, 'Пароль должен быть от 8 до 20 символов');
+			}
+			return $isCorrect;
 		};
 	}
 
