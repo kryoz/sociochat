@@ -4,6 +4,7 @@ namespace SocioChat\Clients;
 
 use Core\DI;
 use Core\Form\Form;
+use SocioChat\Forms\Rules;
 use SocioChat\Response\MessageResponse;
 
 class Channel
@@ -44,7 +45,15 @@ class Channel
 		$this->name = $name;
 		$this->isPrivate = $isPrivate;
 		$this->onJoinRule = function (Form $form, User $user) {
-			return true;
+			if ($this->isPrivate() || $this->getId() == 1) {
+				return true;
+			}
+
+			if (!$user->isRegistered()) {
+				$form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
+			}
+
+			return $user->isRegistered();
 		};
 	}
 

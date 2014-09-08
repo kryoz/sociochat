@@ -37,8 +37,8 @@ class LoginController extends ControllerBase
 		try {
 			$form = (new Form())
 				->import($request)
-				->addRule('login', Rules::email())
-				->addRule('password', Rules::password());
+				->addRule('login', Rules::email(), 'Некорректный формат email')
+				->addRule('password', Rules::password(), 'Пароль должен быть от 8 до 20 символов');
 		} catch (WrongRuleNameException $e) {
 			RespondError::make($user, ['property' => 'Некорректно указано свойство']);
 			return;
