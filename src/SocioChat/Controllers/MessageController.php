@@ -8,18 +8,22 @@ use SocioChat\DAO\UserDAO;
 use Core\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
-use SocioChat\Log;
 use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
 
 class MessageController extends ControllerBase
 {
+	const MAX_MSG_LENGTH = 1024;
+	const MAX_BR = 4;
+
 	public function handleRequest(ChainContainer $chain)
 	{
 		$clients = UserCollection::get();
 		$from = $chain->getFrom();
 		$request = $chain->getRequest();
 		$recipient = $this->searchUser($from, $request['to']);
+
+		$this->filterInput($request['msg']);
 
 		if ($recipient) {
 			$this->sendPrivate($from, $recipient, $request['msg']);
@@ -85,5 +89,18 @@ class MessageController extends ControllerBase
 		/* @var $recipient User */
 
 		return $recipient;
+	}
+
+	private function filterInput($msg)
+	{
+		$text = strip_tags(htmlentities($msg));
+
+		if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
+			$text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
+		}
+
+		$text = preg_replace('~(|)~u', '<br>', $text, self::MAX_BR);
+
+		return $text;
 	}
 } 
