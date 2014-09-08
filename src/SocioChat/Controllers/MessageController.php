@@ -24,7 +24,7 @@ class MessageController extends ControllerBase
 		$request = $chain->getRequest();
 		$recipient = $this->searchUser($from, $request['to']);
 
-		$this->filterInput($request['msg']);
+		$request['msg'] = $this->filterInput($request['msg']);
 
 		if ($recipient) {
 			$this->sendPrivate($from, $recipient, $request['msg']);
@@ -100,7 +100,7 @@ class MessageController extends ControllerBase
 			$text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
 		}
 
-		$text = preg_replace('~(|)~u', '<br>', $text, self::MAX_BR);
+		$text = preg_replace('~(\|)~u', '<br>', $text, self::MAX_BR);
 
 		return $text;
 	}
