@@ -85,7 +85,7 @@ class ActivationsDAO extends DAOBase
 
 	public function dropUsedActivations()
 	{
-		return $this->db->exec("DELETE FROM {$this->dbTable} WHERE used IS :used", ['used' => 'true']);
+		return $this->db->exec("DELETE FROM {$this->dbTable} WHERE used = :used", ['used' => 'true']);
 	}
 
 	protected function getForeignProperties()
