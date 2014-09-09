@@ -90,9 +90,7 @@ class Channel
 
 		$id = $this->lastMsgId;
 
-		if ($id < self::BUFFER_LENGTH) {
-			$this->lastMsgId++;
-		}
+		$this->lastMsgId++;
 
 		return $id;
 	}
