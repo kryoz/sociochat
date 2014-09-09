@@ -11,6 +11,7 @@ use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
+use SocioChat\Enum\UserRoleEnum;
 use SocioChat\Message\Lang;
 use SocioChat\Session\SessionHandler;
 
@@ -60,7 +61,9 @@ class SessionFilter implements ChainInterface
 		} else {
 			$user = UserDAO::create()
 				->setChatId(1)
-				->setDateRegister(date('Y-m-d H:i:s'));
+				->setDateRegister(date('Y-m-d H:i:s'))
+				->setMessagesCount(0)
+				->setRole(UserRoleEnum::USER);
 
 			$user->save();
 
