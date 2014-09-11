@@ -24,6 +24,7 @@ setcookie(session_name(), session_id(), $lifetime, '/', '.'.$config->domain->web
 setcookie('lang', $httpAcceptLanguage, $lifetime, '/', '.'.$config->domain->web);
 
 $js = '
+	<meta name="fragment" content="!">
 	<link rel="stylesheet" href="js/jcrop/jquery.Jcrop.min.css">
 	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
 	<script type="text/javascript" src="js/notify.min.js"></script>
