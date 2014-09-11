@@ -49,7 +49,7 @@ define(function() {
                 if (found) {
                     var userName = $this.getUserInfoById(found[1]);
                     $this.notify('Вас пригласил в приват пользователь '+userName+'!', $this.ownName, 'private', 30000);
-                    response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" onclick="App.togglePrivate($1)">Принять</a> предложение');
+                    response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
                 }
 
                 msg += '<span>'+time + response.msg + '</span>';
@@ -210,6 +210,13 @@ define(function() {
                     ava.hide();
                 }
             });
+
+	        newLine.find('.accept-private').click(function () {
+		        var userId = $(this).data('id');
+				if (userId) {
+					$this.togglePrivate(userId);
+				}
+	        });
         },
         getSexClass: function(user) {
             var colorClass = null;
