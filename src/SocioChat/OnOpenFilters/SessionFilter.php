@@ -50,23 +50,22 @@ class SessionFilter implements ChainInterface
 
 		try {
 			if (!$token = $socketRequest->getCookie('token')) {
-				throw new InvalidSessionException();
+				throw new InvalidSessionException('No token');
 			}
 
 			/** @var SessionDAO $sessionInfo */
 			$sessionInfo = $sessionHandler->read($token);
-			if (!$sessionInfo->getId()) {
-				throw new InvalidSessionException();
+			if (!$sessionInfo) {
+				throw new InvalidSessionException('Wrong token '.$token);
 			}
 
 		} catch (InvalidSessionException $e) {
 			$logger->error(
-				"Unauthorized session, dropped connection {$newUserWrapper->getConnectionId(
-				)} - {$newUserWrapper->getIp()}",
+				"Unauthorized session {$newUserWrapper->getIp()}; ".$e->getMessage(),
 				[__CLASS__]
 			);
 
-			$newUserWrapper->send(['msg' => $lang->getPhrase('UnAuthSession')]);
+			$newUserWrapper->send(['msg' => $lang->getPhrase('UnAuthSession'), 'refreshToken' => 1]);
 			$newUserWrapper->close();
 			return false;
 		}

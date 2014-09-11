@@ -221,6 +221,27 @@ define(function() {
 
             };
 
+            var handleTokenRefresh = function () {
+                if (!json.refreshToken) {
+                    return;
+                }
+
+                $this.connection.close();
+
+                $this.setCookie('token', null);
+
+                $.ajax({
+                    type: "GET",
+                    url: '/session.php',
+                    success: function(response) {
+                        $this.token = $this.getCookie('token');
+                        $this.Connect();
+                    },
+                    dataType: 'json'
+                })
+            };
+
+            handleTokenRefresh();
             handleGuests(json);
             handleOwnProperties();
             handleHistory();
