@@ -1,11 +1,4 @@
-define(function () {
-//	var getCookie = function (name) {
-//		var matches = document.cookie.match(new RegExp(
-//			"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-//		));
-//		return matches ? decodeURIComponent(matches[1]) : undefined;
-//	}
-
+define('app', function () {
     return {
         connection: null,
         hostUrl: null,
@@ -71,13 +64,21 @@ define(function () {
 	        audioPlayer : $('#player')
         },
 
-        Init: function(hostUrl, token) {
+        Init: function(hostUrl) {
             var $this = this;
 
-            $this.hostUrl = hostUrl;
-            $this.token = token;
-	        this.addLog('Подключаемся...', 1);
-            $this.Connect();
+            this.hostUrl = hostUrl;
+
+            $.ajax({
+                type: "GET",
+                url: '/session.php',
+                success: function(response) {
+                    $this.token = $this.getCookie('token');
+                    $this.Connect();
+                },
+                dataType: 'json'
+            })
+
 
             require(['init_events'], function(binders) {
                 binders.bindEvents($this);
@@ -274,6 +275,12 @@ define(function () {
             }
 
             document.cookie = updatedCookie;
+        },
+        getCookie: function(name) {
+            var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
         }
     }
 });

@@ -16,6 +16,10 @@ class DBSessionHandler implements SessionHandler
 
 	const TIMESTAMP = 'Y-m-d H:i:s';
 
+	/**
+	 * @param $sessionId
+	 * @return SessionDAO|null
+	 */
 	public function read($sessionId)
 	{
 		$session = SessionDAO::create()->getBySessionId($sessionId);
@@ -55,7 +59,7 @@ class DBSessionHandler implements SessionHandler
 
 		$session = SessionDAO::create()->getByUserId($user->getId());
 		$session
-			->setSessionId($user->getWSRequest()->getCookie('PHPSESSID'))
+			->setSessionId($user->getWSRequest()->getCookie('token'))
 			->setAccessTime(date(self::TIMESTAMP))
 			->setUserId($user->getId());
 

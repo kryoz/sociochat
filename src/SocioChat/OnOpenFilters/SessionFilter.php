@@ -8,6 +8,7 @@ use SocioChat\Chain\ChainInterface;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
@@ -47,15 +48,31 @@ class SessionFilter implements ChainInterface
 
 		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 
-		if (!$token = $socketRequest->getCookie('PHPSESSID')) {
-			$logger->error("Unauthorized session, dropped", [__CLASS__]);
+		try {
+			if (!$token = $socketRequest->getCookie('token')) {
+				throw new InvalidSessionException();
+			}
+
+			/** @var SessionDAO $sessionInfo */
+			$sessionInfo = $sessionHandler->read($token);
+			if (!$sessionInfo->getId()) {
+				throw new InvalidSessionException();
+			}
+
+		} catch (InvalidSessionException $e) {
+			$logger->error(
+				"Unauthorized session, dropped connection {$newUserWrapper->getConnectionId(
+				)} - {$newUserWrapper->getIp()}",
+				[__CLASS__]
+			);
 
 			$newUserWrapper->send(['msg' => $lang->getPhrase('UnAuthSession')]);
 			$newUserWrapper->close();
 			return false;
 		}
 
-		if ($sessionInfo = $sessionHandler->read($token)) {
+
+		if ($sessionInfo->getUserId() != 0) {
 			$user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
 			$logger->info('Handled known user_id = '.$user->getId());
 		} else {
@@ -88,11 +105,12 @@ class SessionFilter implements ChainInterface
 				$logger->error("PDO Exception: ".print_r($e, 1), [__CLASS__]);
 			}
 
+			$sessionHandler->store($token, $user->getId());
 			$logger->info("Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}", [__CLASS__]);
 		}
 
 		$newUserWrapper->setUserDAO($user);
-		$sessionHandler->store($token, $user->getId());
+
 		$clients->attach($newUserWrapper);
 	}
 

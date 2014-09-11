@@ -9,7 +9,7 @@ class SessionFilter implements ChainInterface
 	public function handleRequest(ChainContainer $chain)
 	{
 		$user = $chain->getFrom();
-		$token = $user->getWSRequest()->getCookie('PHPSESSID');
+		$token = $user->getWSRequest()->getCookie('token');
 
 		if (!$token) {
 			$user->send(['msg' => $user->getLang()->getPhrase('UnAuthSession')]);

@@ -16,12 +16,10 @@ $config = $container->get('config');
 $httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
 $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
 /* @var $lang Lang */
-$lifetime = time() + $config->session->lifetime;
+$lifetime = $config->session->lifetime;
 $domain = $config->domain->protocol.$config->domain->web;
 
-session_start();
-setcookie(session_name(), session_id(), $lifetime, '/', '.'.$config->domain->web);
-setcookie('lang', $httpAcceptLanguage, $lifetime, '/', '.'.$config->domain->web);
+setcookie('lang', $httpAcceptLanguage, time() + $lifetime, '/', '.'.$config->domain->web);
 
 $js = '
 	<meta name="fragment" content="!">
@@ -115,7 +113,7 @@ require_once "pages/header.php";
 		define('config', function() {
 			return {
 				wsDomain: '<?=$config->domain->ws?>',
-				sessionId: '<?=session_id()?>'
+				lifeTime: '<?=$lifetime?>'
 			};
 		});
 
