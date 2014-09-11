@@ -26,9 +26,6 @@ setcookie('lang', $httpAcceptLanguage, $lifetime, '/', '.'.$config->domain->web)
 $js = '
 	<meta name="fragment" content="!">
 	<link rel="stylesheet" href="js/jcrop/jquery.Jcrop.min.css">
-	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
-	<script type="text/javascript" src="js/notify.min.js"></script>
-	<script type="text/javascript" src="js/ladda.js"></script>
 ';
 
 require_once "pages/header.php";
@@ -103,6 +100,12 @@ require_once "pages/header.php";
 		</form>
 	</div>
 	<audio id="player" style="display: none"></audio>
+
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
+	<script type="text/javascript" src="js/notify.min.js"></script>
+	<script type="text/javascript" src="js/ladda.js"></script>
 	<script src="js/require.js"></script>
 	<script type="text/javascript">
 		require.config({

@@ -22,8 +22,6 @@ $meta = isset($meta) ? $meta : '';
 	<link rel="apple-touch-icon" href="<?=$domain?>/img/sociochat.jpg">
 	<link rel="stylesheet" href="<?=$domain?>/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?=$domain?>/css/styles.css" >
-	<script type="text/javascript" src="<?=$domain?>/js/jquery.min.js"></script>
-	<script type="text/javascript" src="<?=$domain?>/js/bootstrap.min.js"></script>
 	<?=$js?>
 	<link rel="icon" href="<?=$domain?>/favicon.ico" type="image/x-icon">
 </head>
