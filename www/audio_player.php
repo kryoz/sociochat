@@ -58,14 +58,16 @@ if (!$dao->getId()) {
 
 	$locker =  new LockerInDB();
 	$lockerKey = 'audioPlayer-'.$trackId;
+
+	$dao
+		->setTrackId($trackId)
+		->setArtist($trackInfo['artist'])
+		->setSong($trackInfo['track'])
+		->setQuality($trackInfo['bitrate'])
+		->setUrl($response['url']);
+
 	try {
 		$locker->lock($lockerKey, 30);
-		$dao
-			->setTrackId($trackId)
-			->setArtist($trackInfo['artist'])
-			->setSong($trackInfo['track'])
-			->setQuality($trackInfo['bitrate'])
-			->setUrl($response['url']);
 		$dao->save();
 		$locker->unlock($lockerKey);
 	} catch (AlreadyLockedException $e) {
