@@ -14,6 +14,7 @@ class AdminController extends ControllerBase
 	private $actionsMap = [
 		'kickUser' => 'processKick',
 		'nameLog' => 'processNameChangeHistory',
+		'getIp' => 'processGetIp'
 	];
 
 	public function handleRequest(ChainContainer $chain)
@@ -36,17 +37,17 @@ class AdminController extends ControllerBase
 
 	protected function getFields()
 	{
-		return ['action'];
+		return ['action', 'userId'];
 	}
 
 	protected function processKick(ChainContainer $chain)
 	{
 		$request = $chain->getRequest();
-		$assHoleId = isset($request['user_id']) ? $request['user_id'] : null;
+		$assHoleId = $request['userId'];
 		$users = UserCollection::get();
 
-		if (!$assHoleId || !$assHole = $users->getClientById($assHoleId)) {
-			$chain->getFrom()->send(['msg' => "user_id $assHoleId not found"]);
+		if (!$assHole = $users->getClientById($assHoleId)) {
+			RespondError::make($chain->getFrom(), ['userId' => "userId = $assHoleId not found"]);
 			return;
 		}
 
@@ -62,17 +63,39 @@ class AdminController extends ControllerBase
 		Chat::get()->onClose($assHole->getConnection());
 	}
 
-	protected function processNameChangeHistory(ChainContainer $chain)
+	protected function processGetIp(ChainContainer $chain)
 	{
 		$request = $chain->getRequest();
-		$userId = isset($request['user_id']) ? $request['user_id'] : null;
-		if (!$userId) {
-			$chain->getFrom()->send(['msg' => "user_id not specified"]);
+		$userId = $request['userId'];
+		$users = UserCollection::get();
+
+		if (!$user = $users->getClientById($userId)) {
+			RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);
 			return;
 		}
 
+		$notify = (new UserCollection())->attach($chain->getFrom());
+		$response = (new MessageResponse())
+			->setChannelId($chain->getFrom()->getChannelId())
+			->setMsg(MsgRaw::create($user->getProperties()->getName().' = '.$user->getIp()))
+			->setGuests(null);
+
+		$notify
+			->setResponse($response)
+			->notify(false);
+	}
+
+	protected function processNameChangeHistory(ChainContainer $chain)
+	{
+		$request = $chain->getRequest();
+		$userId = $request['userId'];
+
 		$list = NameChangeDAO::create()->getHistoryByUserId($userId);
 
+		if (empty($list)) {
+			RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);
+			return;
+		}
 		$notify = (new UserCollection())->attach($chain->getFrom());
 		$response = (new MessageResponse())
 			->setChannelId($chain->getFrom()->getChannelId())
