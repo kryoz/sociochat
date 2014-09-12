@@ -56,9 +56,6 @@ if (!$dao->getId()) {
 
 	$trackInfo = $trackInfo['data'];
 
-	$locker =  new LockerInDB();
-	$lockerKey = 'audioPlayer-'.$trackId;
-
 	$dao
 		->setTrackId($trackId)
 		->setArtist($trackInfo['artist'])
@@ -67,10 +64,8 @@ if (!$dao->getId()) {
 		->setUrl($response['url']);
 
 	try {
-		$locker->lock($lockerKey, 30);
 		$dao->save();
-		$locker->unlock($lockerKey);
-	} catch (AlreadyLockedException $e) {
+	} catch (PDOException $e) {
 		/* */
 	}
 
