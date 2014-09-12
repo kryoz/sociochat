@@ -46,7 +46,9 @@ define(function () {
 
                     tim: $this.domElems.tim.val(),
                     sex: $this.domElems.sex.val(),
-                    name: $this.domElems.nickname.val()
+                    name: $this.domElems.nickname.val(),
+	                city: $this.domElems.city.val(),
+	                birth: $this.domElems.birth.val()
                 }
                 $this.send(command);
                 $this.returnToChat();

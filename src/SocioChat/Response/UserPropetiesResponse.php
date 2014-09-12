@@ -10,13 +10,15 @@ use SocioChat\Enum\TimEnum;
 class UserPropetiesResponse extends Response
 {
 	protected $name = 'buddy';
-	protected $email = null;
+	protected $email;
 	protected $tim = TimEnum::FIRST;
 	protected $sex = SexEnum::FIRST;
-	protected $msg = null;
-	protected $notifications = null;
-	protected $avatarImg = null;
-	protected $avatarThumb = null;
+	protected $msg;
+	protected $notifications;
+	protected $avatarImg;
+	protected $avatarThumb;
+	protected $city;
+	protected $birth;
 
 	public function setName($name)
 	{
@@ -66,6 +68,28 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+	public function getCity()
+	{
+		return $this->city;
+	}
+
+	public function setCity($city)
+	{
+		$this->city = $city;
+		return $this;
+	}
+
+	public function getYear()
+	{
+		return $this->birth;
+	}
+
+	public function setYear($year)
+	{
+		$this->birth = $year;
+		return $this;
+	}
+
 	public function setUserProps(User $user)
 	{
 		$properties = $user->getProperties();
@@ -78,7 +102,9 @@ class UserPropetiesResponse extends Response
 			->setName($properties->getName())
 			->setNotifications($properties->getNotifications())
 			->setAvatarImg($properties->getAvatarImg() ? $dir.$properties->getAvatarImg() : null)
-			->setAvatarThumb($properties->getAvatarThumb() ? $dir.$properties->getAvatarThumb() : null);
+			->setAvatarThumb($properties->getAvatarThumb() ? $dir.$properties->getAvatarThumb() : null)
+			->setYear($properties->getBirthday())
+			->setCity($properties->getCity());
 
 		return $this;
 	}

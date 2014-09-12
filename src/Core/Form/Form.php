@@ -31,7 +31,7 @@ class Form
 			return $this;
 		}
 
-		throw new WrongRuleNameException("Form.addRule : incorrect property name '$property'");
+		throw new WrongRuleNameException($property);
 	}
 
 	/**

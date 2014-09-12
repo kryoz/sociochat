@@ -7,6 +7,7 @@ use Core\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Core\Utils\DbQueryHelper;
+use SocioChat\Forms\Rules;
 
 class PropertiesDAO extends DAOBase
 {
@@ -16,6 +17,8 @@ class PropertiesDAO extends DAOBase
 	const TIM = 'tim';
 	const NOTIFICATIONS = 'notifications';
 	const AVATAR = 'avatar';
+	const CITY = 'city';
+	const BIRTH = 'birth';
 
 	public function __construct()
 	{
@@ -27,6 +30,8 @@ class PropertiesDAO extends DAOBase
 				self::TIM,
 				self::NOTIFICATIONS,
 				self::AVATAR,
+				self::CITY,
+				self::BIRTH,
 			]
 		);
 
@@ -133,6 +138,28 @@ class PropertiesDAO extends DAOBase
 		return $this;
 	}
 
+	public function getCity()
+	{
+		return $this[self::CITY];
+	}
+
+	public function setCity($city)
+	{
+		$this[self::CITY] = $city;
+		return $this;
+	}
+
+	public function getBirthday()
+	{
+		return $this[self::BIRTH] ? date('Y', strtotime($this[self::BIRTH])) : Rules::LOWEST_YEAR;
+	}
+
+	public function setBirthday($year)
+	{
+		$this[self::BIRTH] = date("$year-01-01 12:00:00");
+		return $this;
+	}
+
 	public function dropByUserId($id)
 	{
 		$this->dropById($id, 'user_id');
@@ -146,7 +173,7 @@ class PropertiesDAO extends DAOBase
 
 	public function toPublicArray()
 	{
-		$avatarDir = DI::get()->container()->get('config')->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
+		$avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
 
 		return [
 			self::USER_ID => $this->getUserId(),

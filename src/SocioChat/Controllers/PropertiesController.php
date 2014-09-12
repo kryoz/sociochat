@@ -95,10 +95,12 @@ class PropertiesController extends ControllerBase
 				->import($request)
 				->addRule(PropertiesDAO::NAME, Rules::namePattern(), $lang->getPhrase('InvalidNameFormat'))
 				->addRule(PropertiesDAO::TIM, Rules::timPattern(), $lang->getPhrase('InvalidTIMFormat'))
-				->addRule(PropertiesDAO::SEX, Rules::sexPattern(), $lang->getPhrase('InvalidSexFormat'));
+				->addRule(PropertiesDAO::SEX, Rules::sexPattern(), $lang->getPhrase('InvalidSexFormat'))
+				->addRule(PropertiesDAO::CITY, Rules::cityPattern(), $lang->getPhrase('InvalidCityFormat'))
+				->addRule(PropertiesDAO::BIRTH, Rules::birthYears(), $lang->getPhrase('InvalidYearFormat'));
 				//->addRule(PropertiesDAO::NOTIFICATIONS, Rules::notNull(), 'Не заполнены настройки уведомлений');
 		} catch (WrongRuleNameException $e) {
-			RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty')]);
+			RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty').' '.$e->getMessage()]);
 			return;
 		}
 
@@ -225,7 +227,9 @@ class PropertiesController extends ControllerBase
 			->setUserId($user->getId())
 			->setName($name)
 			->setTim(TimEnum::create($request[PropertiesDAO::TIM]))
-			->setSex(SexEnum::create($request[PropertiesDAO::SEX]));
+			->setSex(SexEnum::create($request[PropertiesDAO::SEX]))
+			->setCity($request[PropertiesDAO::CITY])
+			->setBirthday($request[PropertiesDAO::BIRTH]);
 			//->setNotifications($request[PropertiesDAO::NOTIFICATIONS]);
 
 		$properties->save();

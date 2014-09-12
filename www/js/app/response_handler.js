@@ -128,6 +128,14 @@ define(function() {
                     thumb.src = json.avatarThumb;
                     $this.domElems.avatar.find('div.avatar-placeholder-mini').html(thumb);
                 }
+
+	            if (json.birth) {
+		            $this.domElems.birth.val(json.birth);
+	            }
+
+	            if (json.city) {
+		            $this.domElems.city.val(json.city);
+	            }
             }
 
             var handleDualChat = function() {

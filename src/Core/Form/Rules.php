@@ -4,6 +4,8 @@ namespace Core\Form;
 
 class Rules
 {
+	const LOWEST_YEAR = 1930;
+
 	public static function notNull()
 	{
 		return function ($val) {
@@ -30,6 +32,29 @@ class Rules
 		};
 	}
 
+	public static function cityPattern()
+	{
+		return function ($val) {
+			$name = trim($val);
+			if (!$name) {
+				return true;
+			}
+			$pattern = "~^([A-Za-zА-Яа-я-]+)$~uis";
+
+			if (preg_match($pattern, $name)) {
+				return mb_strlen($name) <= 50;
+			}
+		};
+	}
+
+	public static function birthYears()
+	{
+		return function ($val) {
+			$val = trim($val);
+			return in_array($val, self::getBirthYearsRange());
+		};
+	}
+
 	public static function email()
 	{
 		return function ($val) {
@@ -50,5 +75,10 @@ class Rules
 		return function ($val) {
 			return preg_match("~^\#[0-9A-Z]{6}$~uis", trim($val));
 		};
+	}
+
+	public static function getBirthYearsRange()
+	{
+		return range(self::LOWEST_YEAR, date('Y') - 8);
 	}
 }
