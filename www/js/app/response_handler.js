@@ -44,7 +44,7 @@ define(function() {
                         guestHMTL += '<tr class="'+colorClass+'">';
                         guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
 	                    guestHMTL += '<td>'+guest.tim+'</td>';
-	                    guestHMTL += '<td>'+guest.city+'</td>';
+	                    guestHMTL += '<td>'+(guest.city ? guest.city : '') +'</td>';
 	                    guestHMTL += '<td>'+guest.birth+'</td>';
                         guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
