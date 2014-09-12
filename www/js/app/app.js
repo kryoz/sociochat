@@ -65,20 +65,18 @@ define('app', function () {
         },
 
         Init: function(hostUrl) {
-            var $this = this;
+	        var $this = this;
 
-            this.hostUrl = hostUrl;
+	        this.hostUrl = hostUrl;
+	        this.token = this.getCookie('token');
 
-            $.ajax({
-                type: "GET",
-                url: '/session.php',
-                success: function(response) {
-                    $this.token = $this.getCookie('token');
-                    $this.Connect();
-                },
-                dataType: 'json'
-            })
-
+	        if (!this.token) {
+		        this.initSession(function() {
+			        $this.Connect();
+		        });
+	        } else {
+		        this.Connect();
+	        }
 
             require(['init_events'], function(binders) {
                 binders.bindEvents($this);
@@ -87,7 +85,19 @@ define('app', function () {
             });
 
         },
-
+		initSession: function (callback, params) {
+			var $this = this;
+			$.ajax({
+				type: "GET",
+				data: params,
+				url: '/session.php',
+				success: function(response) {
+					$this.token = response.token;
+					callback();
+				},
+				dataType: 'json'
+			});
+		},
         Connect : function() {
             try {
                 this.connection = new WebSocket(this.hostUrl);

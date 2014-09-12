@@ -35,6 +35,7 @@ class User implements ConnectionInterface
 	 */
 	private $language;
 	private $ip;
+	private $token;
 
 	public function __construct(ConnectionInterface $client)
 	{
@@ -67,6 +68,7 @@ class User implements ConnectionInterface
 	public function setUserDAO(UserDAO $user)
 	{
 		$this->userDAO = $user;
+		return $this;
 	}
 
 	public function getConnectionId()
@@ -274,5 +276,23 @@ class User implements ConnectionInterface
 		} catch (\PDOException $e) {
 			DI::get()->getLogger()->warn("User onSave PDO Exception: ".print_r($e, 1), [__CLASS__]);
 		}
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getToken()
+	{
+		return $this->token;
+	}
+
+	/**
+	 * @param mixed $token
+	 * @return $this
+	 */
+	public function setToken($token)
+	{
+		$this->token = $token;
+		return $this;
 	}
 }

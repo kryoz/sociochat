@@ -108,7 +108,9 @@ class SessionFilter implements ChainInterface
 			$logger->info("Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}", [__CLASS__]);
 		}
 
-		$newUserWrapper->setUserDAO($user);
+		$newUserWrapper
+			->setUserDAO($user)
+			->setToken($token);
 
 		$clients->attach($newUserWrapper);
 	}
@@ -155,7 +157,7 @@ class SessionFilter implements ChainInterface
 				$clients->detach($oldClient);
 
 				if ($oldClient->getIp() == $newUserWrapper->getIp()) {
-					$newUserWrapper->setLastMsgId(0);
+					$newUserWrapper->setLastMsgId(-1);
 				}
 
 				$logger->info(

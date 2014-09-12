@@ -227,18 +227,13 @@ define(function() {
                 }
 
                 $this.connection.close();
-
                 $this.setCookie('token', null);
-
-                $.ajax({
-                    type: "GET",
-                    url: '/session.php',
-                    success: function(response) {
-                        $this.token = $this.getCookie('token');
-                        $this.Connect();
-                    },
-                    dataType: 'json'
-                })
+	            $this.initSession(function() {
+		                $this.Connect();
+	                }, {
+			            regenerate: 1
+		            }
+	            );
             };
 
             handleTokenRefresh();

@@ -12,7 +12,6 @@ require_once '../config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 
-http_response_code(200);
 $sid = 'unchanged';
 if (!isset($_COOKIE['token']) || isset($_GET['regenerate'])) {
 	session_name('token');
@@ -20,6 +19,8 @@ if (!isset($_COOKIE['token']) || isset($_GET['regenerate'])) {
 	$sid = session_id();
 	$sessionHandler = \SocioChat\Session\DBSessionHandler::get();
 	$sessionHandler->store($sid, 0);
-
+} else {
+	$side = $_COOKIE['token'];
 }
+http_response_code(200);
 echo json_encode(['token' => $sid]);
