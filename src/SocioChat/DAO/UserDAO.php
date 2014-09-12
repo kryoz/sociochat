@@ -123,7 +123,7 @@ class UserDAO extends DAOBase
 		}
 
 		if (!$this->getId()) {
-			throw new \Exception('Incorrect DAO request, id is null'.debug_print_backtrace());
+			throw new \Exception('Incorrect DAO request, id is null'.debug_backtrace());
 		}
 
 		return $this[self::PROPERTIES];
