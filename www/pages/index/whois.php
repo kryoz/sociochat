@@ -9,8 +9,6 @@ if (!defined('ROOT')) {
 	</div>
 	<div class="panel-body">
 		<table class="table table-striped" id="guests">
-			<tbody>
-			</tbody>
 		</table>
 	</div>
 	<div class="panel-footer">

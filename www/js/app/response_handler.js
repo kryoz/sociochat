@@ -22,7 +22,7 @@ define(function() {
                     $this.domElems.guestList.empty();
                     $this.domElems.address.empty();
 
-                    var guestHMTL = '';
+                    var guestHMTL = '<tr><th>Имя</th><th>ТИМ</th><th>Город</th><th>Возраст</th><th></th></tr>';
                     var guestDropdownHTML = '<option value="">Всем</option>';
 
                     for (var i in guests) {
@@ -42,7 +42,10 @@ define(function() {
                         }
 
                         guestHMTL += '<tr class="'+colorClass+'">';
-                        guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td><td>'+guest.tim+'</td>';
+                        guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
+	                    guestHMTL += '<td>'+guest.tim+'</td>';
+	                    guestHMTL += '<td>'+guest.city+'</td>';
+	                    guestHMTL += '<td>'+guest.birth+'</td>';
                         guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
                         //guestHMTL += '<a class="btn btn-default unban">Заметка</a>';

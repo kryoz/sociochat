@@ -182,6 +182,8 @@ class PropertiesDAO extends DAOBase
 			self::SEX => $this->getSex()->getName(),
 			self::AVATAR.'Thumb' => $this->getAvatarThumb() ? $avatarDir.$this->getAvatarThumb() : null,
 			self::AVATAR.'Img' => $this->getAvatarImg() ? $avatarDir.$this->getAvatarImg() : null,
+			self::CITY => $this->getCity(),
+			self::BIRTH => date('Y') - $this->getBirthday(),
 		];
 	}
 
