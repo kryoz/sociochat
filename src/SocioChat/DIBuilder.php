@@ -26,6 +26,7 @@ class DIBuilder
 		self::setupDictionary($container);
 		self::setupLang($container);
 		self::setupCache($container);
+		self::setupSession($container);
 	}
 
 	public static function setupConfig(Container $container)
@@ -121,6 +122,20 @@ class DIBuilder
 				}
 
 				return $cache;
+			},
+			true
+		);
+	}
+
+	/**
+	 * @param Container $container
+	 */
+	public static function setupSession(Container $container)
+	{
+		$container->add(
+			'session',
+			function () use ($container) {
+				return new Session\DBSessionHandler();
 			},
 			true
 		);

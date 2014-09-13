@@ -20,8 +20,11 @@ if (!$sid || isset($_GET['regenerate'])) {
 }
 session_start();
 $sid = session_id();
-$sessionHandler = \SocioChat\Session\DBSessionHandler::get();
-$sessionHandler->store($sid, 0);
+$sessionHandler = DI::get()->getSession();
+
+if (!$sessionHandler->read($sid)) {
+	$sessionHandler->store($sid, 0);
+}
 
 setcookie(session_name(), $sid, time()+$config->session->lifetime, '/', '.'.$config->domain->web, true);
 http_response_code(200);

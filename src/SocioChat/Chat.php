@@ -29,17 +29,11 @@ class Chat implements MessageComponentInterface
 	 */
 	private static $sessionEngine;
 
-	public function __construct()
-	{
-		$config = DI::get()->getConfig();
-		self::$sessionEngine = $config->session->driver == 'memory' ? MemorySessionHandler::get() : DBSessionHandler::get();
-	}
-
 	public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
 	{
 		(new ChainContainer())
 			->setFrom(new User($conn))
-			->addHandler(new OnOpenFilters\SessionFilter(self::$sessionEngine))
+			->addHandler(new OnOpenFilters\SessionFilter())
 			->addHandler(new ResponseFilter())
 			//->addHandler(AdsFilter::get())
 			->run();
@@ -84,11 +78,6 @@ class Chat implements MessageComponentInterface
 	{
 		DI::get()->getLogger()->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
 		$conn->close();
-	}
-
-	public static function getSessionEngine()
-	{
-		return self::$sessionEngine;
 	}
 
 	/**

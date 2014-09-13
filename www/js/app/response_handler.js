@@ -18,6 +18,7 @@ define(function() {
                 if (json.guests) {
                     $this.guests = json.guests;
                     var guests = $this.guests;
+                    var d = new Date();
 
                     $this.domElems.guestList.empty();
                     $this.domElems.address.empty();
@@ -45,7 +46,7 @@ define(function() {
                         guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
 	                    guestHMTL += '<td>'+guest.tim+'</td>';
 	                    guestHMTL += '<td>'+(guest.city ? guest.city : '') +'</td>';
-	                    guestHMTL += '<td>'+guest.birth+'</td>';
+	                    guestHMTL += '<td>'+(guest.birth == (d.getFullYear() - 1930) ? '' : guest.birth)+'</td>';
                         guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb">';
 
                         //guestHMTL += '<a class="btn btn-default unban">Заметка</a>';

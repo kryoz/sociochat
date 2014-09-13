@@ -90,7 +90,7 @@ class LoginController extends ControllerBase
 		$user->setUserDAO($userDAO);
 		$clients->updateKeyOfUserId($oldUserId);
 
-		Chat::getSessionEngine()->updateSessionId($user, $oldUserId);
+		DI::get()->getSession()->updateSessionId($user, $oldUserId);
 		DI::get()->getLogger()->info("LoginController::login success for ".$user->getId());
 		$this->sendNotifyResponse($user);
 

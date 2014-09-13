@@ -14,16 +14,9 @@ use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Enum\UserRoleEnum;
 use SocioChat\Message\Lang;
-use SocioChat\Session\SessionHandler;
 
 class SessionFilter implements ChainInterface
 {
-	protected $sessionHandler;
-
-	public function __construct(SessionHandler $handler)
-	{
-		$this->sessionHandler = $handler;
-	}
 
 	public function handleRequest(ChainContainer $chain)
 	{
@@ -44,7 +37,7 @@ class SessionFilter implements ChainInterface
 			->setLastMsgId((int) $socketRequest->getCookie('lastMsgId'))
 			->setLanguage($lang);
 
-		$sessionHandler = $this->sessionHandler;
+		$sessionHandler = DI::get()->getSession();
 
 		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 

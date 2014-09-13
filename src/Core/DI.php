@@ -6,6 +6,7 @@ use Monolog\Logger;
 use Orno\Di\Container;
 use ReflectionClass;
 use Core\Cache\Cache;
+use SocioChat\Session\SessionHandler;
 use Zend\Config\Config;
 
 class DI
@@ -45,6 +46,14 @@ class DI
 	public function getCache()
 	{
 		return $this->container->get('cache');
+	}
+
+	/**
+	 * @return SessionHandler
+	 */
+	public function getSession()
+	{
+		return $this->container->get('session');
 	}
 
 	public function spawn($className)
