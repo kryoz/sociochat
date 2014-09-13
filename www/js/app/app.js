@@ -70,15 +70,10 @@ define('app', function () {
 	        var $this = this;
 
 	        this.hostUrl = hostUrl;
-	        this.token = this.getCookie('token');
 
-	        if (!this.token) {
-		        this.initSession(function() {
-			        $this.Connect();
-		        });
-	        } else {
-		        this.Connect();
-	        }
+            this.initSession(function() {
+                $this.Connect();
+            });
 
             require(['init_events'], function(binders) {
                 binders.bindEvents($this);
@@ -93,6 +88,7 @@ define('app', function () {
 				type: "GET",
 				data: params,
 				url: '/session.php',
+                cache: false,
 				success: function(response) {
 					$this.token = response.token;
 					callback();
