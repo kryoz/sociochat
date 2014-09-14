@@ -108,7 +108,7 @@ require_once "pages/header.php";
 	<script type="text/javascript">
 		require.config({
 			baseUrl: 'js/app',
-			urlArgs: 'bust=v1.81'
+			urlArgs: 'bust=v'+<?=$config->version?>
 		});
 
 		define('config', function() {

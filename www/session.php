@@ -3,9 +3,9 @@
 use Core\DI;
 use SocioChat\DIBuilder;
 
-if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-	die('only internal requests allowed');
-}
+//if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+//	die('only internal requests allowed');
+//}
 
 require_once '../config.php';
 
@@ -14,11 +14,12 @@ DIBuilder::setupNormal($container);
 $config = $container->get('config');
 
 session_name('token');
+session_start();
 
-if (!$sid || isset($_GET['regenerate'])) {
+if (isset($_GET['regenerate'])) {
 	session_regenerate_id(true);
 }
-session_start();
+
 $sid = session_id();
 $sessionHandler = DI::get()->getSession();
 

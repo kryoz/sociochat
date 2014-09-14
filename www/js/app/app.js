@@ -91,7 +91,8 @@ define('app', function () {
                 cache: false,
 				success: function(response) {
 					$this.token = response.token;
-					callback();
+					$this.setCookie('token', response.token);
+                    $this.Connect();
 				},
 				dataType: 'json'
 			});
@@ -100,7 +101,7 @@ define('app', function () {
             try {
                 this.connection = new WebSocket(this.hostUrl);
             } catch (e) {
-                this.addLog('Простите, но ваш браузер не поддерживается. Используйте свежую версию Chrome, Opera или Firefox', 1);
+                this.addLog(e, 1);
             }
 
             this.addConnectionHandlers();
