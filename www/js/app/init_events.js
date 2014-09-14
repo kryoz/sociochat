@@ -26,7 +26,7 @@ define(function () {
                 }
             });
 
-            $this.domElems.send.click(function () {
+            $this.domElems.sendMessageButton.click(function () {
                 $this.sendMessage();
                 $this.domElems.inputMessage.focus();
             });

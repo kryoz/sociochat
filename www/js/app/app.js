@@ -48,7 +48,7 @@ define('app', function () {
             loginPassword: $('#login-password'),
             address: $('#address'),
             addressReset: $('#address-reset'),
-            send: $('#send'),
+            sendMessageButton: $('#send'),
             setProperties: $('#set-profile-info'),
             setRegInfo: $('#set-reg-info'),
             doLogin: $('#do-login'),
@@ -114,6 +114,20 @@ define('app', function () {
         },
         addConnectionHandlers: function() {
             var $this = this;
+            var startPendingStatus = function () {
+                $this.domElems.sendMessageButton
+                    .find('span')
+                    .removeClass('glyphicon-send')
+                    .addClass('glyphicon-refresh')
+                    .addClass('rotate');
+            }
+            var endPendingStatus = function() {
+                $this.domElems.sendMessageButton
+                    .find('span')
+                    .addClass('glyphicon-send')
+                    .removeClass('glyphicon-refresh')
+                    .removeClass('rotate');
+            }
 
             $(window).unload(function() {
                 $this.connection.close();
@@ -124,7 +138,9 @@ define('app', function () {
 		            $this.domElems.chat.empty();
 		            $this.isFirstConnect = false;
 	            }
-                $('.glyphicon-refresh').parent().remove();
+
+                endPendingStatus();
+
                 $this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
 
                 clearTimeout($this.reconnectTimeout);
@@ -146,9 +162,10 @@ define('app', function () {
 
                 $this.retryTimer = setTimeout(function() {
                     if (!$this.reconnectTimeout) {
-                        $this.addLog('<span class="glyphicon glyphicon-refresh rotate"></span>', 'system');
+                        startPendingStatus();
+
                         $this.reconnectTimeout = setTimeout(function() {
-                            $('.glyphicon-refresh').parent().remove();
+                            endPendingStatus();
                             $this.addLog('Попытки подключиться исчерпаны. Попробуйте зайти позднее.', 'system');
                             $this.connection = null;
                             $this.disconnect = 1;
@@ -160,17 +177,18 @@ define('app', function () {
                 }, 2000);
 
                 $this.domElems.inputMessage.attr('disabled', 'disabled');
-                $this.domElems.inputMessage.attr('placeholder', 'Обрыв соединения... подождите пожалуйста...');
+                $this.domElems.inputMessage.attr('placeholder', 'Обрыв соединения... подождите, пожалуйста...');
             }
 
             $this.connection.onerror = function(e) {
-                console.log('onError');
+                console.log(e);
             }
 
             $this.connection.onmessage = function(e) {
                 try {
                     var json = JSON.parse(e.data);
                 } catch (c) {
+                    console.log(c);
                     return;
                 }
 
