@@ -203,7 +203,7 @@ define(function () {
                         bgColor: '#fff',
                         minSize: [64, 64],
                         maxSize: [0, 0],
-                        setSelect: [0, 0, cropHolder.width(), cropHolder.height()],
+                        setSelect: [0, 0, cropHolder.innerWidth(), cropHolder.innerHeight()],
                         aspectRatio: 1,
                         onSelect: function (coords){
                             dim = coords;
@@ -216,7 +216,7 @@ define(function () {
 
                 fileReader.readAsDataURL(file);
 
-                image.style.maxWidth = 'inherit';
+                image.style.width = 'auto';
                 image.style.maxHeight = 'inherit';
 
                 cropHolder.html(image);
@@ -233,7 +233,7 @@ define(function () {
                 var percentage = progressbar.find('.sr-only');
 
                 var dim = jcropAPI.tellSelect();
-                dim = {x: dim.x, y: dim.y, w: dim.w, h: dim.h, portW: cropHolder.width(), portH: cropHolder.height()};
+                dim = {x: dim.x, y: dim.y, w: dim.w, h: dim.h, portW: cropHolder.innerWidth(), portH: cropHolder.innerHeight()};
 
                 formData.append('img', file);
                 formData.append('token', $this.token);

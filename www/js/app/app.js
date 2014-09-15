@@ -88,11 +88,18 @@ define('app', function () {
 				type: "GET",
 				data: params,
 				url: '/session.php',
-                cache: false,
-				success: function(response) {
-					$this.token = response.token;
-					$this.setCookie('token', response.token);
-                    $this.Connect();
+                    cache: false,
+				    success: function(response) {
+                        $this.token = response.token;
+                        $this.setCookie(
+                            'token',
+                            response.token,
+                            {
+                                expires : response.ttl,
+                                secure: response.isSecure
+                            }
+                        );
+                        $this.Connect();
 				},
 				dataType: 'json'
 			});
