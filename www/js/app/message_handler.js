@@ -129,7 +129,6 @@ define(function() {
 	                            require(['audio'], function(audio) {
 		                            audio.playMusic($this.domElems.audioPlayer, e, musicElId);
 	                            });
-                                $this.playMusic(e, musicElId);
                             });
                         },
                         dataType: 'json'

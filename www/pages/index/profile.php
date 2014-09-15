@@ -65,7 +65,7 @@ if (!defined('ROOT')) {
 		<div class="row btn-vert-block form-group">
 			<div class="col-sm-12 btn-vert-block">
 				<p><?=$lang->getPhrase('profile.Preview')?></p>
-				<div class="img-thumbnail avatar-placeholder" style="max-width: 100%; max-height: <?=$config->uploads->avatars->maxdim?>px"></div></p>
+				<div class="img-thumbnail avatar-placeholder" style="max-width: 100%; max-height: <?=$config->uploads->avatars->maxdim?>px"></div>
 			</div>
 		</div>
 		<div class="progress progress-striped active" style="display: none">
