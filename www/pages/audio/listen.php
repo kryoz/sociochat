@@ -3,8 +3,8 @@
 	<td><?=$dao->getQuality()?> kbit/sec</td>
 </table>
 <br>
-<audio controls autoplay>
-	<source src="<?=$url?>" type="audio/mp3" >
+<audio controls>
+	<source src="<?=$url?>" type='audio/mpeg; codecs="mp3"' >
 	Ваш браузер не поддерживает тег audio!
 </audio>
 <br>

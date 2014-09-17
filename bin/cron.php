@@ -6,12 +6,14 @@ use Core\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 
-function CustomErrorHandler($errno, $errstr, $errfile, $errline)
-{
-	echo "ErrorHandler: $errfile line $errline: $errstr\n";
-	return true;
-}
-set_error_handler('CustomErrorHandler');
+set_error_handler(
+    function ($errno, $errstr, $errfile, $errline) {
+        $func = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
+        $line = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['line'];
+        echo "ERROR (calling {$func}() on l.$line) : $errstr</p>";
+        return true;
+    }
+);
 
 require_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config.php';
 $container = DI::get()->container();
