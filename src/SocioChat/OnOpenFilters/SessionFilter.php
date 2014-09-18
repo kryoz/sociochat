@@ -39,7 +39,7 @@ class SessionFilter implements ChainInterface
 
 		$sessionHandler = DI::get()->getSession();
 
-		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
+		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, token = {$socketRequest->getCookie('token')}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 
 		try {
 			if (!$token = $socketRequest->getCookie('token')) {

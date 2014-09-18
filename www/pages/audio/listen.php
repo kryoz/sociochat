@@ -11,8 +11,7 @@
 <input type="text" id="url-container" value="https://sociochat.me/audio.php?track_id=<?=$dao->getTrackId()?>"/>
 <button id="copy-button" data-clipboard-target="url-container" data-clipboard-text="Default clipboard text from attribute" data-copied-hint="Скопировано!" title="Скопировать ссылку в буфер обмена">Скопировать ссылку в буфер обмена</button>
 <br>
-<a href="<?=$url?>">Скачать</a>
-<a href="https://sociochat.me/audio.php">Искать другую композицию</a>
+<h3><a href="<?=$url?>">Скачать</a></h3>
 <p><small>СоциоЧат не хранит звуковые файлы. Источником данных служит сервис pleer.com</small></p>
 <script src="js/zeroclipboard.min.js"></script>
 <script>

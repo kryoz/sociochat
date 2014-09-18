@@ -15,9 +15,9 @@ class MainChatDualsHandler
 	{
 		$duals = PendingDuals::get();
 
-		if ($duals->deleteByUserId($user->getId())) {
+		if ($duals->deleteByUser($user)) {
 			self::informOnPendingExit($user);
-			$userList = $duals->getUsersByTim($user->getProperties()->getTim());
+			$userList = $duals->getUsersByTim($user);
 			self::sendRenewPositions($userList, $users);
 		}
 	}

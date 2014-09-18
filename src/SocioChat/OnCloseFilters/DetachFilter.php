@@ -38,11 +38,11 @@ class DetachFilter implements ChainInterface
 
 		if ($user->isAsyncDetach()) {
 			$timeout = DI::get()->getConfig()->session->timeout;
-			$logger->info("OnClose: Detach deffered in $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
+			$logger->info("OnClose: Detach deffered for $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
 			$timer = $loop->addTimer($timeout, $detacher);
 			$user->setDisconnectTimer($timer);
 		} else {
-			$logger->info("OnClose: Detached instantly...", [__CLASS__]);
+			$logger->info("OnClose: Detached instantly user_id {$user->getId()}...", [__CLASS__]);
 			$detacher();
 		}
 
@@ -72,6 +72,6 @@ class DetachFilter implements ChainInterface
 	private function cleanPendingQueue(User $user)
 	{
 		$duals = PendingDuals::get();
-		$duals->deleteByUserId($user->getId());
+		$duals->deleteByUser($user);
 	}
 }

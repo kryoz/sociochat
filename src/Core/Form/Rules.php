@@ -39,7 +39,7 @@ class Rules
 			if (!$name) {
 				return true;
 			}
-			$pattern = "~^([A-Za-zА-Яа-я-]+)$~uis";
+			$pattern = "~^([A-Za-zА-Яа-я- ]+)$~uis";
 
 			if (preg_match($pattern, $name)) {
 				return mb_strlen($name) <= 50;

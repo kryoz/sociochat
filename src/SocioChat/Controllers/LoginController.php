@@ -62,6 +62,7 @@ class LoginController extends ControllerBase
 		$user = $chain->getFrom();
 		$request = $chain->getRequest();
 		$lang = $user->getLang();
+        $logger = DI::get()->getLogger();
 
 		if (!$userDAO = $this->validateLogin($request)) {
 			RespondError::make($user, ['email' => $lang->getPhrase('InvalidLogin')]);
@@ -79,6 +80,14 @@ class LoginController extends ControllerBase
 		}
 
 		if ($duplicatedUser = $clients->getClientById($userDAO->getId())) {
+            if ($timer = $duplicatedUser->getDisconnectTimer()) {
+                DI::get()->container()->get('eventloop')->cancelTimer($timer);
+                $logger->info(
+                    "Deffered disconnection timer canceled: connection_id = {$duplicatedUser->getConnectionId()} for userId = {$duplicatedUser->getId()}",
+                    [__CLASS__]
+                );
+            }
+
 			$duplicatedUser
 				->setAsyncDetach(false)
 				->send(['msg' => $lang->getPhrase('DuplicateConnection'), 'disconnect' => 1]);
@@ -86,12 +95,12 @@ class LoginController extends ControllerBase
 		}
 
 		$userDAO->setChatId($oldChannelId);
-
 		$user->setUserDAO($userDAO);
 		$clients->updateKeyOfUserId($oldUserId);
 
 		DI::get()->getSession()->updateSessionId($user, $oldUserId);
-		DI::get()->getLogger()->info("LoginController::login success for ".$user->getId());
+		$logger->info("LoginController::login success for ".$user->getId());
+
 		$this->sendNotifyResponse($user);
 
 		$responseFilter = new ResponseFilter();

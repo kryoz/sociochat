@@ -81,7 +81,7 @@ class ChannelNotifier
 
 	public static function notifyOnPendingDuals(User $user)
 	{
-		if (!empty(PendingDuals::get()->getUsersByDualTim($user->getProperties()->getTim()))) {
+		if (!empty(PendingDuals::get()->getUsersByDual($user))) {
 			$response = (new MessageResponse())
 				->setMsg(MsgToken::create('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
 				->setTime(null)

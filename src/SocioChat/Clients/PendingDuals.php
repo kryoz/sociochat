@@ -2,13 +2,14 @@
 
 namespace SocioChat\Clients;
 
+use Core\Utils\WrongArgumentException;
+use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
-use SocioChat\Log;
 use Core\TSingleton;
 
 class PendingDuals
 {
-	use \Core\TSingleton;
+	use TSingleton;
 
 	private $dualsMap = [
 		TimEnum::EIE => TimEnum::LSI,
@@ -35,41 +36,45 @@ class PendingDuals
 		TimEnum::SEE => TimEnum::ILI,
 		TimEnum::ILI => TimEnum::SEE,
 	];
-	private $queue = [];
+	private $boysQueue = [];
+    private $girlsQueue = [];
 
 
 	public function matchDual(User $user)
 	{
-		if ($user->isInPrivateChat() || $user->getProperties()->getTim()->getId() == TimEnum::ANY) {
-			return false;
+		if ($user->isInPrivateChat() || !$this->isCorrectUser($user)) {
+ 			return false;
 		}
 
 		$tim = $user->getProperties()->getTim();
-		$dualExists = isset($this->queue[$this->getDualTim($tim)]);
 
-		if (!$dualExists) {
+		if (!$this->dualExists($user)) {
 			$this->register($user);
 			return false;
 		}
 
-		$queue = $this->queue[$this->getDualTim($tim)];
+		$queue = $this->getDualQueue($user)[$this->getDualTim($tim)];
 
 		$queue = array_flip($queue);
 		$userId = $queue[1];
 
-		$this->deleteByUserId($userId);
+		$this->deleteByUser(UserCollection::get()->getClientById($userId));
 
 		return $userId;
 	}
 
-	public function deleteByUserId($userId)
+	public function deleteByUser(User $user)
 	{
-		foreach ($this->queue as $timId => &$data) {
-			if (isset($data[$userId])) {
-				unset($this->queue[$timId][$userId]);
+        if (!$this->isCorrectUser($user)) {
+            return [];
+        }
+
+		foreach ($this->getQueue($user) as $timId => &$data) {
+			if (isset($data[$user->getId()])) {
+				unset($this->getQueue($user)[$timId][$user->getId()]);
 
 				if (empty($data)) {
-					unset($this->queue[$timId]);
+					unset($this->getQueue($user)[$timId]);
 				} else {
 					$this->recalcQueue($data);
 				}
@@ -80,24 +85,35 @@ class PendingDuals
 
 	public function getUserPosition(User $user)
 	{
+        if (!$this->isCorrectUser($user)) {
+            return [];
+        }
 		$tim = $user->getProperties()->getTim();
 
-		if (isset($this->queue[$tim->getId()])) {
-			if (isset($this->queue[$tim->getId()][$user->getId()])) {
-				return $this->queue[$tim->getId()][$user->getId()] ;
+		if (isset($this->getQueue($user)[$tim->getId()])) {
+			if (isset($this->getQueue($user)[$tim->getId()][$user->getId()])) {
+				return $this->getQueue($user)[$tim->getId()][$user->getId()] ;
 			}
 		}
 		return false;
 	}
 
-	public function getUsersByTim(TimEnum $tim)
+	public function getUsersByTim(User $user)
 	{
-		return isset($this->queue[$tim->getId()]) ? array_keys($this->queue[$tim->getId()]) : [];
+        if (!$this->isCorrectUser($user)) {
+            return [];
+        }
+        $tim = $user->getProperties()->getTim();
+		return isset($this->getQueue($user)[$tim->getId()]) ? array_keys($this->getQueue($user)[$tim->getId()]) : [];
 	}
 
-	public function getUsersByDualTim(TimEnum $tim)
+	public function getUsersByDual(User $user)
 	{
-		return isset($this->queue[$this->getDualTim($tim)]) ? array_keys($this->queue[$this->getDualTim($tim)]) : [];
+        if (!$this->isCorrectUser($user)) {
+            return [];
+        }
+        $tim = $user->getProperties()->getTim();
+		return isset($this->getDualQueue($user)[$this->getDualTim($tim)]) ? array_keys($this->getDualQueue($user)[$this->getDualTim($tim)]) : [];
 	}
 
 	public function getDualTim(TimEnum $tim)
@@ -109,10 +125,10 @@ class PendingDuals
 	{
 		$tim = $user->getProperties()->getTim();
 
-		if (!isset($this->queue[$tim->getId()])) {
-			$this->queue[$tim->getId()] = [];
+		if (!isset($this->getQueue($user)[$tim->getId()])) {
+            $this->getQueue($user)[$tim->getId()] = [];
 		}
-		$this->queue[$tim->getId()][$user->getId()] = count($this->queue[$tim->getId()])+1;
+        $this->getQueue($user)[$tim->getId()][$user->getId()] = count($this->getQueue($user)[$tim->getId()])+1;
 	}
 
 	private function recalcQueue(array &$data)
@@ -124,4 +140,48 @@ class PendingDuals
 			$i++;
 		}
 	}
+
+    private function dualExists(User $user)
+    {
+        return isset($this->getDualQueue($user)[$this->getDualTim($user->getProperties()->getTim())]);
+    }
+
+    /**
+     * @param User $user
+     * @throws WrongArgumentException
+     * @return array
+     */
+    private function &getQueue(User $user)
+    {
+        $sex = $user->getProperties()->getSex()->getId();
+        if ($sex == SexEnum::FEMALE) {
+            return $this->girlsQueue;
+        } elseif ($sex == SexEnum::MALE) {
+            return $this->boysQueue;
+        }
+
+        throw new WrongArgumentException('User sex cannot be anonymous here! UserId = '.$user->getId());
+    }
+
+    /**
+     * @param User $user
+     * @throws WrongArgumentException
+     * @return array
+     */
+    private function &getDualQueue(User $user)
+    {
+        $sex = $user->getProperties()->getSex()->getId();
+        if ($sex == SexEnum::FEMALE) {
+            return $this->boysQueue;
+        } elseif ($sex == SexEnum::MALE) {
+            return $this->girlsQueue;
+        }
+
+        throw new WrongArgumentException('User sex cannot be anonymous here! UserId = '.$user->getId());
+    }
+
+    private function isCorrectUser(User $user)
+    {
+        return $user->getProperties()->getTim()->getId() != TimEnum::ANY && $user->getProperties()->getSex()->getId() != SexEnum::ANONYM;
+    }
 } 

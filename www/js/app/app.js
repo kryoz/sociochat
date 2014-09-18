@@ -2,6 +2,7 @@ define('app', function () {
     return {
         connection: null,
         hostUrl: null,
+        domain: null,
         token: null,
         isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
         msgCount: 0,
@@ -66,10 +67,11 @@ define('app', function () {
 	        audioPlayer : $('#player')
         },
 
-        Init: function(hostUrl) {
+        Init: function(hostUrl, domain) {
 	        var $this = this;
 
 	        this.hostUrl = hostUrl;
+            this.domain = domain;
 
             this.initSession(function() {
                 $this.Connect();
@@ -91,13 +93,17 @@ define('app', function () {
                     cache: false,
 				    success: function(response) {
                         $this.token = response.token;
+                        var options = {
+                            expires : response.ttl
+                        };
+
+                        if (response.isSecure) {
+                            $.extend(options, {secure: response.isSecure});
+                        }
                         $this.setCookie(
                             'token',
                             response.token,
-                            {
-                                expires : response.ttl,
-                                secure: response.isSecure
-                            }
+                            options
                         );
                         $this.Connect();
 				},
@@ -307,7 +313,7 @@ define('app', function () {
                     updatedCookie += "=" + propValue;
                 }
             }
-
+            console.log(updatedCookie);
             document.cookie = updatedCookie;
         },
         getCookie: function(name) {

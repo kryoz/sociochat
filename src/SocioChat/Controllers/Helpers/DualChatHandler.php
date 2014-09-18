@@ -37,8 +37,6 @@ class DualChatHandler
 			return;
 		}
 
-		$tim = $user->getProperties()->getTim();
-
 		if ($dualUserId = $duals->matchDual($user)) {
 			$dualUser = $users->getClientById($dualUserId);
 			$oldChatId = $user->getChannelId();
@@ -53,7 +51,7 @@ class DualChatHandler
 
 			self::sendMatchResponse($users->getUsersByChatId($newChatRoomId), MsgToken::create('DualIsFound'));
 			self::renewGuestsList($oldChatId, MsgToken::create('DualizationStarted'));
-			self::sendRenewPositions($duals->getUsersByDualTim($tim));
+			self::sendRenewPositions($duals->getUsersByDual($user));
 			return;
 		}
 
@@ -79,14 +77,16 @@ class DualChatHandler
 	private static function dualGuestsList(User $user)
 	{
 		$dualUsers = UserCollection::get()->getUsersByChatId($user->getChannelId());
-		if (!$dual = TimEnum::create(PendingDuals::get()->getDualTim($user->getProperties()->getTim()))) {
-			return;
-		}
+        $dual = TimEnum::create(PendingDuals::get()->getDualTim($user->getProperties()->getTim()));
 
-		foreach ($dualUsers as $n => $guest) {
-			if ($guest->getProperties()->getTim()->getId() != $dual->getId() && $guest->getProperties()->getTim()->getId() != TimEnum::ANY) {
-				unset($dualUsers[$n]);
+		foreach ($dualUsers as $n => $partner) {
+            $props = $partner->getProperties();
+			if ($props->getTim()->getId() != $dual->getId() && $props->getTim()->getId() != TimEnum::ANY) {
+                unset($dualUsers[$n]);
 			}
+            if ($props->getSex()->getId() == $user->getProperties()->getSex()->getId()) {
+                unset($dualUsers[$n]);
+            }
 		}
 
 		if (empty($dualUsers)) {
@@ -94,8 +94,8 @@ class DualChatHandler
 		}
 
 		$collection = new UserCollection();
-		foreach ($dualUsers as $guest) {
-			$collection->attach($guest);
+		foreach ($dualUsers as $partner) {
+			$collection->attach($partner);
 		}
 
 		$response = (new MessageResponse())

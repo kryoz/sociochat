@@ -239,7 +239,6 @@ define(function() {
                 }
 
                 $this.connection.close();
-                $this.setCookie('token', null);
 	            $this.initSession(function() {
 		                $this.Connect();
 	                }, {

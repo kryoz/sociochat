@@ -25,7 +25,7 @@ define(function() {
 					html += '<a href="#" data-id="'+trackInfo.id+'" id="'+musicElId+'" class="music"><span class="glyphicon glyphicon-play-circle"></span></a>';
 					html += '&nbsp;&nbsp;<a href="#" data-src="https://sociochat.me/audio.php?track_id='+trackInfo.id+'" class="share"><span class="glyphicon glyphicon-bullhorn"></span></a> ';
 					html += '&nbsp;&nbsp;'+trackInfo.artist+' - '+trackInfo.track+'</td>';
-					html += "<td>"+trackInfo.bitrate+"</td>";
+					html += '<td><a href="https://sociochat.me/audio.php?track_id='+trackInfo.id+'" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> '+trackInfo.bitrate+'</td>';
 					html += "</tr>";
 				}
 

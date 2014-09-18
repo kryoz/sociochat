@@ -114,6 +114,7 @@ require_once "pages/header.php";
 		define('config', function() {
 			return {
 				wsDomain: '<?=$config->domain->ws?>',
+                webDomain: '<?=$config->domain->web?>',
 				lifeTime: '<?=$lifetime?>'
 			};
 		});
