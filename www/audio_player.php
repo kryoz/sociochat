@@ -1,11 +1,8 @@
 <?php
 
-use SocioChat\DAO\LockerDAO;
 use SocioChat\DAO\MusicDAO;
 use Core\DI;
 use SocioChat\DIBuilder;
-use SocioChat\Locker\AlreadyLockedException;
-use SocioChat\Locker\LockerInDB;
 
 if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
 	die('only internal requests allowed');
