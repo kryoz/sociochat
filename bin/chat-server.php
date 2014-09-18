@@ -109,6 +109,28 @@ $dumperCallback = function () use ($config) {
 	}
 
 	fclose($fh);
+
+    $fn = ROOT.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'sitemap.xml';
+
+    if (!$fh = fopen($fn, 'w')) {
+        $logger->err('Unable to open file '.$fn.' to dump!');
+        return;
+    }
+
+    $date = date('Y-m-d');
+    $xml = <<< EOD
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>https://sociochat.me/</loc>
+        <lastmod>$date</lastmod>
+    </url>
+    <url>
+        <loc>https://sociochat.me/faq.php</loc>
+        <lastmod>2014-09-12</lastmod>
+    </url>
+</urlset>
+EOD;
+    fclose($fh);
 };
 
 $timer = $loop->addPeriodicTimer($config->chatlog->interval, $dumperCallback);
