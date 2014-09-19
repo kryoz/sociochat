@@ -166,7 +166,7 @@ class Channel
 	{
 		$response->setGuests(null);
 
-		if (!$response->getMsg()) {
+		if (!$response->getFilteredMsg() || !$response->getMsg()) {
 			return false;
 		}
 	}
@@ -181,7 +181,7 @@ class Channel
 			self::FROM_USER_ID => null,
 			self::FROM_NAME    => $response->getFromName(),
 			self::TIME         => $response->getTime(),
-			self::MSG          => $response->getMsg(),
+			self::MSG          => $response->getFilteredMsg(),
 		];
 
 		if ($from = $response->getFrom()) {

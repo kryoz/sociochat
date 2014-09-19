@@ -19,6 +19,7 @@ class UserPropetiesResponse extends Response
 	protected $avatarThumb;
 	protected $city;
 	protected $birth;
+    protected $censor;
 
 	public function setName($name)
 	{
@@ -90,6 +91,17 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+    public function getCensor()
+    {
+        return $this->censor;
+    }
+
+	public function setCensor($hasCense)
+    {
+        $this->censor = $hasCense;
+        return $this;
+    }
+
 	public function setUserProps(User $user)
 	{
 		$properties = $user->getProperties();
@@ -100,11 +112,12 @@ class UserPropetiesResponse extends Response
 			->setSex($properties->getSex()->getId())
 			->setTim($properties->getTim()->getId())
 			->setName($properties->getName())
-			->setNotifications($properties->getNotifications())
+			->setNotifications($properties->getOptions())
 			->setAvatarImg($properties->getAvatarImg() ? $dir.$properties->getAvatarImg() : null)
 			->setAvatarThumb($properties->getAvatarThumb() ? $dir.$properties->getAvatarThumb() : null)
 			->setYear($properties->getBirthday())
-			->setCity($properties->getCity());
+			->setCity($properties->getCity())
+            ->setCensor($properties->hasCensor());
 
 		return $this;
 	}

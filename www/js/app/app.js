@@ -44,6 +44,7 @@ define('app', function () {
             avatar: $('#profile-avatar'),
 	        city: $('#profile-city'),
 	        birth: $('#profile-year'),
+            censor: $('#profile-censor'),
 
             loginName: $('#login-name'),
             loginPassword: $('#login-password'),

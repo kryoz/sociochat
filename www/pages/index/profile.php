@@ -34,15 +34,25 @@ if (!defined('ROOT')) {
 					<?php } ?>
 				</select>
 			</div>
-			<div class="col-md-2 btn-vert-block">
-				<select class="form-control" id="profile-year">
-					<option selected disabled>Год рождения</option>
-					<?php foreach (Rules::getBirthYearsRange() as $year) { ?>
-						<option value="<?=$year?>"><?=$year?></option>
-					<?php } ?>
-				</select>
-			</div>
+            <div class="col-md-2 btn-vert-block">
+                <select class="form-control" id="profile-year">
+                    <option selected disabled>Год рождения</option>
+                    <?php foreach (Rules::getBirthYearsRange() as $year) { ?>
+                        <option value="<?=$year?>"><?=$year?></option>
+                    <?php } ?>
+                </select>
+            </div>
 		</div>
+        <div class="row btn-vert-block form-group">
+            <div class="col-md-12 btn-vert-block">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="profile-censor" /> <?=$lang->getPhrase('profile.Censor')?>
+                    </label>
+                </div>
+            </div>
+
+        </div>
 
 		<div class="row btn-vert-block">
 			<div class="btn-vert-block col-sm-12">

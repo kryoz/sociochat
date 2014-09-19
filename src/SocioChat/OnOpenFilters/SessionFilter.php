@@ -89,7 +89,7 @@ class SessionFilter implements ChainInterface
 				->setName($guestName)
 				->setSex(SexEnum::create(SexEnum::ANONYM))
 				->setTim(TimEnum::create(TimEnum::ANY))
-				->setNotifications([]);
+				->setOptions([PropertiesDAO::CENSOR => true]);
 
 			try {
 				$properties->save();

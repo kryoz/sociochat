@@ -19,6 +19,7 @@ class PropertiesDAO extends DAOBase
 	const AVATAR = 'avatar';
 	const CITY = 'city';
 	const BIRTH = 'birth';
+    const CENSOR = 'censor';
 
 	public function __construct()
 	{
@@ -127,12 +128,12 @@ class PropertiesDAO extends DAOBase
 		return $this;
 	}
 
-	public function getNotifications()
+	public function getOptions()
 	{
-		return json_decode($this[self::NOTIFICATIONS]);
+		return json_decode($this[self::NOTIFICATIONS], 1);
 	}
 
-	public function setNotifications(array $settings)
+	public function setOptions(array $settings)
 	{
 		$this[self::NOTIFICATIONS] = json_encode($settings);
 		return $this;
@@ -159,6 +160,11 @@ class PropertiesDAO extends DAOBase
 		$this[self::BIRTH] = date("$year-01-01 12:00:00");
 		return $this;
 	}
+
+    public function hasCensor()
+    {
+        return isset($this->getOptions()[self::CENSOR]) ? $this->getOptions()[self::CENSOR] : false;
+    }
 
 	public function dropByUserId($id)
 	{

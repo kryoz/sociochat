@@ -1,7 +1,9 @@
 {
     "autoload": {
         "psr-4": {
-            "": "src/",
+            "": "src/"
+        },
+        "psr-0": {
             "Test\\" : "unit-tests/"
         }
     },

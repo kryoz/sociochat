@@ -2,6 +2,8 @@
 
 namespace Core\Form;
 
+use SocioChat\Utils\RudeFilter;
+
 class Rules
 {
 	const LOWEST_YEAR = 1930;
@@ -9,7 +11,7 @@ class Rules
 	public static function notNull()
 	{
 		return function ($val) {
-			return $val != '';
+			return true;
 		};
 	}
 
@@ -24,6 +26,7 @@ class Rules
 	{
 		return function ($val) use ($c, $hasSpaces) {
 			$name = trim($val);
+            $name = RudeFilter::parse($name);
 			$pattern = "~^([A-Za-zА-Яа-я0-9_-".($hasSpaces ? '\s' : '')."]+)$~uis";
 
 			if (preg_match($pattern, $name)) {

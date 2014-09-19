@@ -140,6 +140,10 @@ define(function() {
 	            if (json.city) {
 		            $this.domElems.city.val(json.city);
 	            }
+
+                if (json.censor) {
+                    $this.domElems.censor.prop('checked', json.censor);
+                }
             }
 
             var handleDualChat = function() {

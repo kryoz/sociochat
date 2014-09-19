@@ -10,6 +10,10 @@ class MessageResponse extends Response
 	 * @var MsgContainer|null
 	 */
 	protected $msgObj;
+    /**
+     * @var MsgContainer|null
+     */
+    protected $filteredMsgObj;
 
 	protected $msg;
 	protected $time;
@@ -17,7 +21,7 @@ class MessageResponse extends Response
 	protected $toName;
 	protected $lastMsgId;
 
-	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient', 'msgObj'];
+	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient', 'msgObj', 'filteredMsgObj'];
 
 	/**
 	 * @param string $userName
@@ -48,6 +52,17 @@ class MessageResponse extends Response
 		return $this;
 	}
 
+    public function getFilteredMsg()
+    {
+        return $this->filteredMsgObj;
+    }
+
+    public function setFilteredMsg(MsgContainer $msg)
+    {
+        $this->filteredMsgObj = $msg;
+        return $this;
+    }
+
 	public function setTime($time)
 	{
 		$this->time = $time ? : date('H:i:s');
@@ -75,11 +90,17 @@ class MessageResponse extends Response
 
 	public function toString()
 	{
-		if ($text = $this->msgObj) {
+		if ($this->msgObj) {
 			if (!$this->getRecipient()) {
 				throw new \Exception('Something weird happened: no user was set as recipient');
 			}
-			$this->msg = $this->msgObj->getMsg($this->getRecipient()->getLang());
+
+            $user = $this->getRecipient();
+            if ($user->getProperties()->hasCensor() && $this->filteredMsgObj) {
+                $this->msg = $this->filteredMsgObj->getMsg($user->getLang());
+            } else {
+                $this->msg = $this->msgObj->getMsg($user->getLang());
+            }
 		}
 
 		return parent::toString();

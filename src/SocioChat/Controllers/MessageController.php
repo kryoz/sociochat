@@ -11,6 +11,7 @@ use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
+use SocioChat\Utils\RudeFilter;
 
 class MessageController extends ControllerBase
 {
@@ -46,6 +47,7 @@ class MessageController extends ControllerBase
 		$response = (new MessageResponse())
 			->setFrom($from)
 			->setMsg(Msg::create($msg))
+            ->setFilteredMsg(Msg::create(RudeFilter::parse($msg)))
 			->setTime(null)
 			->setChannelId($from->getChannelId())
 			->setToUserName($recipient->getProperties()->getName());
@@ -64,6 +66,7 @@ class MessageController extends ControllerBase
 		$response = (new MessageResponse())
 			->setFrom($user)
 			->setMsg(Msg::create($msg))
+            ->setFilteredMsg(Msg::create(RudeFilter::parse($msg)))
 			->setTime(null)
 			->setChannelId($user->getChannelId());
 

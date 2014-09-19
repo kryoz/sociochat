@@ -48,7 +48,8 @@ define(function () {
                     sex: $this.domElems.sex.val(),
                     name: $this.domElems.nickname.val(),
 	                city: $this.domElems.city.val(),
-	                birth: $this.domElems.birth.val()
+	                birth: $this.domElems.birth.val(),
+                    censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false //mozilla bug
                 }
                 $this.send(command);
                 $this.returnToChat();
