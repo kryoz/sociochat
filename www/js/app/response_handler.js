@@ -51,6 +51,7 @@ define(function() {
 
                         if (guest.banned) {
                             guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
+                            guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
                         } else if (guest.user_id != $this.ownId) {
                             guestHMTL += '<a class="btn btn-default invite" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
                             guestHMTL += '<a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>';
