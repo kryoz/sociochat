@@ -69,7 +69,11 @@ class UserNotesDAO extends DAOBase
 	{
 		$this[self::NOTE] = $note;
 
-		$this->notes[$this->getNotedUserId()] = $note;
+		if ($note) {
+			$this->notes[$this->getNotedUserId()] = $note;
+		} else {
+			unset($this->notes[$this->getNotedUserId()]);
+		}
 
 		return $this;
 	}
