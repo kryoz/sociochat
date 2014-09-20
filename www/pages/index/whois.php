@@ -8,6 +8,10 @@ if (!defined('ROOT')) {
 		<?=$lang->getPhrase('index.UserListTip')?>
 	</div>
 	<div class="panel-body">
+		<p><span class="glyphicon glyphicon-glass"></span> - Пригласить в приват</p>
+		<p><span class="glyphicon glyphicon-eye-close"></span> / <span class="glyphicon glyphicon-eye-open"></span>  - Игнор/убрать игнор</p>
+		<p><span class="glyphicon glyphicon-edit"></span> - Редактировать заметку</p>
+
 		<table class="table table-striped" id="guests">
 		</table>
 	</div>
