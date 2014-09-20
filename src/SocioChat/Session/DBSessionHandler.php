@@ -8,7 +8,6 @@ use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
-use Core\TSingleton;
 
 class DBSessionHandler implements SessionHandler
 {

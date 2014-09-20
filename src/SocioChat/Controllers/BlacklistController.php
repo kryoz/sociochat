@@ -6,6 +6,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 

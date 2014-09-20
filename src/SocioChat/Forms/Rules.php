@@ -5,7 +5,6 @@ namespace SocioChat\Forms;
 use Core\Form\Form;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\User;
-use SocioChat\Clients\UserCollection;
 use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;

@@ -6,6 +6,7 @@ namespace SocioChat\Controllers\Helpers;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
