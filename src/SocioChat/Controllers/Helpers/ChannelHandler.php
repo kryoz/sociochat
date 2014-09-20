@@ -9,6 +9,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\DAO\PropertiesDAO;
 use Core\Form\Form;
+use SocioChat\DI;
 use SocioChat\Forms\Rules;
 use Core\Form\WrongRuleNameException;
 use SocioChat\Message\MsgContainer;
