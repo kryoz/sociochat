@@ -3,7 +3,7 @@
 namespace SocioChat\Clients;
 
 use SocioChat\DAO\PropertiesDAO;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Log;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;

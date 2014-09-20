@@ -9,14 +9,13 @@ use Core\Cache\Cache;
 use SocioChat\Session\SessionHandler;
 use Zend\Config\Config;
 
-class DI
+abstract class DI
 {
-	use \Core\TSingleton;
-
+	use TSingleton;
 	/**
 	 * @var \Orno\Di\Container
 	 */
-	private $container;
+	protected $container;
 
 	public function __construct()
 	{

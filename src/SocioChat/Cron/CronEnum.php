@@ -2,7 +2,7 @@
 
 namespace SocioChat\Cron;
 
-use Core\DI;
+use SocioChat\DI;
 use Core\Enum\Enum;
 
 class CronEnum extends Enum

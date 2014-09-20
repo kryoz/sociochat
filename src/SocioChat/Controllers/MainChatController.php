@@ -3,16 +3,16 @@ namespace SocioChat\Controllers;
 
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Clients\ChannelsCollection;
-use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\MainChatDualsHandler;
 use SocioChat\Controllers\Helpers\MainChatPrivateHandler;
+use SocioChat\DI;
 
 class MainChatController extends ControllerBase
 {
 	public function handleRequest(ChainContainer $chain)
 	{
 		$user = $chain->getFrom();
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 		$channels = ChannelsCollection::get();
 
 		MainChatDualsHandler::run($user, $users);

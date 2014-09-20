@@ -37,7 +37,7 @@ class BlacklistController extends ControllerBase
 		$request = $chain->getRequest();
 		$user = $chain->getFrom();
 
-		if (!$banUser = UserCollection::get()->getClientById($request[PropertiesDAO::USER_ID])) {
+		if (!$banUser = DI::get()->getUsers()->getClientById($request[PropertiesDAO::USER_ID])) {
 			RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
 			return;
 		}
@@ -53,7 +53,7 @@ class BlacklistController extends ControllerBase
 		$request = $chain->getRequest();
 		$user = $chain->getFrom();
 
-		if (!$unbanUser = UserCollection::get()->getClientById($request['user_id'])) {
+		if (!$unbanUser = DI::get()->getUsers()->getClientById($request['user_id'])) {
 			RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
 			return;
 		}
@@ -70,7 +70,7 @@ class BlacklistController extends ControllerBase
 			->setMsg(MsgToken::create('UserBannedSuccessfully', $banUser->getProperties()->getName()))
 			->setTime(null)
 			->setChannelId($user->getChannelId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()));
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
 
 		(new UserCollection())
 			->attach($user)
@@ -94,7 +94,7 @@ class BlacklistController extends ControllerBase
 			->setMsg(MsgToken::create('UserIsUnbanned', $banUser->getProperties()->getName()))
 			->setTime(null)
 			->setChannelId($user->getChannelId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()));
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
 
 		(new UserCollection())
 			->attach($user)

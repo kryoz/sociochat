@@ -2,7 +2,7 @@
 
 namespace SocioChat\OnCloseFilters;
 
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
 use SocioChat\Clients\ChannelsCollection;
@@ -23,7 +23,7 @@ class DetachFilter implements ChainInterface
 		$logger = DI::get()->getLogger();
 
 		$detacher = function() use ($user, $logger) {
-			$clients = UserCollection::get();
+			$clients = DI::get()->getUsers();
 			$clients->detach($user);
 			$logger->info("OnClose: close connId = {$user->getConnectionId()} userId = {$user->getId()}\nTotal user count {$clients->getTotalCount()}", [__CLASS__]);
 

@@ -6,6 +6,7 @@ use Core\Form\Form;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 
@@ -30,7 +31,7 @@ class Rules extends \Core\Form\Rules
 	public static function isUserOnline()
 	{
 		return function ($userId) {
-			return UserCollection::get()->getClientById(trim($userId));
+			return DI::get()->getUsers()->getClientById(trim($userId));
 		};
 	}
 

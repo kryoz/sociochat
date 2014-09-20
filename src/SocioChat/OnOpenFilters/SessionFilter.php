@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\OnOpenFilters;
 
-use Core\DI;
+use SocioChat\DI;
 use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
@@ -25,7 +25,7 @@ class SessionFilter implements ChainInterface
 
 		$logger = $container->get('logger');
 		/* @var $logger Logger */
-		$clients = UserCollection::get();
+		$clients = DI::get()->getUsers();
 		$socketRequest = $newUserWrapper->getWSRequest();
 		/* @var $socketRequest \Guzzle\Http\Message\Request */
 

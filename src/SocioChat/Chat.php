@@ -1,7 +1,6 @@
 <?php
 namespace SocioChat;
 
-use Core\DI;
 use Core\TSingleton;
 use Guzzle\Http\Message\RequestInterface;
 use SocioChat\Chain\ChainContainer;
@@ -14,20 +13,12 @@ use SocioChat\OnMessageFilters\FloodFilter;
 use SocioChat\OnMessageFilters\SessionFilter;
 use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\ErrorResponse;
-use SocioChat\Session\DBSessionHandler;
-use SocioChat\Session\MemorySessionHandler;
-use SocioChat\Session\SessionHandler;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
 class Chat implements MessageComponentInterface
 {
 	use TSingleton;
-
-	/**
-	 * @var SessionHandler
-	 */
-	private static $sessionEngine;
 
 	public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
 	{
@@ -55,7 +46,7 @@ class Chat implements MessageComponentInterface
 			return;
 		}
 
-		if (!$user = UserCollection::get()->getClientByConnectionId($from->resourceId)) {
+		if (!$user = DI::get()->getUsers()->getClientByConnectionId($from->resourceId)) {
 			DI::get()->getLogger()->error("Got request from unopened or closed connectionId = {$from->resourceId}", [__FUNCTION__]);
 			return;
 		}

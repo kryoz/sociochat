@@ -7,7 +7,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\UserDAO;
-use Core\DI;
+use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use Core\Form\WrongRuleNameException;
@@ -72,7 +72,7 @@ class LoginController extends ControllerBase
 		$oldUserId = $user->getId();
 		$oldChannelId = $user->getChannelId();
 
-		$clients = UserCollection::get();
+		$clients = DI::get()->getUsers();
 
 		if ($oldUserId == $userDAO->getId()) {
 			RespondError::make($user, ['email' => $lang->getPhrase('AlreadyAuthorized')]);

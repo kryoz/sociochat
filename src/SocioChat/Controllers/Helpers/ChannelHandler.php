@@ -19,7 +19,7 @@ class ChannelHandler
 {
 	public static function joinPrivate(ChainContainer $chain)
 	{
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 		$user = $chain->getFrom();
 		$lang = $user->getLang();
 
@@ -57,7 +57,7 @@ class ChannelHandler
 
 	public static function joinPublic(ChainContainer $chain)
 	{
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 		$user = $chain->getFrom();
 		$lang = $user->getLang();
 		$request = $chain->getRequest();
@@ -197,7 +197,7 @@ class ChannelHandler
 		$response = (new MessageResponse())
 			->setMsg($msg)
 			->setTime(null)
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId())) // список для нового чата
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId())) // список для нового чата
 			->setChannelId($user->getChannelId());
 
 

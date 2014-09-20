@@ -2,7 +2,7 @@
 
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;

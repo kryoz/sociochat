@@ -6,7 +6,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\UserDAO;
-use Core\DI;
+use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Message\Msg;
@@ -20,7 +20,7 @@ class MessageController extends ControllerBase
 
 	public function handleRequest(ChainContainer $chain)
 	{
-		$clients = UserCollection::get();
+		$clients = DI::get()->getUsers();
 		$from = $chain->getFrom();
 		$request = $chain->getRequest();
 		$recipient = $this->searchUser($from, $request['to']);

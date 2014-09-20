@@ -1,17 +1,15 @@
 {
     "autoload": {
         "psr-4": {
-            "": "src/"
-        },
-        "psr-0": {
+            "": "src/",
             "Test\\" : "unit-tests/"
         }
     },
     "require": {
-        "cboden/Ratchet": "0.3.*@stable",
-        "zendframework/zend-config": "2.2.*@stable",
-        "monolog/monolog": "1.8.*@stable",
-        "orno/di": "2.0.*@stable",
+        "cboden/Ratchet": "*@stable",
+        "zendframework/zend-config": "*@stable",
+        "monolog/monolog": "*@stable",
+        "orno/di": "*@stable",
         "robmorgan/phinx": "*@stable"
     },
     "require-dev": {

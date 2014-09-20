@@ -1,5 +1,5 @@
 <?php
-use Core\Form\Form;
+
 use Monolog\Logger;
 use SocioChat\Chat;
 use Ratchet\Http\HttpServer;
@@ -8,21 +8,12 @@ use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
 use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
-use Core\DI;
-use SocioChat\Clients\User;
+use SocioChat\DI;
 use SocioChat\DIBuilder;
 use SocioChat\Message\MsgContainer;
 use Zend\Config\Config;
 
-set_error_handler(
-	function ($errno, $errstr, $errfile, $errline) {
-		$func = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
-		$line = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['line'];
-		echo "ERROR (calling {$func}() on l.$line) : $errstr</p>";
-		return true;
-	}
-);
-
+$setupErrorHandler = 1;
 require_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);

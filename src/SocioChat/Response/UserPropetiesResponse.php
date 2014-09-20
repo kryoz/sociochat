@@ -3,7 +3,7 @@
 namespace SocioChat\Response;
 
 use SocioChat\Clients\User;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 

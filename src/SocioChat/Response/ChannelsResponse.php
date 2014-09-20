@@ -3,7 +3,7 @@
 namespace SocioChat\Response;
 
 use SocioChat\Clients\ChannelsCollection;
-use SocioChat\Clients\UserCollection;
+use SocioChat\DI;
 
 class ChannelsResponse extends Response
 {
@@ -12,7 +12,7 @@ class ChannelsResponse extends Response
 
 	public function setChannels(ChannelsCollection $channels)
 	{
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 
 		foreach ($channels->getChannels() as $channel) {
 			if (!$channel->isPrivate()) {

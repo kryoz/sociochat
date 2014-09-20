@@ -4,13 +4,13 @@ namespace SocioChat\OnCloseFilters;
 
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
-use SocioChat\Clients\UserCollection;
+use SocioChat\DI;
 
 class UserFetchFilter implements ChainInterface
 {
 	public function handleRequest(ChainContainer $chain)
 	{
-		$clients = UserCollection::get();
+		$clients = DI::get()->getUsers();
 		$conn = $chain->getFrom()->getConnectionId();
 
 		if (!$user = $clients->getClientByConnectionId($conn)) {

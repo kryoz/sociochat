@@ -47,7 +47,7 @@ class MainChatDualsHandler
 		foreach ($userIds as $userId) {
 			$user = $users->getClientById($userId);
 			$response = (new MessageResponse())
-				->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()))
+				->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()))
 				->setChannelId($user->getChannelId());
 
 			$notification

@@ -3,7 +3,7 @@
 namespace SocioChat\Clients;
 
 use React\EventLoop\LoopInterface;
-use Core\DI;
+use SocioChat\DI;
 use Core\TSingleton;
 
 class PendingPrivates

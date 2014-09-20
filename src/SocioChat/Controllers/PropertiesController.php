@@ -9,7 +9,7 @@ use SocioChat\Controllers\Helpers\ChannelNotifier;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\PropertiesDAO;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Core\Form\Form;
@@ -75,11 +75,11 @@ class PropertiesController extends ControllerBase
 		$this->propertiesResponse($chain->getFrom());
 
 		$response = (new MessageResponse())
-			->setGuests(UserCollection::get()->getUsersByChatId($chatId))
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($chatId))
 			->setChannelId($chatId)
 			->setTime(null);
 
-		UserCollection::get()
+		DI::get()->getUsers()
 			->setResponse($response)
 			->notify();
 	}
@@ -162,7 +162,7 @@ class PropertiesController extends ControllerBase
 	private function guestsUpdateResponse(User $user, $oldName)
 	{
 		$response = (new MessageResponse())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()))
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()))
 			->setChannelId($user->getChannelId())
 			->setTime(null);
 
@@ -172,7 +172,7 @@ class PropertiesController extends ControllerBase
 			$response->setMsg(MsgToken::create('UserChangedName', $oldName, $props->getName()));
 		}
 
-		UserCollection::get()
+		DI::get()->getUsers()
 			->setResponse($response)
 			->notify();
 	}

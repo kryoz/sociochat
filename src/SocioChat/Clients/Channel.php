@@ -2,7 +2,7 @@
 
 namespace SocioChat\Clients;
 
-use Core\DI;
+use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Response\MessageResponse;

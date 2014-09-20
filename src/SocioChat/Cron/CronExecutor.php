@@ -3,7 +3,7 @@
 namespace SocioChat\Cron;
 
 
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Locker\AlreadyLockedException;
 use SocioChat\Locker\LockerInDB;
 use Core\Utils\CMDUtils;

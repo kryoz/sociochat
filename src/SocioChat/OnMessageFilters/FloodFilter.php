@@ -2,7 +2,7 @@
 
 namespace SocioChat\OnMessageFilters;
 
-use Core\DI;
+use SocioChat\DI;
 use Core\TSingleton;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;

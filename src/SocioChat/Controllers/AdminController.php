@@ -44,7 +44,7 @@ class AdminController extends ControllerBase
 	{
 		$request = $chain->getRequest();
 		$assHoleId = $request['userId'];
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 
 		if (!$assHole = $users->getClientById($assHoleId)) {
 			RespondError::make($chain->getFrom(), ['userId' => "userId = $assHoleId not found"]);
@@ -67,7 +67,7 @@ class AdminController extends ControllerBase
 	{
 		$request = $chain->getRequest();
 		$userId = $request['userId'];
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 
 		if (!$user = $users->getClientById($userId)) {
 			RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);

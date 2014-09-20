@@ -39,7 +39,7 @@ class ChannelsCollection
 	public function clean(User $user)
 	{
 		$channelId = $user->getChannelId();
-		if (UserCollection::get()->getClientsCount($channelId) == 0 && isset($this->channels[$channelId]) && $this->channels[$channelId]->isPrivate()) {
+		if (DI::get()->getUsers()->getClientsCount($channelId) == 0 && isset($this->channels[$channelId]) && $this->channels[$channelId]->isPrivate()) {
 			unset($this->channels[$channelId]);
 		}
 	}

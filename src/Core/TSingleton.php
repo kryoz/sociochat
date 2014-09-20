@@ -4,15 +4,15 @@ namespace Core;
 
 trait TSingleton
 {
-	private static $instance;
+	protected static $instance;
 
 	/**
 	 * @return $this
 	 */
 	final static function get()
 	{
-		if (empty(self::$instance)) {
-			self::$instance = new static;
+		if (empty(static::$instance)) {
+			static::$instance = new static;
 		}
 
 		return static::$instance;

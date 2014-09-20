@@ -6,8 +6,9 @@ use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionClass;
 use SocioChat\Clients\User;
 use SocioChat\DAO\PropertiesDAO;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\DIBuilder;
+use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 
 class TestSuite extends \PHPUnit_Framework_TestCase
@@ -19,28 +20,33 @@ class TestSuite extends \PHPUnit_Framework_TestCase
 		parent::setUpBeforeClass();
 		$container = DI::get()->container();
 		DIBuilder::setupConfig($container);
+		DIBuilder::setupUsers($container);
 		$container->add('db', null);
 	}
 
 
 	/**
 	 * @param int $timId
+	 * @param int $sexId
 	 * @return User|PHPUnit_Framework_MockObject_MockObject
 	 */
-	protected function getMockUser($timId = TimEnum::ILE)
+	protected function getMockUser($timId = TimEnum::ILE, $sexId = SexEnum::MALE)
 	{
 		$user = $this->getMock(User::class, ['getId', 'getChannelId', 'getProperties'], [], '', false);
 		$user->expects($this->any())->method('getId')->willReturn($this->userSeq);
-		$user->expects($this->any())->method('getProperties')->willReturn($this->getMockProperties($timId));
+		$user->expects($this->any())->method('getProperties')->willReturn($this->getMockProperties($timId, $sexId));
 		$this->userSeq++;
+
+		DI::get()->getUsers()->attach($user);
 
 		return $user;
 	}
 
-	protected function getMockProperties($timId = TimEnum::ILE)
+	protected function getMockProperties($timId = TimEnum::ILE, $sexId = SexEnum::MALE)
 	{
-		$properties = $this->getMock(PropertiesDAO::class, ['getTim'], [], '', false);
+		$properties = $this->getMock(PropertiesDAO::class, ['getTim', 'getSex'], [], '', false);
 		$properties->expects($this->any())->method('getTim')->willReturn(TimEnum::create($timId));
+		$properties->expects($this->any())->method('getSex')->willReturn(SexEnum::create($sexId));
 		return $properties;
 	}
 

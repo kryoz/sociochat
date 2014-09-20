@@ -1,5 +1,5 @@
 <?php
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\DIBuilder;
 use SocioChat\Message\Lang;
 use Zend\Config\Config;

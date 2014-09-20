@@ -1,6 +1,6 @@
 <?php
 
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\DIBuilder;
 
 require_once '../config.php';

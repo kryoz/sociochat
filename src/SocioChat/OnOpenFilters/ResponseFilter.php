@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\OnOpenFilters;
 
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Chain\ChainContainer;
 use SocioChat\Chain\ChainInterface;
 use SocioChat\Clients\PendingDuals;
@@ -18,7 +18,7 @@ class ResponseFilter implements ChainInterface
 {
 	public function handleRequest(ChainContainer $chain)
 	{
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 		$user = $chain->getFrom();
 
 		$this->sendNickname($user);

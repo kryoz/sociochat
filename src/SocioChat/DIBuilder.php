@@ -9,6 +9,7 @@ use React\EventLoop\Factory as Loop;
 use Core\Cache\Cache;
 use Core\Cache\CacheApc;
 use Core\Cache\CacheException;
+use SocioChat\Clients\UserCollection;
 use SocioChat\Message\Dictionary;
 use SocioChat\Message\Lang;
 use Zend\Config\Config;
@@ -27,6 +28,7 @@ class DIBuilder
 		self::setupLang($container);
 		self::setupCache($container);
 		self::setupSession($container);
+		self::setupUsers($container);
 	}
 
 	public static function setupConfig(Container $container)
@@ -136,6 +138,20 @@ class DIBuilder
 			'session',
 			function () use ($container) {
 				return new Session\DBSessionHandler();
+			},
+			true
+		);
+	}
+
+	/**
+	 * @param Container $container
+	 */
+	public static function setupUsers($container)
+	{
+		$container->add(
+			'users',
+			function () use ($container) {
+				return new UserCollection();
 			},
 			true
 		);

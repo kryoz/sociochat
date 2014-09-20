@@ -18,7 +18,7 @@ class DualChatHandler
 	public static function run(ChainContainer $chain)
 	{
 		$duals = PendingDuals::get();
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 		$user = $chain->getFrom();
 		$lang = $user->getLang();
 
@@ -61,7 +61,7 @@ class DualChatHandler
 
 	private static function renewGuestsList($oldChatId, MsgContainer $msg)
 	{
-		$allUsers = UserCollection::get();
+		$allUsers = DI::get()->getUsers();
 		$newCommonList = $allUsers->getUsersByChatId($oldChatId);
 		$response = (new MessageResponse())
 			->setTime(null)
@@ -76,7 +76,7 @@ class DualChatHandler
 
 	private static function dualGuestsList(User $user)
 	{
-		$dualUsers = UserCollection::get()->getUsersByChatId($user->getChannelId());
+		$dualUsers = DI::get()->getUsers()->getUsersByChatId($user->getChannelId());
         $dual = TimEnum::create(PendingDuals::get()->getDualTim($user->getProperties()->getTim()));
 
 		foreach ($dualUsers as $n => $partner) {
@@ -115,7 +115,7 @@ class DualChatHandler
 		}
 
 		$notification = new UserCollection();
-		$users = UserCollection::get();
+		$users = DI::get()->getUsers();
 
 		foreach ($userIds as $userId) {
 			$user = $users->getClientById($userId);
@@ -162,7 +162,7 @@ class DualChatHandler
 			->setDualChat('match')
 			->setMsg($msg)
 			->setChannelId($user->getChannelId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChannelId()));
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
 
 		$notification
 			->setResponse($response)

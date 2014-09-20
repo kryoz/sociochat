@@ -3,6 +3,7 @@
 namespace Test\SocioChat\Clients;
 
 use SocioChat\Clients\PendingDuals;
+use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Test\SocioChat\Helpers\TestSuite;
 
@@ -43,9 +44,9 @@ class PendingDualsTest extends TestSuite
 
 	public function testMatch()
 	{
-		$user1 = $this->getMockUser(TimEnum::ILE);
+		$user1 = $this->getMockUser(TimEnum::ILE, SexEnum::MALE);
 		$user1->expects($this->any())->method('getChannelId')->willReturn(1);
-		$user2 = $this->getMockUser(TimEnum::SEI);
+		$user2 = $this->getMockUser(TimEnum::SEI, SexEnum::FEMALE);
 		$user2->expects($this->any())->method('getChannelId')->willReturn(1);
 
 		$this->duals->matchDual($user1);

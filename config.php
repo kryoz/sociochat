@@ -3,6 +3,17 @@
 $DS = DIRECTORY_SEPARATOR;
 define('ROOT', __DIR__);
 
+if (isset($setupErrorHandler)) {
+	set_error_handler(
+		function ($errno, $errstr, $errfile, $errline) {
+			$func = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
+			$line = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['line'];
+			echo "ERROR calling {$func}() on line $line) : $errstr";
+			return true;
+		}
+	);
+}
+
 function basicSetup()
 {
 	error_reporting(E_ALL | E_STRICT);
@@ -19,7 +30,6 @@ function basicSetup()
 
 if (!isset($loader)) {
 	$loader = require_once ROOT.$DS.'vendor'.$DS.'autoload.php';
-	$loader->register();
 }
 
 basicSetup();

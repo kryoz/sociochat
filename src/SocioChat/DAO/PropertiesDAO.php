@@ -3,7 +3,7 @@
 namespace SocioChat\DAO;
 
 use Core\DAO\DAOBase;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Core\Utils\DbQueryHelper;

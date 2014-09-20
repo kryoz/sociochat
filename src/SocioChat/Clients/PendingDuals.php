@@ -3,6 +3,7 @@
 namespace SocioChat\Clients;
 
 use Core\Utils\WrongArgumentException;
+use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Core\TSingleton;
@@ -58,7 +59,7 @@ class PendingDuals
 		$queue = array_flip($queue);
 		$userId = $queue[1];
 
-		$this->deleteByUser(UserCollection::get()->getClientById($userId));
+		$this->deleteByUser(DI::get()->getUsers()->getClientById($userId));
 
 		return $userId;
 	}
