@@ -15,7 +15,7 @@ define(function() {
             }
 
             var handleGuests = function(json) {
-                if (json.guests) {
+                if (json.guests && $this.guestEditState == 0) {
                     $this.guests = json.guests;
                     var guests = $this.guests;
                     var d = new Date();
@@ -47,18 +47,25 @@ define(function() {
 	                    guestHMTL += '<td>'+guest.tim+'</td>';
 	                    guestHMTL += '<td>'+(guest.city ? guest.city : '') +'</td>';
 	                    guestHMTL += '<td>'+(guest.birth == (d.getFullYear() - 1930) ? '' : guest.birth)+'</td>';
-                        guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb">';
-
-                        //guestHMTL += '<a class="btn btn-default unban">Заметка</a>';
+                        guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb" data-id="'+guest.user_id+'">';
 
                         if (guest.banned) {
-                            guestHMTL += '<a class="btn btn-default unban">Разбан</a>';
-                        } else {
-                            guestHMTL += '<a class="btn btn-default invite">Приват</a>';
-                            guestHMTL += '<a class="btn btn-default ban">Бан</a>';
+                            guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
+                        } else if (guest.user_id != $this.ownId) {
+                            guestHMTL += '<a class="btn btn-default invite" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
+                            guestHMTL += '<a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>';
+                            guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
                         }
 
                         guestHMTL +='</div></td></tr>';
+
+                        if (guest.note) {
+                            guestHMTL += '<tr id="user-note-'+guest.user_id+'" class="'+colorClass+'"><td colspan="5" class="no-border-top">';
+                            guestHMTL += '<div class="col-md-12">';
+                            guestHMTL += guest.note;
+                            guestHMTL += '</div>';
+                            guestHMTL += '</td></tr>';
+                        }
                     }
 
                     $this.domElems.guestList.append(guestHMTL);
@@ -67,32 +74,79 @@ define(function() {
                     $this.domElems.address.find('option[value='+$this.domElems.address.data('id')+']').attr('selected', 'selected');
 
                     $this.domElems.guestList.find('.ban').click(function() {
-                        var userName = $(this).parentsUntil('#guests tbody').find('.user-name').text();
+                        var userId = $(this).parent().data('id');
 
                         var command = {
                             subject: 'Blacklist',
                             action: 'ban',
-                            user_id: $this.getUserInfo(userName).user_id
+                            user_id: userId
                         }
                         $this.send(command);
                         $this.returnToChat();
                     });
 
                     $this.domElems.guestList.find('.unban').click(function() {
-                        var userName = $(this).parentsUntil('#guests tbody').find('.user-name').text();
+                        var userId = $(this).parent().data('id');
 
                         var command = {
                             subject: 'Blacklist',
                             action: 'unban',
-                            user_id: $this.getUserInfo(userName).user_id
+                            user_id: userId
                         }
                         $this.send(command);
                         $this.returnToChat();
                     });
 
+                    $this.domElems.guestList.find('.note').click(function() {
+                        var userId = $(this).parent().data('id');
+                        var dupItem = $('#user-edit-'+userId);
+                        var textNote = $('#user-note-'+userId);
+
+                        if (dupItem.length) {
+                            dupItem.remove();
+                            textNote.show();
+                            $this.guestEditState = 0;
+                            return false;
+                        }
+
+                        $this.guestEditState = 1;
+
+                        var thisRow = $(this).closest('tr');
+                        var editHtml = '<tr id="user-edit-'+userId+'" class="'+thisRow.attr('class')+' no-border-top"><td colspan="5">';
+
+                        editHtml += '<div class="col-md-12">';
+                        editHtml += '<div class="input-group">';
+                        editHtml += '<input type="text" class="form-control">';
+                        editHtml += '<span class="input-group-btn">';
+                        editHtml += '<button class="btn btn-default" type="button">';
+                        editHtml += '<span class="glyphicon glyphicon-pencil"></span></button>';
+                        editHtml += '</span>';
+                        editHtml += '</div></div></div>';
+                        editHtml += '</td></tr>';
+
+                        var noteForm = $(editHtml);
+                        noteForm.insertAfter(thisRow);
+
+                        if (textNote.length) {
+                            noteForm.find('input').val(textNote.find('div').text());
+                            textNote.hide();
+                        }
+
+                        noteForm.find('button').click(function() {
+                            $this.guestEditState = 0;
+                            var command = {
+                                subject: 'Note',
+                                action: 'save',
+                                user_id: userId,
+                                note: noteForm.find('input').val()
+                            }
+                            $this.send(command);
+                            //expect to receive updated guest list and redraw whole markup
+                        })
+                    });
+
                     $this.domElems.guestList.find('.invite').click(function() {
-                        var userName = $(this).parentsUntil('#guests tbody').find('.user-name').text();
-                        $this.togglePrivate($this.getUserInfo(userName).user_id);
+                        $this.togglePrivate($(this).parent().data('id'));
                     });
 
                     $this.guestCount = guests.length;
@@ -101,48 +155,58 @@ define(function() {
             }
 
             var handleOwnProperties = function() {
-                if (json.name) {
-                    $this.domElems.nickname.val(json.name);
-                    $this.ownName = json.name;
+                if (!json.ownProperties) {
+                    return;
                 }
 
-                if (json.sex) {
-                    $this.domElems.sex.val(json.sex);
-                    $this.ownSex = json.sex == 2;
+                var props = json.ownProperties;
+
+                if (props.id) {
+                    $this.ownId = props.id;
                 }
 
-                if (json.tim) {
-                    $this.domElems.tim.val(json.tim);
+                if (props.name) {
+                    $this.domElems.nickname.val(props.name);
+                    $this.ownName = props.name;
                 }
 
-                if (json.email) {
-                    $this.domElems.email.val(json.email);
+                if (props.sex) {
+                    $this.domElems.sex.val(props.sex);
+                    $this.ownSex = props.sex == 2;
                 }
 
-                if (json.avatarImg) {
+                if (props.tim) {
+                    $this.domElems.tim.val(props.tim);
+                }
+
+                if (props.email) {
+                    $this.domElems.email.val(props.email);
+                }
+
+                if (props.avatarImg) {
                     var image = document.createElement('img');
-                    image.src = json.avatarImg;
+                    image.src = props.avatarImg;
                     image.style.maxWidth = 'inherit';
                     image.style.maxHeight = 'inherit';
                     $this.domElems.avatar.find('div.avatar-placeholder').html(image);
                 }
 
-                if (json.avatarThumb) {
+                if (props.avatarThumb) {
                     var thumb = document.createElement('img');
-                    thumb.src = json.avatarThumb;
+                    thumb.src = props.avatarThumb;
                     $this.domElems.avatar.find('div.avatar-placeholder-mini').html(thumb);
                 }
 
-	            if (json.birth) {
-		            $this.domElems.birth.val(json.birth);
+	            if (props.birth) {
+		            $this.domElems.birth.val(props.birth);
 	            }
 
-	            if (json.city) {
-		            $this.domElems.city.val(json.city);
+	            if (props.city) {
+		            $this.domElems.city.val(props.city);
 	            }
 
-                if (json.censor) {
-                    $this.domElems.censor.prop('checked', json.censor);
+                if (props.censor) {
+                    $this.domElems.censor.prop('checked', props.censor);
                 }
             }
 

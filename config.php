@@ -7,7 +7,7 @@ if (isset($setupErrorHandler)) {
 	set_error_handler(
 		function ($errno, $errstr, $errfile, $errline) {
 			$debugInfo = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-			echo "ERROR fired!\n";
+			echo "ERROR fired! $errstr\n";
 			print_r($debugInfo);
 			return true;
 		}

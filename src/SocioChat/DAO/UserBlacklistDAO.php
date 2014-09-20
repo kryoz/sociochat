@@ -31,8 +31,8 @@ class UserBlacklistDAO extends DAOBase
 
 	public function getByUserId($userId)
 	{
-		$list = $this->db->query("SELECT ignored_user_id FROM {$this->dbTable} WHERE user_id = :0", [$userId]);
-		$this->blacklist = array_flip(array_column($list, 'ignored_user_id'));
+		$list = $this->db->query("SELECT ".self::IGNORED_ID." FROM {$this->dbTable} WHERE ".self::USER_ID." = :0", [$userId]);
+		$this->blacklist = array_flip(array_column($list, self::IGNORED_ID));
 
 		$this[self::USER_ID] = $userId;
 
@@ -64,7 +64,7 @@ class UserBlacklistDAO extends DAOBase
 
 	public function dropByUserId($id)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = :0 OR ignored_user_id = :1", [$id, $id]);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :0 OR ".self::IGNORED_ID." = :1", [$id, $id]);
 	}
 
 	public function dropByUserIdList(array $userIds)

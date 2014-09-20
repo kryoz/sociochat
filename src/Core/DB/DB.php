@@ -138,7 +138,7 @@ class DB
 
 	/**
 	 * Get DB PDO object
-	 * @return mixed
+	 * @return PDO
 	 */
 	public function o()
 	{

@@ -21,10 +21,12 @@ define('app', function () {
         isManualScrolling: false,
         chatName: 'SocioChat',
         connState: 0,
+        guestEditState: 0,
         disconnect: 0,
         lastMsgId: -1,
         delay: 1000*60,
 
+        ownId: null,
         ownSex: 0,
         ownName: null,
         chatLastFrom: null,
@@ -233,7 +235,12 @@ define('app', function () {
         },
         send: function (params) {
             if (!this.connection || this.connection.readyState == 1) {
-                this.connection.send(JSON.stringify(params));
+                try {
+                    this.connection.send(JSON.stringify(params));
+                } catch (e) {
+                    console.log(e);
+                }
+
             }
         },
         returnToChat : function () {

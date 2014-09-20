@@ -151,7 +151,7 @@ class ChannelHandler
 		}
 
 		if ($desiredUser->getId() == $user->getId()) {
-			RespondError::make($user, [PropertiesDAO::USER_ID => $lang->getPhrase('YouCantInviteYourself')]);
+			RespondError::make($user, [PropertiesDAO::USER_ID => $lang->getPhrase('CantDoToYourself')]);
 			return;
 		}
 

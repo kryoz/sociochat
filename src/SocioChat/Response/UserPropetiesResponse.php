@@ -9,6 +9,7 @@ use SocioChat\Enum\TimEnum;
 
 class UserPropetiesResponse extends Response
 {
+	protected $id;
 	protected $name = 'buddy';
 	protected $email;
 	protected $tim = TimEnum::FIRST;
@@ -108,6 +109,7 @@ class UserPropetiesResponse extends Response
 		$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder.DIRECTORY_SEPARATOR;
 
 		$this
+			->setId($user->getId())
 			->setEmail($user->getUserDAO()->getEmail())
 			->setSex($properties->getSex()->getId())
 			->setTim($properties->getTim()->getId())
@@ -119,6 +121,31 @@ class UserPropetiesResponse extends Response
 			->setCity($properties->getCity())
             ->setCensor($properties->hasCensor());
 
+		return $this;
+	}
+
+	public function toString()
+	{
+		$json = parent::toString();
+
+		return '{"ownProperties" : '.$json.'}';
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * @param int $id
+	 * @return $this
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
 		return $this;
 	}
 } 

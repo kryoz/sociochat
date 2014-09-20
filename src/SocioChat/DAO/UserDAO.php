@@ -16,6 +16,7 @@ class UserDAO extends DAOBase
 
 	const PROPERTIES = 'properties';
 	const BLACKLIST = 'blacklist';
+	const NOTES = 'notes';
 
 	public function __construct()
 	{
@@ -34,6 +35,7 @@ class UserDAO extends DAOBase
 
 		$this->addRelativeProperty(self::PROPERTIES);
 		$this->addRelativeProperty(self::BLACKLIST);
+		$this->addRelativeProperty(self::NOTES);
 	}
 
 	public function getEmail()
@@ -109,7 +111,7 @@ class UserDAO extends DAOBase
 
 	public function getUnregisteredUserIds()
 	{
-		return $this->db->query("SELECT id FROM {$this->dbTable} WHERE email IS NULL", [], \PDO::FETCH_COLUMN);
+		return $this->db->query("SELECT id FROM {$this->dbTable} WHERE ".self::EMAIL." IS NULL", [], \PDO::FETCH_COLUMN);
 	}
 
 	/**
@@ -138,6 +140,15 @@ class UserDAO extends DAOBase
 		return $this[self::BLACKLIST];
 	}
 
+	public function getUserNotes()
+	{
+		if (!$this[self::NOTES] && $this->getId()) {
+			$this[self::NOTES] = UserNotesDAO::create()->getByUserId($this->getId());
+		}
+
+		return $this[self::NOTES];
+	}
+
 	public function dropByUserIdList(array $userIds)
 	{
 		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
@@ -146,7 +157,7 @@ class UserDAO extends DAOBase
 
 	protected function getForeignProperties()
 	{
-		return [self::PROPERTIES, self::BLACKLIST];
+		return [self::PROPERTIES, self::BLACKLIST, self::NOTES];
 	}
 }
 

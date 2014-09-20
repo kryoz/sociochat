@@ -52,7 +52,7 @@ class UserCollection
 				$saveGuests = $response->getGuests();
 
 				if (!$response->getFrom() || ($response->getFrom() && !$user->getBlacklist()->isBanned($response->getFrom()->getId()))) {
-					$this->banInfo($response, $user);
+					$this->traitGuestInfo($response, $user);
 					$user->update($response);
 				}
 
@@ -169,15 +169,19 @@ class UserCollection
 		return count($this->users);
 	}
 
-	private function banInfo(Response $response, User $user)
+	private function traitGuestInfo(Response $response, User $user)
 	{
-		if ($newGuests = $response->getGuests()) {
-			foreach ($newGuests as &$guest) {
+		if ($guests = $response->getGuests()) {
+			foreach ($guests as &$guest) {
 				if ($user->getBlacklist()->isBanned($guest[PropertiesDAO::USER_ID])) {
 					$guest += ['banned' => $user->getId()];
 				}
+
+				if ($note = $user->getUserNotes()->getNote($guest[PropertiesDAO::USER_ID])) {
+					$guest += ['note' => $note];
+				}
 			}
-			$response->setGuestsRaw($newGuests);
+			$response->setGuestsRaw($guests);
 		}
 	}
 }

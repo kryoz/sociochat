@@ -48,7 +48,7 @@ class PropertiesDAO extends DAOBase
 	public function getByUserName($name)
 	{
 		$query = "SELECT * FROM {$this->dbTable} WHERE ".self::NAME." LIKE :name";
-		if ($data = $this->db->query($query, ['name' => $name])) {
+		if ($data = $this->db->query($query, [self::NAME => $name])) {
 			$this->fillParams($data[0]);
 		}
 
@@ -174,7 +174,7 @@ class PropertiesDAO extends DAOBase
 	public function dropByUserIdList(array $userIds)
 	{
 		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id IN ($usersList)", $userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." IN ($usersList)", $userIds);
 	}
 
 	public function toPublicArray()

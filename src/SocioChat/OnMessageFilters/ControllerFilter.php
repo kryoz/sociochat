@@ -11,6 +11,7 @@ use SocioChat\Controllers\ChannelController;
 use SocioChat\Controllers\LoginController;
 use SocioChat\Controllers\MainChatController;
 use SocioChat\Controllers\MessageController;
+use SocioChat\Controllers\NoteController;
 use SocioChat\Controllers\PingController;
 use SocioChat\Controllers\PropertiesController;
 
@@ -24,6 +25,7 @@ class ControllerFilter implements ChainInterface
 		'Ping' => PingController::class,
 		'Login' => LoginController::class,
 		'Blacklist' => BlacklistController::class,
+		'Note' => NoteController::class,
 		'Admin' => AdminController::class,
 	];
 

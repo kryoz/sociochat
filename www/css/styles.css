@@ -89,6 +89,9 @@ doesnotexist:-o-prefocus, #panel-chat {
     display: inline;
     vertical-align:middle;
 }
+#guests .no-border-top {
+    border-top: none;
+}
 #log .user-avatar .glyphicon {
     color: #ddd;
 }

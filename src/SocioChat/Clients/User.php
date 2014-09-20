@@ -7,6 +7,7 @@ use React\EventLoop\Timer\TimerInterface;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DAO\UserNotesDAO;
 use SocioChat\DI;
 use SocioChat\Enum\UserRoleEnum;
 use SocioChat\Message\Lang;
@@ -131,6 +132,14 @@ class User implements ConnectionInterface
 	public function getBlacklist()
 	{
 		return $this->userDAO->getBlacklist();
+	}
+
+	/**
+	 * @return UserNotesDAO
+	 */
+	public function getUserNotes()
+	{
+		return $this->userDAO->getUserNotes();
 	}
 
 	/**
