@@ -121,7 +121,7 @@ $dumperCallback = function () use ($config) {
     </url>
 </urlset>
 EOD;
-    fputs($fh, $line);
+    fputs($fh, $xml);
     fclose($fh);
 };
 

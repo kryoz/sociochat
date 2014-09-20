@@ -6,9 +6,9 @@ define('ROOT', __DIR__);
 if (isset($setupErrorHandler)) {
 	set_error_handler(
 		function ($errno, $errstr, $errfile, $errline) {
-			$func = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
-			$line = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['line'];
-			echo "ERROR calling {$func}() on line $line) : $errstr";
+			$debugInfo = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+			echo "ERROR fired!\n";
+			print_r($debugInfo);
 			return true;
 		}
 	);

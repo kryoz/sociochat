@@ -2,6 +2,7 @@
 
 namespace SocioChat\Clients;
 
+use SocioChat\DI;
 use SocioChat\Response\MessageResponse;
 use Core\TSingleton;
 

@@ -4,14 +4,11 @@ namespace SocioChat\Clients;
 
 use SocioChat\DI;
 use Core\Form\Form;
-use SocioChat\Forms\Rules;
 use SocioChat\Response\MessageResponse;
 
 class Channel
 {
 	const BUFFER_LENGTH = 100;
-
-	private $id;
 	const TO_NAME = 'toName';
 	const FROM_NAME = 'fromName';
 	const TIM = 'tim';
@@ -23,6 +20,7 @@ class Channel
 	const USER_INFO = 'userInfo';
 	const FROM_USER_ID = 'fromUserId';
 
+	private $id;
 	protected $history = [];
 	protected $lastMsgId = 1;
 
@@ -166,7 +164,7 @@ class Channel
 	{
 		$response->setGuests(null);
 
-		if (!$response->getFilteredMsg() || !$response->getMsg()) {
+		if (!$response->getFilteredMsg() && !$response->getMsg()) {
 			return false;
 		}
 	}
@@ -181,7 +179,7 @@ class Channel
 			self::FROM_USER_ID => null,
 			self::FROM_NAME    => $response->getFromName(),
 			self::TIME         => $response->getTime(),
-			self::MSG          => $response->getFilteredMsg(),
+			self::MSG          => $response->getFilteredMsg() ?: $response->getMsg(),
 		];
 
 		if ($from = $response->getFrom()) {
