@@ -13,6 +13,7 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Enum\UserRoleEnum;
+use SocioChat\Forms\Rules;
 use SocioChat\Message\Lang;
 
 class SessionFilter implements ChainInterface
@@ -89,6 +90,7 @@ class SessionFilter implements ChainInterface
 				->setName($guestName)
 				->setSex(SexEnum::create(SexEnum::ANONYM))
 				->setTim(TimEnum::create(TimEnum::ANY))
+                ->setBirthday(Rules::LOWEST_YEAR)
 				->setOptions([PropertiesDAO::CENSOR => true]);
 
 			try {

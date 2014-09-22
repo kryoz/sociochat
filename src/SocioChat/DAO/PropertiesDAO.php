@@ -157,7 +157,7 @@ class PropertiesDAO extends DAOBase
 
 	public function setBirthday($year)
 	{
-		$this[self::BIRTH] = date("$year-01-01 12:00:00");
+		$this[self::BIRTH] = date("$year-01-01");
 		return $this;
 	}
 

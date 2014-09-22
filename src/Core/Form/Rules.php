@@ -42,6 +42,7 @@ class Rules
 			if (!$name) {
 				return true;
 			}
+            $name = RudeFilter::parse($name);
 			$pattern = "~^([A-Za-zА-Яа-я- ]+)$~uis";
 
 			if (preg_match($pattern, $name)) {
