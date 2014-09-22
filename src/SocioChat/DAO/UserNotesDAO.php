@@ -91,7 +91,7 @@ class UserNotesDAO extends DAOBase
 	public function dropByUserIdList(array $userIds)
 	{
 		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE id IN ($usersList)", $userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." IN ($usersList)", $userIds);
 	}
 
 	public function save($sequence = null)

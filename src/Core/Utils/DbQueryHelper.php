@@ -16,8 +16,11 @@ class DbQueryHelper
 		return implode(', ', $stringParts);
 	}
 
-	public static function timestamp2date($timestamp)
+	public static function timestamp2date($timestamp = null)
 	{
+        if (!$timestamp) {
+            $timestamp = time();
+        }
 		return date('Y-m-d H:i:s', $timestamp);
 	}
 } 

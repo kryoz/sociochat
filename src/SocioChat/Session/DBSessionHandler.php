@@ -2,12 +2,14 @@
 
 namespace SocioChat\Session;
 
+use Core\Utils\DbQueryHelper;
 use SocioChat\Clients\User;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DAO\UserNotesDAO;
 
 class DBSessionHandler implements SessionHandler
 {
@@ -41,14 +43,14 @@ class DBSessionHandler implements SessionHandler
 
 	public function clean($ttl)
 	{
-		$deadLine = date(self::TIMESTAMP, time() - $ttl);
-		$users = SessionDAO::create()->getObsoleteUserIds($deadLine);
+		$users = SessionDAO::create()->getObsoleteUserIds(DbQueryHelper::timestamp2date(time() - $ttl));
 
 		if (!empty($users)) {
 			SessionDAO::create()->dropByUserIdList($users);
+            PropertiesDAO::create()->dropByUserIdList($users);
+            UserBlacklistDAO::create()->dropByUserIdList($users);
+            UserNotesDAO::create()->dropByUserIdList($users);
 			UserDAO::create()->dropByUserIdList($users);
-			PropertiesDAO::create()->dropByUserIdList($users);
-			UserBlacklistDAO::create()->dropByUserIdList($users);
 		}
 	}
 

@@ -12,6 +12,7 @@ use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\ChannelNotifier;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
+use SocioChat\Session\DBSessionHandler;
 
 
 class DetachFilter implements ChainInterface
@@ -25,7 +26,7 @@ class DetachFilter implements ChainInterface
 		$detacher = function() use ($user, $logger) {
 			$clients = DI::get()->getUsers();
 			$clients->detach($user);
-			$logger->info("OnClose: close connId = {$user->getConnectionId()} userId = {$user->getId()}\nTotal user count {$clients->getTotalCount()}", [__CLASS__]);
+			$logger->info("OnClose closure: closed userId = {$user->getId()}, connId = {$user->getConnectionId()}\nTotal user count {$clients->getTotalCount()}\n", [__CLASS__]);
 
 			$this->notifyOnClose($user, $clients);
 			$this->cleanPendingQueue($user);
@@ -33,16 +34,21 @@ class DetachFilter implements ChainInterface
 			ChannelsCollection::get()->clean($user);
 
 			$user->save();
+            //update access time
+            $sessionHandler = new DBSessionHandler();
+            $sessionHandler->store($user->getToken(), $user->getId());
+            unset($clients);
+            unset($sessionHandler);
 			unset($user);
 		};
 
 		if ($user->isAsyncDetach()) {
 			$timeout = DI::get()->getConfig()->session->timeout;
-			$logger->info("OnClose: Detach deffered for $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
+			$logger->info("OnClose: Detach delayed for $timeout sec for user_id = {$user->getId()}...", [__CLASS__]);
 			$timer = $loop->addTimer($timeout, $detacher);
 			$user->setDisconnectTimer($timer);
 		} else {
-			$logger->info("OnClose: Detached instantly user_id {$user->getId()}...", [__CLASS__]);
+			$logger->info("OnClose: Detached instantly user_id {$user->getId()}, connId = {$user->getConnectionId()}...", [__CLASS__]);
 			$detacher();
 		}
 

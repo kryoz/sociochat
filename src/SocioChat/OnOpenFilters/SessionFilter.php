@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat\OnOpenFilters;
 
+use Core\Utils\DbQueryHelper;
 use SocioChat\DI;
 use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
@@ -66,12 +67,13 @@ class SessionFilter implements ChainInterface
 
 
 		if ($sessionInfo->getUserId() != 0) {
-			$user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
+            /** @var User $user */
+            $user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
 			$logger->info('Handled known user_id = '.$user->getId());
 		} else {
 			$user = UserDAO::create()
 				->setChatId(1)
-				->setDateRegister(date('Y-m-d H:i:s'))
+				->setDateRegister(DbQueryHelper::timestamp2date())
 				->setMessagesCount(0)
 				->setRole(UserRoleEnum::USER);
 
@@ -99,9 +101,11 @@ class SessionFilter implements ChainInterface
 				$logger->error("PDO Exception: ".print_r($e, 1), [__CLASS__]);
 			}
 
-			$sessionHandler->store($token, $user->getId());
 			$logger->info("Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}", [__CLASS__]);
 		}
+
+        //update access time
+        $sessionHandler->store($token, $user->getId());
 
 		$newUserWrapper
 			->setUserDAO($user)

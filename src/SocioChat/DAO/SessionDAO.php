@@ -77,7 +77,7 @@ class SessionDAO extends DAOBase
 		$queryParams = array_merge([$deadLine], $unregisteredList);
 
 		return $this->db->query(
-			"SELECT user_id FROM {$this->dbTable} WHERE access < :0 AND user_id IN (".DbQueryHelper::commaSeparatedHolders($unregisteredList, 1).")",
+			"SELECT ".self::USER_ID." FROM {$this->dbTable} WHERE ".self::ACCESS_TIME." < :0 AND ".self::USER_ID." IN (".DbQueryHelper::commaSeparatedHolders($unregisteredList, 1).")",
 			$queryParams,
 			PDO::FETCH_COLUMN
 		);
@@ -85,13 +85,13 @@ class SessionDAO extends DAOBase
 
 	public function dropByUserId($userId)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = :id", ['id' => $userId]);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :id", ['id' => $userId]);
 	}
 
 	public function dropByUserIdList(array $userIds)
 	{
 		$usersList = DbQueryHelper::commaSeparatedHolders($userIds);
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id IN ($usersList)", $userIds);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." IN ($usersList)", $userIds);
 	}
 
 	protected function getForeignProperties()
