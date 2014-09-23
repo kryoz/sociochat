@@ -116,7 +116,7 @@ define(function() {
                         var editHtml = '<tr id="user-edit-'+userId+'" class="'+thisRow.attr('class')+' no-border-top"><td colspan="5">';
 
                         editHtml += '<div class="col-md-12">';
-                        editHtml += '<div class="input-group">';
+                        editHtml += '<div class="input-group btn-block">';
                         editHtml += '<input type="text" class="form-control">';
                         editHtml += '<span class="input-group-btn">';
                         editHtml += '<button class="btn btn-default" type="button">';
