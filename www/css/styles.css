@@ -260,6 +260,12 @@ doesnotexist:-o-prefocus, #panel-chat {
     font-size: 16px;
 }
 
+#log .time {
+    float: right;
+    color: #aaa;
+    font-size: 12px;
+    margin-right: 1em;
+}
 #guests td {
     vertical-align: middle;
 }
