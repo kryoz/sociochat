@@ -22,7 +22,7 @@ class ChannelNotifier
 			$response = (new MessageResponse())
 				->setTime(null)
 				->setChannelId($channelId)
-				->setMsg(MsgToken::create('WelcomeUser', $userCollection->getClientsCount($channelId), $user->getProperties()->getName()));
+				->setMsg(MsgToken::create('WelcomeUser', $user->getProperties()->getName()));
 			$userCollection
 				->setResponse($response)
 				->notify();
