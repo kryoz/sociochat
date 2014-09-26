@@ -264,7 +264,7 @@ doesnotexist:-o-prefocus, #panel-chat {
     float: right;
     color: #aaa;
     font-size: 12px;
-    margin-right: 1em;
+    margin-right: 0;
 }
 #guests td {
     vertical-align: middle;
