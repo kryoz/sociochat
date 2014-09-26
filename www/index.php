@@ -25,7 +25,7 @@ $js = '
 	<meta name="fragment" content="!">
 	<link rel="stylesheet" href="js/jcrop/jquery.Jcrop.min.css">
 ';
-
+$version = $config->version;
 require_once "pages/header.php";
 ?>
 <body>
@@ -108,7 +108,7 @@ require_once "pages/header.php";
 	<script type="text/javascript">
 		require.config({
 			baseUrl: 'js/app',
-			urlArgs: 'bust=v'+<?=$config->version?>
+			urlArgs: 'bust=v'+<?=$version?>
 		});
 
 		define('config', function() {

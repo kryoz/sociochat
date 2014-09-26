@@ -6,6 +6,7 @@ $title = isset($title) ? $title : 'соционический чат с дуал
 $js = isset($js) ? $js : '';
 $domain = isset($domain) ? $domain : 'https://sociochat.me';
 $meta = isset($meta) ? $meta : '';
+$version = isset($version) ? $version : '';
 ?><!doctype html>
 <html>
 <head>
@@ -21,7 +22,7 @@ $meta = isset($meta) ? $meta : '';
 	<?=$meta?>
 	<link rel="apple-touch-icon" href="<?=$domain?>/img/sociochat.jpg">
 	<link rel="stylesheet" href="<?=$domain?>/css/bootstrap.min.css">
-	<link rel="stylesheet" href="<?=$domain?>/css/styles.css" >
+	<link rel="stylesheet" href="<?=$domain?>/css/styles.css?v=<?=$version?>" >
 	<?=$js?>
 	<link rel="icon" href="<?=$domain?>/favicon.ico" type="image/x-icon">
 </head>
