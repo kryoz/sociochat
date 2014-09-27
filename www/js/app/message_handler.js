@@ -21,7 +21,7 @@ define(function() {
                     if (response.time) {
                         msg += '<div class="time">'+response.time+'</div>';
                     }
-                    msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" ' + (fromUser ? fromUser.tim : '') + '">'+ response.fromName +'</div>';
+                    msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">'+ response.fromName +'</div>';
                 } else {
                     msgCSStype = 'repeat';
                 }
