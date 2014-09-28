@@ -14,12 +14,15 @@ define(function() {
             }
 
             if (response.time) {
+                function pad(n) {
+                    return ("0" + n).slice(-2);
+                }
                 var time = new Date();
                 var str = time.getMonth()+'/'+time.getDate()+'/'+time.getFullYear()+ ' ' + response.time;
                 time = new Date(Date.parse(str));
                 time.setUTCHours(time.getHours() - 4);
 
-                time = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
+                time = pad(time.getHours()) + ':' + pad(time.getMinutes()) + ':' + pad(time.getSeconds());
             }
 
             if (response.fromName) {
