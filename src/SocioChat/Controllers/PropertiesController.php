@@ -192,15 +192,13 @@ class PropertiesController extends ControllerBase
 
 	private function importProperties(User $user, $request)
 	{
-		/** @var $config Config */
-		$config = DI::get()->container()->get('config');
+		$config = DI::get()->getConfig();
 		$name = $request[PropertiesDAO::NAME];
 		$tim = TimEnum::create($request[PropertiesDAO::TIM]);
 		$guestName = $user->getLang()->getPhrase('Guest');
 		$isNewbie = mb_strpos($name, $guestName) !== false;
 
-		$lastChange = NameChangeDAO::create()->getLastByUser($user);
-		$isTimedOut = $lastChange && ($lastChange->getDate() + $config->nameChangeFreq) < time();
+		$changeLog = NameChangeDAO::create()->getLastByUser($user);
 		$hasNameChanged = $name != $user->getProperties()->getName();
 
 		if ($isNewbie) {
@@ -210,9 +208,18 @@ class PropertiesController extends ControllerBase
 			if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
 				$name = $newname;
 			}
-		} elseif ($lastChange && $hasNameChanged && !$isTimedOut) {
-			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $lastChange->getDate() + $config->nameChangeFreq)));
+		} elseif ($changeLog && $hasNameChanged && !$this->isExpired($changeLog, $config)) {
+			RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy', date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)));
 			return;
+		}
+
+		if ($changeLog = NameChangeDAO::create()->getLastByName($name)) {
+			if ($changeLog->getUserId() != $user->getId()) {
+				if (!$this->isExpired($changeLog, $config)) {
+					RespondError::make($user, $user->getLang()->getPhrase('NameTakePolicy', date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)));
+					return;
+				}
+			}
 		}
 
 		$properties = $user->getProperties();
@@ -233,5 +240,10 @@ class PropertiesController extends ControllerBase
 			->setOptions([PropertiesDAO::CENSOR => $request[PropertiesDAO::CENSOR]]);
 
 		$properties->save();
+	}
+
+	private function isExpired(NameChangeDAO $changeLog, Config $config)
+	{
+		return ($changeLog->getDate() + $config->nameChangeFreq) < time();
 	}
 }

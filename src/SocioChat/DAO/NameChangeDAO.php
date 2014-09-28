@@ -3,6 +3,7 @@
 namespace SocioChat\DAO;
 
 use Core\DAO\DAOBase;
+use Core\Utils\DbQueryHelper;
 use SocioChat\Clients\User;
 
 class NameChangeDAO extends DAOBase
@@ -39,11 +40,16 @@ class NameChangeDAO extends DAOBase
 		return strtotime($this[self::DATE_CHANGE]);
 	}
 
+	public function getUserId()
+	{
+		return strtotime($this[self::USER_ID]);
+	}
+
 	public function setUser(User $user)
 	{
 		$this[self::USER_ID] = $user->getId();
 		$this[self::OLD_NAME] = $user->getProperties()->getName();
-		$this[self::DATE_CHANGE] = date('Y-m-d H:i:s');
+		$this[self::DATE_CHANGE] = DbQueryHelper::timestamp2date();
 		return $this;
 	}
 
@@ -53,19 +59,31 @@ class NameChangeDAO extends DAOBase
 	 */
 	public function getLastByUser(User $user)
 	{
-		$list = $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC LIMIT 1", ['user_id' => $user->getId()]);
+		$list = $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE ".self::USER_ID." = :user_id ORDER BY ".self::DATE_CHANGE." DESC LIMIT 1", ['user_id' => $user->getId()]);
+		return !empty($list) ? $list[0] : null;
+	}
+
+	/**
+	 * @param string $name
+	 * @return $this
+	 */
+	public function getLastByName($name)
+	{
+		$list = $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE ".self::OLD_NAME." = :oldname ORDER BY ".self::DATE_CHANGE." DESC LIMIT 1", ['oldname' => $name]);
 		return !empty($list) ? $list[0] : null;
 	}
 
 	public function getHistoryByUserId($userId)
 	{
-		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE user_id = :user_id ORDER BY ".self::DATE_CHANGE." DESC", ['user_id' => $userId]);
+		return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE ".self::USER_ID." = :user_id ORDER BY ".self::DATE_CHANGE." DESC", ['user_id' => $userId]);
 	}
 
 	public function dropByUserId($id)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE user_id = :0", [$id]);
+		$this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USER_ID." = :0", [$id]);
 	}
+
+
 
 	protected function getForeignProperties()
 	{
