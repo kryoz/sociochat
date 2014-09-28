@@ -9,7 +9,7 @@ class NameChangeAddIndex extends AbstractMigration
 
 		$table = $this->table('name_change_history');
 		$table
-			->addIndex(['name'])
+			->addIndex(['old_name'])
 			->update();
 
 	}
