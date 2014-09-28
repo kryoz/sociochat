@@ -321,7 +321,7 @@ define('app', function () {
                     updatedCookie += "=" + propValue;
                 }
             }
-            console.log(updatedCookie);
+
             document.cookie = updatedCookie;
         },
         getCookie: function(name) {

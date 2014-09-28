@@ -13,13 +13,22 @@ define(function() {
                 $this.lastMsgId = response.lastMsgId;
             }
 
+            if (response.time) {
+                var time = new Date();
+                var str = time.getMonth()+'/'+time.getDate()+'/'+time.getFullYear()+ ' ' + response.time;
+                time = new Date(Date.parse(str));
+                time.setUTCHours(time.getHours() - 4);
+
+                time = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
+            }
+
             if (response.fromName) {
                 var fromUser = response.userInfo ? response.userInfo : $this.getUserInfo(response.fromName);
 
                 if ($this.chatLastFrom != response.fromName) {
                     msg += this.getAvatar(fromUser)+' ';
-                    if (response.time) {
-                        msg += '<div class="time">'+response.time+'</div>';
+                    if (time) {
+                        msg += '<div class="time">'+time+'</div>';
                     }
                     msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">'+ response.fromName +'</div>';
                 } else {
@@ -51,8 +60,8 @@ define(function() {
                     response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
                 }
 
-                if (response.time) {
-                    msg += '<div class="time">'+response.time+'</div>';
+                if (time) {
+                    msg += '<div class="time">'+time+'</div>';
                 }
 
                 msg += '<span>' + response.msg + '</span>';
