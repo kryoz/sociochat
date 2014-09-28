@@ -2,7 +2,7 @@
 if (!defined('ROOT')) {
 	die('not allowed');
 }
-$title = isset($title) ? $title : 'соционический чат с дуалами';
+$title = isset($title) ? $title : 'соционический чат без регистрации';
 $js = isset($js) ? $js : '';
 $domain = isset($domain) ? $domain : 'https://sociochat.me';
 $meta = isset($meta) ? $meta : '';
@@ -12,9 +12,9 @@ $version = isset($version) ? $version : '';
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta charset="utf-8" />
-	<title>SocioChat - <?=$title?></title>
+	<title>СоциоЧат - <?=$title?></title>
 	<meta property="og:image" content="<?=$domain?>/img/sociochat.jpg">
-	<meta property="og:title" content="SocioChat" />
+	<meta property="og:title" content="СоциоЧат" />
 	<meta property="og:description" content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства." />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<meta name="description" content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства.">
