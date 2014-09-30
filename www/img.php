@@ -4,6 +4,8 @@ if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUE
 	die('only internal requests allowed');
 }
 
+
+
 function ranger($url){
 	$headers = [
 		'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12',
@@ -32,7 +34,10 @@ $raw = ranger($url);
 //if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
 //	echo $raw;
 //}
-$im = imagecreatefromstring($raw);
+if (!$im = imagecreatefromstring($raw)) {
+	http_response_code(400);
+	return;
+}
 
 $width = imagesx($im);
 $height = imagesy($im);
