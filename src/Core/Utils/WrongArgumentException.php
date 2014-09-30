@@ -3,7 +3,9 @@
 namespace Core\Utils;
 
 
-class WrongArgumentException extends \Exception
+use Core\BaseException;
+
+class WrongArgumentException extends BaseException
 {
 
 } 

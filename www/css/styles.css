@@ -28,16 +28,23 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .navbar-cobrand {
-	float: left;
-	padding: 15px;
-	font-size: 14px;
-	line-height: 20px;
-	height: 50px;
 	color: #fff;
+    float: left;
 }
 .navbar-cobrand:hover {
 	color: #fff;
 	text-decoration: none;
+}
+.navbar-cobrand > a, .navbar-cobrand > span {
+    display: block;
+    float: left;
+}
+.navbar-cobrand .glyphicon-cog{
+    font-size: 20px;
+}
+.navbar-left .navbar-cobrand .cog {
+    padding: 14px 10px 0px 10px;
+    line-height: 20px;
 }
 .btn-file {
     position: relative;
@@ -269,6 +276,14 @@ doesnotexist:-o-prefocus, #panel-chat {
 #guests td {
     vertical-align: middle;
 }
+.navbar-left a {
+    color: #fff;
+    text-decoration: none;
+}
+.navbar-left .space {
+    padding: 10px;
+    line-height: 30px;
+}
 .navbar-default {
 	background-color: #ed9c28;
 	border-color: #b17f3a;
@@ -284,6 +299,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 .navbar-default .navbar-nav > li > a {
 	color: #ffffff;
+    padding: 15px 10px;
 }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
 	color: #ffffff;
@@ -320,12 +336,12 @@ doesnotexist:-o-prefocus, #panel-chat {
 	border: none;
 	padding: 2px 0;
 }
-.navbar-default .navbar-toggle .glyphicon-cog{
+.navbar-default .navbar-toggle .glyphicon-collapse-down{
 	color: white;
 	font-size: 24px;
 }
 
-.navbar-default .navbar-toggle:hover .glyphicon-cog, .navbar-default .navbar-toggle:focus .glyphicon-cog {
+.navbar-default .navbar-toggle:hover .glyphicon-collapse-down, .navbar-default .navbar-toggle:focus .glyphicon-collapse-down {
 	color: #eee;
 }
 @media (max-width: 767px) {
@@ -347,7 +363,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 		height: calc(100% - 115px);
 	}
 	.navbar-default {
-		margin-bottom: 5px;
+		margin-bottom: 0;
 	}
 	#wrapper {
 		padding-left: 5px;

@@ -62,7 +62,7 @@ define('app', function () {
             menuDualize : $('#menu-dualize'),
             menuDualizeStop : $('#menu-dualize-stop'),
             menuExit : $('#menu-exit'),
-            menuChat : $('.navbar-brand'),
+            menuChat : $('.navbar-brand a'),
             menuChannels: $('#menu-channels'),
             navbar: $('.navbar-nav'),
             regLink: $('#reg-info'),

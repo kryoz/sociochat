@@ -34,28 +34,37 @@ require_once "pages/header.php";
 			<div class="container">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span><span class="glyphicon glyphicon-cog"></span>
+						<span class="sr-only"></span><span class="glyphicon glyphicon-collapse-down"></span>
 					</button>
 					<div class="navbar-left">
-						<a href="#chat" class="navbar-brand tab-panel" data-toggle="tab"><?=$lang->getPhrase('index.SocioChat')?></a>
-						<a href="#who" class="navbar-cobrand tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.UserListTip')?>"><span class="glyphicon glyphicon-user"></span> <?=$lang->getPhrase('index.UserList')?> <span class="badge" id="guest-counter">0</span></a>
+						<div class="navbar-brand">
+							<a href="#chat" class="tab-panel" data-toggle="tab"><?=$lang->getPhrase('index.SocioChat')?></a>
+						</div>
+						<div class="dropdown navbar-cobrand">
+							<a href="#profile" class="tip tab-panel space cog" data-toggle="tab" title="<?=$lang->getPhrase('index.ProfileTip')?>">
+								<span class="glyphicon glyphicon-cog"></span>
+							</a>
+							<span class="space">
+								<a href="#who" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.UserListTip')?>">
+									<span class="badge"><span class="glyphicon glyphicon-user"></span> <span id="guest-counter">0</span></span>
+								</a>
+								<a href="#" data-toggle="dropdown" class="dropdown-toggle" title="<?=$lang->getPhrase('index.Channels')?>">
+									<span id="channel-name"><?=$lang->getPhrase('index.Channels')?></span> <b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu" id="menu-channels"></ul>
+							</span>
+
+							<a href="#login" class="tip tab-panel space" data-toggle="tab" title="<?=$lang->getPhrase('index.LoginTip')?>">
+								<span class="glyphicon glyphicon-log-in"></span> <?=$lang->getPhrase('index.Login')?>
+							</a>
+						</div>
+
 					</div>
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul role="navigation" class="nav navbar-nav">
-						<li class="dropdown">
-							<a href="#" data-toggle="dropdown" class="dropdown-toggle" title="<?=$lang->getPhrase('index.Channels')?>"><span class="glyphicon glyphicon-th-list"></span> <?=$lang->getPhrase('index.Channels')?> <b class="caret"></b></a>
-							<ul class="dropdown-menu" id="menu-channels">
-
-							</ul>
-						</li>
-
 						<li>
 							<a href="#music" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.MusicTip')?>"><span class="glyphicon glyphicon-headphones"></span> <?=$lang->getPhrase('index.Music')?></a>
-						</li>
-
-						<li>
-							<a href="#profile" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.ProfileTip')?>"><span class="glyphicon glyphicon-cog"></span> <?=$lang->getPhrase('index.Profile')?></a>
 						</li>
 
 						<li>
@@ -69,10 +78,7 @@ require_once "pages/header.php";
 						</li>
 
 						<li>
-							<a href="/faq.php" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span> <?=$lang->getPhrase('index.FAQ')?></a>
-						</li>
-						<li>
-							<a href="#login" class="tip tab-panel" data-toggle="tab" title="<?=$lang->getPhrase('index.LoginTip')?>"><span class="glyphicon glyphicon-lock"></span> <?=$lang->getPhrase('index.Login')?></a>
+							<a href="/faq.php" target="_blank" class="tip" title="<?=$lang->getPhrase('index.FAQtip')?>"><span class="glyphicon glyphicon-question-sign"></span></a>
 						</li>
 					</ul>
 				</div>

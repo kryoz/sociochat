@@ -2,7 +2,9 @@
 
 namespace Core\Form;
 
-class WrongRuleNameException extends \Exception
+use Core\BaseException;
+
+class WrongRuleNameException extends BaseException
 {
 
 } 

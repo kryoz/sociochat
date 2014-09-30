@@ -96,17 +96,55 @@ define(function() {
             var originalText = incomingMessage;
             var $this = this.app;
 
+            String.prototype.hashCode = function() {
+                var hash = 0, i, chr, len;
+                if (this.length == 0) return hash;
+                for (i = 0, len = this.length; i < len; i++) {
+                    chr   = this.charCodeAt(i);
+                    hash  = ((hash << 5) - hash) + chr;
+                    hash |= 0; // Convert to 32bit integer
+                }
+                return hash;
+            };
+
             var replaceURL = function (text) {
                 var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
-                return text.replace(exp, "<a target='_blank' href='$1'>$1</a>");
-            }
+                var url = exp.exec(text);
+                if (url) {
+                    url = url[1];
 
-            var replaceWithImgLinks = function (text) {
-                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|gif|png))\b/ig;
-                var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
-                replacement += '<img src="$1" style="max-width:100%; height: auto; display: none"></div>';
+                    var hash = url.hashCode();
 
-                return text.replace(exp, replacement);
+                    $.ajax({
+                        type: "GET",
+                        url: '/img.php',
+                        data: {
+                            'url' : url
+                        },
+                        success: function(response) {
+                            var $img = $('#url-'+hash);
+
+                            $img.hide();
+                            var replacement = '<div class="img-thumbnail"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
+                            replacement += '<img src="'+$img.attr('href')+'" style="max-width:100%; height: auto; display: none"></div>';
+                            replacement = $(replacement);
+
+                            replacement.insertAfter($img);
+                            $img.remove();
+
+                            replacement.click(function() {
+                                $(this).find('img').toggle();
+                                $(this).find('a').toggle();
+                                $this.scrollDown();
+                            });
+                        },
+
+                        dataType: 'json'
+                    });
+
+                    return text.replace(exp, '<a target="_blank" href="$1" id="url-'+hash+'">$1</a>');
+                }
+                return text;
             }
 
             var replaceWithYoutube = function (text) {
@@ -162,9 +200,8 @@ define(function() {
 
             incomingMessage = replaceOwnName(incomingMessage);
 
-            var res = replaceWithImgLinks(incomingMessage);
+            var res = replaceWithAudio(incomingMessage);
             res = replaceWithYoutube(res);
-            res = replaceWithAudio(res);
 
             if (res == incomingMessage) {
                 incomingMessage = replaceURL(incomingMessage);
@@ -178,12 +215,6 @@ define(function() {
             var $this = this.app;
             var newLine = $this.domElems.chat.find('div:last-child');
             var newNameOnLine = newLine.find('.nickname');
-
-            newLine.find('.image-clickable').click(function() {
-                $(this).find('img').toggle();
-                $(this).find('a').toggle();
-                $this.scrollDown();
-            });
 
             newNameOnLine.click(function() {
                 if ($this.clickTimer) {

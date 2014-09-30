@@ -2,6 +2,7 @@
 
 namespace SocioChat\Response;
 
+use Core\BaseException;
 use SocioChat\Message\MsgContainer;
 
 class MessageResponse extends Response
@@ -92,7 +93,7 @@ class MessageResponse extends Response
 	{
 		if ($this->msgObj) {
 			if (!$this->getRecipient()) {
-				throw new \Exception('Something weird happened: no user was set as recipient');
+				throw new BaseException('Something weird happened: no user was set as recipient');
 			}
 
             $user = $this->getRecipient();

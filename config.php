@@ -1,16 +1,20 @@
 <?php
 
+use Core\BaseException;
+
 $DS = DIRECTORY_SEPARATOR;
 define('ROOT', __DIR__);
 
+if (!isset($loader)) {
+	$loader = require_once ROOT.$DS.'vendor'.$DS.'autoload.php';
+}
+
 if (isset($setupErrorHandler)) {
 	set_error_handler(
-		function ($errno, $errstr, $errfile, $errline) {
-			$debugInfo = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-			echo "ERROR fired! $errstr\n";
-			print_r($debugInfo);
-			return true;
+		function ($code, $string, $errfile, $errline) {
+			throw new BaseException($string, $code);
 		}
+		, E_ALL | E_STRICT
 	);
 }
 
@@ -26,10 +30,6 @@ function basicSetup()
 	$defaultEncoding = 'UTF-8';
 	mb_internal_encoding($defaultEncoding);
 	mb_regex_encoding($defaultEncoding);
-}
-
-if (!isset($loader)) {
-	$loader = require_once ROOT.$DS.'vendor'.$DS.'autoload.php';
 }
 
 basicSetup();

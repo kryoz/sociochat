@@ -2,6 +2,7 @@
 
 namespace SocioChat\Clients;
 
+use Core\BaseException;
 use SocioChat\DI;
 use SocioChat\Response\MessageResponse;
 use Core\TSingleton;
@@ -60,7 +61,7 @@ class ChannelsCollection
 	public function pushToHistory(MessageResponse $response)
 	{
 		if (!isset($this->channels[$response->getChannelId()])) {
-			throw new \Exception('Channel id = '.$response->getChannelId().' has not been initialized');
+			throw new BaseException('Channel id = '.$response->getChannelId().' has not been initialized');
 		}
 		/* @var $channel Channel */
 		$channel = $this->channels[$response->getChannelId()];

@@ -67,7 +67,7 @@ class Chat implements MessageComponentInterface
 
 	public function onError(ConnectionInterface $conn, \Exception $e)
 	{
-		DI::get()->getLogger()->error("An error has occurred: {$e->getMessage()}", [__FUNCTION__]);
+		DI::get()->getLogger()->error("An error has occurred: {$e->getMessage()}:\n{$e->getTraceAsString()}", [__FUNCTION__]);
 		$conn->close();
 	}
 

@@ -2,6 +2,7 @@
 
 namespace SocioChat\Response;
 
+use Core\BaseException;
 use SocioChat\Clients\Channel;
 use SocioChat\Message\MsgContainer;
 
@@ -42,7 +43,7 @@ class HistoryResponse extends Response
 		foreach ($this->history as &$responsePart) {
 			if (isset($responsePart[Channel::MSG]) && $responsePart[Channel::MSG] instanceof MsgContainer) {
 				if (!$this->getRecipient()) {
-					throw new \Exception('Something weird happened: no user was set as recipient');
+					throw new BaseException('Something weird happened: no user was set as recipient');
 				}
 				$responsePart[Channel::MSG] = $responsePart[Channel::MSG]->getMsg($this->getRecipient()->getLang());
 			}

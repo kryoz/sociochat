@@ -3,6 +3,8 @@
 namespace Core\Cache;
 
 
-class CacheException extends \Exception{
+use Core\BaseException;
+
+class CacheException extends BaseException {
 
 } 

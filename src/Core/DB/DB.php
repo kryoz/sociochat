@@ -2,6 +2,7 @@
 
 namespace Core\DB;
 
+use Core\BaseException;
 use Core\DI;
 use Monolog\Logger;
 use PDO;
@@ -158,7 +159,7 @@ class DB
 	{
 		try {
 			@$this->dbh->query('select 1');
-		} catch (\Exception $e) {
+		} catch (BaseException $e) {
 			$this->init();
 		}
 	}

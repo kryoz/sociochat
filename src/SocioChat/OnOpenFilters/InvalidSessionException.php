@@ -3,6 +3,8 @@
 namespace SocioChat\OnOpenFilters;
 
 
-class InvalidSessionException extends \Exception {
+use Core\BaseException;
+
+class InvalidSessionException extends BaseException {
 
 } 

@@ -14,6 +14,7 @@ class Lang
 	 * @var Dictionary
 	 */
 	private $dictionary;
+	private $lang;
 
 	public function __construct(Dictionary $dictionary)
 	{
@@ -28,6 +29,7 @@ class Lang
 	public function setLangByCode($langCode)
 	{
 		$this->lexicon = $this->dictionary->getLang($langCode);
+		$this->lang = $langCode;
 		return $this;
 	}
 
@@ -50,7 +52,7 @@ class Lang
 
 		foreach (explode('.', $token) as $part) {
 			if (!$newScope = $scope->get($part)) {
-				$logger->warn('No localization was matched for '.$part, [__CLASS__]);
+				$logger->warn('No localization was matched for '.$part.' (lang = '.$this->lang.')', [__CLASS__]);
 				return $token.' '.implode(', ', $args);
 			}
 

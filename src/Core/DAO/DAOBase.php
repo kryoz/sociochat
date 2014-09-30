@@ -1,6 +1,7 @@
 <?php
 namespace Core\DAO;
 
+use Core\BaseException;
 use Core\DB\DB;
 use Core\DI;
 use Core\FixedArrayAccess;
@@ -147,7 +148,7 @@ abstract class DAOBase extends FixedArrayAccess
 	protected function getByPropId($propName, $id)
 	{
 		if (!in_array($propName, $this->propertyNames)) {
-			throw new \Exception('Undefined property name '.$propName);
+			throw new BaseException('Undefined property name '.$propName);
 		}
 
 		$query = "SELECT * FROM {$this->dbTable} WHERE $propName = :$propName";
@@ -161,7 +162,7 @@ abstract class DAOBase extends FixedArrayAccess
 	protected function flushProperty($propName)
 	{
 		if (!in_array($propName, $this->propertyNames)) {
-			throw new \Exception('Undefined property name '.$propName);
+			throw new BaseException('Undefined property name '.$propName);
 		}
 
 		$this[$propName] = null;

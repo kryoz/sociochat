@@ -285,6 +285,7 @@ define(function() {
                 }
 
                 $this.currentChannel = json.chatId;
+                $('#channel-name').text(json.channels[$this.currentChannel].name);
 
                 $channels.find('li a').click(function (e) {
                     var channelId = $(this).data('id');

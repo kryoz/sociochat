@@ -3,6 +3,7 @@
 namespace SocioChat\Cron;
 
 
+use Core\BaseException;
 use SocioChat\DI;
 use SocioChat\Locker\AlreadyLockedException;
 use SocioChat\Locker\LockerInDB;
@@ -44,7 +45,7 @@ class CronExecutor
 		try {
 			$service->run();
 			$locker->unlock($this->getLockName($service));
-		} catch (\Exception $e) {
+		} catch (BaseException $e) {
 			$locker->unlock($this->getLockName($service));
 			DI::get()->container()->get('logger')->error($e->getMessage());
 			exit(1);

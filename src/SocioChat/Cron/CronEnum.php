@@ -2,6 +2,7 @@
 
 namespace SocioChat\Cron;
 
+use Core\BaseException;
 use SocioChat\DI;
 use Core\Enum\Enum;
 
@@ -18,7 +19,7 @@ class CronEnum extends Enum
 		$service = DI::get()->spawn($this->getName());
 
 		if (!$service instanceof CronService) {
-			throw new \Exception("Expects {$this->getName()} implements CronService interface");
+			throw new BaseException("Expects {$this->getName()} implements CronService interface");
 		}
 		return $service;
 	}
