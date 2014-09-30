@@ -12,8 +12,10 @@ if (!defined('ROOT')) {
 		<p><span class="glyphicon glyphicon-eye-close"></span> / <span class="glyphicon glyphicon-eye-open"></span>  - Игнор/убрать игнор</p>
 		<p><span class="glyphicon glyphicon-edit"></span> - Редактировать заметку</p>
 
-		<table class="table table-striped" id="guests">
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped" id="guests">
+			</table>
+		</div>
 	</div>
 	<div class="panel-footer">
 		<a class="btn btn-block btn-success return-to-chat"><?=$lang->getPhrase('index.Return')?></a>
