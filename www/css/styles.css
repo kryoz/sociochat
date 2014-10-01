@@ -380,4 +380,11 @@ doesnotexist:-o-prefocus, #panel-chat {
 		padding-left: 0;
 		padding-right: 0;
 	}
+    .navbar-default .navbar-toggle {
+        margin-right: 5px;
+    }
+    .navbar-brand {
+        padding: 15px 5px;
+        font-size: 14px;
+    }
 }

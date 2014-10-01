@@ -107,11 +107,30 @@ define(function() {
                 return hash;
             };
 
+            var getImgReplacementString = function (holder) {
+                var replacement = '<div class="img-thumbnail"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
+                replacement += '<img src="'+holder+'" style="max-width:100%; height: auto; display: none"></div>';
+                return replacement;
+            }
+
+
+            var replaceWithImgLinks = function (text) {
+                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|gif|png))(?:\??.*)\b/ig;
+
+                return text.replace(exp, getImgReplacementString('$1'));
+            }
+
             var replaceURL = function (text) {
                 var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
                 var url = exp.exec(text);
+
                 if (url) {
                     url = url[1];
+
+                    var imgRegExp = replaceWithImgLinks(text);
+                    if (imgRegExp != text) {
+                        return imgRegExp;
+                    }
 
                     var hash = url.hashCode();
 
@@ -125,9 +144,8 @@ define(function() {
                             var $img = $('#url-'+hash);
 
                             $img.hide();
-                            var replacement = '<div class="img-thumbnail"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
-                            replacement += '<img src="'+$img.attr('href')+'" style="max-width:100%; height: auto; display: none"></div>';
-                            replacement = $(replacement);
+
+                            var replacement = $(getImgReplacementString($img.attr('href')));
 
                             replacement.insertAfter($img);
                             $img.remove();
@@ -215,6 +233,12 @@ define(function() {
             var $this = this.app;
             var newLine = $this.domElems.chat.find('div:last-child');
             var newNameOnLine = newLine.find('.nickname');
+
+            newLine.find('.image-clickable').click(function() {
+                $(this).find('img').toggle();
+                $(this).find('a').toggle();
+                $this.scrollDown();
+            });
 
             newNameOnLine.click(function() {
                 if ($this.clickTimer) {
