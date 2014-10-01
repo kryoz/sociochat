@@ -98,7 +98,7 @@ class SessionFilter implements ChainInterface
 			try {
 				$properties->save();
 			} catch (\PDOException $e) {
-				$logger->error("PDO Exception: ".print_r($e, 1), [__CLASS__]);
+				$logger->error("PDO Exception: ".$e->getTraceAsString(), [__CLASS__]);
 			}
 
 			$logger->info("Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}", [__CLASS__]);
