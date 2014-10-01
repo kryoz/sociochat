@@ -360,7 +360,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 		margin-bottom: 0;
 	}
 	.tab-wrapper {
-		height: calc(100% - 115px);
+		height: calc(100% - 110px);
 	}
 	.navbar-default {
 		margin-bottom: 0;
@@ -387,7 +387,9 @@ doesnotexist:-o-prefocus, #panel-chat {
         margin-right: 5px;
     }
     .navbar-brand {
-        padding: 15px 5px;
+        padding: 5px;
         font-size: 14px;
+        width: 55px;
+        text-align: center;
     }
 }
