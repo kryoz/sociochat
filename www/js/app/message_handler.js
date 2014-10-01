@@ -108,7 +108,7 @@ define(function() {
             };
 
             var getImgReplacementString = function (holder) {
-                var replacement = '<div class="img-thumbnail"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
+                var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
                 replacement += '<img src="'+holder+'" style="max-width:100%; height: auto; display: none"></div>';
                 return replacement;
             }
