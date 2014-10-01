@@ -1,5 +1,6 @@
 <?php
 
+use SocioChat\DAO\TmpSessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 
@@ -27,7 +28,10 @@ if (!$token || $token == 'null' || isset($_GET['regenerate'])) {
 $sessionHandler = DI::get()->getSession();
 
 if (!$sessionHandler->read($token)) {
-	$sessionHandler->store($token, 0);
+	$tmpSession = TmpSessionDAO::create();
+	$tmpSession
+		->setSessionId($token)
+		->save();
 }
 
 http_response_code(200);

@@ -2,6 +2,7 @@
 namespace SocioChat\OnOpenFilters;
 
 use Core\Utils\DbQueryHelper;
+use SocioChat\DAO\TmpSessionDAO;
 use SocioChat\DI;
 use Monolog\Logger;
 use SocioChat\Chain\ChainContainer;
@@ -41,17 +42,22 @@ class SessionFilter implements ChainInterface
 
 		$sessionHandler = DI::get()->getSession();
 
-		$logger->info("Incoming connection IP = {$newUserWrapper->getIp()}, token = {$socketRequest->getCookie('token')}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
+		$logger->info("New connection: IP = {$newUserWrapper->getIp()}, token = {$socketRequest->getCookie('token')}, lastMsgId = {$newUserWrapper->getLastMsgId()}", [__CLASS__]);
 
 		try {
 			if (!$token = $socketRequest->getCookie('token')) {
 				throw new InvalidSessionException('No token');
 			}
 
-			/** @var SessionDAO $sessionInfo */
-			$sessionInfo = $sessionHandler->read($token);
-			if (!$sessionInfo) {
-				throw new InvalidSessionException('Wrong token '.$token);
+			/** @var SessionDAO $session */
+			$session = $sessionHandler->read($token);
+			if (!$session) {
+				$tmpSession = TmpSessionDAO::create()->getBySessionId($token);
+				if (!$tmpSession->getId()) {
+					throw new InvalidSessionException('Wrong token '.$token);
+				}
+				$tmpSession->dropById($tmpSession->getId());
+				$session = SessionDAO::create()->setSessionId($token);
 			}
 
 		} catch (InvalidSessionException $e) {
@@ -66,9 +72,9 @@ class SessionFilter implements ChainInterface
 		}
 
 
-		if ($sessionInfo->getUserId() != 0) {
+		if ($session->getUserId() != 0) {
             /** @var User $user */
-            $user = $this->handleKnownUser($sessionInfo, $clients, $logger, $newUserWrapper, $lang);
+            $user = $this->handleKnownUser($session, $clients, $logger, $newUserWrapper, $lang);
 			$logger->info('Handled known user_id = '.$user->getId());
 		} else {
 			$user = UserDAO::create()
