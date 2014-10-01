@@ -182,6 +182,7 @@ define(function() {
 
                 if (props.email) {
                     $this.domElems.email.val(props.email);
+                    $('a[href="#login"]').hide();
                 }
 
                 if (props.avatarImg) {
