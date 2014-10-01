@@ -380,6 +380,9 @@ doesnotexist:-o-prefocus, #panel-chat {
 		padding-left: 0;
 		padding-right: 0;
 	}
+    .tab-wrapper {
+        height: calc(100% - 105px);
+    }
     .navbar-default .navbar-toggle {
         margin-right: 5px;
     }
