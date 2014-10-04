@@ -1,4 +1,5 @@
 {
+    "php": ">=5.5.0",
     "autoload": {
         "psr-4": {
             "": "src/",
@@ -13,7 +14,8 @@
         "robmorgan/phinx": "*@stable"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*@stable"
+        "phpunit/phpunit": "4.*@stable",
+        "squizlabs/php_codesniffer": "dev-phpcs-fixer"
     },
 	"config": {
 		"bin-dir": "bin/"

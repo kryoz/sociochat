@@ -130,7 +130,7 @@ class PropertiesDAO extends DAOBase
 
 	public function getOptions()
 	{
-		return json_decode($this[self::NOTIFICATIONS], 1);
+		return json_decode($this[self::NOTIFICATIONS], 1) ?: [];
 	}
 
 	public function setOptions(array $settings)

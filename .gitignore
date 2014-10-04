@@ -1,7 +1,6 @@
 .idea/
 conf/local.ini
 vendor/
-composer.lock
 composer.phar
 chat.log
 www/uploads/avatars/
