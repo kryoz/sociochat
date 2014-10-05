@@ -11,115 +11,115 @@ use SocioChat\Response\MessageResponse;
 
 class AdminController extends ControllerBase
 {
-	private $actionsMap = [
-		'kickUser' => 'processKick',
-		'nameLog' => 'processNameChangeHistory',
-		'getIp' => 'processGetIp'
-	];
+    private $actionsMap = [
+        'kickUser' => 'processKick',
+        'nameLog' => 'processNameChangeHistory',
+        'getIp' => 'processGetIp'
+    ];
 
-	public function handleRequest(ChainContainer $chain)
-	{
-		$user = $chain->getFrom();
+    public function handleRequest(ChainContainer $chain)
+    {
+        $user = $chain->getFrom();
 
-		if ($user->getRole()->isAdmin() || $user->getRole()->isCreator()) {
-			return;
-		}
+        if ($user->getRole()->isAdmin() || $user->getRole()->isCreator()) {
+            return;
+        }
 
-		$action = $chain->getRequest()['action'];
+        $action = $chain->getRequest()['action'];
 
-		if (!isset($this->actionsMap[$action])) {
-			RespondError::make($chain->getFrom());
-			return;
-		}
+        if (!isset($this->actionsMap[$action])) {
+            RespondError::make($chain->getFrom());
+            return;
+        }
 
-		$this->{$this->actionsMap[$action]}($chain);
-	}
+        $this->{$this->actionsMap[$action]}($chain);
+    }
 
-	protected function getFields()
-	{
-		return ['action', 'userId'];
-	}
+    protected function getFields()
+    {
+        return ['action', 'userId'];
+    }
 
-	protected function processKick(ChainContainer $chain)
-	{
-		$request = $chain->getRequest();
-		$assHoleId = $request['userId'];
-		$users = DI::get()->getUsers();
+    protected function processKick(ChainContainer $chain)
+    {
+        $request = $chain->getRequest();
+        $assHoleId = $request['userId'];
+        $users = DI::get()->getUsers();
 
-		if (!$assHole = $users->getClientById($assHoleId)) {
-			RespondError::make($chain->getFrom(), ['userId' => "userId = $assHoleId not found"]);
-			return;
-		}
+        if (!$assHole = $users->getClientById($assHoleId)) {
+            RespondError::make($chain->getFrom(), ['userId' => "userId = $assHoleId not found"]);
+            return;
+        }
 
-		$assHole
-			->setAsyncDetach(false)
-			->send(
-				[
-					'disconnect' => 1,
-					'msg' => isset($request['reason']) ? $request['reason'] : null
-				]
-			);
+        $assHole
+            ->setAsyncDetach(false)
+            ->send(
+                [
+                    'disconnect' => 1,
+                    'msg' => isset($request['reason']) ? $request['reason'] : null
+                ]
+            );
 
-		Chat::get()->onClose($assHole->getConnection());
-	}
+        Chat::get()->onClose($assHole->getConnection());
+    }
 
-	protected function processGetIp(ChainContainer $chain)
-	{
-		$request = $chain->getRequest();
-		$userId = $request['userId'];
-		$users = DI::get()->getUsers();
+    protected function processGetIp(ChainContainer $chain)
+    {
+        $request = $chain->getRequest();
+        $userId = $request['userId'];
+        $users = DI::get()->getUsers();
 
-		if (!$user = $users->getClientById($userId)) {
-			RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);
-			return;
-		}
+        if (!$user = $users->getClientById($userId)) {
+            RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);
+            return;
+        }
 
-		$notify = (new UserCollection())->attach($chain->getFrom());
-		$response = (new MessageResponse())
-			->setChannelId($chain->getFrom()->getChannelId())
-			->setMsg(MsgRaw::create($user->getProperties()->getName().' = '.$user->getIp()))
-			->setGuests(null);
+        $notify = (new UserCollection())->attach($chain->getFrom());
+        $response = (new MessageResponse())
+            ->setChannelId($chain->getFrom()->getChannelId())
+            ->setMsg(MsgRaw::create($user->getProperties()->getName() . ' = ' . $user->getIp()))
+            ->setGuests(null);
 
-		$notify
-			->setResponse($response)
-			->notify(false);
-	}
+        $notify
+            ->setResponse($response)
+            ->notify(false);
+    }
 
-	protected function processNameChangeHistory(ChainContainer $chain)
-	{
-		$request = $chain->getRequest();
-		$userId = $request['userId'];
+    protected function processNameChangeHistory(ChainContainer $chain)
+    {
+        $request = $chain->getRequest();
+        $userId = $request['userId'];
 
-		$list = NameChangeDAO::create()->getHistoryByUserId($userId);
+        $list = NameChangeDAO::create()->getHistoryByUserId($userId);
 
-		if (empty($list)) {
-			RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);
-			return;
-		}
-		$notify = (new UserCollection())->attach($chain->getFrom());
-		$response = (new MessageResponse())
-			->setChannelId($chain->getFrom()->getChannelId())
-			->setMsg(MsgRaw::create($this->listFormatter($list)))
-			->setGuests(null);
+        if (empty($list)) {
+            RespondError::make($chain->getFrom(), ['userId' => "userId = $userId not found"]);
+            return;
+        }
+        $notify = (new UserCollection())->attach($chain->getFrom());
+        $response = (new MessageResponse())
+            ->setChannelId($chain->getFrom()->getChannelId())
+            ->setMsg(MsgRaw::create($this->listFormatter($list)))
+            ->setGuests(null);
 
-		$notify
-			->setResponse($response)
-			->notify(false);
-	}
+        $notify
+            ->setResponse($response)
+            ->notify(false);
+    }
 
-	private function listFormatter(array $list)
-	{
-		$html = '<table class="table table-striped">';
+    private function listFormatter(array $list)
+    {
+        $html = '<table class="table table-striped">';
 
-		/** @var $row NameChangeDAO */
-		foreach ($list as $row) {
-			$html .= '<tr>';
-			$html .= '<td>'.$row->getDate().'</td>';
-			$html .= '<td>'.$row->getName().'</td>';
-			$html .= '</tr>';
-		}
-		$html .= '</table>';
+        /** @var $row NameChangeDAO */
+        foreach ($list as $row) {
+            $html .= '<tr>';
+            $html .= '<td>' . $row->getDate() . '</td>';
+            $html .= '<td>' . $row->getName() . '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table>';
 
-		return $html;
-	}
+        return $html;
+    }
 }

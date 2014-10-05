@@ -8,205 +8,206 @@ use SocioChat\Response\MessageResponse;
 
 class Channel
 {
-	const BUFFER_LENGTH = 100;
-	const TO_NAME = 'toName';
-	const FROM_NAME = 'fromName';
-	const TIM = 'tim';
-	const SEX = 'sex';
-	const AVATAR_THUMB = 'avatarThumb';
-	const AVATAR_IMG = 'avatarImg';
-	const TIME = 'time';
-	const MSG = 'msg';
-	const USER_INFO = 'userInfo';
-	const FROM_USER_ID = 'fromUserId';
+    const BUFFER_LENGTH = 100;
+    const TO_NAME = 'toName';
+    const FROM_NAME = 'fromName';
+    const TIM = 'tim';
+    const SEX = 'sex';
+    const AVATAR_THUMB = 'avatarThumb';
+    const AVATAR_IMG = 'avatarImg';
+    const TIME = 'time';
+    const MSG = 'msg';
+    const USER_INFO = 'userInfo';
+    const FROM_USER_ID = 'fromUserId';
 
-	private $id;
-	protected $history = [];
-	protected $lastMsgId = 1;
+    private $id;
+    protected $history = [];
+    protected $lastMsgId = 1;
 
-	private $onJoinRule;
+    private $onJoinRule;
 
-	/**
-	 * @return int
-	 */
-	public function getLastMsgId()
-	{
-		return $this->lastMsgId;
-	}
-	protected $name;
-	protected $isPrivate = true;
-	protected $ownerId = 1;
+    /**
+     * @return int
+     */
+    public function getLastMsgId()
+    {
+        return $this->lastMsgId;
+    }
 
-	public function __construct($id, $name = null, $isPrivate = true)
-	{
-		$this->id = $id;
-		$this->name = $name;
-		$this->isPrivate = $isPrivate;
-		$this->onJoinRule = function (Form $form, User $user) {
-			if ($this->isPrivate() || $this->getId() == 1) {
-				return true;
-			}
+    protected $name;
+    protected $isPrivate = true;
+    protected $ownerId = 1;
 
-			if (!$user->isRegistered()) {
-				$form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
-			}
+    public function __construct($id, $name = null, $isPrivate = true)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->isPrivate = $isPrivate;
+        $this->onJoinRule = function (Form $form, User $user) {
+            if ($this->isPrivate() || $this->getId() == 1) {
+                return true;
+            }
 
-			return $user->isRegistered();
-		};
-	}
+            if (!$user->isRegistered()) {
+                $form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
+            }
 
-	public function setId($id)
-	{
-		$this->id = $id;
-		return $this;
-	}
+            return $user->isRegistered();
+        };
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
 
-	/**
-	 * @param MessageResponse $response
-	 * @return int
-	 */
-	public function pushResponse(MessageResponse $response)
-	{
-		if ($this->filterMessages($response) === false) {
-			return;
-		}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-		$this->history[$this->lastMsgId] = $this->makeRecord($response);
-		$keys = array_keys($this->history);
+    /**
+     * @param MessageResponse $response
+     * @return int
+     */
+    public function pushResponse(MessageResponse $response)
+    {
+        if ($this->filterMessages($response) === false) {
+            return;
+        }
 
-		if (count($this->history) > self::BUFFER_LENGTH) {
-			unset($this->history[$keys[0]]);
-		}
+        $this->history[$this->lastMsgId] = $this->makeRecord($response);
+        $keys = array_keys($this->history);
 
-		$id = $this->lastMsgId;
+        if (count($this->history) > self::BUFFER_LENGTH) {
+            unset($this->history[$keys[0]]);
+        }
 
-		$this->lastMsgId++;
+        $id = $this->lastMsgId;
 
-		return $id;
-	}
+        $this->lastMsgId++;
 
-	/**
-	 * @param int $lastMsgId
-	 * @return MessageResponse[]
-	 */
-	public function getHistory($lastMsgId)
-	{
-		$history = $this->history;
+        return $id;
+    }
 
-		if ($lastMsgId > 0 && $lastMsgId <= count($history)) {
-			$history = array_slice($this->history, $lastMsgId, null, true);
-		}
+    /**
+     * @param int $lastMsgId
+     * @return MessageResponse[]
+     */
+    public function getHistory($lastMsgId)
+    {
+        $history = $this->history;
 
-		return $history;
-	}
+        if ($lastMsgId > 0 && $lastMsgId <= count($history)) {
+            $history = array_slice($this->history, $lastMsgId, null, true);
+        }
 
-	public function setIsPrivate($isPrivate)
-	{
-		$this->isPrivate = $isPrivate;
-		return $this;
-	}
+        return $history;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function isPrivate()
-	{
-		return $this->isPrivate;
-	}
+    public function setIsPrivate($isPrivate)
+    {
+        $this->isPrivate = $isPrivate;
+        return $this;
+    }
 
-	public function setName($name)
-	{
-		$this->name = $name;
-		return $this;
-	}
+    /**
+     * @return boolean
+     */
+    public function isPrivate()
+    {
+        return $this->isPrivate;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name ?: $this->getId();
-	}
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
 
-	// for the future
-	public function setOwnerId($ownerId)
-	{
-		$this->ownerId = $ownerId;
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name ?: $this->getId();
+    }
 
-	// for the future
-	public function getOwnerId()
-	{
-		return $this->ownerId;
-	}
+    // for the future
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = $ownerId;
+        return $this;
+    }
 
-	public function setOnJoinRule(callable $rule)
-	{
-		$this->onJoinRule = $rule;
-		return $this;
-	}
+    // for the future
+    public function getOwnerId()
+    {
+        return $this->ownerId;
+    }
 
-	public function verifyOnJoinRule()
-	{
-		return $this->onJoinRule;
-	}
+    public function setOnJoinRule(callable $rule)
+    {
+        $this->onJoinRule = $rule;
+        return $this;
+    }
 
-	private function filterMessages(MessageResponse $response)
-	{
-		$response->setGuests(null);
+    public function verifyOnJoinRule()
+    {
+        return $this->onJoinRule;
+    }
 
-		if (!$response->getFilteredMsg() && !$response->getMsg()) {
-			return false;
-		}
-	}
+    private function filterMessages(MessageResponse $response)
+    {
+        $response->setGuests(null);
 
-	/**
-	 * @param MessageResponse $response
-	 * @return array
-	 */
-	private function makeRecord(MessageResponse $response)
-	{
-		$record = [
-			self::FROM_USER_ID => null,
-			self::FROM_NAME    => $response->getFromName(),
-			self::TIME         => $response->getTime(),
-			self::MSG          => $response->getFilteredMsg() ?: $response->getMsg(),
-		];
+        if (!$response->getFilteredMsg() && !$response->getMsg()) {
+            return false;
+        }
+    }
 
-		if ($from = $response->getFrom()) {
-			$dir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
-			$info = [
-				self::TIM => $from->getProperties()->getTim()->getName(), //@TODO wrong lang
-				self::SEX => $from->getProperties()->getSex()->getName(),
-			];
+    /**
+     * @param MessageResponse $response
+     * @return array
+     */
+    private function makeRecord(MessageResponse $response)
+    {
+        $record = [
+            self::FROM_USER_ID => null,
+            self::FROM_NAME => $response->getFromName(),
+            self::TIME => $response->getTime(),
+            self::MSG => $response->getFilteredMsg() ?: $response->getMsg(),
+        ];
+
+        if ($from = $response->getFrom()) {
+            $dir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
+            $info = [
+                self::TIM => $from->getProperties()->getTim()->getName(), //@TODO wrong lang
+                self::SEX => $from->getProperties()->getSex()->getName(),
+            ];
 
 
-			if ($from->getProperties()->getAvatarThumb()) {
-				$info += [
-					self::AVATAR_THUMB => $dir . $from->getProperties()->getAvatarThumb(),
-					self::AVATAR_IMG   => $dir . $from->getProperties()->getAvatarImg(),
-				];
-			}
+            if ($from->getProperties()->getAvatarThumb()) {
+                $info += [
+                    self::AVATAR_THUMB => $dir . $from->getProperties()->getAvatarThumb(),
+                    self::AVATAR_IMG => $dir . $from->getProperties()->getAvatarImg(),
+                ];
+            }
 
-			$record += [
-				self::USER_INFO => $info
-			];
-			$record[self::FROM_USER_ID] = $response->getFrom()->getId();
-		}
+            $record += [
+                self::USER_INFO => $info
+            ];
+            $record[self::FROM_USER_ID] = $response->getFrom()->getId();
+        }
 
-		if ($response->getToUserName()) {
-			$record += [self::TO_NAME => $response->getToUserName()];
-			return $record;
-		}
-		return $record;
-	}
+        if ($response->getToUserName()) {
+            $record += [self::TO_NAME => $response->getToUserName()];
+            return $record;
+        }
+        return $record;
+    }
 }

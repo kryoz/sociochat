@@ -5,19 +5,19 @@ namespace SocioChat\Response;
 
 class ErrorResponse extends Response
 {
-	protected $errors = null;
+    protected $errors = null;
 
-	public function setErrors(array $errors)
-	{
-		$this->errors = $errors;
-		return $this;
-	}
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
+        return $this;
+    }
 
-	/**
-	 * @return null
-	 */
-	public function getErrors()
-	{
-		return $this->errors;
-	}
+    /**
+     * @return null
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
 }

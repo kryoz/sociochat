@@ -6,20 +6,20 @@ use Core\BaseException;
 
 abstract class MsgContainer
 {
-	protected $args;
+    protected $args;
 
-	public function __construct($args)
-	{
-		if (!func_get_arg(0)) {
-			throw new BaseException('Message has not been set');
-		}
-		$this->args = $args;
-	}
+    public function __construct($args)
+    {
+        if (!func_get_arg(0)) {
+            throw new BaseException('Message has not been set');
+        }
+        $this->args = $args;
+    }
 
-	public static function create()
-	{
-		return new static(func_get_args());
-	}
+    public static function create()
+    {
+        return new static(func_get_args());
+    }
 
-	abstract public function getMsg(Lang $lang = null);
+    abstract public function getMsg(Lang $lang = null);
 } 

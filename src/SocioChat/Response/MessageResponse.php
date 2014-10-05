@@ -7,51 +7,51 @@ use SocioChat\Message\MsgContainer;
 
 class MessageResponse extends Response
 {
-	/**
-	 * @var MsgContainer|null
-	 */
-	protected $msgObj;
+    /**
+     * @var MsgContainer|null
+     */
+    protected $msgObj;
     /**
      * @var MsgContainer|null
      */
     protected $filteredMsgObj;
 
-	protected $msg;
-	protected $time;
-	protected $dualChat;
-	protected $toName;
-	protected $lastMsgId;
+    protected $msg;
+    protected $time;
+    protected $dualChat;
+    protected $toName;
+    protected $lastMsgId;
 
-	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient', 'msgObj', 'filteredMsgObj'];
+    protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient', 'msgObj', 'filteredMsgObj'];
 
-	/**
-	 * @param string $userName
-	 * @return $this
-	 */
-	public function setToUserName($userName)
-	{
-		$this->toName = $userName;
-		return $this;
-	}
+    /**
+     * @param string $userName
+     * @return $this
+     */
+    public function setToUserName($userName)
+    {
+        $this->toName = $userName;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getToUserName()
-	{
-		return $this->toName;
-	}
+    /**
+     * @return string
+     */
+    public function getToUserName()
+    {
+        return $this->toName;
+    }
 
-	public function getMsg()
-	{
-		return $this->msgObj;
-	}
+    public function getMsg()
+    {
+        return $this->msgObj;
+    }
 
-	public function setMsg(MsgContainer $msg)
-	{
-		$this->msgObj = $msg;
-		return $this;
-	}
+    public function setMsg(MsgContainer $msg)
+    {
+        $this->msgObj = $msg;
+        return $this;
+    }
 
     public function getFilteredMsg()
     {
@@ -64,37 +64,37 @@ class MessageResponse extends Response
         return $this;
     }
 
-	public function setTime($time)
-	{
-		$this->time = $time ? : date('H:i:s');
-		return $this;
-	}
+    public function setTime($time)
+    {
+        $this->time = $time ?: date('H:i:s');
+        return $this;
+    }
 
-	public function getTime()
-	{
-		return $this->time;
-	}
+    public function getTime()
+    {
+        return $this->time;
+    }
 
-	public function setDualChat($dualChat)
-	{
-		$this->dualChat = $dualChat;
-		return $this;
-	}
+    public function setDualChat($dualChat)
+    {
+        $this->dualChat = $dualChat;
+        return $this;
+    }
 
-	/**
-	 * @param null $lastMsgId
-	 */
-	public function setLastMsgId($lastMsgId)
-	{
-		$this->lastMsgId = $lastMsgId;
-	}
+    /**
+     * @param null $lastMsgId
+     */
+    public function setLastMsgId($lastMsgId)
+    {
+        $this->lastMsgId = $lastMsgId;
+    }
 
-	public function toString()
-	{
-		if ($this->msgObj) {
-			if (!$this->getRecipient()) {
-				throw new BaseException('Something weird happened: no user was set as recipient');
-			}
+    public function toString()
+    {
+        if ($this->msgObj) {
+            if (!$this->getRecipient()) {
+                throw new BaseException('Something weird happened: no user was set as recipient');
+            }
 
             $user = $this->getRecipient();
             if ($user->getProperties()->hasCensor() && $this->filteredMsgObj) {
@@ -102,8 +102,8 @@ class MessageResponse extends Response
             } else {
                 $this->msg = $this->msgObj->getMsg($user->getLang());
             }
-		}
+        }
 
-		return parent::toString();
-	}
+        return parent::toString();
+    }
 }

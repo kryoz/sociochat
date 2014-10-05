@@ -7,20 +7,20 @@ use SocioChat\Response\PingResponse;
 
 class PingController extends ControllerBase
 {
-	public function handleRequest(ChainContainer $chain)
-	{
-		$user = $chain->getFrom();
-		$response = (new PingResponse())
-			->setChannelId($user->getChannelId());
+    public function handleRequest(ChainContainer $chain)
+    {
+        $user = $chain->getFrom();
+        $response = (new PingResponse())
+            ->setChannelId($user->getChannelId());
 
-		(new UserCollection())
-			->attach($user)
-			->setResponse($response)
-			->notify();
-	}
+        (new UserCollection())
+            ->attach($user)
+            ->setResponse($response)
+            ->notify();
+    }
 
-	protected function getFields()
-	{
-		return [];
-	}
+    protected function getFields()
+    {
+        return [];
+    }
 }

@@ -29,19 +29,21 @@ namespace SocioChat\Utils;
 class RudeFilter
 {
     #запрещаем создание экземпляра класса, вызов методов этого класса только статически!
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      *
-     * @param    string       $s         строка для проверки
-     * @param    int       $delta     ширина найденного фрагмента в словах
+     * @param    string $s строка для проверки
+     * @param    int $delta ширина найденного фрагмента в словах
      *                                   (кол-во слов от матного слова слева и справа, максимально 10)
-     * @param    string       $continue  строка, которая будет вставлена в начале и в конце фрагмента
-     * @param    bool         $is_html   расценивать строку как HTML код?
+     * @param    string $continue строка, которая будет вставлена в начале и в конце фрагмента
+     * @param    bool $is_html расценивать строку как HTML код?
      *                                   в режиме $is_html === TRUE html код игнорируется, а html сущности заменяются в "чистый" UTF-8
-     * @param    string|null  $replace   строка, на которую заменять матный фрагмент, например: '[ой]' ($replace д.б. в кодировке $charset)
+     * @param    string|null $replace строка, на которую заменять матный фрагмент, например: '[ой]' ($replace д.б. в кодировке $charset)
      *                                   опция работает в PHP >= 5.2.0
-     * @param    string       $charset   кодировка символов (родная кодировка -- UTF-8, для других будет прозрачное перекодирование)
+     * @param    string $charset кодировка символов (родная кодировка -- UTF-8, для других будет прозрачное перекодирование)
      * @return   bool|string|int|null    Если $replace === NULL, то возвращает FALSE, если мат не обнаружен, иначе фрагмент текста с матерным словом.
      *                                   Если $replace !== NULL, то возвращает исходную строку, где фрагменты мата заменены на $replace.
      *                                   В случае возникновения ошибки возвращает код ошибки > 0 (integer):
@@ -58,9 +60,9 @@ class RudeFilter
         $continue = "\xe2\x80\xa6",
         $is_html = false,
         $replace = '*',
-        $charset = 'UTF-8')
-    {
-        if (! ReflectionTypeHint::isValid()) {
+        $charset = 'UTF-8'
+    ) {
+        if (!ReflectionTypeHint::isValid()) {
             return -1;
         }
         if ($s === null) {
@@ -69,8 +71,7 @@ class RudeFilter
 
         static $re_badwords = null;
 
-        if ($re_badwords === null)
-        {
+        if ($re_badwords === null) {
             #предлоги русского языка:
             #[всуо]|
             #по|за|на|об|до|от|вы|вс|вз|из|ис|
@@ -135,10 +136,10 @@ class RudeFilter
                          | _хуе(?=дин)   #Хуедин  -- город в Румынии
                          | _hyu(?=ndai_) #Hyundai -- марка корейского автомобиля
                       )',
-
                 #Слово на букву П
                 '(?<=\PL) %RE_PRETEXT%?
-                      [пp]_?[иieеё]_?[зz3]_?[дd](?=_?[:vowel:])',  #п[ие]зда, пизде, пиздёж, пизду, пиздюлина, пиздобол, опиздинеть, пиздых, подпёздывать
+                      [пp]_?[иieеё]_?[зz3]_?[дd](?=_?[:vowel:])',
+                #п[ие]зда, пизде, пиздёж, пизду, пиздюлина, пиздобол, опиздинеть, пиздых, подпёздывать
 
                 #Слово на букву Е
                 '(?<=\PL) %RE_PRETEXT%?
@@ -154,33 +155,32 @@ class RudeFilter
                                 | [кk]_?[аa]                    #взъёбка
                                 | [сc]_?[тt]                    #ебсти
                                )',
-
                 #Слово на букву Е (c обязательной приставкой от 2-х и более букв!)
                 '(?<=\PL) %RE_PRETEXT%
                       (?<= \pL\pL|\pL_\pL_)
                       [eеё]_?[бb6]    #долбоёб, дураёб, изъёб, заёб, заебай, разъебай, мудоёбы
             ',
-
                 #Слово на букву Е
-                '(?<=\PL) ёб (?=\PL)',  #ёб твою мать
+                '(?<=\PL) ёб (?=\PL)',
+                #ёб твою мать
 
                 #Слово на букву Б
                 '(?<=\PL) %RE_PRETEXT%?
                       [бb6]_?[лl]_?(?:я|ya)(?: _         #бля
                                              | _?[тдtd]  #блять, бляди
                                            )',
-
                 #ПИДОР
-                '(?<=\PL) [пp]_?[иieе]_?[дdg]_?[eеaаoо]_?[rpр]',  #п[ие]д[оеа]р
+                '(?<=\PL) [пp]_?[иieе]_?[дdg]_?[eеaаoо]_?[rpр]',
+                #п[ие]д[оеа]р
 
                 #МУДАК
                 '(?<=\PL) [мm]_?[уy]_?[дdg]_?[аa]  #мудак, мудачок
                       #исключения:
                       (?<!_myda(?=s_))  #Chelonia mydas -- морская зеленая (суповая) черепаха
             ',
-
 //                #ЖОПА
-                '(?<=\PL) [zж]_?h?_?[оo]_?[pп]_?[aаyуыiеeoо]',  #жоп[ауыео]
+                '(?<=\PL) [zж]_?h?_?[оo]_?[pп]_?[aаyуыiеeoо]',
+                #жоп[ауыео]
 
                 #МАНДА
                 #исключения: город Мандалай, округ Мандаль, индейский народ Мандан, фамилия Мандель, мандарин
@@ -190,12 +190,13 @@ class RudeFilter
                          | manda(?=[ln]|rin)
                          | манде(?=ль)
                       )',
-
 //                #ГОВНО
-                '(?<=\PL) [гg]_?[оo]_?[вvb]_?[нnh]_?[оoаaяеeyу]',  #говн[оаяеу]
+                '(?<=\PL) [гg]_?[оo]_?[вvb]_?[нnh]_?[оoаaяеeyу]',
+                #говн[оаяеу]
 
 //                #FUCK
-                '(?<=\PL) f_?u_?[cс]_?k',  #fuck, fucking
+                '(?<=\PL) f_?u_?[cс]_?k',
+                #fuck, fucking
 
 
 //                #ЛОХ
@@ -214,10 +215,10 @@ class RudeFilter
             );
 
             $trans = array(
-                '_'             => '\x20',                       #пробел
-                '\pL'           => '[^\x20\d]',                  #буква
-                '\PL'           => '[\x20\d]',                   #не буква
-                '[:vowel:]'     => '[аеиоуыэюяёaeioyu]',         #гласные буквы
+                '_' => '\x20',                       #пробел
+                '\pL' => '[^\x20\d]',                  #буква
+                '\PL' => '[\x20\d]',                   #не буква
+                '[:vowel:]' => '[аеиоуыэюяёaeioyu]',         #гласные буквы
                 '[:consonant:]' => '[^аеиоуыэюяёaeioyu\x20\d]',  #согласные буквы
             );
 
@@ -229,17 +230,17 @@ class RudeFilter
             $re_badwords = strtr($re_badwords, $trans);
         }
 
-        $s       = UTF8::convert_from($s,       $charset);
+        $s = UTF8::convert_from($s, $charset);
         $replace = UTF8::convert_from($replace, $charset);
 
         $ss = $s;  #saves original string
 
-        if ($is_html)
-        {
+        if ($is_html) {
             #скрипты не вырезаем, т.к. м.б. обходной маневр на с кодом на javascript:
             #<script>document.write('сло'+'во')</script>
             #хотя давать пользователю возможность использовать код на javascript нехорошо
-            $s = is_callable(array('HTML', 'strip_tags')) ? HTML::strip_tags($s, null, true, array('comment', 'style', 'map', 'frameset', 'object', 'applet'))
+            $s = is_callable(array('HTML', 'strip_tags')) ? HTML::strip_tags($s, null, true,
+                array('comment', 'style', 'map', 'frameset', 'object', 'applet'))
                 : strip_tags($s);
             #заменяем html-сущности в "чистый" UTF-8
             $s = UTF8::html_entity_decode($s, $is_htmlspecialchars = true);
@@ -255,8 +256,7 @@ class RudeFilter
         }
 
         #ВотБ/\яПидорыОхуелиБлятьНахуйПохуйПи3децПолный
-        if (version_compare(PHP_VERSION, '5.2.0', '>='))
-        {
+        if (version_compare(PHP_VERSION, '5.2.0', '>=')) {
             $s = preg_replace('~     [\p{Lu}3] (?>\p{Ll}+|/\\\\|[@36]+)++   #Вот
 								 (?= [\p{Lu}3] (?:\p{Ll} |/\\\\|[@36] ) )   #Бля
 							   ~sxuSX', '$0 ', $s);
@@ -276,7 +276,7 @@ class RudeFilter
 
         $trans = array(
             '/\\' => 'л',  #Б/\ЯТЬ --> БЛЯТЬ
-            '@'   => 'а',  #пизд@  --> пизда
+            '@' => 'а',  #пизд@  --> пизда
         );
         $s = strtr($s, $trans);
 
@@ -294,21 +294,25 @@ class RudeFilter
                              ) \\1+
                            /sxSX', '$1', $s);
 
-        if ($replace === null || version_compare(PHP_VERSION, '5.2.0', '<'))
-        {
+        if ($replace === null || version_compare(PHP_VERSION, '5.2.0', '<')) {
             $result = preg_match($re_badwords, $s, $m, PREG_OFFSET_CAPTURE);
-            if (function_exists('preg_last_error') && preg_last_error() !== PREG_NO_ERROR) return preg_last_error();
-            if ($result === false) return 1;  #PREG_INTERNAL_ERROR = 1
-            if ($result && $replace === null)
-            {
+            if (function_exists('preg_last_error') && preg_last_error() !== PREG_NO_ERROR) {
+                return preg_last_error();
+            }
+            if ($result === false) {
+                return 1;
+            }  #PREG_INTERNAL_ERROR = 1
+            if ($result && $replace === null) {
                 list($word, $offset) = $m[0];
                 $s1 = substr($s, 0, $offset);
                 $s2 = substr($s, $offset + strlen($word));
                 $delta = intval($delta);
-                if ($delta === 0) $fragment = '[' . trim($word) . ']';
-                else
-                {
-                    if ($delta < 1 || $delta > 10) $delta = 3;
+                if ($delta === 0) {
+                    $fragment = '[' . trim($word) . ']';
+                } else {
+                    if ($delta < 1 || $delta > 10) {
+                        $delta = 3;
+                    }
                     preg_match('/  (?> \x20 (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)++ ){1,' . $delta . '}+
                                    \x20?+
                                 $/sxSX', $s1, $m1);
@@ -326,20 +330,25 @@ class RudeFilter
         }
 
         $result = preg_match_all($re_badwords, $s, $m);
-        if (function_exists('preg_last_error') && preg_last_error() !== PREG_NO_ERROR) return preg_last_error();
-        if ($result === false) return 1;  #PREG_INTERNAL_ERROR = 1
-        if ($result > 0)
-        {
+        if (function_exists('preg_last_error') && preg_last_error() !== PREG_NO_ERROR) {
+            return preg_last_error();
+        }
+        if ($result === false) {
+            return 1;
+        }  #PREG_INTERNAL_ERROR = 1
+        if ($result > 0) {
             #d($s, $m[0]);
             $s = $ss;
             #замена матного фрагмента на $replace
-            foreach ($m[0] as $w)
-            {
-                $re_w = '~' . preg_replace_callback('~(?:/\\\\|[^\x20])~suSX', array('self', '_make_regexp_callback'), $w) . '~sxuiSX';
+            foreach ($m[0] as $w) {
+                $re_w = '~' . preg_replace_callback('~(?:/\\\\|[^\x20])~suSX', array('self', '_make_regexp_callback'),
+                        $w) . '~sxuiSX';
                 $ss = preg_replace($re_w, $replace, $ss);
                 #d($re_w);
             }
-            while ($ss !== $s) $ss = self::parse($s = $ss, $delta, $continue, $is_html, $replace, 'UTF-8');
+            while ($ss !== $s) {
+                $ss = self::parse($s = $ss, $delta, $continue, $is_html, $replace, 'UTF-8');
+            }
         }
         return UTF8::convert_to($ss, $charset);
     }
@@ -349,12 +358,15 @@ class RudeFilter
         #$re_holes = '[\x00-\x20\-_\*\~\.\'"\^=`:]';
         #$re_holes = '[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]';
         $re_holes = '(?!/\\\\)[^\p{L}\d]';  #non letter, non digit, non '/\'
-        if ($m[0] === 'а')     $re = '[@аА]++           (?>[:holes:]|[@аА]+)*+';
-        elseif ($m[0] === 'з') $re = '[3зЗ]++           (?>[:holes:]|[3зЗ]+)*+';
-        elseif ($m[0] === 'б') $re = '[6бБ]++           (?>[:holes:]|[6бБ]+)*+';
-        elseif ($m[0] === 'л') $re = '(?>[лЛ]+|/\\\\)++ (?>[:holes:]|[лЛ]+|/\\\\)*+';
-        else
-        {
+        if ($m[0] === 'а') {
+            $re = '[@аА]++           (?>[:holes:]|[@аА]+)*+';
+        } elseif ($m[0] === 'з') {
+            $re = '[3зЗ]++           (?>[:holes:]|[3зЗ]+)*+';
+        } elseif ($m[0] === 'б') {
+            $re = '[6бБ]++           (?>[:holes:]|[6бБ]+)*+';
+        } elseif ($m[0] === 'л') {
+            $re = '(?>[лЛ]+|/\\\\)++ (?>[:holes:]|[лЛ]+|/\\\\)*+';
+        } else {
             #в PCRE-7.2 флаг /i в комбинации с /u в регулярном выражении почему-то не работает (BUG?)
             #поэтому делаем класс символов с буквами в обоих регистрах
             $char = '[' . preg_quote($m[0] . UTF8::uppercase($m[0]), '~') . ']';
