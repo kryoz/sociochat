@@ -47,8 +47,8 @@ define(function () {
                     tim: $this.domElems.tim.val(),
                     sex: $this.domElems.sex.val(),
                     name: $this.domElems.nickname.val(),
-	                city: $this.domElems.city.val(),
-	                birth: $this.domElems.birth.val(),
+                    city: $this.domElems.city.val(),
+                    birth: $this.domElems.birth.val(),
                     censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false //mozilla bug
                 }
                 $this.send(command);
@@ -82,33 +82,33 @@ define(function () {
             });
 
             $this.domElems.doMusicSearch.click(function (e) {
-	            require(['audio'], function(audio) {
-		            audio.process($this);
-	            });
+                require(['audio'], function (audio) {
+                    audio.process($this);
+                });
             });
 
-	        $this.domElems.doMusicSearch.click(function (e) {
-		        require(['audio'], function(audio) {
-			        audio.process($this);
-		        });
-	        });
+            $this.domElems.doMusicSearch.click(function (e) {
+                require(['audio'], function (audio) {
+                    audio.process($this);
+                });
+            });
 
-	        $this.domElems.musicInput.on('keypress', function(e) {
-		        if (e.which == 13) {
-			        require(['audio'], function(audio) {
-				        audio.process($this);
-			        });
-		        }
-	        });
+            $this.domElems.musicInput.on('keypress', function (e) {
+                if (e.which == 13) {
+                    require(['audio'], function (audio) {
+                        audio.process($this);
+                    });
+                }
+            });
 
-            $(window).resize(function() {
+            $(window).resize(function () {
                 $this.scrollDown();
             });
 
-            var checkManualScroll = function() {
+            var checkManualScroll = function () {
                 var container = $this.domElems.chat;
 
-                if (container[0].scrollTop > (container[0].scrollHeight - 1.5*container.height())) {
+                if (container[0].scrollTop > (container[0].scrollHeight - 1.5 * container.height())) {
                     $this.isManualScrolling = false;
                 }
             }
@@ -121,16 +121,16 @@ define(function () {
                 checkManualScroll();
             });
 
-            $this.domElems.chat.on('mousewheel', function() {
+            $this.domElems.chat.on('mousewheel', function () {
                 $this.isManualScrolling = true;
                 var timer = $.data(this, 'timer');
                 clearTimeout($.data(this, 'timer'));
-                $.data(this, 'timer', setTimeout(function() {
+                $.data(this, 'timer', setTimeout(function () {
                     checkManualScroll();
                 }, 250));
             });
         },
-        bindMenus: function($this) {
+        bindMenus: function ($this) {
             $this.domElems.menuDualize.click(function (e) {
                 var command = {
                     subject: 'Channel',
@@ -153,25 +153,25 @@ define(function () {
                 $this.send(command);
             });
 
-            $this.domElems.menuChat.click(function() {
+            $this.domElems.menuChat.click(function () {
                 $this.returnToChat();
             });
 
-            $this.domElems.regLink.click(function() {
+            $this.domElems.regLink.click(function () {
                 $this.domElems.regPanel.toggle();
             });
 
-            $('.tab-panel').click(function(e) {
+            $('.tab-panel').click(function (e) {
                 e.preventDefault();
                 $(this).tab('show');
             });
 
-            $('.return-to-chat').click(function() {
+            $('.return-to-chat').click(function () {
                 $this.returnToChat();
             });
         },
 
-        AvatarUploadHandler: function($this) {
+        AvatarUploadHandler: function ($this) {
             var avatar = $this.domElems.avatar;
             var uploadButtonContainer = avatar.find('.do-upload');
             var response = avatar.find('.alert');
@@ -180,7 +180,7 @@ define(function () {
             var jcropAPI = null;
             var dim = null;
 
-            avatar.find('.upload').change(function() {
+            avatar.find('.upload').change(function () {
                 var fileReader = new FileReader();
                 var file = this.files[0];
                 var image = new Image();
@@ -194,24 +194,26 @@ define(function () {
                 cropHolder.attr('style', placeHolder.attr('style'));
                 placeHolder.after(cropHolder);
 
-                fileReader.onload = function(e) {
+                fileReader.onload = function (e) {
                     placeHolder.hide();
                     image.src = e.target.result;
                 };
 
-                fileReader.onloadend = function() {
-                    setTimeout(function() {cropHolder.Jcrop({
-                        bgColor: '#fff',
-                        minSize: [64, 64],
-                        maxSize: [0, 0],
-                        setSelect: [0, 0, cropHolder.innerWidth(), cropHolder.innerHeight()],
-                        aspectRatio: 1,
-                        onSelect: function (coords){
-                            dim = coords;
-                        }
-                    },function(){
-                        jcropAPI = this;
-                    });}, 500);
+                fileReader.onloadend = function () {
+                    setTimeout(function () {
+                        cropHolder.Jcrop({
+                            bgColor: '#fff',
+                            minSize: [64, 64],
+                            maxSize: [0, 0],
+                            setSelect: [0, 0, cropHolder.innerWidth(), cropHolder.innerHeight()],
+                            aspectRatio: 1,
+                            onSelect: function (coords) {
+                                dim = coords;
+                            }
+                        }, function () {
+                            jcropAPI = this;
+                        });
+                    }, 500);
 
                 }
 
@@ -234,33 +236,40 @@ define(function () {
                 var percentage = progressbar.find('.sr-only');
 
                 var dim = jcropAPI.tellSelect();
-                dim = {x: dim.x, y: dim.y, w: dim.w, h: dim.h, portW: cropHolder.innerWidth(), portH: cropHolder.innerHeight()};
+                dim = {
+                    x: dim.x,
+                    y: dim.y,
+                    w: dim.w,
+                    h: dim.h,
+                    portW: cropHolder.innerWidth(),
+                    portH: cropHolder.innerHeight()
+                };
 
                 formData.append('img', file);
                 formData.append('token', $this.token);
                 formData.append('dim', JSON.stringify(dim));
 
-                xhr.upload.onprogress = function(e) {
+                xhr.upload.onprogress = function (e) {
                     if (e.lengthComputable) {
                         var percent = Math.round((e.loaded * 100) / e.total);
-                        progressbar.css('width', percent+'%').attr('aria-valuenow', percent)
-                        percentage.html(percent+"%");
+                        progressbar.css('width', percent + '%').attr('aria-valuenow', percent)
+                        percentage.html(percent + "%");
                     }
                 };
 
-                xhr.upload.onloadstart = function(e) {
+                xhr.upload.onloadstart = function (e) {
                     progressbarContainer.show();
                     progressbar.css('width', '0%').attr('aria-valuenow', 0)
                     percentage.html("0%");
                 }
 
-                xhr.upload.onload = function(e) {
+                xhr.upload.onload = function (e) {
                     progressbarContainer.hide();
                     uploadButtonContainer.hide();
                     response.addClass('alert-info').html('Фотография обрабатывается, подождите...').show();
                 }
 
-                xhr.onload = function(e) {
+                xhr.onload = function (e) {
                     response.removeClass('alert-info').removeClass('alert-danger');
 
                     jcropAPI.destroy();

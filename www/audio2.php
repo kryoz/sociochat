@@ -3,8 +3,8 @@
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 
-if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-	die('only internal requests allowed');
+if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+    die('only internal requests allowed');
 }
 
 require_once '../config.php';
@@ -17,22 +17,22 @@ $song = isset($_REQUEST['song']) ? urldecode($_REQUEST['song']) : null;
 $token = getToken();
 
 if (!$song) {
-	return;
+    return;
 }
 
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $response = curl('http://api.pleer.com/resource.php',
-	[
-		'access_token' => $token,
-		'method' => 'tracks_search',
-		'result_on_page' => $pageCount,
-		'page' => $page,
-		'query' => $song
-	]
+    [
+        'access_token' => $token,
+        'method' => 'tracks_search',
+        'result_on_page' => $pageCount,
+        'page' => $page,
+        'query' => $song
+    ]
 );
 
 $response += [
-	'page' => $page,
-	'pageCount' => $pageCount,
+    'page' => $page,
+    'pageCount' => $pageCount,
 ];
 echo json_encode($response);

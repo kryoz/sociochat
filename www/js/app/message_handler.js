@@ -1,7 +1,7 @@
-define(function() {
+define(function () {
     return {
         app: {},
-        process: function($this, response) {
+        process: function ($this, response) {
             if (!response.msg) {
                 return;
             }
@@ -17,8 +17,9 @@ define(function() {
                 function pad(n) {
                     return ("0" + n).slice(-2);
                 }
+
                 var time = new Date();
-                var str = time.getMonth()+'/'+time.getDate()+'/'+time.getFullYear()+ ' ' + response.time;
+                var str = time.getMonth() + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + response.time;
                 time = new Date(Date.parse(str));
                 time.setUTCHours(time.getHours() - 4);
 
@@ -29,11 +30,11 @@ define(function() {
                 var fromUser = response.userInfo ? response.userInfo : $this.getUserInfo(response.fromName);
 
                 if ($this.chatLastFrom != response.fromName) {
-                    msg += this.getAvatar(fromUser)+' ';
+                    msg += this.getAvatar(fromUser) + ' ';
                     if (time) {
-                        msg += '<div class="time">'+time+'</div>';
+                        msg += '<div class="time">' + time + '</div>';
                     }
-                    msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">'+ response.fromName +'</div>';
+                    msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">' + response.fromName + '</div>';
                 } else {
                     msgCSStype = 'repeat';
                 }
@@ -46,7 +47,7 @@ define(function() {
                         toWho = toUser.name;
                     }
 
-                    msg += '<div class="private"><b>[приватно для '+toWho+']</b> '
+                    msg += '<div class="private"><b>[приватно для ' + toWho + ']</b> '
                 }
 
                 msg += this.parse(response.msg);
@@ -59,12 +60,12 @@ define(function() {
 
                 if (found) {
                     var userName = $this.getUserInfoById(found[1]);
-                    $this.notify('Вас пригласил в приват пользователь '+userName+'!', $this.ownName, 'private', 30000);
+                    $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $this.ownName, 'private', 30000);
                     response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
                 }
 
                 if (time) {
-                    msg += '<div class="time">'+time+'</div>';
+                    msg += '<div class="time">' + time + '</div>';
                 }
 
                 msg += '<span>' + response.msg + '</span>';
@@ -92,16 +93,16 @@ define(function() {
             $this.chatLastFrom = response.fromName;
             this.bindClicks();
         },
-        parse: function(incomingMessage) {
+        parse: function (incomingMessage) {
             var originalText = incomingMessage;
             var $this = this.app;
 
-            String.prototype.hashCode = function() {
+            String.prototype.hashCode = function () {
                 var hash = 0, i, chr, len;
                 if (this.length == 0) return hash;
                 for (i = 0, len = this.length; i < len; i++) {
-                    chr   = this.charCodeAt(i);
-                    hash  = ((hash << 5) - hash) + chr;
+                    chr = this.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + chr;
                     hash |= 0; // Convert to 32bit integer
                 }
                 return hash;
@@ -109,7 +110,7 @@ define(function() {
 
             var getImgReplacementString = function (holder) {
                 var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
-                replacement += '<img src="'+holder+'" style="max-width:100%; height: auto; display: none"></div>';
+                replacement += '<img src="' + holder + '" style="max-width:100%; height: auto; display: none"></div>';
                 return replacement;
             }
 
@@ -138,10 +139,10 @@ define(function() {
                         type: "GET",
                         url: '/img.php',
                         data: {
-                            'url' : url
+                            'url': url
                         },
-                        success: function(response) {
-                            var $img = $('#url-'+hash);
+                        success: function (response) {
+                            var $img = $('#url-' + hash);
 
                             $img.hide();
 
@@ -150,7 +151,7 @@ define(function() {
                             replacement.insertAfter($img);
                             $img.remove();
 
-                            replacement.click(function() {
+                            replacement.click(function () {
                                 $(this).find('img').toggle();
                                 $(this).find('a').toggle();
                                 $this.scrollDown();
@@ -160,7 +161,7 @@ define(function() {
                         dataType: 'json'
                     });
 
-                    return text.replace(exp, '<a target="_blank" href="$1" id="url-'+hash+'">$1</a>');
+                    return text.replace(exp, '<a target="_blank" href="$1" id="url-' + hash + '">$1</a>');
                 }
                 return text;
             }
@@ -179,9 +180,9 @@ define(function() {
                 if (track_id) {
                     track_id = track_id[1];
 
-                    var musicElId = 'music-'+track_id+'-'+Math.floor(Math.random()*100000);
+                    var musicElId = 'music-' + track_id + '-' + Math.floor(Math.random() * 100000);
                     var replacement = '<div class="img-thumbnail">' +
-                        '<a id="'+musicElId+
+                        '<a id="' + musicElId +
                         '" class="music" href="#" title="Воспроизвести музыку">' +
                         '<span class="glyphicon glyphicon-play-circle"></span> ...</a>';
 
@@ -189,17 +190,17 @@ define(function() {
                         type: "GET",
                         url: '/audio_player.php',
                         data: {
-                            'track_id' : track_id
+                            'track_id': track_id
                         },
-                        success: function(response) {
-                            var $realTrackEl = $('#'+musicElId);
+                        success: function (response) {
+                            var $realTrackEl = $('#' + musicElId);
 
-                            $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track));
+                            $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' ' + response.artist + ' - ' + response.track));
                             $realTrackEl.data('src', response.url);
-                            $realTrackEl.click(function(e) {
-	                            require(['audio'], function(audio) {
-		                            audio.playMusic($this.domElems.audioPlayer, e, musicElId);
-	                            });
+                            $realTrackEl.click(function (e) {
+                                require(['audio'], function (audio) {
+                                    audio.playMusic($this.domElems.audioPlayer, e, musicElId);
+                                });
                             });
                         },
                         dataType: 'json'
@@ -212,8 +213,8 @@ define(function() {
             }
 
             var replaceOwnName = function (text) {
-                var exp = new RegExp('(?:\\s||,||\\.)('+$this.ownName+')(?:\\s||,||\\.)', 'ig');
-                return text.replace(exp , "<code class=\"private\">$1</code>");
+                var exp = new RegExp('(?:\\s||,||\\.)(' + $this.ownName + ')(?:\\s||,||\\.)', 'ig');
+                return text.replace(exp, "<code class=\"private\">$1</code>");
             }
 
             incomingMessage = replaceOwnName(incomingMessage);
@@ -229,18 +230,18 @@ define(function() {
 
             return incomingMessage;
         },
-        bindClicks: function() {
+        bindClicks: function () {
             var $this = this.app;
             var newLine = $this.domElems.chat.find('div:last-child');
             var newNameOnLine = newLine.find('.nickname');
 
-            newLine.find('.image-clickable').click(function() {
+            newLine.find('.image-clickable').click(function () {
                 $(this).find('img').toggle();
                 $(this).find('a').toggle();
                 $this.scrollDown();
             });
 
-            newNameOnLine.click(function() {
+            newNameOnLine.click(function () {
                 if ($this.clickTimer) {
                     clearTimeout($this.clickTimer);
                 }
@@ -251,13 +252,13 @@ define(function() {
                 }, 250);
             });
 
-            newNameOnLine.dblclick(function() {
+            newNameOnLine.dblclick(function () {
                 clearTimeout($this.clickTimer);
 
                 var userName = $(this).text();
                 var userId = $this.getUserInfo(userName).user_id;
                 if (userId) {
-                    $this.domElems.address.find('option[value='+userId+']').attr('selected', 'selected');
+                    $this.domElems.address.find('option[value=' + userId + ']').attr('selected', 'selected');
                     $this.domElems.address.data('id', userId);
                     $this.domElems.addressReset.show();
                     $this.domElems.inputMessage.focus();
@@ -269,9 +270,9 @@ define(function() {
                 var imgFull = ava.data('src');
                 console.log(imgFull);
                 if (imgFull != null) {
-                    var imgEl = $('<img src="'+imgFull+'" style="margin-left:-45px">');
+                    var imgEl = $('<img src="' + imgFull + '" style="margin-left:-45px">');
                     ava.parent().prepend(imgEl);
-                    imgEl.click(function() {
+                    imgEl.click(function () {
                         $(this).remove();
                         ava.show();
                     });
@@ -280,23 +281,26 @@ define(function() {
                 }
             });
 
-	        newLine.find('.accept-private').click(function () {
-		        var userId = $(this).data('id');
-				if (userId) {
-					$this.togglePrivate(userId);
-				}
-	        });
+            newLine.find('.accept-private').click(function () {
+                var userId = $(this).data('id');
+                if (userId) {
+                    $this.togglePrivate(userId);
+                }
+            });
         },
-        getSexClass: function(user) {
+        getSexClass: function (user) {
             var colorClass = null;
             var sex = user ? user.sex : 'Аноним';
             switch (sex) {
                 case 'Женщина' :
-                    colorClass = 'female'; break;
+                    colorClass = 'female';
+                    break;
                 case 'Аноним' :
-                    colorClass = 'anonym'; break;
+                    colorClass = 'anonym';
+                    break;
                 case 'Мужчина' :
-                    colorClass = 'male'; break;
+                    colorClass = 'male';
+                    break;
                 default:
                     colorClass = '';
             }
@@ -307,14 +311,14 @@ define(function() {
             var text = '<div class="user-avatar"';
 
             if (user && user.avatarThumb) {
-                text += ' data-src="'+user.avatarImg+'">';
-                text += '<img src="'+ $this.getImgUrl(user.avatarThumb) +'">';
+                text += ' data-src="' + user.avatarImg + '">';
+                text += '<img src="' + $this.getImgUrl(user.avatarThumb) + '">';
             } else {
                 text += '>';
                 text += '<span class="glyphicon glyphicon-user"></span>';
             }
 
-            return text+'</div>';
+            return text + '</div>';
         }
     }
 });

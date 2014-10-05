@@ -1,20 +1,20 @@
-define(function() {
+define(function () {
     return {
-        process: function(json, $this) {
+        process: function (json, $this) {
             var getAvatar = function (user) {
                 var text = '<div class="user-avatar"';
                 if (user && user.avatarThumb) {
-                    text += ' data-src="'+user.avatarImg+'">';
-                    text += '<img src="'+ $this.getImgUrl(user.avatarThumb) +'">';
+                    text += ' data-src="' + user.avatarImg + '">';
+                    text += '<img src="' + $this.getImgUrl(user.avatarThumb) + '">';
                 } else {
                     text += '>';
                     text += '<span class="glyphicon glyphicon-user"></span>';
                 }
 
-                return text+'</div>';
+                return text + '</div>';
             }
 
-            var handleGuests = function(json) {
+            var handleGuests = function (json) {
                 if (json.guests && $this.guestEditState == 0) {
                     $this.guests = json.guests;
                     var guests = $this.guests;
@@ -29,7 +29,7 @@ define(function() {
                     for (var i in guests) {
                         var guest = guests[i];
 
-                        guestDropdownHTML += '<option value="'+guest.user_id+'">'+guest.name+'</option>';
+                        guestDropdownHTML += '<option value="' + guest.user_id + '">' + guest.name + '</option>';
 
                         var colorClass = null;
                         if (guest.sex == 'Мужчина') {
@@ -42,12 +42,12 @@ define(function() {
                             colorClass = 'warning';
                         }
 
-                        guestHMTL += '<tr class="'+colorClass+'">';
+                        guestHMTL += '<tr class="' + colorClass + '">';
                         guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
-	                    guestHMTL += '<td>'+guest.tim+'</td>';
-	                    guestHMTL += '<td>'+(guest.city ? guest.city : '') +'</td>';
-	                    guestHMTL += '<td>'+(guest.birth == (d.getFullYear() - 1930) ? '' : guest.birth)+'</td>';
-                        guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb" data-id="'+guest.user_id+'">';
+                        guestHMTL += '<td>' + guest.tim + '</td>';
+                        guestHMTL += '<td>' + (guest.city ? guest.city : '') + '</td>';
+                        guestHMTL += '<td>' + (guest.birth == (d.getFullYear() - 1930) ? '' : guest.birth) + '</td>';
+                        guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb" data-id="' + guest.user_id + '">';
 
                         if (guest.banned) {
                             guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
@@ -58,10 +58,10 @@ define(function() {
                             guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
                         }
 
-                        guestHMTL +='</div></td></tr>';
+                        guestHMTL += '</div></td></tr>';
 
                         if (guest.note) {
-                            guestHMTL += '<tr id="user-note-'+guest.user_id+'" class="'+colorClass+'"><td colspan="5" class="no-border-top">';
+                            guestHMTL += '<tr id="user-note-' + guest.user_id + '" class="' + colorClass + '"><td colspan="5" class="no-border-top">';
                             guestHMTL += '<div class="col-md-12">';
                             guestHMTL += guest.note;
                             guestHMTL += '</div>';
@@ -72,9 +72,9 @@ define(function() {
                     $this.domElems.guestList.append(guestHMTL);
                     $this.domElems.address.append(guestDropdownHTML);
 
-                    $this.domElems.address.find('option[value='+$this.domElems.address.data('id')+']').attr('selected', 'selected');
+                    $this.domElems.address.find('option[value=' + $this.domElems.address.data('id') + ']').attr('selected', 'selected');
 
-                    $this.domElems.guestList.find('.ban').click(function() {
+                    $this.domElems.guestList.find('.ban').click(function () {
                         var userId = $(this).parent().data('id');
 
                         var command = {
@@ -86,7 +86,7 @@ define(function() {
                         $this.returnToChat();
                     });
 
-                    $this.domElems.guestList.find('.unban').click(function() {
+                    $this.domElems.guestList.find('.unban').click(function () {
                         var userId = $(this).parent().data('id');
 
                         var command = {
@@ -98,10 +98,10 @@ define(function() {
                         $this.returnToChat();
                     });
 
-                    $this.domElems.guestList.find('.note').click(function() {
+                    $this.domElems.guestList.find('.note').click(function () {
                         var userId = $(this).parent().data('id');
-                        var dupItem = $('#user-edit-'+userId);
-                        var textNote = $('#user-note-'+userId);
+                        var dupItem = $('#user-edit-' + userId);
+                        var textNote = $('#user-note-' + userId);
 
                         if (dupItem.length) {
                             dupItem.remove();
@@ -113,7 +113,7 @@ define(function() {
                         $this.guestEditState = 1;
 
                         var thisRow = $(this).closest('tr');
-                        var editHtml = '<tr id="user-edit-'+userId+'" class="'+thisRow.attr('class')+' no-border-top"><td colspan="5">';
+                        var editHtml = '<tr id="user-edit-' + userId + '" class="' + thisRow.attr('class') + ' no-border-top"><td colspan="5">';
 
                         editHtml += '<div class="col-md-12">';
                         editHtml += '<div class="input-group btn-block">';
@@ -133,7 +133,7 @@ define(function() {
                             textNote.hide();
                         }
 
-                        noteForm.find('button').click(function() {
+                        noteForm.find('button').click(function () {
                             $this.guestEditState = 0;
                             var command = {
                                 subject: 'Note',
@@ -146,7 +146,7 @@ define(function() {
                         })
                     });
 
-                    $this.domElems.guestList.find('.invite').click(function() {
+                    $this.domElems.guestList.find('.invite').click(function () {
                         $this.togglePrivate($(this).parent().data('id'));
                     });
 
@@ -155,7 +155,7 @@ define(function() {
                 }
             }
 
-            var handleOwnProperties = function() {
+            var handleOwnProperties = function () {
                 if (!json.ownProperties) {
                     return;
                 }
@@ -199,20 +199,20 @@ define(function() {
                     $this.domElems.avatar.find('div.avatar-placeholder-mini').html(thumb);
                 }
 
-	            if (props.birth) {
-		            $this.domElems.birth.val(props.birth);
-	            }
+                if (props.birth) {
+                    $this.domElems.birth.val(props.birth);
+                }
 
-	            if (props.city) {
-		            $this.domElems.city.val(props.city);
-	            }
+                if (props.city) {
+                    $this.domElems.city.val(props.city);
+                }
 
                 if (props.censor) {
                     $this.domElems.censor.prop('checked', props.censor);
                 }
             }
 
-            var handleDualChat = function() {
+            var handleDualChat = function () {
                 if (json.dualChat == 'match') {
                     $this.notify('Найден ваш собеседник!', 'Поздоровайтесь :)', 'private');
                     $this.domElems.menuDualize.hide();
@@ -230,13 +230,13 @@ define(function() {
                 }
             }
 
-            var handleMessage = function(response) {
-                require(['message_handler'], function(messageHandler) {
+            var handleMessage = function (response) {
+                require(['message_handler'], function (messageHandler) {
                     messageHandler.process($this, response);
                 });
             }
 
-            var handleErrors = function() {
+            var handleErrors = function () {
                 if (json.disconnect) {
                     $this.connection = null;
                     $this.disconnect = 1;
@@ -249,7 +249,7 @@ define(function() {
                 }
             }
 
-            var handleHistory = function() {
+            var handleHistory = function () {
                 if (json.history) {
                     if (json.clear) {
                         $this.msgCount = 0;
@@ -266,7 +266,7 @@ define(function() {
                 }
             };
 
-            var handleChannels = function() {
+            var handleChannels = function () {
                 if (!json.channels) {
                     return;
                 }
@@ -276,7 +276,7 @@ define(function() {
                 $channels.empty();
 
                 for (var channelId in json.channels) {
-                    var item = '<li><a href="#" data-id="' + channelId + '">' + json.channels[channelId].name + ' ['+json.channels[channelId].usersCount+']';
+                    var item = '<li><a href="#" data-id="' + channelId + '">' + json.channels[channelId].name + ' [' + json.channels[channelId].usersCount + ']';
                     if (channelId == json.chatId) {
                         item += ' <span class="glyphicon glyphicon-ok-sign"></span>';
                     }
@@ -310,12 +310,12 @@ define(function() {
                 }
 
                 $this.connection.close();
-	            $this.initSession(function() {
-		                $this.Connect();
-	                }, {
-			            regenerate: 1
-		            }
-	            );
+                $this.initSession(function () {
+                        $this.Connect();
+                    }, {
+                        regenerate: 1
+                    }
+                );
             };
 
             handleTokenRefresh();

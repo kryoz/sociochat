@@ -7,9 +7,9 @@ define('app', function () {
         isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
         msgCount: 0,
         guestCount: 0,
-        guests : [],
+        guests: [],
         currentChannel: 1,
-        notificationProperties : [],
+        notificationProperties: [],
         bufferSize: 100,
 
         timer: null,
@@ -24,15 +24,15 @@ define('app', function () {
         guestEditState: 0,
         disconnect: 0,
         lastMsgId: -1,
-        delay: 1000*60,
+        delay: 1000 * 60,
 
         ownId: null,
         ownSex: 0,
         ownName: null,
         chatLastFrom: null,
-	    isFirstConnect: true,
+        isFirstConnect: true,
 
-        domElems : {
+        domElems: {
             guestList: $('#guests'),
             inputMessage: $('#message'),
             chat: $('#log'),
@@ -44,8 +44,8 @@ define('app', function () {
             email: $('#profile-email'),
             password: $('#profile-password'),
             avatar: $('#profile-avatar'),
-	        city: $('#profile-city'),
-	        birth: $('#profile-year'),
+            city: $('#profile-city'),
+            birth: $('#profile-year'),
             censor: $('#profile-censor'),
 
             loginName: $('#login-name'),
@@ -57,63 +57,63 @@ define('app', function () {
             setRegInfo: $('#set-reg-info'),
             doLogin: $('#do-login'),
             doMusicSearch: $('#do-music-search'),
-	        musicInput: $("#music input[name=song]"),
+            musicInput: $("#music input[name=song]"),
 
-            menuDualize : $('#menu-dualize'),
-            menuDualizeStop : $('#menu-dualize-stop'),
-            menuExit : $('#menu-exit'),
-            menuChat : $('.navbar-brand a'),
+            menuDualize: $('#menu-dualize'),
+            menuDualizeStop: $('#menu-dualize-stop'),
+            menuExit: $('#menu-exit'),
+            menuChat: $('.navbar-brand a'),
             menuChannels: $('#menu-channels'),
             navbar: $('.navbar-nav'),
             regLink: $('#reg-info'),
             regPanel: $('#reg-panel'),
-	        audioPlayer : $('#player')
+            audioPlayer: $('#player')
         },
 
-        Init: function(hostUrl, domain) {
-	        var $this = this;
+        Init: function (hostUrl, domain) {
+            var $this = this;
 
-	        this.hostUrl = hostUrl;
+            this.hostUrl = hostUrl;
             this.domain = domain;
 
-            this.initSession(function() {
+            this.initSession(function () {
                 $this.Connect();
             });
 
-            require(['init_events'], function(binders) {
+            require(['init_events'], function (binders) {
                 binders.bindEvents($this);
                 binders.bindMenus($this);
                 binders.AvatarUploadHandler($this);
             });
 
         },
-		initSession: function (callback, params) {
-			var $this = this;
-			$.ajax({
-				type: "GET",
-				data: params,
-				url: '/session.php',
-                    cache: false,
-				    success: function(response) {
-                        $this.token = response.token;
-                        var options = {
-                            expires : response.ttl
-                        };
+        initSession: function (callback, params) {
+            var $this = this;
+            $.ajax({
+                type: "GET",
+                data: params,
+                url: '/session.php',
+                cache: false,
+                success: function (response) {
+                    $this.token = response.token;
+                    var options = {
+                        expires: response.ttl
+                    };
 
-                        if (response.isSecure) {
-                            $.extend(options, {secure: response.isSecure});
-                        }
-                        $this.setCookie(
-                            'token',
-                            response.token,
-                            options
-                        );
-                        $this.Connect();
-				},
-				dataType: 'json'
-			});
-		},
-        Connect : function() {
+                    if (response.isSecure) {
+                        $.extend(options, {secure: response.isSecure});
+                    }
+                    $this.setCookie(
+                        'token',
+                        response.token,
+                        options
+                    );
+                    $this.Connect();
+                },
+                dataType: 'json'
+            });
+        },
+        Connect: function () {
             try {
                 this.connection = new WebSocket(this.hostUrl);
             } catch (e) {
@@ -124,11 +124,11 @@ define('app', function () {
         },
         handleResponse: function (json) {
             var $this = this;
-            require(['response_handler'], function(response) {
+            require(['response_handler'], function (response) {
                 response.process(json, $this)
             });
         },
-        addConnectionHandlers: function() {
+        addConnectionHandlers: function () {
             var $this = this;
             var startPendingStatus = function () {
                 $this.domElems.sendMessageButton
@@ -137,7 +137,7 @@ define('app', function () {
                     .addClass('glyphicon-refresh')
                     .addClass('rotate');
             }
-            var endPendingStatus = function() {
+            var endPendingStatus = function () {
                 $this.domElems.sendMessageButton
                     .find('span')
                     .addClass('glyphicon-send')
@@ -145,15 +145,15 @@ define('app', function () {
                     .removeClass('rotate');
             }
 
-            $(window).unload(function() {
+            $(window).unload(function () {
                 $this.connection.close();
             });
 
-            $this.connection.onopen = function(e) {
-	            if ($this.isFirstConnect) {
-		            $this.domElems.chat.empty();
-		            $this.isFirstConnect = false;
-	            }
+            $this.connection.onopen = function (e) {
+                if ($this.isFirstConnect) {
+                    $this.domElems.chat.empty();
+                    $this.isFirstConnect = false;
+                }
 
                 endPendingStatus();
 
@@ -167,7 +167,7 @@ define('app', function () {
                 $this.domElems.inputMessage.attr('placeholder', 'Сообщение');
             };
 
-            $this.connection.onclose = function(e) {
+            $this.connection.onclose = function (e) {
                 if ($this.disconnect) {
                     return;
                 }
@@ -176,11 +176,11 @@ define('app', function () {
                     $this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
                 }
 
-                $this.retryTimer = setTimeout(function() {
+                $this.retryTimer = setTimeout(function () {
                     if (!$this.reconnectTimeout) {
                         startPendingStatus();
 
-                        $this.reconnectTimeout = setTimeout(function() {
+                        $this.reconnectTimeout = setTimeout(function () {
                             endPendingStatus();
                             $this.addLog('Попытки подключиться исчерпаны. Попробуйте зайти позднее.', 'system');
                             $this.connection = null;
@@ -196,11 +196,11 @@ define('app', function () {
                 $this.domElems.inputMessage.attr('placeholder', 'Обрыв соединения... подождите, пожалуйста...');
             }
 
-            $this.connection.onerror = function(e) {
+            $this.connection.onerror = function (e) {
                 console.log(e);
             }
 
-            $this.connection.onmessage = function(e) {
+            $this.connection.onmessage = function (e) {
                 try {
                     var json = JSON.parse(e.data);
                 } catch (c) {
@@ -218,7 +218,8 @@ define('app', function () {
                 if (myNotification.needsPermission()) {
                     myNotification.requestPermission();
                 }
-            } catch (e) { }
+            } catch (e) {
+            }
 
             var command = {
                 subject: "Message",
@@ -229,7 +230,7 @@ define('app', function () {
             $this.domElems.inputMessage.val('');
         },
         addLog: function (msg, cssclass) {
-            var $div = $('<div class="'+cssclass+'">' + msg + '</div>');
+            var $div = $('<div class="' + cssclass + '">' + msg + '</div>');
             this.domElems.chat.append($div);
             this.scrollDown();
         },
@@ -243,25 +244,25 @@ define('app', function () {
 
             }
         },
-        returnToChat : function () {
+        returnToChat: function () {
             this.domElems.menuChat.tab('show');
             this.domElems.navbar.find('li').removeClass('active');
         },
-        getUserInfo : function(name) {
+        getUserInfo: function (name) {
             for (var i in this.guests) {
                 if (this.guests[i].name == name) {
                     return this.guests[i];
                 }
             }
         },
-        getUserInfoById : function(id) {
+        getUserInfoById: function (id) {
             for (var i in this.guests) {
                 if (this.guests[i].id == id) {
                     return this.guests[i];
                 }
             }
         },
-        togglePrivate : function(userId) {
+        togglePrivate: function (userId) {
             var command = {
                 subject: 'Channel',
                 action: 'join',
@@ -270,11 +271,11 @@ define('app', function () {
             this.send(command);
             this.returnToChat();
         },
-        scrollDown: function() {
+        scrollDown: function () {
             if (!this.isManualScrolling) {
                 var container = this.domElems.chat;
                 var height = container[0].scrollHeight;
-                container.scrollTop(height+1000);
+                container.scrollTop(height + 1000);
             }
         },
         notify: function (msg, author, tag, timeout) {
@@ -283,16 +284,17 @@ define('app', function () {
                     body: msg,
                     tag: tag ? tag : App.chatName,
                     icon: 'img/sociochat.jpg',
-                    timeout : timeout ? timeout : 5000
+                    timeout: timeout ? timeout : 5000
                 });
 
                 myNotification.show();
-            } catch (e) { }
+            } catch (e) {
+            }
         },
         getImgUrl: function (url) {
             if (this.isRetina && url) {
                 var exp = /(\.\w+)/i
-                return url.replace(exp , "@2x$1");
+                return url.replace(exp, "@2x$1");
             }
             return url;
         },
@@ -324,7 +326,7 @@ define('app', function () {
 
             document.cookie = updatedCookie;
         },
-        getCookie: function(name) {
+        getCookie: function (name) {
             var matches = document.cookie.match(new RegExp(
                 "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
             ));

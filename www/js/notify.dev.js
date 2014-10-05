@@ -24,7 +24,7 @@
             icon: '',
             body: '',
             tag: '',
-	        timeout: 5000,
+            timeout: 5000,
             notifyShow: null,
             notifyClose: null,
             notifyClick: null,
@@ -96,12 +96,12 @@
         w.Notification.requestPermission(function (perm) {
             that.permission = perm;
             switch (that.permission) {
-            case 'granted':
-                that.onPermissionGranted();
-                break;
-            case 'denied':
-                that.onPermissionDenied();
-                break;
+                case 'granted':
+                    that.onPermissionGranted();
+                    break;
+                case 'denied':
+                    that.onPermissionDenied();
+                    break;
             }
         });
     };
@@ -112,19 +112,19 @@
             return;
         }
 
-	    var $this = this;
+        var $this = this;
 
         this.myNotify = new Notification(this.title, {
             'body': this.options.body,
-            'tag' : this.options.tag,
-            'icon' : this.options.icon
+            'tag': this.options.tag,
+            'icon': this.options.icon
         });
 
-	    this.myNotify.onshow = function() {
-		    setTimeout(function() {
-			    $this.myNotify.close();
-		    }, $this.options.timeout);
-	    }
+        this.myNotify.onshow = function () {
+            setTimeout(function () {
+                $this.myNotify.close();
+            }, $this.options.timeout);
+        }
 
         this.myNotify.addEventListener('show', this, false);
         this.myNotify.addEventListener('error', this, false);
@@ -186,18 +186,18 @@
 
     Notify.prototype.handleEvent = function (e) {
         switch (e.type) {
-        case 'show':
-            this.onShowNotification(e);
-            break;
-        case 'close':
-            this.onCloseNotification(e);
-            break;
-        case 'click':
-            this.onClickNotification(e);
-            break;
-        case 'error':
-            this.onErrorNotification(e);
-            break;
+            case 'show':
+                this.onShowNotification(e);
+                break;
+            case 'close':
+                this.onCloseNotification(e);
+                break;
+            case 'click':
+                this.onClickNotification(e);
+                break;
+            case 'error':
+                this.onErrorNotification(e);
+                break;
         }
     };
 
