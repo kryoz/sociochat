@@ -9,10 +9,10 @@ class FixWrongDateType extends AbstractMigration
      */
     public function up()
     {
-	    $table = $this->table('user_properties');
-	    $table
-		    ->changeColumn('birth', 'date', ['default' => '1930-01-01'])
-		    ->update();
+        $table = $this->table('user_properties');
+        $table
+            ->changeColumn('birth', 'date', ['default' => '1930-01-01'])
+            ->update();
     }
 
     /**
@@ -20,9 +20,9 @@ class FixWrongDateType extends AbstractMigration
      */
     public function down()
     {
-	    $table = $this->table('user_properties');
-	    $table
-		    ->changeColumn('birth', 'timestamp', ['default' => null, 'null' => true])
-		    ->update();
+        $table = $this->table('user_properties');
+        $table
+            ->changeColumn('birth', 'timestamp', ['default' => null, 'null' => true])
+            ->update();
     }
 }

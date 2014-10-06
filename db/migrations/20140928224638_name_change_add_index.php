@@ -4,22 +4,22 @@ use Phinx\Migration\AbstractMigration;
 
 class NameChangeAddIndex extends AbstractMigration
 {
-	public function change()
-	{
+    public function change()
+    {
 
-		$table = $this->table('name_change_history');
-		$table
-			->addIndex(['old_name'])
-			->update();
+        $table = $this->table('name_change_history');
+        $table
+            ->addIndex(['old_name'])
+            ->update();
 
-	}
-    
+    }
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-    
+
     }
 
     /**

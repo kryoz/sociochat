@@ -71,7 +71,7 @@ require_once "pages/header.php";
             </div>
             <div class="collapse navbar-collapse">
                 <ul role="navigation" class="nav navbar-nav">
-                    <li>
+                    <li style="display: none">
                         <a href="#music" class="tip tab-panel" data-toggle="tab"
                            title="<?= $lang->getPhrase('index.MusicTip') ?>"><span
                                 class="glyphicon glyphicon-headphones"></span> <?= $lang->getPhrase('index.Music') ?>

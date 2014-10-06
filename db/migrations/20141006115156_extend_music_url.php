@@ -2,16 +2,16 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class AddMusicTrackUrl extends AbstractMigration
+class ExtendMusicUrl extends AbstractMigration
 {
+
     public function change()
     {
         $table = $this->table('music_info');
         $table
-            ->addColumn('url', 'string', ['limit' => 255, 'default' => null, 'null' => true])
+            ->changeColumn('url', 'string', ['limit' => 512, 'default' => null, 'null' => true])
             ->update();
     }
-
 
     /**
      * Migrate Up.

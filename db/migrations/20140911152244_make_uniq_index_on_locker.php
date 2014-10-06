@@ -7,11 +7,11 @@ class MakeUniqIndexOnLocker extends AbstractMigration
 
     public function change()
     {
-	    $table = $this->table('locker');
-	    $table
-		    ->removeIndex('uid')
-		    ->addIndex(['uid'], ['unique' => true])
-		    ->update();
+        $table = $this->table('locker');
+        $table
+            ->removeIndex('uid')
+            ->addIndex(['uid'], ['unique' => true])
+            ->update();
     }
 
     /**
@@ -19,7 +19,7 @@ class MakeUniqIndexOnLocker extends AbstractMigration
      */
     public function up()
     {
-    
+
     }
 
     /**

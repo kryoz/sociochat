@@ -42,7 +42,7 @@ define(function () {
                     var toUser = $this.getUserInfo(response.toName);
                     var toWho = 'вас';
 
-                    if (fromUser && fromUser.name == $this.ownName) {
+                    if (fromUser && fromUser.name == $this.user.name) {
                         $this.notify(response.msg, response.fromName, 'private', 5000);
                         toWho = toUser.name;
                     }
@@ -60,7 +60,7 @@ define(function () {
 
                 if (found) {
                     var userName = $this.getUserInfoById(found[1]);
-                    $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $this.ownName, 'private', 30000);
+                    $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $this.user.name, 'private', 30000);
                     response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
                 }
 
@@ -213,7 +213,7 @@ define(function () {
             }
 
             var replaceOwnName = function (text) {
-                var exp = new RegExp('(?:\\s||,||\\.)(' + $this.ownName + ')(?:\\s||,||\\.)', 'ig');
+                var exp = new RegExp('(?:\\s||,||\\.)(' + $this.user.name + ')(?:\\s||,||\\.)', 'ig');
                 return text.replace(exp, "<code class=\"private\">$1</code>");
             }
 

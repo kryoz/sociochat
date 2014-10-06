@@ -26,9 +26,12 @@ define('app', function () {
         lastMsgId: -1,
         delay: 1000 * 60,
 
-        ownId: null,
-        ownSex: 0,
-        ownName: null,
+        user: {
+            id: 0,
+            sex: 0,
+            name: '',
+            email: ''
+        },
         chatLastFrom: null,
         isFirstConnect: true,
 
@@ -67,7 +70,9 @@ define('app', function () {
             navbar: $('.navbar-nav'),
             regLink: $('#reg-info'),
             regPanel: $('#reg-panel'),
-            audioPlayer: $('#player')
+            audioPlayer: $('#player'),
+            musicLink: $('a[href="#music"]').parent(),
+            loginLink: $('a[href="#login"]')
         },
 
         Init: function (hostUrl, domain) {

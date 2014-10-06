@@ -52,7 +52,7 @@ define(function () {
                         if (guest.banned) {
                             guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
                             guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
-                        } else if (guest.user_id != $this.ownId) {
+                        } else if (guest.user_id != $this.user.id) {
                             guestHMTL += '<a class="btn btn-default invite" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
                             guestHMTL += '<a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>';
                             guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
@@ -163,26 +163,29 @@ define(function () {
                 var props = json.ownProperties;
 
                 if (props.id) {
-                    $this.ownId = props.id;
+                    $this.user.id = props.id;
                 }
 
                 if (props.name) {
                     $this.domElems.nickname.val(props.name);
-                    $this.ownName = props.name;
+                    $this.user.name = props.name;
                 }
 
                 if (props.sex) {
                     $this.domElems.sex.val(props.sex);
-                    $this.ownSex = props.sex == 2;
+                    $this.user.sex = props.sex == 2;
                 }
 
                 if (props.tim) {
                     $this.domElems.tim.val(props.tim);
+                    $this.user.tim = props.tim;
                 }
 
                 if (props.email) {
                     $this.domElems.email.val(props.email);
-                    $('a[href="#login"]').hide();
+                    $this.user.email = props.email;
+                    $this.domElems.musicLink.show();
+                    $this.domElems.loginLink.hide();
                 }
 
                 if (props.avatarImg) {
