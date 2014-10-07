@@ -9,8 +9,8 @@ class ResponseTest extends PHPUnit_Framework_TestCase
 {
     public function testSetGetChatId()
     {
-	    /** @var Response $response */
-	    $response = $this->getMockForAbstractClass('SocioChat\\Response\\Response');
+        /** @var Response $response */
+        $response = $this->getMockForAbstractClass('SocioChat\\Response\\Response');
         $this->assertNull($response->getChannelId(), 'Default value is not NULL');
         $id = new stdClass;
         $this->assertEquals($response, $response->setChannelId($id), 'Fluent interface is not supported');

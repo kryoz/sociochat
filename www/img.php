@@ -31,9 +31,7 @@ if (!isset($_GET['url'])) {
 
 $url = $_GET['url'];
 $raw = ranger($url);
-//if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-//	echo $raw;
-//}
+
 if (!$im = imagecreatefromstring($raw)) {
     http_response_code(400);
     return;
@@ -49,5 +47,3 @@ if ($width && $height) {
 }
 
 http_response_code(400);
-
-
