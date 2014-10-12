@@ -109,7 +109,7 @@ class CommandFilter implements ChainInterface
         /** @var $row NameChangeDAO */
         foreach ($list as $row) {
             $html .= '<tr>';
-            $html .= '<td>' . $row->getDate() . '</td>';
+            $html .= '<td>' . $row->getDateRaw() . '</td>';
             $html .= '<td>' . $row->getName() . '</td>';
             $html .= '</tr>';
         }
