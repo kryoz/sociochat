@@ -2,8 +2,7 @@
 
 namespace SocioChat\Controllers\Helpers;
 
-
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
@@ -169,4 +168,4 @@ class DualChatHandler
             ->setResponse($response)
             ->notify();
     }
-} 
+}

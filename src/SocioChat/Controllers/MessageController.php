@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
@@ -9,23 +9,25 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
+use SocioChat\Message\Filters\Chain;
+use SocioChat\Message\Filters\CommandFilter;
+use SocioChat\Message\Filters\InputFilter;
+use SocioChat\Message\Filters\LineBreakFilter;
 use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Utils\RudeFilter;
 
 class MessageController extends ControllerBase
 {
-    const MAX_MSG_LENGTH = 1024;
-    const MAX_BR = 4;
-
     public function handleRequest(ChainContainer $chain)
     {
+        $isSelf = $this->filterInput($chain);
+
         $clients = DI::get()->getUsers();
         $from = $chain->getFrom();
         $request = $chain->getRequest();
-        $recipient = $this->searchUser($from, $request['to']);
 
-        $request['msg'] = $this->filterInput($request['msg']);
+        $recipient = $this->searchUser($from, $request['to']);
 
         if ($recipient) {
             $this->sendPrivate($from, $recipient, $request['msg']);
@@ -34,7 +36,7 @@ class MessageController extends ControllerBase
             return;
         }
 
-        $this->sendPublic($clients, $from, $request['msg']);
+        $this->sendPublic($clients, $from, $request['msg'], $isSelf);
     }
 
     protected function getFields()
@@ -44,32 +46,41 @@ class MessageController extends ControllerBase
 
     private function sendPrivate(User $from, User $recipient, $msg)
     {
+        $log = false;
+
         $response = (new MessageResponse())
-            ->setFrom($from)
             ->setMsg(Msg::create($msg))
             ->setFilteredMsg(Msg::create(RudeFilter::parse($msg)))
             ->setTime(null)
-            ->setChannelId($from->getChannelId())
-            ->setToUserName($recipient->getProperties()->getName());
+            ->setChannelId($from->getChannelId());
 
-        (new UserCollection())
+        $sender = new UserCollection();
+
+        if ($from->getId() != $recipient->getId()) {
+            $response
+                ->setFrom($from)
+                ->setToUserName($recipient->getProperties()->getName());
+            $sender->attach($recipient);
+            $log = true;
+        }
+
+        $sender
             ->attach($from)
-            ->attach($recipient)
             ->setResponse($response)
-            ->notify();
+            ->notify($log);
     }
 
-    private function sendPublic(UserCollection $clients, User $user, $msg)
+    private function sendPublic(UserCollection $clients, User $user, $msg, $isSelf)
     {
-        $user->incMessagesCount();
-
         $response = (new MessageResponse())
-            ->setFrom($user)
             ->setMsg(Msg::create($msg))
             ->setFilteredMsg(Msg::create(RudeFilter::parse($msg)))
             ->setTime(null)
             ->setChannelId($user->getChannelId());
 
+        if (!$isSelf) {
+            $response->setFrom($user);
+        }
         $clients
             ->setResponse($response)
             ->notify();
@@ -77,8 +88,12 @@ class MessageController extends ControllerBase
 
     private function searchUser(User $from, $userId)
     {
-        if ($userId == '' || $userId == $from->getId()) {
+        if ($userId == '') {
             return null;
+        }
+
+        if ($userId == $from->getId()) {
+            return $from;
         }
 
         $form = (new Form())
@@ -87,8 +102,10 @@ class MessageController extends ControllerBase
 
         if (!$form->validate()) {
             RespondError::make($from, $form->getErrors());
-            DI::get()->getLogger()->warn("Trying to find userId = $userId for private message but not found",
-                [__CLASS__]);
+            DI::get()->getLogger()->warn(
+                "Trying to find userId = $userId for private message but not found",
+                [__CLASS__]
+            );
             return false;
         }
 
@@ -98,16 +115,26 @@ class MessageController extends ControllerBase
         return $recipient;
     }
 
-    private function filterInput($msg)
+    private function filterInput(ChainContainer $appChain)
     {
-        $text = strip_tags(htmlentities($msg));
+        $from = $appChain->getFrom();
+        $request = $appChain->getRequest();
+        unset($request['self']); // skip direct command from client
 
-        if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
-            $text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
+        $chain = (new Chain)
+            ->setRequest($request)
+            ->setUser($from)
+            ->addHandler(new InputFilter())
+            ->addHandler(new LineBreakFilter())
+            ->addHandler(new CommandFilter());
+        $chain->run();
+
+        $request = $chain->getRequest();
+        if (isset($request['self'])) {
+            unset($request['self']);
+            $appChain->setRequest($request);
+            return true;
         }
-
-        $text = preg_replace('~(\|)~u', '<br>', $text, self::MAX_BR);
-
-        return $text;
+        $appChain->setRequest($request);
     }
-} 
+}

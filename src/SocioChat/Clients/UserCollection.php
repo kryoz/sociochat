@@ -51,9 +51,11 @@ class UserCollection
                 // Filter responses from banned users
                 $saveGuests = $response->getGuests();
 
-                if (!$response->getFrom() || ($response->getFrom() && !$user->getBlacklist()->isBanned($response->getFrom()->getId()))) {
+                if (!$response->getFrom()
+                    || ($response->getFrom() && !$user->getBlacklist()->isBanned($response->getFrom()->getId()))) {
                     $this->traitGuestInfo($response, $user);
                     $user->update($response);
+                    $user->incMessagesCount();
                 }
 
                 $response->setGuestsRaw($saveGuests);

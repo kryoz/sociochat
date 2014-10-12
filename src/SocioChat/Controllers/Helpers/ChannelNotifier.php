@@ -118,7 +118,10 @@ class ChannelNotifier
                 continue;
             }
             if (isset($response[Channel::TO_NAME])) {
-                if ($response[Channel::FROM_USER_ID] == $user->getId() || $response[Channel::TO_NAME] == $user->getProperties()->getName()) {
+                if (
+                    $response[Channel::FROM_USER_ID] == $user->getId()
+                    || $response[Channel::TO_NAME] == $user->getProperties()->getName()
+                ) {
                     $historyResponse->addResponse($response);
                 }
                 continue;
@@ -133,4 +136,4 @@ class ChannelNotifier
             ->setResponse($historyResponse)
             ->notify(false);
     }
-} 
+}

@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Controllers\Helpers\RespondError;
 
 abstract class ControllerBase
@@ -27,4 +27,4 @@ abstract class ControllerBase
     abstract public function handleRequest(ChainContainer $chain);
 
     abstract protected function getFields();
-} 
+}

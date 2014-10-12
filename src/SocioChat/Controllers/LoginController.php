@@ -1,8 +1,9 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
-use SocioChat\Chat;
+use SocioChat\Application\Chain\ChainContainer;
+use SocioChat\Application\Chat;
+use SocioChat\Application\OnOpenFilters\ResponseFilter;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
@@ -12,7 +13,6 @@ use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use Core\Form\WrongRuleNameException;
 use SocioChat\Message\MsgToken;
-use SocioChat\OnOpenFilters\ResponseFilter;
 use SocioChat\Response\MessageResponse;
 
 class LoginController extends ControllerBase
@@ -83,7 +83,8 @@ class LoginController extends ControllerBase
             if ($timer = $duplicatedUser->getDisconnectTimer()) {
                 DI::get()->container()->get('eventloop')->cancelTimer($timer);
                 $logger->info(
-                    "Deffered disconnection timer canceled: connection_id = {$duplicatedUser->getConnectionId()} for userId = {$duplicatedUser->getId()}",
+                    "Deffered disconnection timer canceled:
+                    connection_id = {$duplicatedUser->getConnectionId()} for userId = {$duplicatedUser->getId()}",
                     [__CLASS__]
                 );
             }

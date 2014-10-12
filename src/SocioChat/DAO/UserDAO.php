@@ -5,6 +5,7 @@ namespace SocioChat\DAO;
 use Core\BaseException;
 use Core\DAO\DAOBase;
 use Core\Utils\DbQueryHelper;
+use SocioChat\Enum\UserRoleEnum;
 
 class UserDAO extends DAOBase
 {
@@ -107,7 +108,7 @@ class UserDAO extends DAOBase
 
     public function getRole()
     {
-        return $this[self::ROLE];
+        return UserRoleEnum::create($this[self::ROLE]);
     }
 
     public function getUnregisteredUserIds()

@@ -33,4 +33,4 @@ class UserRoleEnum extends Enum
     {
         return $this->getId() == self::CREATOR;
     }
-} 
+}

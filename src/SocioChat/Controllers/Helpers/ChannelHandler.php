@@ -2,7 +2,7 @@
 
 namespace SocioChat\Controllers\Helpers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingPrivates;
 use SocioChat\Clients\User;
@@ -35,10 +35,13 @@ class ChannelHandler
         $remainingTime = time() - $time;
 
         if ($remainingTime < $privates->getTTL() && $inviterUserId) {
-            RespondError::make($user, [
-                    PropertiesDAO::USER_ID => $lang->getPhrase('YouAlreadySentInvitation',
-                        $privates->getTTL() - $remainingTime)
-                ]);
+            RespondError::make(
+                $user,
+                [
+                    PropertiesDAO::USER_ID =>
+                        $lang->getPhrase('YouAlreadySentInvitation', $privates->getTTL() - $remainingTime)
+                ]
+            );
             return;
         } elseif (!$time && !$inviterUserId) {
             $newChatRoomId = uniqid('_', 1);
@@ -54,10 +57,14 @@ class ChannelHandler
             return;
         }
 
-        self::sendPendingResponse($user,
-            MsgToken::create('SendInvitationFor', $desiredUser->getProperties()->getName()));
-        self::sendPendingResponse($desiredUser,
-            MsgToken::create('UserInvitesYou', $user->getProperties()->getName(), $user->getId()));
+        self::sendPendingResponse(
+            $user,
+            MsgToken::create('SendInvitationFor', $desiredUser->getProperties()->getName())
+        );
+        self::sendPendingResponse(
+            $desiredUser,
+            MsgToken::create('UserInvitesYou', $user->getProperties()->getName(), $user->getId())
+        );
         ChannelNotifier::updateChannelInfo($users, ChannelsCollection::get());
     }
 
@@ -118,8 +125,12 @@ class ChannelHandler
                 ->import($request)
                 ->addRule('channelId', Rules::existsChannel(), $lang->getPhrase('ChannelNotExists'))
                 ->addRule('name', Rules::namePattern(100, true), $lang->getPhrase('InvalidNameFormat'), '_nameFormat')
-                ->addRule('name', Rules::channelNameDuplication(), $lang->getPhrase('InvalidNameFormat'),
-                    '_nameUnique');
+                ->addRule(
+                    'name',
+                    Rules::channelNameDuplication(),
+                    $lang->getPhrase('InvalidNameFormat'),
+                    '_nameUnique'
+                );
         } catch (WrongRuleNameException $e) {
             RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty')]);
             return;
@@ -234,4 +245,4 @@ class ChannelHandler
             ->setResponse($response)
             ->notify();
     }
-} 
+}

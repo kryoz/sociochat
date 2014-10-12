@@ -11,7 +11,9 @@ class RespondError
     public static function make(User $user, $errors = null)
     {
         $response = (new ErrorResponse())
-            ->setErrors(is_array($errors) ? $errors : [$errors ?: $user->getLang()->getPhrase('RequiredActionNotSpecified')])
+            ->setErrors(
+                is_array($errors) ? $errors : [$errors ?: $user->getLang()->getPhrase('RequiredActionNotSpecified')]
+            )
             ->setChannelId($user->getChannelId());
 
         (new UserCollection())
@@ -19,4 +21,4 @@ class RespondError
             ->setResponse($response)
             ->notify();
     }
-} 
+}

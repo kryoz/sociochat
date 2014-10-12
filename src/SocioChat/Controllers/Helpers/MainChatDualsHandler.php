@@ -2,7 +2,6 @@
 
 namespace SocioChat\Controllers\Helpers;
 
-
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
@@ -58,4 +57,4 @@ class MainChatDualsHandler
 
         $notification->notify(false);
     }
-} 
+}

@@ -62,4 +62,4 @@ class MainChatPrivateHandler
             ->setResponse($response)
             ->notify(false);
     }
-} 
+}

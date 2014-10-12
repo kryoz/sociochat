@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Controllers\Helpers\ChannelHandler;
 use SocioChat\Controllers\Helpers\DualChatHandler;
 use SocioChat\Controllers\Helpers\RespondError;

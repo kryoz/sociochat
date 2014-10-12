@@ -3,7 +3,6 @@
 namespace SocioChat\Message;
 
 use Monolog\Logger;
-use Core\TSingleton;
 use Zend\Config\Config;
 use Zend\Config\Reader\Ini;
 

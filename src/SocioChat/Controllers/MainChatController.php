@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Controllers\Helpers\MainChatDualsHandler;
 use SocioChat\Controllers\Helpers\MainChatPrivateHandler;

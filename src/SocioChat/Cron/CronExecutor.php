@@ -2,7 +2,6 @@
 
 namespace SocioChat\Cron;
 
-
 use Core\BaseException;
 use SocioChat\DI;
 use SocioChat\Locker\AlreadyLockedException;

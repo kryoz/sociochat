@@ -4,6 +4,8 @@ namespace Test\SocioChat\Clients;
 
 use SocioChat\Clients\PendingPrivates;
 use Core\DI;
+use SocioChat\Enum\SexEnum;
+use SocioChat\Enum\TimEnum;
 use Test\SocioChat\Helpers\MockEventLoop;
 use Test\SocioChat\Helpers\TestSuite;
 
@@ -61,4 +63,3 @@ class PendingPrivatesTest extends TestSuite
         $this->assertNull($time);
     }
 }
- 

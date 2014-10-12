@@ -1,7 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
@@ -139,8 +139,12 @@ class PropertiesController extends ControllerBase
         $duplUser = PropertiesDAO::create()->getByUserName($userName);
 
         if ($duplUser->getId() && $duplUser->getUserId() != $user->getId()) {
-            RespondError::make($user,
-                [PropertiesDAO::NAME => $user->getLang()->getPhrase('NameAlreadyRegistered', $userName)]);
+            RespondError::make(
+                $user,
+                [
+                    PropertiesDAO::NAME => $user->getLang()->getPhrase('NameAlreadyRegistered', $userName)
+                ]
+            );
             $this->propertiesResponse($user);
             return;
         }
@@ -210,16 +214,26 @@ class PropertiesController extends ControllerBase
                 $name = $newname;
             }
         } elseif ($changeLog && $hasNameChanged && !$this->isExpired($changeLog, $config)) {
-            RespondError::make($user, $user->getLang()->getPhrase('NameChangePolicy',
-                    date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)));
+            RespondError::make(
+                $user,
+                $user->getLang()->getPhrase(
+                    'NameChangePolicy',
+                    date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)
+                )
+            );
             return;
         }
 
         if ($changeLog = NameChangeDAO::create()->getLastByName($name)) {
             if ($changeLog->getUserId() != $user->getId()) {
                 if (!$this->isExpired($changeLog, $config)) {
-                    RespondError::make($user, $user->getLang()->getPhrase('NameTakePolicy',
-                            date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)));
+                    RespondError::make(
+                        $user,
+                        $user->getLang()->getPhrase(
+                            'NameTakePolicy',
+                            date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)
+                        )
+                    );
                     return;
                 }
             }

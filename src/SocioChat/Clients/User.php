@@ -111,6 +111,14 @@ class User implements ConnectionInterface
     }
 
     /**
+     * @return null|Channel
+     */
+    public function getChannel()
+    {
+        return ChannelsCollection::get()->getChannelById($this->getChannelId());
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -268,6 +276,12 @@ class User implements ConnectionInterface
     {
         $this->getUserDAO()->setRole($role->getId());
         return $this;
+    }
+
+    public function isCreator()
+    {
+        return $this->getRole()->isCreator()
+        && $this->getChannel()->getOwnerId() == $this->getChannelId();
     }
 
     public function save($fullSave = true)

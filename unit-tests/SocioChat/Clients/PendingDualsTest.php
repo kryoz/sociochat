@@ -62,5 +62,14 @@ class PendingDualsTest extends TestSuite
         $this->assertFalse($this->duals->matchDual($user), 'user cannot call dual mode in private chat');
         $this->assertFalse($this->duals->getUserPosition($user), 'user cannot call dual mode in private chat');
     }
+
+    public function testEnqueueFail()
+    {
+        $user = $this->getMockUser(TimEnum::ANY, SexEnum::ANONYM);
+        $user->expects($this->any())->method('getChannelId')->willReturn(1);
+
+        $this->assertEmpty($this->duals->getUserPosition($user), 'getUserPosition check for anonymous failed');
+        $this->assertFalse($this->duals->matchDual($user), 'matchDual must return false for anonymous');
+        $this->assertEmpty($this->duals->getUserPosition($user), 'getUserPosition check for anonymous failed');
+    }
 }
- 

@@ -176,6 +176,7 @@ class PendingDuals
 
     private function isCorrectUser(User $user)
     {
-        return $user->getProperties()->getTim()->getId() != TimEnum::ANY && $user->getProperties()->getSex()->getId() != SexEnum::ANONYM;
+        return $user->getProperties()->getTim()->getId() != TimEnum::ANY
+            && $user->getProperties()->getSex()->getId() != SexEnum::ANONYM;
     }
-} 
+}
