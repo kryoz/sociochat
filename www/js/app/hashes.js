@@ -8,6 +8,9 @@ define(function () {
             var $this = this;
 
             var renderHashSearchResponse = function (response) {
+                if (response.length == 0) {
+                    return;
+                }
                 var totalCount = response.totalCount;
                 var page = response.page;
                 var pageCount = response.pageCount;
@@ -72,36 +75,10 @@ define(function () {
                         l.stop();
                     },
                     error: function (response) {
-                        hashList.html('<td>' + response.status + ' ' + response.statusText + ' ' + response.responseText + '</td>');
                         l.stop();
                     },
                     dataType: 'json'
                 });
-            }
-        },
-        playMusic: function ($audio, e, musicElId) {
-            var audioElRaw = $audio.get(0);
-            var $realTrackEl = $('#' + musicElId);
-            var $this = $(e.currentTarget);
-
-            audioElRaw.addEventListener('ended', function () {
-                $realTrackEl.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
-            });
-
-            if (audioElRaw.paused || audioElRaw.ended || $audio.data('current-track-id') != $this.attr('id')) {
-                $('#' + $audio.data('current-track-id')).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
-
-                if ($audio.data('current-track-id') != $this.attr('id')) {
-                    $audio.attr('src', $this.data('src'));
-                }
-
-                $audio.data('current-track-id', $this.attr('id'));
-
-                $this.find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
-                audioElRaw.play();
-            } else {
-                $this.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
-                audioElRaw.pause();
             }
         }
     }

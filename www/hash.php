@@ -21,6 +21,10 @@ if (!$hash) {
 }
 
 $hashes = \SocioChat\DAO\HashDAO::create()->getListByHash($hash, $page*$pageCount, $pageCount);
+if (empty($hashes)) {
+    http_response_code(200);
+    return json_encode([]);
+}
 $response = [
     'page' => $page,
     'pageCount' => $pageCount,
