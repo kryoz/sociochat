@@ -87,7 +87,7 @@ class CommandFilter implements ChainInterface
             return;
         }
 
-        return [$targetUser->getProperties()->getName() . ' ip = ' . $user->getIp(), true];
+        return [$targetUser->getProperties()->getName() . ' ip = ' . $targetUser->getIp(), true];
     }
 
     protected function processNameChangeHistory(User $user, $request)

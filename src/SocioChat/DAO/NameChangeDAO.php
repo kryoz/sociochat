@@ -70,7 +70,7 @@ class NameChangeDAO extends DAOBase
      */
     public function getLastByName($name)
     {
-        $list = $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE " . self::OLD_NAME . " = :oldname ORDER BY " . self::DATE_CHANGE . " DESC LIMIT 1",
+        $list = $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE " . self::OLD_NAME . " = :oldname ORDER BY " . self::DATE_CHANGE . " ASC LIMIT 1",
             ['oldname' => $name]);
         return !empty($list) ? $list[0] : null;
     }
