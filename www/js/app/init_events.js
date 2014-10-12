@@ -86,17 +86,23 @@ define(function () {
                     audio.process($this);
                 });
             });
-
-            $this.domElems.doMusicSearch.click(function (e) {
-                require(['audio'], function (audio) {
-                    audio.process($this);
-                });
-            });
-
             $this.domElems.musicInput.on('keypress', function (e) {
                 if (e.which == 13) {
                     require(['audio'], function (audio) {
                         audio.process($this);
+                    });
+                }
+            });
+
+            $this.domElems.doHashSearch.click(function (e) {
+                require(['hashes'], function (hashes) {
+                    hashes.process($this);
+                });
+            });
+            $this.domElems.hashInput.on('keypress', function (e) {
+                if (e.which == 13) {
+                    require(['hashes'], function (hashes) {
+                        hashes.process($this);
                     });
                 }
             });
@@ -135,21 +141,21 @@ define(function () {
                 var command = {
                     subject: 'Channel',
                     action: 'dualSearch'
-                }
+                };
                 $this.send(command);
             });
 
             $this.domElems.menuDualizeStop.click(function (e) {
                 var command = {
                     subject: 'MainChat'
-                }
+                };
                 $this.send(command);
             });
 
             $this.domElems.menuExit.click(function (e) {
                 var command = {
                     subject: 'MainChat'
-                }
+                };
                 $this.send(command);
             });
 

@@ -11,6 +11,7 @@ use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use SocioChat\Message\Filters\Chain;
 use SocioChat\Message\Filters\CommandFilter;
+use SocioChat\Message\Filters\HashFilter;
 use SocioChat\Message\Filters\InputFilter;
 use SocioChat\Message\Filters\LineBreakFilter;
 use SocioChat\Message\Msg;
@@ -126,7 +127,8 @@ class MessageController extends ControllerBase
             ->setUser($from)
             ->addHandler(new InputFilter())
             ->addHandler(new LineBreakFilter())
-            ->addHandler(new CommandFilter());
+            ->addHandler(new CommandFilter())
+            ->addHandler(new HashFilter());
         $chain->run();
 
         $request = $chain->getRequest();

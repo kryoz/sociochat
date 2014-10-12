@@ -60,7 +60,10 @@ define('app', function () {
             setRegInfo: $('#set-reg-info'),
             doLogin: $('#do-login'),
             doMusicSearch: $('#do-music-search'),
+            doHashSearch: $('#do-hash-search'),
+            hashPanel: $('#hashes'),
             musicInput: $("#music input[name=song]"),
+            hashInput: $('#hashes [name=hash]'),
 
             menuDualize: $('#menu-dualize'),
             menuDualizeStop: $('#menu-dualize-stop'),
@@ -336,6 +339,30 @@ define('app', function () {
                 "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
             ));
             return matches ? decodeURIComponent(matches[1]) : undefined;
+        },
+        timeUTCConvert: function(serverTime, full) {
+            function pad(n) {
+                return ("0" + n).slice(-2);
+            }
+
+            var time = new Date();
+            var str = null;
+            if (full) {
+                str = serverTime;
+            } else {
+                str = time.getMonth() + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + serverTime;
+            }
+
+            time = new Date(Date.parse(str));
+            time.setUTCHours(time.getHours() - 4);
+
+            var result = '';
+
+            if (full) {
+                result = time.getFullYear()+'-'+pad(time.getMonth()+1)+'-'+pad(time.getDate()) + ' ';
+            }
+            result += pad(time.getHours()) + ':' + pad(time.getMinutes()) + ':' + pad(time.getSeconds());
+            return result;
         }
     }
 });

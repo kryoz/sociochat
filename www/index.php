@@ -13,8 +13,8 @@ DIBuilder::setupNormal($container);
 $config = $container->get('config');
 /* @var $config Config */
 
-$httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0,
-    2) : 'en';
+$httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])
+    ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
 $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
 /* @var $lang Lang */
 $lifetime = $config->session->lifetime;
@@ -79,6 +79,13 @@ require_once "pages/header.php";
                     </li>
 
                     <li>
+                        <a href="#hashes" class="tip tab-panel" data-toggle="tab"
+                           title="<?= $lang->getPhrase('index.Hashes') ?>"><span
+                                class="glyphicon glyphicon-signal"></span> <?= $lang->getPhrase('index.Hashes') ?>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="#" id="menu-dualize" class="tip"
                            title="<?= $lang->getPhrase('index.StartDualSearchTip') ?>"><span
                                 class="glyphicon glyphicon-search"></span> <?= $lang->getPhrase('index.StartDualSearch') ?>
@@ -112,6 +119,7 @@ require_once "pages/header.php";
         <?php include "pages/index/chat.php"; ?>
         <?php include "pages/index/whois.php"; ?>
         <?php include "pages/index/music.php"; ?>
+        <?php include "pages/index/hashes.php"; ?>
         <?php include "pages/index/profile.php"; ?>
         <?php include "pages/index/login.php"; ?>
 

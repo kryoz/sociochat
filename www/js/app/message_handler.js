@@ -14,16 +14,7 @@ define(function () {
             }
 
             if (response.time) {
-                function pad(n) {
-                    return ("0" + n).slice(-2);
-                }
-
-                var time = new Date();
-                var str = time.getMonth() + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + response.time;
-                time = new Date(Date.parse(str));
-                time.setUTCHours(time.getHours() - 4);
-
-                time = pad(time.getHours()) + ':' + pad(time.getMinutes()) + ':' + pad(time.getSeconds());
+                var time = $this.timeUTCConvert(response.time);
             }
 
             if (response.fromName) {
@@ -217,10 +208,18 @@ define(function () {
                 return text.replace(exp, "<code class=\"private\">$1</code>");
             }
 
+            var replaceHash = function (text) {
+                var exp = /(#[a-zа-я0-9-_]+)/ig;
+                var replacement = '<a href="#hashes" data-src="$1" class="hash tab-panel">$1</a>';
+
+                return text.replace(exp, replacement);
+            }
+
             incomingMessage = replaceOwnName(incomingMessage);
 
             var res = replaceWithAudio(incomingMessage);
             res = replaceWithYoutube(res);
+            res = replaceHash(res);
 
             if (res == incomingMessage) {
                 incomingMessage = replaceURL(incomingMessage);
@@ -286,6 +285,12 @@ define(function () {
                 if (userId) {
                     $this.togglePrivate(userId);
                 }
+            });
+
+            newLine.find('.hash').click(function () {
+                $(this).tab('show');
+                $this.domElems.hashInput.val($(this).data('src'));
+                $this.domElems.doHashSearch.click();
             });
         },
         getSexClass: function (user) {

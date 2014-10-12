@@ -35,9 +35,10 @@ class CommandFilter implements ChainInterface
             if (isset($map[$command])) {
                 if ($response = $this->{$map[$command]}($user, $arg, $chain)) {
                     $this->changeRequest($chain, $response[0], $response[1]);
-                    return;
+                    return false;
                 }
-                $this->changeRequest($chain, "Недостаточно прав");
+                $this->changeRequest($chain, "Ошибка команды");
+                return false;
             }
         }
     }

@@ -15,7 +15,7 @@ class InputFilter implements ChainInterface
     public function handleRequest(Chain $chain)
     {
         $request = $chain->getRequest();
-        $text = strip_tags(htmlentities($request['msg']));
+        $text = strip_tags(htmlentities(trim($request['msg'])));
 
         if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
             $text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
