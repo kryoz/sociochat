@@ -7,6 +7,7 @@ use SocioChat\DAO\HashDAO;
 
 class HashFilter implements ChainInterface
 {
+    const MIN_LENGTH = 10;
     /**
      * C-o-R pattern
      * @param Chain $chain input stream
@@ -20,6 +21,10 @@ class HashFilter implements ChainInterface
 
         if (preg_match('~(#[a-zа-я0-9-_]+)~uis', $text, $matches)) {
             $hash = $matches[1];
+
+            if (count($hash) + self::MIN_LENGTH > count($text)) {
+                return;
+            }
 
             $msgList = HashDAO::create()->getListByHash($hash, 0, 10);
             $normText = mb_strtoupper($text);
