@@ -73,6 +73,8 @@ class MessageController extends ControllerBase
 
     private function sendPublic(UserCollection $clients, User $user, $msg, $isSelf)
     {
+        $user->incMessagesCount();
+
         $response = (new MessageResponse())
             ->setMsg(Msg::create($msg))
             ->setFilteredMsg(Msg::create(RudeFilter::parse($msg)))

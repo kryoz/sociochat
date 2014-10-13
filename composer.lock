@@ -733,16 +733,16 @@
         },
         {
             "name": "robmorgan/phinx",
-            "version": "v0.3.7",
+            "version": "v0.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/robmorgan/phinx.git",
-                "reference": "d918fef14f44bc2e68c6263327ba5b44582313c6"
+                "reference": "589319c8bd7f819580bbab11a8987fb38853bfe7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/robmorgan/phinx/zipball/d918fef14f44bc2e68c6263327ba5b44582313c6",
-                "reference": "d918fef14f44bc2e68c6263327ba5b44582313c6",
+                "url": "https://api.github.com/repos/robmorgan/phinx/zipball/589319c8bd7f819580bbab11a8987fb38853bfe7",
+                "reference": "589319c8bd7f819580bbab11a8987fb38853bfe7",
                 "shasum": ""
             },
             "require": {
@@ -786,7 +786,7 @@
                 "migrations",
                 "phinx"
             ],
-            "time": "2014-08-18 08:15:10"
+            "time": "2014-10-06 09:27:17"
         },
         {
             "name": "symfony/class-loader",
@@ -1868,28 +1868,28 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "10c7467da0622f7848cc5cadc0828c3359254df4"
+                "reference": "6288ebbf6fa3ed2b2ff2d69c356fbaaf4f0971a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/10c7467da0622f7848cc5cadc0828c3359254df4",
-                "reference": "10c7467da0622f7848cc5cadc0828c3359254df4",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/6288ebbf6fa3ed2b2ff2d69c356fbaaf4f0971a7",
+                "reference": "6288ebbf6fa3ed2b2ff2d69c356fbaaf4f0971a7",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -1914,7 +1914,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2014-05-04 17:56:05"
+            "time": "2014-10-07 09:23:16"
         },
         {
             "name": "sebastian/exporter",
@@ -2022,12 +2022,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "ecfb4ed8e45469338292dbfe9b1c2204a71ebdb0"
+                "reference": "9777f8c07492c7a00b23c8463eff23dc155066e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ecfb4ed8e45469338292dbfe9b1c2204a71ebdb0",
-                "reference": "ecfb4ed8e45469338292dbfe9b1c2204a71ebdb0",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/9777f8c07492c7a00b23c8463eff23dc155066e8",
+                "reference": "9777f8c07492c7a00b23c8463eff23dc155066e8",
                 "shasum": ""
             },
             "require": {
@@ -2087,7 +2087,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-09-25 22:43:48"
+            "time": "2014-10-10 02:29:20"
         }
     ],
     "aliases": [],

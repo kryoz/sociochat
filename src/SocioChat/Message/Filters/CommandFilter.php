@@ -127,7 +127,7 @@ class CommandFilter implements ChainInterface
     private function changeRequest(Chain $chain, $msg, $isPrivate = true)
     {
         $request = $chain->getRequest();
-        $request['msg'] = $msg;
+        $request['msg'] = '* '.$msg;
 
         if ($isPrivate) {
             $request['to'] = $chain->getUser()->getId();
