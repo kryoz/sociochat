@@ -22,7 +22,7 @@ class HashFilter implements ChainInterface
         if (preg_match('~(#[a-zа-я0-9-_]+)~uis', $text, $matches)) {
             $hash = $matches[1];
 
-            if (count($hash) + self::MIN_LENGTH > count($text)) {
+            if ((mb_strlen($hash) + self::MIN_LENGTH) > mb_strlen($text)) {
                 return;
             }
 
