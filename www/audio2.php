@@ -21,7 +21,7 @@ if (!$song) {
 }
 
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
-$response = curl('http://api.pleer.com/resource.php',
+$response = curl('http://api.pleer.com/index.php',
     [
         'access_token' => $token,
         'method' => 'tracks_search',

@@ -30,7 +30,9 @@ function curl($url, $postParams, $auth = false)
     $response = curl_exec($curl);
     curl_close($curl);
 
-    return json_decode($response, 1);
+    $result = json_decode($response, 1) ?: [];
+
+    return $result;
 }
 
 function getToken()
