@@ -354,7 +354,7 @@ define('app', function () {
             }
 
             time = new Date(Date.parse(str));
-            time.setUTCHours(time.getHours() - 4);
+            time.setUTCHours(time.getHours() - 3);
 
             var result = '';
 
