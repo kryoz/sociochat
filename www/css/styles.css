@@ -315,6 +315,8 @@ doesnotexist:-o-prefocus, #panel-chat {
     background-size: 50%;
     max-width: 240px;
     height: auto;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 #log .video img {
