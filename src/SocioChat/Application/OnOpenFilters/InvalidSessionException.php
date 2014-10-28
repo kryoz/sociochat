@@ -1,6 +1,6 @@
 <?php
 
-namespace SocioChat\OnOpenFilters;
+namespace SocioChat\Application\OnOpenFilters;
 
 
 use Core\BaseException;
@@ -8,4 +8,4 @@ use Core\BaseException;
 class InvalidSessionException extends BaseException
 {
 
-} 
+}
