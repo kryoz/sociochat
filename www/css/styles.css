@@ -76,10 +76,10 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .user-avatar {
-    width: 32px;
-    height: 32px;
-    max-width: 32px;
-    max-height: 32px;
+    width: 36px;
+    height: 36px;
+    max-width: 36px;
+    max-height: 36px;
     display: inline-block;
 }
 
@@ -88,14 +88,14 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 #log .user-avatar {
-    margin-left: -45px;
+    margin-left: -48px;
     margin-top: 2px;
     float: left;
 }
 
 .user-avatar img {
-    max-width: inherit;
-    max-height: inherit;
+    width: inherit;
+    height: auto;
 }
 
 .user-avatar .glyphicon {
@@ -255,7 +255,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 #log > div {
     word-break: break-word;
-    margin-left: 45px;
+    margin-left: 48px;
     margin-top: 5px;
 }
 
