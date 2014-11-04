@@ -17,7 +17,6 @@ use SocioChat\Enum\TimEnum;
 use SocioChat\Enum\UserRoleEnum;
 use SocioChat\Forms\Rules;
 use SocioChat\Message\Lang;
-use SocioChat\OnOpenFilters\InvalidSessionException;
 
 class SessionFilter implements ChainInterface
 {

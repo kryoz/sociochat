@@ -107,7 +107,7 @@ define(function () {
 
 
             var replaceWithImgLinks = function (text) {
-                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|gif|png))(?:\??.*)\b/ig;
+                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|gif|png)(?:\??.*))\b/ig;
 
                 return text.replace(exp, getImgReplacementString('$1'));
             }
