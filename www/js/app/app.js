@@ -353,8 +353,7 @@ define('app', function () {
                 str = time.getMonth() + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + serverTime;
             }
 
-            time = new Date(Date.parse(str));
-            time.setUTCHours(time.getHours() - 3);
+            time = new Date(Date.parse(str+ ' UTC'));
 
             var result = '';
 

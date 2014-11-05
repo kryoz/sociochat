@@ -13,8 +13,8 @@ if (isset($setupErrorHandler)) {
     set_error_handler(
         function ($code, $string, $errfile, $errline) {
             throw new BaseException($string, $code);
-        }
-        , E_ALL | E_STRICT
+        },
+        E_ALL | E_STRICT
     );
 }
 
@@ -22,7 +22,7 @@ function basicSetup()
 {
     error_reporting(E_ALL | E_STRICT);
 
-    date_default_timezone_set('Europe/Moscow');
+    date_default_timezone_set('UTC');
 
     setlocale(LC_CTYPE, "en_US.UTF8");
     setlocale(LC_TIME, "en_US.UTF8");
