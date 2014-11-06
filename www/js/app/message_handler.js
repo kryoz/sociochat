@@ -209,7 +209,7 @@ define(function () {
             }
 
             var replaceHash = function (text) {
-                var exp = /(#[a-zа-я0-9-_]+)/ig;
+                var exp = / (#[a-zа-я0-9-_]+)/ig;
                 var replacement = '<a href="#hashes" data-src="$1" class="hash tab-panel">$1</a>';
 
                 return text.replace(exp, replacement);
