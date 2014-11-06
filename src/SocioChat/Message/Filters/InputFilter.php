@@ -6,6 +6,7 @@ class InputFilter implements ChainInterface
 {
     const MAX_MSG_LENGTH = 1024;
     const MAX_BR = 4;
+    const CUT = '...';
 
     /**
      * C-o-R pattern
@@ -18,7 +19,7 @@ class InputFilter implements ChainInterface
         $text = strip_tags(htmlentities(trim($request['msg'])));
 
         if (mb_strlen($text) > self::MAX_MSG_LENGTH) {
-            $text = mb_strcut($text, 0, self::MAX_MSG_LENGTH) . '...';
+            $text = mb_strcut($text, 0, self::MAX_MSG_LENGTH - mb_strlen(self::CUT) - 1) . self::CUT;
         }
 
         $request['msg'] = $text;
