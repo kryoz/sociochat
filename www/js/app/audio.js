@@ -166,7 +166,9 @@ define(function () {
             }
 
             audioElRaw.addEventListener('timeupdate', function () {
-                $this.find('.audio-position').text('['+$that.formatTime(this.currentTime, this.duration)+']');
+                if (this.duration > 0) {
+                    $this.find('.audio-position').text('[' + $that.formatTime(this.currentTime, this.duration) + ']');
+                }
             });
         },
         formatTime: function(seconds, total) {
