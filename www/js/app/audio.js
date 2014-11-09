@@ -1,3 +1,5 @@
+'use strict'
+
 define(function () {
     return {
         process: function (app) {
@@ -125,26 +127,55 @@ define(function () {
             var audioElRaw = $audio.get(0);
             var $realTrackEl = $('#' + musicElId);
             var $this = $(e.currentTarget);
+            var currTrackId = $audio.data('current-track-id');
+            var currentTrack = $('#' + currTrackId);
+            var $that = this;
 
             audioElRaw.addEventListener('ended', function () {
-                $realTrackEl.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+                $realTrackEl.find('.glyphicon-pause')
+                    .removeClass('glyphicon-pause')
+                    .addClass('glyphicon-play-circle');
             });
 
-            if (audioElRaw.paused || audioElRaw.ended || $audio.data('current-track-id') != $this.attr('id')) {
-                $('#' + $audio.data('current-track-id')).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+            if (audioElRaw.paused || audioElRaw.ended || currTrackId != $this.attr('id')) {
+                currentTrack.find('.glyphicon-pause')
+                    .removeClass('glyphicon-pause')
+                    .addClass('glyphicon-play-circle');
 
-                if ($audio.data('current-track-id') != $this.attr('id')) {
+                if (currTrackId != $this.attr('id')) {
                     $audio.attr('src', $this.data('src'));
+                    currentTrack.find('.audio-position').remove();
                 }
 
                 $audio.data('current-track-id', $this.attr('id'));
 
-                $this.find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
+                $this.find('.glyphicon-play-circle')
+                    .removeClass('glyphicon-play-circle')
+                    .addClass('glyphicon-pause');
+
+                if (!$this.find('.audio-position').length) {
+                    $this.append('<span class="audio-position"></a>');
+                }
+
                 audioElRaw.play();
             } else {
-                $this.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+                $this.find('.glyphicon-pause')
+                    .removeClass('glyphicon-pause')
+                    .addClass('glyphicon-play-circle');
                 audioElRaw.pause();
             }
+
+            audioElRaw.addEventListener('timeupdate', function () {
+                $this.find('.audio-position').text('['+$that.formatTime(this.currentTime, this.duration)+']');
+            });
+        },
+        formatTime: function(seconds, total) {
+            function pad(n) {
+                return ("0" + n).slice(-2);
+            }
+            var minutes = Math.floor((total - seconds) / 60);
+            var seconds = Math.floor((total - seconds) % 60);
+            return '-'+minutes+':'+pad(seconds);
         }
     }
 });

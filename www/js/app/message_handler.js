@@ -175,7 +175,7 @@ define(function () {
                     var replacement = '<div class="img-thumbnail">' +
                         '<a id="' + musicElId +
                         '" class="music" href="#" title="Воспроизвести музыку">' +
-                        '<span class="glyphicon glyphicon-play-circle"></span> ...</a>';
+                        '<span class="glyphicon glyphicon-play-circle"></span> <span class="audio-title">...</span>';
 
                     $.ajax({
                         type: "GET",
@@ -186,7 +186,7 @@ define(function () {
                         success: function (response) {
                             var $realTrackEl = $('#' + musicElId);
 
-                            $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' ' + response.artist + ' - ' + response.track));
+                            $realTrackEl.find('.audio-title').text(response.artist + ' - ' + response.track);
                             $realTrackEl.data('src', response.url);
                             $realTrackEl.click(function (e) {
                                 require(['audio'], function (audio) {
