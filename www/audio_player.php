@@ -24,7 +24,7 @@ if (!$trackId) {
 $dao = MusicDAO::create()->getByTrackId($trackId);
 
 if (!$dao->getId()) {
-    $response = curl('http://api.pleer.com/resource.php',
+    $response = curl('http://api.pleer.com/index.php',
         [
             'access_token' => $token,
             'method' => 'tracks_get_download_link',
@@ -34,11 +34,11 @@ if (!$dao->getId()) {
     );
 
     if (!$response['success']) {
-        response(400, 'invalid track_id specified');
+        response(400, 'invalid track_id = '.$trackId.' specified or unexpected response ('.print_r($response, 1).')');
         return;
     }
 
-    $trackInfo = curl('http://api.pleer.com/resource.php',
+    $trackInfo = curl('http://api.pleer.com/index.php',
         [
             'access_token' => $token,
             'method' => 'tracks_get_info',
