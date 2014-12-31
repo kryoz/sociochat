@@ -350,7 +350,7 @@ define('app', function () {
             if (full) {
                 str = serverTime;
             } else {
-                str = time.getMonth() + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + serverTime;
+                str = (time.getMonth()+1) + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + serverTime;
             }
 
             time = new Date(Date.parse(str+ ' UTC'));
