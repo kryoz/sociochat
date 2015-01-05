@@ -88,7 +88,7 @@ $headers = "MIME-Version: 1.0 \n"
 
 $msg = "<h2>Восстановление пароля в Социочате</h2>
 <p>Была произведена процедура восстановления пароля с использованием вашего email.</p>
-<p>Для подтверждения сброса пароля перейдите по <a href=\"https://" . $config->domain->web . "/activation.php?email=$email&code=" . $activation->getCode() . "\">ссылке</a></p>
+<p>Для подтверждения сброса пароля перейдите по <a href=\"" . $config->domain->protocol . $config->domain->web . "/activation.php?email=$email&code=" . $activation->getCode() . "\">ссылке</a></p>
 <p>Данная ссылка действительна до " . date('Y-m-d H:i', time() + $config->activationTTL) . "</p>";
 
 mb_send_mail($email, 'SocioChat - Восстановление пароля', $msg, $headers);

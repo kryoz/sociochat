@@ -22,7 +22,12 @@ class Mail implements TextCommand
 
 	public function run(User $user, $args)
 	{
-		list($userName, $text) = explode(' ', $args, 2);
+		$args = explode(' ', $args, 2);
+		$userName = $args[0];
+		if (!isset($args[1])) {
+			return ["Вы не ввели сообщения", true];
+		}
+		$text = $args[1];
 
 		$properties = PropertiesDAO::create()->getByUserName($userName);
 		if (!$properties->getId()) {
@@ -47,7 +52,7 @@ class Mail implements TextCommand
 		$msg = "<h2>Вам пришло сообщение от пользователя {$user->getProperties()->getName()}</h2>";
 		$msg .= '<p>'.htmlentities(strip_tags($text)).'</p>';
 		$msg .= '<hr>';
-		$msg .= 'Вернуться в <a href="https://'.$config->domain->web.'">СоциоЧат</a>';
+		$msg .= 'Вернуться в <a href="'.$config->domain->protocol.$config->domain->web.'">СоциоЧат</a>';
 
 		mb_send_mail($address->getEmail(), $topic, $msg, $headers);
 
