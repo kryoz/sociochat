@@ -1,1 +1,7 @@
-../vendor/robmorgan/phinx/bin/phinx
+#!/usr/bin/env sh
+SRC_DIR="`pwd`"
+cd "`dirname "$0"`"
+cd '../vendor/robmorgan/phinx/bin'
+BIN_TARGET="`pwd`/phinx"
+cd "$SRC_DIR"
+"$BIN_TARGET" "$@"

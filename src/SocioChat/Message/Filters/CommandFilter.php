@@ -2,132 +2,76 @@
 
 namespace SocioChat\Message\Filters;
 
-use SocioChat\Application\Chat;
-use SocioChat\Clients\User;
-use SocioChat\Controllers\Helpers\RespondError;
-use SocioChat\DAO\NameChangeDAO;
-use SocioChat\DI;
+use SocioChat\Message\Commands\GetIp;
+use SocioChat\Message\Commands\Kick;
+use SocioChat\Message\Commands\Mail;
+use SocioChat\Message\Commands\Me;
+use SocioChat\Message\Commands\Names;
+use SocioChat\Message\Commands\TextCommand;
 
 class CommandFilter implements ChainInterface
 {
-    /**
-     * C-o-R pattern
-     * @param Chain $chain input stream
-     * @return false|null|true
-     */
+    protected $commandsMap = [
+        'getip' => GetIp::class,
+        'kick' => Kick::class,
+        'names' => Names::class,
+        'me' => Me::class,
+        'mail' => Mail::class,
+    ];
+
     public function handleRequest(Chain $chain)
     {
         $request = $chain->getRequest();
         $text = $request['msg'];
         $user = $chain->getUser();
 
-        $map = [
-            'getip' => 'processGetIp',
-            'kick' => 'processKick',
-            'names' => 'processNameChangeHistory',
-            'me' => 'processMe'
-        ];
+        $map = $this->commandsMap;
 
         if (preg_match('~^\/(\S+) (.*)$~uis', $text, $matches)) {
             $command = $matches[1];
-            $arg = $matches[2];
+            $args = $matches[2];
 
             if (isset($map[$command])) {
-                if ($response = $this->{$map[$command]}($user, $arg, $chain)) {
-                    $this->changeRequest($chain, $response[0], $response[1]);
+                /** @var TextCommand $obj */
+                $obj = new $map[$command];
+                if (!$obj->isAllowed($user)) {
+                    $this->injectCommand($chain, "Недостаточно прав для выполнения команды!");
                     return false;
                 }
-                $this->changeRequest($chain, "Ошибка команды");
+
+                if ($response = $obj->run($user, $args)) {
+                    list($html, $isPrivate) = $response;
+                    $this->injectCommand($chain, $html, $isPrivate);
+                    return false;
+                }
+
+                $this->injectCommand($chain, "Ошибочная команда!");
                 return false;
             }
+        } elseif ($text == '/help' || $text == '/?') {
+            $html = '<table class="table table-striped">';
+
+            foreach ($this->commandsMap as $token => $class) {
+                /** @var TextCommand $obj */
+                $obj = new $class;
+                if ($obj->isAllowed($user)) {
+                    $html .= '<tr>';
+                    $html .= '<td>' . $token . '</td>';
+                    $html .= '<td>' . htmlentities($obj->getHelp()) . '</td>';
+                    $html .= '</tr>';
+                }
+            }
+            $html .= '</table>';
+
+            $this->injectCommand($chain, $html, true);
+            return false;
         }
     }
 
-    protected function processKick(User $user, $text)
-    {
-        if (!($user->getRole()->isAdmin() || $user->isCreator())) {
-            return;
-        }
-
-        $text = explode(' ', $text);
-
-        $assHoleName = $text[0];
-        $users = DI::get()->getUsers();
-
-        if (!$assHole = $users->getClientByName($assHoleName)) {
-            return ["$assHoleName not found", 1];
-        }
-
-        $assHole
-            ->setAsyncDetach(false)
-            ->send(
-                [
-                    'disconnect' => 1,
-                    'msg' => isset($text[1]) ? $text[1] : null
-                ]
-            );
-
-        Chat::get()->onClose($assHole->getConnection());
-
-        return ["$assHoleName кикнут", false];
-    }
-
-    protected function processGetIp(User $user, $request)
-    {
-        if (!$user->getRole()->isAdmin()) {
-            return;
-        }
-
-        $request = explode(' ', $request);
-
-        $name = $request[0];
-        $users = DI::get()->getUsers();
-
-        if (!$targetUser = $users->getClientByName($name)) {
-            RespondError::make($user, ['userId' => "$name not found"]);
-            return;
-        }
-
-        return [$targetUser->getProperties()->getName() . ' ip = ' . $targetUser->getIp(), true];
-    }
-
-    protected function processNameChangeHistory(User $user, $request)
-    {
-        $request = explode(' ', $request);
-
-        $name = $request[0];
-        $users = DI::get()->getUsers();
-
-        if (!$targetUser = $users->getClientByName($name)) {
-            RespondError::make($user, ['userId' => "$name not found"]);
-            return;
-        }
-
-        $list = NameChangeDAO::create()->getHistoryByUserId($targetUser->getId());
-
-        $html = '<table class="table table-striped">';
-
-        /** @var $row NameChangeDAO */
-        foreach ($list as $row) {
-            $html .= '<tr>';
-            $html .= '<td>' . $row->getDateRaw() . '</td>';
-            $html .= '<td>' . $row->getName() . '</td>';
-            $html .= '</tr>';
-        }
-        $html .= '</table>';
-
-        return [$html, true];
-    }
-
-    protected function processMe(User $user, $text)
-    {
-        return [$user->getProperties()->getName().' '.$text, false];
-    }
-
-    private function changeRequest(Chain $chain, $msg, $isPrivate = true)
+    protected function injectCommand(Chain $chain, $msg, $isPrivate = true)
     {
         $request = $chain->getRequest();
-        $request['msg'] = '* '.$msg;
+        $request['msg'] = $msg;
 
         if ($isPrivate) {
             $request['to'] = $chain->getUser()->getId();
