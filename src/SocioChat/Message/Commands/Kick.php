@@ -17,12 +17,12 @@ class Kick implements TextCommand
 
 	public function getHelp()
 	{
-		return '<ник> - кикнуть посетителя';
+		return '<ник> <сообщение> - кикнуть посетителя';
 	}
 
 	public function run(User $user, $args)
 	{
-		$text = explode(' ', $args);
+		$text = explode(' ', $args, 2);
 
 		$assHoleName = $text[0];
 		$users = DI::get()->getUsers();

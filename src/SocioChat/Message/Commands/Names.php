@@ -17,12 +17,12 @@ class Names implements TextCommand
 
 	public function getHelp()
 	{
-		return '<ник-пользователя> - показать историю изменений ника пользователя';
+		return '<ник> - показать историю изменений ника пользователя';
 	}
 
 	public function run(User $user, $args)
 	{
-		$request = explode(' ', $args);
+		$request = explode(' ', $args, 1);
 
 		$name = $request[0];
 		$users = DI::get()->getUsers();

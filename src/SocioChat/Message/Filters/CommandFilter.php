@@ -56,7 +56,7 @@ class CommandFilter implements ChainInterface
                 $obj = new $class;
                 if ($obj->isAllowed($user)) {
                     $html .= '<tr>';
-                    $html .= '<td>' . $token . '</td>';
+                    $html .= '<td><b>/' . $token . '</b></td>';
                     $html .= '<td>' . htmlentities($obj->getHelp()) . '</td>';
                     $html .= '</tr>';
                 }
