@@ -95,6 +95,7 @@ class LoginController extends ControllerBase
             Chat::get()->onClose($duplicatedUser->getConnection());
         }
 
+        /** @var UserDAO $userDAO */
         $userDAO->setChatId($oldChannelId);
         $user->setUserDAO($userDAO);
         $clients->updateKeyOfUserId($oldUserId);
