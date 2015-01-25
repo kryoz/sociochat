@@ -80,13 +80,20 @@ class ActivationsDAO extends DAOBase
 
     public function getActivation($email, $code)
     {
-        return $this->getListByQuery("SELECT * FROM {$this->dbTable} WHERE email = :email AND code = :code AND used = :used LIMIT 1",
-            ['email' => $email, 'code' => $code, 'used' => 'false']);
+        return $this->getListByQuery(
+            "SELECT * FROM {$this->dbTable} WHERE ".self::EMAIL." = :email AND ".self::CODE." = :code AND ".self::USED
+            ." = :used LIMIT 1",
+            [
+                'email' => $email,
+                'code' => $code,
+                'used' => 'false'
+            ]
+        );
     }
 
     public function dropUsedActivations()
     {
-        return $this->db->exec("DELETE FROM {$this->dbTable} WHERE used = :used", ['used' => 'true']);
+        return $this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USED." = :used", ['used' => 'true']);
     }
 
     protected function getForeignProperties()
@@ -94,4 +101,3 @@ class ActivationsDAO extends DAOBase
         return [];
     }
 }
-
