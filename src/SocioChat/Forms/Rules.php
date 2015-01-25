@@ -8,9 +8,52 @@ use SocioChat\Clients\User;
 use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
+use SocioChat\Utils\RudeFilter;
 
 class Rules extends \Core\Form\Rules
 {
+    public static function namePattern($c = 20, $hasSpaces = false)
+    {
+        return function ($val) use ($c, $hasSpaces) {
+            $name = trim($val);
+            $name = RudeFilter::parse($name);
+            $pattern = "~^([A-Za-zА-Яа-я0-9_-".($hasSpaces ? '\s' : '')."]+)$~uis";
+
+            if (preg_match($pattern, $name)) {
+                return mb_strlen($name) <= $c;
+            }
+        };
+    }
+
+    public static function cityPattern()
+    {
+        return function ($val) {
+            $name = trim($val);
+            if (!$name) {
+                return true;
+            }
+            $name = RudeFilter::parse($name);
+            $pattern = "~^([A-Za-zА-Яа-я- ]+)$~uis";
+
+            if (preg_match($pattern, $name)) {
+                return mb_strlen($name) <= 50;
+            }
+        };
+    }
+
+    public static function birthYears()
+    {
+        return function ($val) {
+            $val = trim($val);
+            return in_array($val, self::getBirthYearsRange());
+        };
+    }
+
+    public static function getBirthYearsRange()
+    {
+        return range(self::LOWEST_YEAR, date('Y') - 8);
+    }
+
     public static function timPattern()
     {
         return function ($tim) {
