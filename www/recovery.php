@@ -36,9 +36,9 @@ if (!$email || !$token) {
 $form = new Form();
 $form->import($_POST);
 $form
-    ->addRule('email', Rules::email(), 'email в таком формате не может существовать.', 'emailPattern')
+    ->addRule(ActivationsDAO::EMAIL, Rules::email(), 'email в таком формате не может существовать.', 'emailPattern')
     ->addRule(
-        'email',
+        ActivationsDAO::EMAIL,
         function ($val) {
             $user = UserDAO::create()->getByEmail($val);
             return (bool)$user->getId();
@@ -68,10 +68,10 @@ if ($activation->getId() && !$activation->getIsUsed()) {
 $activation = ActivationsDAO::create();
 $activation->fillParams(
     [
-        'email' => $email,
-        'code' => substr(base64_encode(PasswordUtils::get(64)), 0, 64),
-        'timestamp' => date('Y-m-d H:i:s'),
-        'used' => false
+        ActivationsDAO::EMAIL => $email,
+        ActivationsDAO::CODE => substr(base64_encode(PasswordUtils::get(64)), 0, 64),
+        ActivationsDAO::TIMESTAMP => date('Y-m-d H:i:s'),
+        ActivationsDAO::USED => false
     ]
 );
 $activation->save();

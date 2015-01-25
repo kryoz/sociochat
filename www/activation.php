@@ -30,9 +30,9 @@ if (!$email || !$code) {
 $form = new Form();
 $form->import($_REQUEST);
 $form
-    ->addRule('email', Rules::email(), 'email в таком формате не может существовать.', 'emailPattern')
+    ->addRule(ActivationsDAO::EMAIL, Rules::email(), 'email в таком формате не может существовать.', 'emailPattern')
     ->addRule(
-        'email',
+        ActivationsDAO::EMAIL,
         function ($val) {
             $user = UserDAO::create()->getByEmail($val);
             return (bool)$user->getId();
