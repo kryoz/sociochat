@@ -37,6 +37,7 @@ define(function () {
                 $this.domElems.charsLeft.text($this.maxMsgLength - this.value.length);
                 if ((e.ctrlKey && isEntered) || isEntered) {
                     $this.sendMessage();
+                    $this.domElems.charsLeft.text($this.maxMsgLength);
                 }
             });
 
