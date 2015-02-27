@@ -19,6 +19,7 @@ $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
 /* @var $lang Lang */
 $lifetime = $config->session->lifetime;
 $domain = $config->domain->protocol . $config->domain->web;
+$maxMsgLength = $config->msgMaxLength;
 
 setcookie('lang', $httpAcceptLanguage, time() + $lifetime, '/', '.' . $config->domain->web);
 
@@ -43,23 +44,27 @@ require_once "pages/header.php";
                            data-toggle="tab"><?= $lang->getPhrase('index.SocioChat') ?></a>
                     </div>
                     <div class="dropdown navbar-cobrand">
+	                    <span class="space">
+
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle"
+							   title="<?= $lang->getPhrase('index.Channels') ?>"><b
+									class="caret"></b>
+								<span id="channel-name"><?= $lang->getPhrase('index.Channels') ?></span>
+							</a>
+							<ul class="dropdown-menu" id="menu-channels"></ul>
+						</span>
+
+	                    <a href="#who" class="tip tab-panel space" data-toggle="tab"
+	                       title="<?= $lang->getPhrase('index.UserListTip') ?>">
+                                    <span class="badge"><span class="glyphicon glyphicon-user"></span> <span
+		                                    id="guest-counter">0</span></span>
+	                    </a>
                         <a href="#profile" class="tip tab-panel space cog" data-toggle="tab"
                            title="<?= $lang->getPhrase('index.ProfileTip') ?>">
                             <span class="glyphicon glyphicon-cog"></span>
                         </a>
-							<span class="space">
-								<a href="#who" class="tip tab-panel" data-toggle="tab"
-                                   title="<?= $lang->getPhrase('index.UserListTip') ?>">
-                                    <span class="badge"><span class="glyphicon glyphicon-user"></span> <span
-                                            id="guest-counter">0</span></span>
-                                </a>
-								<a href="#" data-toggle="dropdown" class="dropdown-toggle"
-                                   title="<?= $lang->getPhrase('index.Channels') ?>">
-                                    <span id="channel-name"><?= $lang->getPhrase('index.Channels') ?></span> <b
-                                        class="caret"></b>
-                                </a>
-								<ul class="dropdown-menu" id="menu-channels"></ul>
-							</span>
+
+
 
                         <a href="#login" class="tip tab-panel space" data-toggle="tab"
                            title="<?= $lang->getPhrase('index.LoginTip') ?>">
@@ -71,19 +76,19 @@ require_once "pages/header.php";
             </div>
             <div class="collapse navbar-collapse">
                 <ul role="navigation" class="nav navbar-nav">
-                    <li style="display: none">
+                    <li>
                         <a href="#music" class="tip tab-panel" data-toggle="tab"
                            title="<?= $lang->getPhrase('index.MusicTip') ?>"><span
                                 class="glyphicon glyphicon-headphones"></span> <?= $lang->getPhrase('index.Music') ?>
                         </a>
                     </li>
 
-                    <li>
+                    <!--<li>
                         <a href="#hashes" class="tip tab-panel" data-toggle="tab"
                            title="<?= $lang->getPhrase('index.Hashes') ?>"><span
                                 class="glyphicon glyphicon-signal"></span> <?= $lang->getPhrase('index.Hashes') ?>
                         </a>
-                    </li>
+                    </li>-->
 
                     <li>
                         <a href="#" id="menu-dualize" class="tip"
@@ -153,7 +158,7 @@ require_once "pages/header.php";
         return {
             wsDomain: '<?=$config->domain->ws?>',
             webDomain: '<?=$config->domain->web?>',
-            lifeTime: '<?=$lifetime?>'
+	        maxMsgLength: <?=$maxMsgLength?>
         };
     });
 

@@ -2,6 +2,7 @@
 namespace SocioChat;
 
 use Core\DB\DB;
+use Core\Memcache\Wrapper;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orno\Di\Container;
@@ -27,6 +28,7 @@ class DIBuilder
         self::setupDictionary($container);
         self::setupLang($container);
         self::setupCache($container);
+	    self::setupMemcache($container);
         self::setupSession($container);
         self::setupUsers($container);
     }
@@ -128,6 +130,31 @@ class DIBuilder
             true
         );
     }
+
+	/**
+	 * @param Container $container
+	 */
+	public static function setupMemcache(Container $container)
+	{
+		$container->add(
+			'memcache',
+			function () use ($container) {
+				try {
+					$servers = [
+						['127.0.0.1', 11211]
+					];
+					$wrapper = new Wrapper('sociochat', $servers);
+					$wrapper->toggleAll();
+				} catch (\Exception $e) {
+					$container->get('logger')->err('Unable to initialize memcached!');
+					die($e->getMessage());
+				}
+
+				return $wrapper;
+			},
+			true
+		);
+	}
 
     /**
      * @param Container $container

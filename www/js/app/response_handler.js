@@ -184,7 +184,7 @@ define(function () {
                 if (props.email) {
                     $this.domElems.email.val(props.email);
                     $this.user.email = props.email;
-                    $this.domElems.musicLink.show();
+                    //$this.domElems.musicLink.show();
                     $this.domElems.loginLink.hide();
                 }
 

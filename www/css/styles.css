@@ -2,7 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background: url(../img/lghtmesh.png) 0 0 repeat;
+    background: #dadfe1;
 }
 
 code {
@@ -18,18 +18,33 @@ doesnotexist:-o-prefocus, #wrapper {
 }
 
 .tab-wrapper {
-    height: calc(100% - 165px);
+    height: calc(100% - 130px);
 }
 
 #chat {
     height: 100%;
     min-height: 240px;
+    position: relative;
 }
 
+#chat header {
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…EiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#00000000', GradientType=0);
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 30px;
+}
 doesnotexist:-o-prefocus, #panel-chat {
     height: 480px;
 }
 
+.panel {
+    border-radius: 0;
+}
 .navbar-cobrand {
     color: #fff;
     float: left;
@@ -119,11 +134,25 @@ doesnotexist:-o-prefocus, #panel-chat {
 #log .user-avatar .glyphicon {
     color: #ddd;
 }
-
+#charsLeft {
+    position: absolute;
+    right: 40px;
+    top: 0;
+    z-index: 5;
+    color: #ccc;
+    font-size: 10px;
+}
 .chat-container, .chat-container .panel-body {
     height: 100%;
 }
 
+.well.message-input {
+    margin-bottom: 0;
+    background: inherit;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
 .well {
     margin-bottom: 0;
 }
@@ -203,7 +232,8 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .system {
-    color: #969320;
+    color: #a0a0a0;
+    font-size: 12px;
 }
 
 #log > div.system {
@@ -348,7 +378,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .navbar-left a {
-    color: #fff;
+    color: #5c6a70;
     text-decoration: none;
 }
 
@@ -357,9 +387,22 @@ doesnotexist:-o-prefocus, #panel-chat {
     line-height: 30px;
 }
 
+.navbar-left .space .badge {
+    border-radius: 4px;
+    border: 1px solid #f0f0f0;
+    background-color: inherit;
+    color: inherit;
+}
+
+@media (min-width: 768px) {
+    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+        margin-left: -30px;
+    }
+}
 .navbar-default {
-    background-color: #ed9c28;
-    border-color: #b17f3a;
+    border: none;
+    background-color: inherit;
+    margin-bottom: 0;
 }
 
 .navbar-default .navbar-brand {
@@ -375,21 +418,21 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .navbar-default .navbar-nav > li > a {
-    color: #ffffff;
+    color: #5c6a70;
     padding: 15px 10px;
 }
 
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-    color: #ffffff;
+    color: #5c6a70;
 }
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-    color: #ffffff;
+    color: #5c6a70;
     background-color: #b17f3a;
 }
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
-    color: #ffffff;
+    color: #5c6a70;
     background-color: #b17f3a;
 }
 
@@ -398,7 +441,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-    background-color: #ed9c28;
+    background-color: inherit;
 }
 
 .navbar-default .navbar-toggle .icon-bar {
@@ -447,11 +490,11 @@ doesnotexist:-o-prefocus, #panel-chat {
     }
 
     .chat-container {
-        margin-bottom: 0;
+        margin-bottom: 5px;
     }
 
     .tab-wrapper {
-        height: calc(100% - 110px);
+        height: calc(100% - 95px);
     }
 
     .navbar-default {
@@ -475,7 +518,7 @@ doesnotexist:-o-prefocus, #panel-chat {
     }
 
     .tab-wrapper {
-        height: calc(100% - 105px);
+        height: calc(100% - 95px);
     }
 
     .navbar-default .navbar-toggle {
@@ -492,4 +535,15 @@ doesnotexist:-o-prefocus, #panel-chat {
     .navbar-brand a span {
         display: block;
     }
+}
+
+.table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+    background-color: inherit;
+}
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+    background-color: inherit;
+}
+
+.btn {
+    border-radius: 0;
 }

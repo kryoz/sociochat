@@ -4,6 +4,7 @@ namespace SocioChat\Clients;
 
 use SocioChat\DI;
 use Core\Form\Form;
+use SocioChat\Message\MsgRaw;
 use SocioChat\Response\MessageResponse;
 
 class Channel
@@ -20,23 +21,14 @@ class Channel
     const USER_INFO = 'userInfo';
     const FROM_USER_ID = 'fromUserId';
 
-    private $id;
+	protected $id;
     protected $history = [];
     protected $lastMsgId = 1;
 
-    private $onJoinRule;
-
-    /**
-     * @return int
-     */
-    public function getLastMsgId()
-    {
-        return $this->lastMsgId;
-    }
-
-    protected $name;
-    protected $isPrivate = true;
-    protected $ownerId = 1;
+	protected $name;
+	protected $isPrivate = true;
+	protected $ownerId = 1;
+	protected $onJoinRule;
 
     public function __construct($id, $name = null, $isPrivate = true)
     {
@@ -70,6 +62,20 @@ class Channel
         return $this->id;
     }
 
+	/**
+	 * @return int
+	 */
+	public function getLastMsgId()
+	{
+		return $this->lastMsgId;
+	}
+
+	public function setLastMsgId($id)
+	{
+		$this->lastMsgId = (int) $id;
+		return $this;
+	}
+
     /**
      * @param MessageResponse $response
      * @return int
@@ -93,6 +99,14 @@ class Channel
 
         return $id;
     }
+
+	public function pushRawResponse(array $response)
+	{
+		print_r($response[self::MSG]);
+		$response[self::MSG] = MsgRaw::create($response[self::MSG]);
+		$this->history[$this->lastMsgId] = $response;
+		$this->lastMsgId++;
+	}
 
     /**
      * @param int $lastMsgId

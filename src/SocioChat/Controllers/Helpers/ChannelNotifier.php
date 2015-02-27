@@ -7,6 +7,7 @@ use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Message\MsgRaw;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\ChannelsResponse;
 use SocioChat\Response\HistoryResponse;
@@ -22,7 +23,12 @@ class ChannelNotifier
             $response = (new MessageResponse())
                 ->setTime(null)
                 ->setChannelId($channelId)
-                ->setMsg(MsgToken::create('WelcomeUser', $user->getProperties()->getName()));
+                ->setMsg(
+	                MsgRaw::create(
+		                '<span class="text-success"><span class="glyphicon glyphicon-log-in"></span> '
+		                .$user->getProperties()->getName().'</span>'
+	                )
+                );
             $userCollection
                 ->setResponse($response)
                 ->notify();

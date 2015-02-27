@@ -34,6 +34,7 @@ define(function () {
             $this.domElems.inputMessage.keypress(function (e) {
                 var code = e.keyCode || e.which;
                 var isEntered = code == 10 || code == 13;
+                $this.domElems.charsLeft.text($this.maxMsgLength - this.value.length);
                 if ((e.ctrlKey && isEntered) || isEntered) {
                     $this.sendMessage();
                 }

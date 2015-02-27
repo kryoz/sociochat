@@ -6,6 +6,7 @@ if (!defined('ROOT')) {
 <div id="chat" class="tab-pane active">
     <div class="panel panel-default chat-container">
         <div class="panel-body">
+	        <header class="post-item post-header"></header>
             <div id="log">
                 <div class="system">
                     Подключаемся...
@@ -27,12 +28,13 @@ if (!defined('ROOT')) {
                     <div class="form-inline">
                         <input tabindex="1" autocomplete="off" type="text" speech x-webkit-speech class="form-control"
                                placeholder="<?= $lang->getPhrase('index.Message') ?>" id="message">
+	                    <div id="charsLeft"></div>
                     </div>
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-info" id="address-reset"
                                 title="<?= $lang->getPhrase('index.AddressReset') ?>" style="display: none"><span
                                 class="glyphicon glyphicon-remove"></span></button>
-                        <button type="submit" class="btn btn-warning" title="<?= $lang->getPhrase('index.Send') ?>"
+                        <button type="submit" class="btn btn-info" title="<?= $lang->getPhrase('index.Send') ?>"
                                 id="send"><span class="glyphicon glyphicon-send"></span></button>
                     </div>
                 </div>

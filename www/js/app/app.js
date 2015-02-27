@@ -3,6 +3,7 @@ define('app', function () {
         connection: null,
         hostUrl: null,
         domain: null,
+        maxMsgLength: null,
         token: null,
         isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
         msgCount: 0,
@@ -38,6 +39,7 @@ define('app', function () {
         domElems: {
             guestList: $('#guests'),
             inputMessage: $('#message'),
+            charsLeft : $('#charsLeft'),
             chat: $('#log'),
             guestCounter: $('#guest-counter'),
 
@@ -78,11 +80,12 @@ define('app', function () {
             loginLink: $('a[href="#login"]')
         },
 
-        Init: function (hostUrl, domain) {
+        Init: function (hostUrl, domain, maxMsgLength) {
             var $this = this;
 
             this.hostUrl = hostUrl;
             this.domain = domain;
+            this.maxMsgLength = maxMsgLength;
 
             this.initSession(function () {
                 $this.Connect();

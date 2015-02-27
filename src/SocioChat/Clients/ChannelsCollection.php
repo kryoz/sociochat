@@ -4,6 +4,7 @@ namespace SocioChat\Clients;
 
 use Core\BaseException;
 use SocioChat\DI;
+use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
 use Core\TSingleton;
 
@@ -95,4 +96,28 @@ class ChannelsCollection
     {
         return $this->channels;
     }
+
+	public function exportChannels()
+	{
+		$list = [];
+
+		foreach ($this->channels as $channel) {
+			$responses = $channel->getHistory(0);
+			foreach ($responses as $id => $response) {
+				/** @var Msg $msg */
+				$msg = $response['msg'];
+				$responses[$id][Channel::MSG] = $msg->getMsg();
+			}
+
+			$list[$channel->getId()] = [
+				'name' => $channel->getName(),
+				'ownerId' => $channel->getOwnerId(),
+				'isPrivate' => $channel->isPrivate(),
+				'lastMsgId' => $channel->getLastMsgId(),
+				'responses' => $responses
+			];
+		}
+
+		return $list;
+	}
 }

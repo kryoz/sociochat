@@ -12,6 +12,8 @@ use SocioChat\Utils\RudeFilter;
 
 class Rules extends \Core\Form\Rules
 {
+	const LOWEST_YEAR = 1930;
+
     public static function namePattern($c = 20, $hasSpaces = false)
     {
         return function ($val) use ($c, $hasSpaces) {
@@ -100,5 +102,4 @@ class Rules extends \Core\Form\Rules
             return ChannelsCollection::get()->getChannelByName(trim($name));
         };
     }
-
 }

@@ -10,6 +10,7 @@ use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\ChannelNotifier;
+use SocioChat\Message\MsgRaw;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Session\DBSessionHandler;
@@ -68,7 +69,12 @@ class DetachFilter implements ChainInterface
         $response = new MessageResponse();
 
         if ($user->isAsyncDetach()) {
-            $response->setMsg(MsgToken::create('LeavesUs', $user->getProperties()->getName()));
+            $response->setMsg(
+	            MsgRaw::create(
+		            '<span class="text-warning"><span class="glyphicon glyphicon-log-out"></span> '
+		            .$user->getProperties()->getName().'</span>'
+	            )
+            );
         }
 
         $response
