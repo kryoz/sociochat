@@ -34,7 +34,7 @@ if (!defined('ROOT')) {
                         <button type="button" class="btn btn-info" id="address-reset"
                                 title="<?= $lang->getPhrase('index.AddressReset') ?>" style="display: none"><span
                                 class="glyphicon glyphicon-remove"></span></button>
-                        <button type="submit" class="btn btn-info" title="<?= $lang->getPhrase('index.Send') ?>"
+                        <button type="submit" class="btn btn-success" title="<?= $lang->getPhrase('index.Send') ?>"
                                 id="send"><span class="glyphicon glyphicon-send"></span></button>
                     </div>
                 </div>

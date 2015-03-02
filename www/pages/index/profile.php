@@ -65,12 +65,13 @@ if (!defined('ROOT')) {
     </div>
 
     <div class="panel-heading" style="border-top: 1px solid #ddd;">
-        <?= $lang->getPhrase('profile.AvatarTip') ?> <?= $config->uploads->avatars->maxsize / 1024 ?>KB
+	    <?= $lang->getPhrase('profile.AvatarHeading') ?>
     </div>
     <div class="panel-body" id="profile-avatar">
+	    <p><?= $lang->getPhrase('profile.AvatarTip') ?> <?= $config->uploads->avatars->maxsize / 1024 ?>KB</p>
         <div class="row btn-vert-block form-group">
             <div class="col-sm-12 btn-vert-block">
-				<span class="btn btn-default btn-file">
+				<span class="btn btn-success btn-file">
 					<?= $lang->getPhrase('profile.Browse') ?> <input type="file" class="upload" accept="image/*"
                                                                      name="img">
 				</span>
@@ -81,7 +82,11 @@ if (!defined('ROOT')) {
                 <p><?= $lang->getPhrase('profile.Preview') ?></p>
 
                 <div class="img-thumbnail avatar-placeholder"
-                     style="max-width: 100%; max-height: <?= $config->uploads->avatars->maxdim ?>px"></div>
+                     style="max-width: 100%; max-height: <?= $config->uploads->avatars->maxdim ?>px">
+	                <div class="user-avatar">
+	                    <span class="glyphicon glyphicon-user"></span>
+	                </div>
+                </div>
             </div>
         </div>
         <div class="progress progress-striped active" style="display: none">
@@ -99,11 +104,10 @@ if (!defined('ROOT')) {
 
     </div>
 
-    <div class="panel-heading" style="border-top: 1px solid #ddd;">
-        <a href="#" id="reg-info"><?= $lang->getPhrase('profile.Registration') ?> <span
-                class="glyphicon glyphicon-info-sign"></span></a>
+    <div class="panel-heading">
+        <?= $lang->getPhrase('profile.Registration') ?>
     </div>
-    <div class="panel-body" id="reg-panel" style="display: none">
+    <div class="panel-body" id="reg-panel">
         <p><?= $lang->getPhrase('profile.RegistrationTip') ?></p>
 
         <div class="row btn-vert-block form-group">
@@ -118,7 +122,7 @@ if (!defined('ROOT')) {
         </div>
         <div class="row btn-vert-block">
             <div class="col-md-12 btn-vert-block">
-                <a class="btn btn-block btn-info" id="set-reg-info"><?= $lang->getPhrase('Save') ?></a>
+                <a class="btn btn-block btn-success" id="set-reg-info"><?= $lang->getPhrase('Save') ?></a>
             </div>
         </div>
     </div>

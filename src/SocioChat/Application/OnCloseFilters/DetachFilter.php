@@ -69,12 +69,7 @@ class DetachFilter implements ChainInterface
         $response = new MessageResponse();
 
         if ($user->isAsyncDetach()) {
-            $response->setMsg(
-	            MsgRaw::create(
-		            '<span class="text-warning"><span class="glyphicon glyphicon-log-out"></span> '
-		            .$user->getProperties()->getName().'</span>'
-	            )
-            );
+	        $response->setMsg(MsgToken::create('LeavesUs', $user->getProperties()->getName()));
         }
 
         $response

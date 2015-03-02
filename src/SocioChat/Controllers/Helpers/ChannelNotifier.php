@@ -23,12 +23,7 @@ class ChannelNotifier
             $response = (new MessageResponse())
                 ->setTime(null)
                 ->setChannelId($channelId)
-                ->setMsg(
-	                MsgRaw::create(
-		                '<span class="text-success"><span class="glyphicon glyphicon-log-in"></span> '
-		                .$user->getProperties()->getName().'</span>'
-	                )
-                );
+	            ->setMsg(MsgToken::create('WelcomeUser', $user->getProperties()->getName()));
             $userCollection
                 ->setResponse($response)
                 ->notify();
