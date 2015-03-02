@@ -33,11 +33,19 @@ define(function () {
 
             $this.domElems.inputMessage.keypress(function (e) {
                 var code = e.keyCode || e.which;
-                var isEntered = code == 10 || code == 13;
-                $this.domElems.charsLeft.text($this.maxMsgLength - this.value.length);
-                if ((e.ctrlKey && isEntered) || isEntered) {
+                var isEnter = code == 10 || code == 13;
+                var inputText = this.value;
+
+                $this.domElems.charsLeft.text($this.maxMsgLength - inputText.length);
+                if (e.ctrlKey && isEnter) {
                     $this.sendMessage();
                     $this.domElems.charsLeft.text($this.maxMsgLength);
+                    return false;
+                } else if (isEnter) {
+                    var matches = inputText.match(/(?:\r\n|\r|\n)/g);
+                    if (matches && matches.length > 3) {
+                        return false;
+                    }
                 }
             });
 
@@ -52,7 +60,7 @@ define(function () {
                     city: $this.domElems.city.val(),
                     birth: $this.domElems.birth.val(),
                     censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false //mozilla bug
-                }
+                };
                 $this.send(command);
                 $this.returnToChat();
             });

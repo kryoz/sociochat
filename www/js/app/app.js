@@ -234,9 +234,10 @@ define('app', function () {
 
             var command = {
                 subject: "Message",
-                msg: $this.domElems.inputMessage.val(),
+                msg: $this.domElems.inputMessage.val().replace(/(?:\r\n|\r|\n)/g, '|'),
                 to: $this.domElems.address.data('id')
-            }
+            };
+
             $this.send(command);
             $this.domElems.inputMessage.val('');
         },

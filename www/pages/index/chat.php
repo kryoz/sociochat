@@ -26,8 +26,9 @@ if (!defined('ROOT')) {
             <div class="col-xs-10">
                 <div class="input-group">
                     <div class="form-inline">
-                        <input tabindex="1" autocomplete="off" type="text" speech x-webkit-speech class="form-control"
-                               placeholder="<?= $lang->getPhrase('index.Message') ?>" id="message">
+                        <textarea tabindex="1" class="form-control"
+                               placeholder="<?= $lang->getPhrase('index.Message') ?>" id="message" maxlength="<?=$maxMsgLength?>"></textarea>
+
 	                    <div id="charsLeft"></div>
                     </div>
                     <div class="input-group-btn">
