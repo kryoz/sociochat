@@ -5,8 +5,9 @@ namespace SocioChat\Message\Filters;
 class LineBreakFilter implements ChainInterface
 {
     const MAX_BR = 4;
+	const BR = '<br>';
 
-    /**
+	/**
      * C-o-R pattern
      * @param Chain $chain input stream
      * @return false|null|true
@@ -14,7 +15,22 @@ class LineBreakFilter implements ChainInterface
     public function handleRequest(Chain $chain)
     {
         $request = $chain->getRequest();
-        $request['msg'] = preg_replace('~(\|)~u', '<br>', $request['msg'], self::MAX_BR);
+	    $msgParts = explode('|', $request['msg']);
+
+		if (!empty($msgParts)) {
+			$newMsgParts = [];
+			$brCount = max(self::MAX_BR, count($msgParts));
+
+			for ($i = 0; $i < $brCount; $i++) {
+				$part = trim($msgParts[$i]);
+				if (!$part) {
+					continue;
+				}
+				$newMsgParts[] = $part;
+			}
+
+			$request['msg'] = implode(self::BR, $newMsgParts);
+		}
 
         $chain->setRequest($request);
     }

@@ -28,6 +28,10 @@ class MessageController extends ControllerBase
         $from = $chain->getFrom();
         $request = $chain->getRequest();
 
+	    if (!$request['msg']) {
+		    return;
+	    }
+
         $recipient = $this->searchUser($from, $request['to']);
 
         if ($recipient) {
@@ -130,7 +134,8 @@ class MessageController extends ControllerBase
             ->addHandler(new InputFilter())
             ->addHandler(new LineBreakFilter())
             ->addHandler(new CommandFilter())
-            ->addHandler(new HashFilter());
+            //->addHandler(new HashFilter())
+            ;
         $chain->run();
 
         $request = $chain->getRequest();

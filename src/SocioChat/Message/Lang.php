@@ -45,7 +45,7 @@ class Lang
 
         if (!$this->lexicon) {
             $logger->warn('No localization was set', [__CLASS__]);
-            return $token . ' ' . implode(', ', $args);
+            return $token . '|' . implode('|', $args);
         }
 
         $scope = $this->lexicon;
@@ -54,7 +54,7 @@ class Lang
             if (!$newScope = $scope->get($part)) {
                 $logger->warn('No localization was matched for ' . $part . ' (lang = ' . $this->lang . ')',
                     [__CLASS__]);
-                return $token . ' ' . implode(', ', $args);
+                return $token . '|' . implode('|', $args);
             }
 
             $scope = $newScope;

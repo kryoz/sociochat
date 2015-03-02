@@ -251,7 +251,6 @@ class User implements ConnectionInterface
     }
 
     /**
-     * @internal param mixed $messagesCount
      * @return $this
      */
     public function incMessagesCount()
