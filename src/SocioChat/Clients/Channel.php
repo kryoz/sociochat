@@ -5,6 +5,7 @@ namespace SocioChat\Clients;
 use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Message\MsgRaw;
+use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
 class Channel
@@ -102,8 +103,13 @@ class Channel
 
 	public function pushRawResponse(array $response)
 	{
-		print_r($response[self::MSG]);
-		$response[self::MSG] = MsgRaw::create($response[self::MSG]);
+		$msg = $response[self::MSG];
+		if (mb_strpos($msg, '|')) {
+			$msg = call_user_func_array([MsgToken::class, 'create'], explode('|', $msg));
+		} else {
+			$msg = MsgRaw::create($msg);
+		}
+		$response[self::MSG] = $msg;
 		$this->history[$this->lastMsgId] = $response;
 		$this->lastMsgId++;
 	}
