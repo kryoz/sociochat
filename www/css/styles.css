@@ -2,7 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background: #dadfe1;
+    background: #E6EAEC;
     color: #5c6a70;
 }
 
@@ -29,9 +29,8 @@ doesnotexist:-o-prefocus, #wrapper {
 }
 
 #chat header {
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…EiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 0) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#00000000', GradientType=0);
+    background: linear-gradient(to bottom, rgba(230, 234, 236, 1) 0, rgba(230, 234, 236, 0) 100%);
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#00000000', GradientType=0);*/
     position: absolute;
     z-index: 5;
     top: 0;
@@ -39,6 +38,12 @@ doesnotexist:-o-prefocus, #wrapper {
     left: 0;
     padding: 30px;
 }
+
+.chat-container, .chat-container .panel-body {
+    height: 100%;
+    background-color: inherit;
+}
+
 doesnotexist:-o-prefocus, #panel-chat {
     height: 480px;
 }
@@ -133,7 +138,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 #log .user-avatar .glyphicon {
-    color: #ddd;
+    color: #bababa;
 }
 #charsLeft {
     position: absolute;
@@ -142,10 +147,6 @@ doesnotexist:-o-prefocus, #panel-chat {
     z-index: 5;
     color: #ccc;
     font-size: 10px;
-}
-.chat-container, .chat-container .panel-body {
-    height: 100%;
-    background-color: #fff;
 }
 
 .well.message-input {
@@ -415,13 +416,6 @@ doesnotexist:-o-prefocus, #panel-chat {
     font-size: 18px;
     font-weight: bold;
 }
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
-    color: #ffffff;
-}
-
-.navbar-default .navbar-text {
-    color: #ffffff;
-}
 
 .navbar-default .navbar-nav > li > a {
     color: #5c6a70;
@@ -446,22 +440,12 @@ doesnotexist:-o-prefocus, #panel-chat {
     border-color: inherit;
 }
 
-.navbar-default .navbar-toggle .icon-bar {
-    background-color: #ffffff;
-}
 
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
     border-color: #5c6a70;
 }
 
-.navbar-default .navbar-link {
-    color: #ffffff;
-}
-
-.navbar-default .navbar-link:hover {
-    color: #ffffff;
-}
 
 .navbar-default .navbar-toggle {
     border: none;
@@ -474,6 +458,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
     color: #5c6a70;
+    background-color: inherit;
 }
 
 .navbar-default .navbar-toggle:hover .glyphicon-collapse-down, .navbar-default .navbar-toggle:focus .glyphicon-collapse-down {
@@ -481,14 +466,6 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 @media (max-width: 767px) {
-    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-        color: #ffffff;
-    }
-
-    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-        color: #ffffff;
-    }
-
     .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
         color: #ffffff;
         background-color: #b17f3a;
@@ -559,11 +536,11 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
     color: #fff;
-    background-color: #68B4D5;
+    background-color: #C5D4DA;
     border-color: #2EAEC5;
 }
 .panel {
-    background-color: #dadfe1;
+    background-color: inherit;
     border: none;
     box-shadow: none;
 }
@@ -583,12 +560,12 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .pagination > li > a, .pagination > li > span {
-    background-color: #5C9CB8;
+    background-color: #C5D4DA;
     border: 1px solid #dadfe1;
     color: #5C9CB8;
 }
 .pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
-    background-color: #5C9CB8;
+    background-color: #C5D4DA;
     border: 1px solid #dadfe1;
 }
 .pagination > .active > a,
@@ -597,6 +574,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 .pagination > .active > span:hover,
 .pagination > .active > a:focus, .pagination > .active > span:focus {
     border-color: #dadfe1;
+    background-color: #5C9CB8;
 }
 .pagination > li:first-child > a, .pagination > li:first-child > span,
 .pagination > li:last-child > a, .pagination > li:last-child > span{
