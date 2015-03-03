@@ -19,7 +19,7 @@ class LineBreakFilter implements ChainInterface
 
 		if (!empty($msgParts)) {
 			$newMsgParts = [];
-			$brCount = max(self::MAX_BR, count($msgParts));
+			$brCount = min(self::MAX_BR, count($msgParts));
 
 			for ($i = 0; $i < $brCount; $i++) {
 				$part = trim($msgParts[$i]);

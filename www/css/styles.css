@@ -525,7 +525,11 @@ doesnotexist:-o-prefocus, #panel-chat {
 .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
     background-color: inherit;
 }
-
+.table > thead > tr > th,
+.table > tbody > tr > th, .table > tfoot > tr > th,
+.table > thead > tr > td, .table > tfoot > tr > td {
+    border-color: #aaa;
+}
 .form-control, .btn {
     border-radius: 0;
 }
@@ -536,8 +540,17 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
     color: #fff;
-    background-color: #C5D4DA;
-    border-color: #2EAEC5;
+    background-color: #AEC5CF;
+    border-color: #AEC5CF;
+}
+.btn-success.disabled, .btn-success[disabled], fieldset[disabled] .btn-success,
+.btn-success.disabled:hover, .btn-success[disabled]:hover, fieldset[disabled] .btn-success:hover,
+.btn-success.disabled:focus, .btn-success[disabled]:focus, fieldset[disabled] .btn-success:focus,
+.btn-success.disabled:active, .btn-success[disabled]:active, fieldset[disabled] .btn-success:active,
+.btn-success.disabled.active, .btn-success[disabled].active, fieldset[disabled] .btn-success.active {
+    color: #fff;
+    background-color: #AEC5CF;
+    border-color: #AEC5CF;
 }
 .panel {
     background-color: inherit;
@@ -560,12 +573,12 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .pagination > li > a, .pagination > li > span {
-    background-color: #C5D4DA;
+    background-color: #AEC5CF;
     border: 1px solid #dadfe1;
     color: #5C9CB8;
 }
 .pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
-    background-color: #C5D4DA;
+    background-color: #AEC5CF;
     border: 1px solid #dadfe1;
 }
 .pagination > .active > a,
