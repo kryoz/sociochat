@@ -38,15 +38,16 @@ define(function () {
 
                 $this.domElems.charsLeft.text($this.maxMsgLength - inputText.length);
                 if (e.ctrlKey && isEnter) {
+                    var matches = inputText.match(/(?:\r\n|\r|\n)/g);
+                    return !(matches && matches.length > 3);
+
+                }
+                if (isEnter) {
                     $this.sendMessage();
                     $this.domElems.charsLeft.text($this.maxMsgLength);
                     return false;
-                } else if (isEnter) {
-                    var matches = inputText.match(/(?:\r\n|\r|\n)/g);
-                    if (matches && matches.length > 3) {
-                        return false;
-                    }
                 }
+
             });
 
             $this.domElems.setProperties.click(function (e) {

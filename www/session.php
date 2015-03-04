@@ -29,9 +29,11 @@ $sessionHandler = DI::get()->getSession();
 
 if (!$sessionHandler->read($token)) {
     $tmpSession = TmpSessionDAO::create();
-    $tmpSession
-        ->setSessionId($token)
-        ->save();
+	if (!$tmpSession->getBySessionId($token)->getId()) {
+		$tmpSession
+			->setSessionId($token)
+			->save();
+	}
 }
 
 http_response_code(200);

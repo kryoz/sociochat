@@ -308,7 +308,7 @@ define('app', function () {
                 var exp = /(\.\w+)/i
                 return url.replace(exp, "@2x$1");
             }
-            return url;
+            return '//' + this.domain + url;
         },
         setCookie: function (name, value, options) {
             options = options || {};

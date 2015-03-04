@@ -41,7 +41,7 @@ doesnotexist:-o-prefocus, #wrapper {
 
 .chat-container, .chat-container .panel-body {
     height: 100%;
-    background-color: inherit;
+    background-color: #fff;
 }
 
 doesnotexist:-o-prefocus, #panel-chat {
