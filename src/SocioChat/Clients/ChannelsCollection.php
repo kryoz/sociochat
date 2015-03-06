@@ -74,9 +74,12 @@ class ChannelsCollection
      * @param $id
      * @return Channel|null
      */
-    public function getChannelById($id)
+    public function &getChannelById($id)
     {
-        return isset($this->channels[$id]) ? $this->channels[$id] : null;
+	    if (!isset($this->channels[$id])) {
+		    $this->channels[$id] = null;
+	    }
+        return $this->channels[$id];
     }
 
     /**

@@ -184,7 +184,6 @@ define(function () {
                 if (props.email) {
                     $this.domElems.email.val(props.email);
                     $this.user.email = props.email;
-                    //$this.domElems.musicLink.show();
                     $this.domElems.loginLink.hide();
                 }
 
@@ -321,6 +320,24 @@ define(function () {
                 );
             };
 
+            var handleMusicInfo = function() {
+                if (!json.musicInfo) {
+                    return;
+                }
+                
+                var info = json.musicInfo;
+                var musicElId = 'music-' + info.track_id;
+                var $realTrackEl = $('#' + musicElId);
+
+                $realTrackEl.find('.audio-title').text(info.artist + ' - ' + info.track);
+                $realTrackEl.data('src', info.url);
+                $realTrackEl.click(function (e) {
+                    require(['audio'], function (audio) {
+                        audio.playMusic($this.domElems.audioPlayer, e, musicElId);
+                    });
+                });
+            };
+
             handleTokenRefresh();
             handleGuests(json);
             handleOwnProperties();
@@ -329,6 +346,7 @@ define(function () {
             handleMessage(json);
             handleErrors();
             handleChannels();
+            handleMusicInfo();
         }
     }
 });

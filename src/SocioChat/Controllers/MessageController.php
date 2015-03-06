@@ -14,6 +14,7 @@ use SocioChat\Message\Filters\CommandFilter;
 use SocioChat\Message\Filters\HashFilter;
 use SocioChat\Message\Filters\InputFilter;
 use SocioChat\Message\Filters\LineBreakFilter;
+use SocioChat\Message\Filters\MusicFilter;
 use SocioChat\Message\Msg;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Utils\RudeFilter;
@@ -134,7 +135,7 @@ class MessageController extends ControllerBase
             ->addHandler(new InputFilter())
             ->addHandler(new LineBreakFilter())
             ->addHandler(new CommandFilter())
-            //->addHandler(new HashFilter())
+            ->addHandler(new MusicFilter())
             ;
         $chain->run();
 

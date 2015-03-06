@@ -7,6 +7,7 @@ use Core\Form\Form;
 use SocioChat\Message\MsgRaw;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
+use SocioChat\Response\Response;
 
 class Channel
 {
@@ -128,6 +129,15 @@ class Channel
 
         return $history;
     }
+
+	public function setRow($n, array $row)
+	{
+		if (!isset($this->history[$n])) {
+			return;
+		}
+		$this->history[$n] = $row;
+		return $this;
+	}
 
     public function setIsPrivate($isPrivate)
     {

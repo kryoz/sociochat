@@ -25,12 +25,12 @@ define(function () {
                     html += "<tr>";
                     html += '<td>';
                     html += '<a href="#" data-id="' + trackInfo.id + '" id="' + musicElId + '" class="music"><span class="glyphicon glyphicon-play-circle"></span></a>';
-                    html += '&nbsp;&nbsp;<a href="#" data-src="https://sociochat.me/audio.php?track_id=' + trackInfo.id + '" class="share"><span class="glyphicon glyphicon-bullhorn"></span></a> ';
+                    html += '&nbsp;&nbsp;<a href="#" data-src="https://'+app.domain+'/audio.php?track_id=' + trackInfo.id + '" class="share"><span class="glyphicon glyphicon-bullhorn"></span></a> ';
                     html += '&nbsp;&nbsp;' + trackInfo.artist + ' - ' + trackInfo.track + '</td>';
                     html += '<td>';
 
                     if (app.user.email) {
-                        html += '<a href="https://sociochat.me/audio.php?track_id=' + trackInfo.id + '" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> ' + trackInfo.bitrate;
+                        html += '<a href="https://'+app.domain+'/audio.php?track_id=' + trackInfo.id + '" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> ' + trackInfo.bitrate;
                     } else {
                         html += '<span class="glyphicon glyphicon-floppy-save" title="Доступно только зарегистрированным"></span> ' + trackInfo.bitrate;
                     }

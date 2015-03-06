@@ -4,9 +4,9 @@ use SocioChat\DAO\MusicDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 
-if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-    die('only internal requests allowed');
-}
+//if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+//    die('only internal requests allowed');
+//}
 
 require_once '../config.php';
 require_once 'pages/audio/common.php';

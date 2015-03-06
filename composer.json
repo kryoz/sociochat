@@ -13,6 +13,7 @@
         }
     ],
     "require": {
+        "react/react": "0.4.*@stable",
         "cboden/Ratchet": "*@stable",
         "zendframework/zend-config": "*@stable",
         "monolog/monolog": "*@stable",

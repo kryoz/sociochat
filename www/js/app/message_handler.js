@@ -88,6 +88,15 @@ define(function () {
             var originalText = incomingMessage;
             var $this = this.app;
 
+            var isHTML = function (str) {
+                var a = document.createElement('div');
+                a.innerHTML = str;
+                for (var c = a.childNodes, i = c.length; i--; ) {
+                    if (c[i].nodeType == 1) return true;
+                }
+                return false;
+            }
+
             String.prototype.hashCode = function () {
                 var hash = 0, i, chr, len;
                 if (this.length == 0) return hash;
@@ -113,48 +122,51 @@ define(function () {
             }
 
             var replaceURL = function (text) {
+                if (isHTML(text)) {
+                    return text;
+                }
                 var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
                 var url = exp.exec(text);
 
-                if (url) {
-                    url = url[1];
-
-                    var imgRegExp = replaceWithImgLinks(text);
-                    if (imgRegExp != text) {
-                        return imgRegExp;
-                    }
-
-                    var hash = url.hashCode();
-
-                    $.ajax({
-                        type: "GET",
-                        url: '/img.php',
-                        data: {
-                            'url': url
-                        },
-                        success: function (response) {
-                            var $img = $('#url-' + hash);
-
-                            $img.hide();
-
-                            var replacement = $(getImgReplacementString($img.attr('href')));
-
-                            replacement.insertAfter($img);
-                            $img.remove();
-
-                            replacement.click(function () {
-                                $(this).find('img').toggle();
-                                $(this).find('a').toggle();
-                                $this.scrollDown();
-                            });
-                        },
-
-                        dataType: 'json'
-                    });
-
-                    return text.replace(exp, '<a target="_blank" href="$1" id="url-' + hash + '">$1</a>');
+                if (!url) {
+                    return text;
                 }
-                return text;
+                url = url[1];
+
+                var imgRegExp = replaceWithImgLinks(text);
+                if (imgRegExp != text) {
+                    return imgRegExp;
+                }
+
+                var hash = url.hashCode();
+
+                $.ajax({
+                    type: "GET",
+                    url: '/img.php',
+                    data: {
+                        'url': url
+                    },
+                    success: function (response) {
+                        var $img = $('#url-' + hash);
+
+                        $img.hide();
+
+                        var replacement = $(getImgReplacementString($img.attr('href')));
+
+                        replacement.insertAfter($img);
+                        $img.remove();
+
+                        replacement.click(function () {
+                            $(this).find('img').toggle();
+                            $(this).find('a').toggle();
+                            $this.scrollDown();
+                        });
+                    },
+
+                    dataType: 'json'
+                });
+
+                return text.replace(exp, '<a target="_blank" href="$1" id="url-' + hash + '">$1</a>');
             }
 
             var replaceWithYoutube = function (text) {
@@ -164,68 +176,14 @@ define(function () {
                 return text.replace(exp, replacement);
             }
 
-            var replaceWithAudio = function (text) {
-                var exp = /\bhttps:\/\/sociochat\.me\/audio\.php\?(?:token=.*)?track_id=(.*)\b/ig;
-                var track_id = exp.exec(text);
-
-                if (track_id) {
-                    track_id = track_id[1];
-
-                    var musicElId = 'music-' + track_id + '-' + Math.floor(Math.random() * 100000);
-                    var replacement = '<div class="img-thumbnail">' +
-                        '<a id="' + musicElId +
-                        '" class="music" href="#" title="Воспроизвести музыку">' +
-                        '<span class="glyphicon glyphicon-play-circle"></span> <span class="audio-title">...</span>';
-
-                    $.ajax({
-                        type: "GET",
-                        url: '/audio_player.php',
-                        data: {
-                            'track_id': track_id
-                        },
-                        success: function (response) {
-                            var $realTrackEl = $('#' + musicElId);
-
-                            $realTrackEl.find('.audio-title').text(response.artist + ' - ' + response.track);
-                            $realTrackEl.data('src', response.url);
-                            $realTrackEl.click(function (e) {
-                                require(['audio'], function (audio) {
-                                    audio.playMusic($this.domElems.audioPlayer, e, musicElId);
-                                });
-                            });
-                        },
-                        dataType: 'json'
-                    });
-
-                    return text.replace(exp, replacement);
-                }
-
-                return text;
-            }
-
             var replaceOwnName = function (text) {
                 var exp = new RegExp('(?:\\s||,||\\.)(' + $this.user.name + ')(?:\\s||,||\\.)', 'ig');
                 return text.replace(exp, "<code class=\"private\">$1</code>");
             }
 
-            var replaceHash = function (text) {
-                var exp = / (#[a-zа-я0-9-_]+)/ig;
-                var replacement = '<a href="#hashes" data-src="$1" class="hash tab-panel">$1</a>';
-
-                return text.replace(exp, replacement);
-            }
-
             incomingMessage = replaceOwnName(incomingMessage);
-
-            var res = replaceWithAudio(incomingMessage);
-            res = replaceWithYoutube(res);
-            res = replaceHash(res);
-
-            if (res == incomingMessage) {
-                incomingMessage = replaceURL(incomingMessage);
-            } else {
-                incomingMessage = res;
-            }
+            incomingMessage = replaceWithYoutube(incomingMessage);
+            incomingMessage = replaceURL(incomingMessage);
 
             return incomingMessage;
         },
@@ -287,10 +245,11 @@ define(function () {
                 }
             });
 
-            newLine.find('.hash').click(function () {
-                $(this).tab('show');
-                $this.domElems.hashInput.val($(this).data('src'));
-                $this.domElems.doHashSearch.click();
+            newLine.find('a[bind-play-click=1]').click(function (e) {
+                var musicElId = $(this).attr('id');
+                require(['audio'], function (audio) {
+                    audio.playMusic($this.domElems.audioPlayer, e, musicElId);
+                });
             });
         },
         getSexClass: function (user) {

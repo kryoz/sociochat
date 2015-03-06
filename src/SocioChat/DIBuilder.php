@@ -6,6 +6,8 @@ use Core\Memcache\Wrapper;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orno\Di\Container;
+use React\Dns\Resolver\Factory;
+use React\HttpClient\Factory as HttpFactory;
 use React\EventLoop\Factory as Loop;
 use Core\Cache\Cache;
 use Core\Cache\CacheApc;
@@ -31,6 +33,7 @@ class DIBuilder
 	    self::setupMemcache($container);
         self::setupSession($container);
         self::setupUsers($container);
+	    self::setupHttpClient($container);
     }
 
     public static function setupConfig(Container $container)
@@ -183,5 +186,25 @@ class DIBuilder
             true
         );
     }
+
+	/**
+	 * @param Container $container
+	 */
+	public static function setupHttpClient($container)
+	{
+		$container->add(
+			'httpClient',
+			function () use ($container) {
+				$dnsResolverFactory = new Factory;
+				$loop = $container->get('eventloop');
+				$dnsResolver = $dnsResolverFactory->createCached('8.8.8.8', $loop);
+				$factory = new HttpFactory();
+				$client = $factory->create($loop, $dnsResolver);
+
+				return $client;
+			},
+			true
+		);
+	}
 }
 
