@@ -63,7 +63,7 @@ class MusicFilter implements ChainInterface
 				    if (!preg_match('~id="music-('.$json['track_id'].')"~u', $string)) {
 					    continue;
 				    }
-
+				    $logger->info('Replacing corresponding history row');
 				    $string = str_replace(
 					    'id="music-'.$json['track_id'].'" data-src=""><span class="glyphicon glyphicon-play-circle">'
 				        .'</span> <span class="audio-title">...</span>',
