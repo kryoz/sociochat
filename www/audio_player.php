@@ -3,9 +3,10 @@
 use SocioChat\DAO\MusicDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
-if ($_SERVER['REMOTE_ADDR'] != '37.139.20.229') {
-    die('only internal requests allowed, got '.$_SERVER['REMOTE_ADDR']);
+if (!(($_SERVER['REMOTE_ADDR'] == '37.139.20.229') || $isAjax)) {
+    die('only internal requests allowed');
 }
 
 require_once '../config.php';
