@@ -61,13 +61,6 @@ class PropertiesController extends ControllerBase
 
         $properties = $user->getProperties();
 
-	    //@TODO cron clean job
-//        if ($properties->getAvatarImg()) {
-//            @unlink($dir . $properties->getAvatarImg());
-//            @unlink($dir . $properties->getAvatarThumb());
-//            @unlink($dir . $properties->getAvatarThumb2X());
-//        }
-
         $properties
             ->setAvatarImg($image)
             ->save();
@@ -89,19 +82,7 @@ class PropertiesController extends ControllerBase
 	protected function processRemoveAvatar(ChainContainer $chain)
 	{
 		$user = $chain->getFrom();
-		$lang = $user->getLang();
-		/* @var $config Config */
-		$config = DI::get()->getConfig();
-		$dir = $config->uploads->avatars->dir . DIRECTORY_SEPARATOR;
-
 		$properties = $user->getProperties();
-
-		//@TODO cron clean job
-//		if ($properties->getAvatarImg()) {
-//			@unlink($dir . $properties->getAvatarImg());
-//			@unlink($dir . $properties->getAvatarThumb());
-//			@unlink($dir . $properties->getAvatarThumb2X());
-//		}
 
 		$properties
 			->setAvatarImg(null)

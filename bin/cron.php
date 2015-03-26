@@ -6,8 +6,8 @@ use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 
-$setupErrorHandler = 1;
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.php';
+//$setupErrorHandler = 1;
+require_once dirname(__DIR__).DIRECTORY_SEPARATOR . 'config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 $config = $container->get('config');
@@ -20,6 +20,6 @@ try {
     $cronExecutor = new CronExecutor;
     $cronExecutor->run();
 } catch (Exception $e) {
-    $logger->err($e);
+    echo $e->getMessage();
     exit(1);
 }

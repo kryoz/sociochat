@@ -55,6 +55,13 @@ class PropertiesDAO extends DAOBase
         return $this;
     }
 
+	public function getListWithAvatars()
+	{
+		return $this->getListByQuery(
+			"SELECT * FROM {$this->dbTable} WHERE ".self::AVATAR." IS NOT NULL"
+		);
+	}
+
     public function getName()
     {
         return $this[self::NAME];

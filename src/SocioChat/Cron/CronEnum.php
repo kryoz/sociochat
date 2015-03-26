@@ -12,6 +12,7 @@ class CronEnum extends Enum
     protected static $names = array(
         'sessionCleaner' => ServiceSessionCleaner::class,
         'activationsCleaner' => ServiceActivationsCleaner::class,
+	    'avatarCleaner' => ServiceAvatarCleaner::class,
     );
 
     public function getServiceInstance()
