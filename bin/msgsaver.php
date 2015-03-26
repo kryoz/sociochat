@@ -14,11 +14,16 @@ if ($list = json_decode($json, 1)) {
 		$channel = $channels->getChannelById($id);
 		if (null === $channel) {
 			$logger->info('Creating channel id = '.$id);
-			$channels->addChannel(new \SocioChat\Clients\Channel($id, $channelInfo['name'], $channelInfo['isPrivate']));
+			$channel = new \SocioChat\Clients\Channel($id, $channelInfo['name'], $channelInfo['isPrivate']);
+			$channels->addChannel($channel);
 		}
 
 		$logger->info('Loading messages in channelId '.$id);
 		$logger->info(print_r($channelInfo['responses'], 1));
+
+		if (!isset($channelInfo['responses'])) {
+			continue;
+		}
 		foreach ($channelInfo['responses'] as $response) {
 			$channel->pushRawResponse($response);
 		}

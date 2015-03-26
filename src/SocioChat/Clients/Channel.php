@@ -102,8 +102,11 @@ class Channel
         return $id;
     }
 
-	public function pushRawResponse(array $response)
+	public function pushRawResponse($response)
 	{
+		if (!isset($response[self::MSG])) {
+			return;
+		}
 		$msg = $response[self::MSG];
 		if (mb_strpos($msg, '|')) {
 			$msg = call_user_func_array([MsgToken::class, 'create'], explode('|', $msg));

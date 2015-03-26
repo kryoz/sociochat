@@ -60,6 +60,7 @@ define('app', function () {
             sendMessageButton: $('#send'),
             setProperties: $('#set-profile-info'),
             setRegInfo: $('#set-reg-info'),
+            removeAvatar: $('#remove-avatar'),
             doLogin: $('#do-login'),
             doMusicSearch: $('#do-music-search'),
             doHashSearch: $('#do-hash-search'),

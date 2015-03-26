@@ -25,6 +25,7 @@ class PropertiesController extends ControllerBase
 {
     private $actionsMap = [
         'uploadAvatar' => 'processUpload',
+	    'removeAvatar' => 'processRemoveAvatar',
         'submit' => 'processSubmit'
     ];
 
@@ -60,11 +61,12 @@ class PropertiesController extends ControllerBase
 
         $properties = $user->getProperties();
 
-        if ($properties->getAvatarImg()) {
-            @unlink($dir . $properties->getAvatarImg());
-            @unlink($dir . $properties->getAvatarThumb());
-            @unlink($dir . $properties->getAvatarThumb2X());
-        }
+	    //@TODO cron clean job
+//        if ($properties->getAvatarImg()) {
+//            @unlink($dir . $properties->getAvatarImg());
+//            @unlink($dir . $properties->getAvatarThumb());
+//            @unlink($dir . $properties->getAvatarThumb2X());
+//        }
 
         $properties
             ->setAvatarImg($image)
@@ -83,6 +85,41 @@ class PropertiesController extends ControllerBase
             ->setResponse($response)
             ->notify();
     }
+
+	protected function processRemoveAvatar(ChainContainer $chain)
+	{
+		$user = $chain->getFrom();
+		$lang = $user->getLang();
+		/* @var $config Config */
+		$config = DI::get()->getConfig();
+		$dir = $config->uploads->avatars->dir . DIRECTORY_SEPARATOR;
+
+		$properties = $user->getProperties();
+
+		//@TODO cron clean job
+//		if ($properties->getAvatarImg()) {
+//			@unlink($dir . $properties->getAvatarImg());
+//			@unlink($dir . $properties->getAvatarThumb());
+//			@unlink($dir . $properties->getAvatarThumb2X());
+//		}
+
+		$properties
+			->setAvatarImg(null)
+			->save();
+
+		$chatId = $user->getChannelId();
+
+		$this->propertiesResponse($chain->getFrom());
+
+		$response = (new MessageResponse())
+			->setGuests(DI::get()->getUsers()->getUsersByChatId($chatId))
+			->setChannelId($chatId)
+			->setTime(null);
+
+		DI::get()->getUsers()
+			->setResponse($response)
+			->notify();
+	}
 
     protected function processSubmit(ChainContainer $chain)
     {

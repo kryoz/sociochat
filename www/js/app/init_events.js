@@ -66,6 +66,17 @@ define(function () {
                 $this.returnToChat();
             });
 
+            $this.domElems.removeAvatar.click(function (e) {
+                var command = {
+                    subject: 'Properties',
+                    action: 'removeAvatar'
+                };
+                $this.send(command);
+                $this.domElems.avatar.find('.avatar-placeholder').html(
+                    '<div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div>'
+                );
+            });
+
             $this.domElems.setRegInfo.click(function (e) {
                 var command = {
                     subject: 'Login',
@@ -192,7 +203,7 @@ define(function () {
             var avatar = $this.domElems.avatar;
             var uploadButtonContainer = avatar.find('.do-upload');
             var response = avatar.find('.alert');
-            var placeHolder = avatar.find('div.avatar-placeholder');
+            var placeHolder = avatar.find('.avatar-placeholder');
             var cropHolder = null;
             var jcropAPI = null;
             var dim = null;

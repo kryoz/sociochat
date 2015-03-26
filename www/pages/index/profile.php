@@ -70,12 +70,16 @@ if (!defined('ROOT')) {
     <div class="panel-body" id="profile-avatar">
 	    <p><?= $lang->getPhrase('profile.AvatarTip') ?> <?= $config->uploads->avatars->maxsize / 1024 ?>KB</p>
         <div class="row btn-vert-block form-group">
-            <div class="col-sm-12 btn-vert-block">
+            <div class="col-sm-3 btn-vert-block">
 				<span class="btn btn-success btn-file">
 					<?= $lang->getPhrase('profile.Browse') ?> <input type="file" class="upload" accept="image/*"
                                                                      name="img">
 				</span>
             </div>
+	        <div class="col-sm-3 btn-vert-block">
+		        <a class="btn btn-block btn-danger" id="remove-avatar"><?= $lang->getPhrase('profile.Delete') ?></a>
+	        </div>
+
         </div>
         <div class="row btn-vert-block form-group">
             <div class="col-sm-12 btn-vert-block">
