@@ -306,7 +306,7 @@ define(function () {
                     try {
                         var responseText = JSON.parse(e.target.responseText);
                     } catch (e) {
-                        response.addClass('alert-danger').html('Файл слишком велик').show();
+                        response.addClass('alert-danger').html('Произошла техническая ошибка').show();
                         return;
                     }
 

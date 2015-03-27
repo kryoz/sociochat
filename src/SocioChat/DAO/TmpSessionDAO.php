@@ -36,6 +36,11 @@ class TmpSessionDAO extends DAOBase
         return $this;
     }
 
+	public function dropAll()
+	{
+		$this->db->query("DELETE FROM {$this->dbTable}");
+	}
+
     protected function getForeignProperties()
     {
         return [];

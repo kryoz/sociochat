@@ -2,6 +2,7 @@
 
 namespace SocioChat\Cron;
 
+use SocioChat\DAO\TmpSessionDAO;
 use SocioChat\DI;
 use SocioChat\Session\DBSessionHandler;
 
@@ -46,5 +47,7 @@ class ServiceSessionCleaner implements CronService
         $config = DI::get()->getConfig();
 
         $sessionHandler->clean($config->session->lifetime);
+
+	    TmpSessionDAO::create()->dropAll();
     }
 }

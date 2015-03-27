@@ -42,20 +42,40 @@ class ServiceAvatarCleaner implements CronService
 
     public function run()
     {
-        $dir = DI::get()->getConfig()->uploads->avatars->dir;
+        $dir = ROOT.DIRECTORY_SEPARATOR.DI::get()->getConfig()->uploads->avatars->dir.DIRECTORY_SEPARATOR;
 
-	    $fileList = glob("{$dir}/*.{jpg,png}", GLOB_BRACE);
+	    $fileList = glob("{$dir}*.{jpg,png}", GLOB_BRACE);
 	    $fileList = array_flip($fileList);
+		echo "Found images: ".count($fileList)."\n";
 
+	    print_r($fileList);
 	    /** @var PropertiesDAO $userProp */
 	    foreach (PropertiesDAO::create()->getListWithAvatars() as $userProp) {
-		    unset($fileList[$dir . $userProp->getAvatarImg()]);
-            unset($fileList[$dir . $userProp->getAvatarThumb()]);
-            unset($fileList[$dir . $userProp->getAvatarThumb2X()]);
+		    if (file_exists($dir . $userProp->getAvatarImg())) {
+			    unset($fileList[$dir . $userProp->getAvatarImg()]);
+		    } else {
+			    $userProp->setAvatarImg(null);
+		    }
+		    if (file_exists($dir . $userProp->getAvatarThumb())) {
+			    unset($fileList[$dir . $userProp->getAvatarThumb()]);
+		    } else {
+			    $userProp->setAvatarImg(null);
+		    }
+		    if (file_exists($dir . $userProp->getAvatarThumb2X())) {
+			    unset($fileList[$dir . $userProp->getAvatarThumb2X()]);
+		    } else {
+			    $userProp->setAvatarImg(null);
+		    }
+
+		    if ($userProp->getAvatarImg() === null) {
+			    $userProp->save();
+			    echo "Fixed avatar link to null for ".$userProp->getName()."\n";
+		    }
 	    }
 
 	    $fileList = array_keys($fileList);
-		print_r($fileList);
+		echo "Images to delete: ".count($fileList)."\n";
+
 	    foreach ($fileList as $file) {
 		    unlink($file);
 	    }
