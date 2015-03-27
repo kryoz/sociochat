@@ -46,11 +46,15 @@ class MusicFilter implements ChainInterface
 				    ->setInfo($json)
 				    ->setChannelId($channelId);
 
-			    $users
-				    ->setResponse($response)
-				    ->notify(false);
+				$loop = DI::get()->container()->get('eventloop');
+			    $loop->addTimer(1, function() use ($users, $response, $logger) {
+				    $users
+					    ->setResponse($response)
+					    ->notify(false);
 
-			    $logger->info('Sent MusicResponse!');
+				    $logger->info('Sent MusicResponse!');
+			    });
+
 
 			    $channel = ChannelsCollection::get()->getChannelById($channelId);
 			    $history = $channel->getHistory(0);
