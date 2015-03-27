@@ -20,6 +20,12 @@ class PropertiesDAO extends DAOBase
     const CITY = 'city';
     const BIRTH = 'birth';
     const CENSOR = 'censor';
+	const MESSAGES_COUNT = 'messages_count';
+	const KARMA = 'karma';
+	const WORDS_COUNT = 'words_count';
+	const ONLINE_TIME = 'online_time';
+	const MUSIC_COUNT = 'music_posts';
+	const RUDE_COUNT = 'rude_count';
 
     public function __construct()
     {
@@ -33,6 +39,12 @@ class PropertiesDAO extends DAOBase
                 self::AVATAR,
                 self::CITY,
                 self::BIRTH,
+	            self::MESSAGES_COUNT,
+	            self::KARMA,
+	            self::WORDS_COUNT,
+	            self::ONLINE_TIME,
+	            self::MUSIC_COUNT,
+	            self::RUDE_COUNT,
             ]
         );
 
@@ -173,7 +185,73 @@ class PropertiesDAO extends DAOBase
         return isset($this->getOptions()[self::CENSOR]) ? $this->getOptions()[self::CENSOR] : false;
     }
 
-    public function dropByUserId($id)
+	public function setMessagesCount($count)
+	{
+		$this[self::MESSAGES_COUNT] = $count;
+		return $this;
+	}
+
+	public function getMessagesCount()
+	{
+		return $this[self::MESSAGES_COUNT];
+	}
+
+	public function setWordsCount($count)
+	{
+		$this[self::WORDS_COUNT] = $count;
+		return $this;
+	}
+
+	public function getWordsCount()
+	{
+		return $this[self::WORDS_COUNT];
+	}
+
+	public function setRudeCount($count)
+	{
+		$this[self::RUDE_COUNT] = $count;
+		return $this;
+	}
+
+	public function getRudeCount()
+	{
+		return $this[self::RUDE_COUNT];
+	}
+
+	public function setMusicCount($count)
+	{
+		$this[self::MUSIC_COUNT] = $count;
+		return $this;
+	}
+
+	public function getMusicCount()
+	{
+		return $this[self::MUSIC_COUNT];
+	}
+
+	public function setOnlineCount($count)
+	{
+		$this[self::ONLINE_TIME] = $count;
+		return $this;
+	}
+
+	public function getOnlineCount()
+	{
+		return $this[self::ONLINE_TIME];
+	}
+
+	public function setKarma($count)
+	{
+		$this[self::KARMA] = $count;
+		return $this;
+	}
+
+	public function getKarma()
+	{
+		return $this[self::KARMA];
+	}
+
+	public function dropByUserId($id)
     {
         $this->dropById($id, 'user_id');
     }

@@ -13,7 +13,6 @@ class UserDAO extends DAOBase
     const PASSWORD = 'password';
     const DATE_REGISTER = 'date_register';
     const CHAT = 'chat_id';
-    const MESSAGES_COUNT = 'messages_count';
     const ROLE = 'role';
 
     const PROPERTIES = 'properties';
@@ -28,7 +27,6 @@ class UserDAO extends DAOBase
                 self::PASSWORD,
                 self::DATE_REGISTER,
                 self::CHAT,
-                self::MESSAGES_COUNT,
                 self::ROLE,
             ]
         );
@@ -87,17 +85,6 @@ class UserDAO extends DAOBase
     public function getByEmail($email)
     {
         return $this->getByPropId(self::EMAIL, $email);
-    }
-
-    public function setMessagesCount($count)
-    {
-        $this[self::MESSAGES_COUNT] = $count;
-        return $this;
-    }
-
-    public function getMessagesCount()
-    {
-        return $this[self::MESSAGES_COUNT];
     }
 
     public function setRole($role)

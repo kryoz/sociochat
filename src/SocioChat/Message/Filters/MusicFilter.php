@@ -114,6 +114,9 @@ class MusicFilter implements ChainInterface
 		    );
 
 		    $chain->setRequest($request);
+
+		    $props = $chain->getUser()->getProperties();
+		    $props->setMusicCount($props->getMusicCount() + 1);
 	    }
     }
 }

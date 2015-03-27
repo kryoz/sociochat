@@ -38,10 +38,12 @@ class DetachFilter implements ChainInterface
             $this->cleanPendingQueue($user);
 
             ChannelsCollection::get()->clean($user);
-
+			$props = $user->getProperties();
+	        $props->setOnlineCount(time() - $user->getLoginTime() + $props->getOnlineCount());
             $user->save();
+
             //update access time
-            $sessionHandler = new DBSessionHandler();
+            $sessionHandler = DI::get()->getSession();
             $sessionHandler->store($user->getToken(), $user->getId());
             unset($clients);
             unset($sessionHandler);

@@ -78,11 +78,18 @@ class MessageController extends ControllerBase
 
     private function sendPublic(UserCollection $clients, User $user, $msg, $isSelf)
     {
-        $user->incMessagesCount();
+        $props = $user->getProperties();
+
+	    $filteredMsg = RudeFilter::parse($msg);
+	    if (mb_strlen($filteredMsg) != mb_strlen($msg)) {
+		    $props->setRudeCount($props->getRudeCount() + 1);
+	    }
+
+	    $props->setWordsCount($props->getWordsCount() + mb_substr_count($msg, ' ') + 1);
 
         $response = (new MessageResponse())
             ->setMsg(Msg::create($msg))
-            ->setFilteredMsg(Msg::create(RudeFilter::parse($msg)))
+            ->setFilteredMsg(Msg::create($filteredMsg))
             ->setTime(null)
             ->setChannelId($user->getChannelId());
 

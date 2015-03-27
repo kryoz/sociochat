@@ -37,6 +37,7 @@ class User implements ConnectionInterface
     private $language;
     private $ip;
     private $token;
+	private $loginTime;
 
     public function __construct(ConnectionInterface $client)
     {
@@ -243,23 +244,6 @@ class User implements ConnectionInterface
     }
 
     /**
-     * @return mixed
-     */
-    public function getMessagesCount()
-    {
-        return $this->getUserDAO()->getMessagesCount();
-    }
-
-    /**
-     * @return $this
-     */
-    public function incMessagesCount()
-    {
-        $this->getUserDAO()->setMessagesCount($this->getMessagesCount() + 1);
-        return $this;
-    }
-
-    /**
      * @return UserRoleEnum
      */
     public function getRole()
@@ -317,4 +301,18 @@ class User implements ConnectionInterface
         $this->token = $token;
         return $this;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getLoginTime()
+	{
+		return $this->loginTime;
+	}
+
+	public function setLoginTime($loginTime)
+	{
+		$this->loginTime = $loginTime;
+		return $this;
+	}
 }

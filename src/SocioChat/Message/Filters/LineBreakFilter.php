@@ -16,6 +16,7 @@ class LineBreakFilter implements ChainInterface
     {
         $request = $chain->getRequest();
 	    $msgParts = explode('|', $request['msg']);
+	    $brCount = 1;
 
 		if (!empty($msgParts)) {
 			$newMsgParts = [];
@@ -31,6 +32,9 @@ class LineBreakFilter implements ChainInterface
 
 			$request['msg'] = implode(self::BR, $newMsgParts);
 		}
+
+	    $props = $chain->getUser()->getProperties();
+	    $props->setMessagesCount($props->getMessagesCount() + $brCount);
 
         $chain->setRequest($request);
     }

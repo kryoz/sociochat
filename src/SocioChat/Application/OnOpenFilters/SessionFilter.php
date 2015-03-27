@@ -86,7 +86,6 @@ class SessionFilter implements ChainInterface
             $user = UserDAO::create()
                 ->setChatId(1)
                 ->setDateRegister(DbQueryHelper::timestamp2date())
-                ->setMessagesCount(0)
                 ->setRole(UserRoleEnum::USER);
 
             $user->save();
@@ -122,7 +121,8 @@ class SessionFilter implements ChainInterface
 
         $newUserWrapper
             ->setUserDAO($user)
-            ->setToken($token);
+            ->setToken($token)
+            ->setLoginTime(time());
 
         $clients->attach($newUserWrapper);
     }
