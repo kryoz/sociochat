@@ -104,7 +104,13 @@ class SessionFilter implements ChainInterface
                 ->setSex(SexEnum::create(SexEnum::ANONYM))
                 ->setTim(TimEnum::create(TimEnum::ANY))
                 ->setBirthday(Rules::LOWEST_YEAR)
-                ->setOptions([PropertiesDAO::CENSOR => true]);
+                ->setOptions([PropertiesDAO::CENSOR => true])
+                ->setOnlineCount(0)
+                ->setMusicCount(0)
+                ->setWordsCount(0)
+                ->setRudeCount(0)
+                ->setKarma(0)
+                ->setMessagesCount(0);
 
             try {
                 $properties->save();
