@@ -21,7 +21,7 @@ class Channel
     const TIME = 'time';
     const MSG = 'msg';
     const USER_INFO = 'userInfo';
-    const FROM_USER_ID = 'fromUserId';
+    const FROM_USER_ID = 'user_id';
 
 	protected $id;
     protected $history = [];
@@ -219,7 +219,8 @@ class Channel
         if ($from = $response->getFrom()) {
             $dir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
             $info = [
-                self::TIM => $from->getProperties()->getTim()->getName(), //@TODO wrong lang
+	            self::FROM_USER_ID => $response->getFrom()->getId(),
+                self::TIM => $from->getProperties()->getTim()->getName(),
                 self::SEX => $from->getProperties()->getSex()->getName(),
             ];
 
@@ -227,7 +228,6 @@ class Channel
             if ($from->getProperties()->getAvatarThumb()) {
                 $info += [
                     self::AVATAR_THUMB => $dir . $from->getProperties()->getAvatarThumb(),
-                    self::AVATAR_IMG => $dir . $from->getProperties()->getAvatarImg(),
                 ];
             }
 

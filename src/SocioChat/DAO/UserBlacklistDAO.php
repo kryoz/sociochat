@@ -31,8 +31,10 @@ class UserBlacklistDAO extends DAOBase
 
     public function getByUserId($userId)
     {
-        $list = $this->db->query("SELECT " . self::IGNORED_ID . " FROM {$this->dbTable} WHERE " . self::USER_ID . " = :0",
-            [$userId]);
+        $list = $this->db->query(
+	        "SELECT " . self::IGNORED_ID . " FROM {$this->dbTable} WHERE " . self::USER_ID . " = :0",
+            [$userId]
+        );
         $this->blacklist = array_flip(array_column($list, self::IGNORED_ID));
 
         $this[self::USER_ID] = $userId;

@@ -121,6 +121,9 @@ class UserDAO extends DAOBase
         return $this[self::PROPERTIES];
     }
 
+	/**
+	 * @return UserBlacklistDAO|null
+	 */
     public function getBlacklist()
     {
         if (!$this[self::BLACKLIST] && $this->getId()) {
@@ -130,6 +133,9 @@ class UserDAO extends DAOBase
         return $this[self::BLACKLIST];
     }
 
+	/**
+	 * @return UserNotesDAO|null
+	 */
     public function getUserNotes()
     {
         if (!$this[self::NOTES] && $this->getId()) {

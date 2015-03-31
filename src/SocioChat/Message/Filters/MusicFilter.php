@@ -15,7 +15,6 @@ use SocioChat\Response\MusicResponse;
 
 class MusicFilter implements ChainInterface
 {
-    const MIN_LENGTH = 10;
     /**
      * C-o-R pattern
      * @param Chain $chain input stream
@@ -24,66 +23,8 @@ class MusicFilter implements ChainInterface
     public function handleRequest(Chain $chain)
     {
 		$config = DI::get()->getConfig()->domain;
-
 	    /** @var Client $client */
 	    $client = DI::get()->container()->get('httpClient');
-
-	    $onResponse = function (Response $response) use ($chain)
-	    {
-		    BufferedSink::createPromise($response)->then(function($body) use ($chain) {
-			    $logger = DI::get()->getLogger();
-			    $logger->info('Got http response: '.$body);
-			    if (!$json = json_decode($body, 1)) {
-				    return;
-			    }
-
-			    $logger->info('JSON decoded');
-			    $channelId = $chain->getUser()->getChannelId();
-			    /** @var UserCollection $users */
-			    $users = DI::get()->getUsers();
-
-			    $response = (new MusicResponse())
-				    ->setInfo($json)
-				    ->setChannelId($channelId);
-
-				$loop = DI::get()->container()->get('eventloop');
-			    $loop->addTimer(1, function() use ($users, $response, $logger) {
-				    $users
-					    ->setResponse($response)
-					    ->notify(false);
-
-				    $logger->info('Sent MusicResponse!');
-			    });
-
-
-			    $channel = ChannelsCollection::get()->getChannelById($channelId);
-			    $history = $channel->getHistory(0);
-
-			    foreach ($history as $k => $part) {
-				    /** @var Msg $msgObj */
-				    $msgObj = $part['msg'];
-					$string = $msgObj->getMsg($chain->getUser()->getLang());
-
-				    if (!preg_match('~id="music-('.$json['track_id'].')"~u', $string)) {
-					    continue;
-				    }
-				    $logger->info('Replacing corresponding history row');
-				    $string = str_replace(
-					    'id="music-'.$json['track_id'].'" data-src=""><span class="glyphicon glyphicon-play-circle">'
-				        .'</span> <span class="audio-title">...</span>',
-
-					    'id="music-'.$json['track_id'].'" data-src="'.$json['url'].'" bind-play-click="1">'
-					    .'<span class="glyphicon glyphicon-play-circle"></span> '
-					    .'<span class="audio-title">'.$json['artist'].' - '.$json['track'].'</span>',
-
-					    $string
-				    );
-
-				    $part['msg'] = MsgRaw::create($string);
-				    $channel->setRow($k, $part);
-			    }
-		    });
-		};
 
 	    $regexp = '~\b'.$config->protocol.addcslashes($config->web, '.').'/audio\.php\?(?:token=.*)?track_id=(.*)\b~u';
 
@@ -98,7 +39,7 @@ class MusicFilter implements ChainInterface
 				    'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12'
 			    ]
 		    );
-		    $httpRequest->on('response', $onResponse);
+		    $httpRequest->on('response', $this->onResponse($chain));
 			$httpRequest->on('error', function(\Exception $e) {
 				DI::get()->getLogger()->err($e->getMessage().$e->getPrevious()->getMessage());
 			});
@@ -123,4 +64,63 @@ class MusicFilter implements ChainInterface
 		    $props->setMusicCount($props->getMusicCount() + 1);
 	    }
     }
+
+	private function onResponse(Chain $chain)
+    {
+	    return function(Response $response) use ($chain) {
+		    BufferedSink::createPromise($response)->then(function($body) use ($chain) {
+			    $logger = DI::get()->getLogger();
+			    $logger->info('Got http response: '.$body);
+			    if (!$json = json_decode($body, 1)) {
+				    return;
+			    }
+
+			    $logger->info('JSON decoded');
+			    $channelId = $chain->getUser()->getChannelId();
+			    /** @var UserCollection $users */
+			    $users = DI::get()->getUsers();
+
+			    $response = (new MusicResponse())
+				    ->setInfo($json)
+				    ->setChannelId($channelId);
+
+			    $loop = DI::get()->container()->get('eventloop');
+			    $loop->addTimer(1, function() use ($users, $response, $logger) {
+				    $users
+					    ->setResponse($response)
+					    ->notify(false);
+
+				    $logger->info('Sent MusicResponse!');
+			    });
+
+
+			    $channel = ChannelsCollection::get()->getChannelById($channelId);
+			    $history = $channel->getHistory(0);
+
+			    foreach ($history as $k => $part) {
+				    /** @var Msg $msgObj */
+				    $msgObj = $part['msg'];
+				    $string = $msgObj->getMsg($chain->getUser()->getLang());
+
+				    if (!preg_match('~id="music-('.$json['track_id'].')"~u', $string)) {
+					    continue;
+				    }
+				    $logger->info('Replacing corresponding history row');
+				    $string = str_replace(
+					    'id="music-'.$json['track_id'].'" data-src=""><span class="glyphicon glyphicon-play-circle">'
+					    .'</span> <span class="audio-title">...</span>',
+
+					    'id="music-'.$json['track_id'].'" data-src="'.$json['url'].'" bind-play-click="1">'
+					    .'<span class="glyphicon glyphicon-play-circle"></span> '
+					    .'<span class="audio-title">'.$json['artist'].' - '.$json['track'].'</span>',
+
+					    $string
+				    );
+
+				    $part['msg'] = MsgRaw::create($string);
+				    $channel->setRow($k, $part);
+			    }
+		    });
+	    };
+	}
 }

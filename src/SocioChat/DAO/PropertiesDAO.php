@@ -3,7 +3,6 @@
 namespace SocioChat\DAO;
 
 use Core\DAO\DAOBase;
-use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Core\Utils\DbQueryHelper;
@@ -117,6 +116,9 @@ class PropertiesDAO extends DAOBase
         return $this;
     }
 
+	/**
+	 * @return SexEnum
+	 */
     public function getSex()
     {
         return SexEnum::create($this[self::SEX]);
@@ -260,22 +262,6 @@ class PropertiesDAO extends DAOBase
     {
         $usersList = DbQueryHelper::commaSeparatedHolders($userIds);
         $this->db->exec("DELETE FROM {$this->dbTable} WHERE " . self::USER_ID . " IN ($usersList)", $userIds);
-    }
-
-    public function toPublicArray()
-    {
-        $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
-
-        return [
-            self::USER_ID => $this->getUserId(),
-            self::NAME => $this->getName(),
-            self::TIM => $this->getTim()->getName(),
-            self::SEX => $this->getSex()->getName(),
-            self::AVATAR . 'Thumb' => $this->getAvatarThumb() ? $avatarDir . $this->getAvatarThumb() : null,
-            self::AVATAR . 'Img' => $this->getAvatarImg() ? $avatarDir . $this->getAvatarImg() : null,
-            self::CITY => $this->getCity(),
-            self::BIRTH => date('Y') - $this->getBirthday(),
-        ];
     }
 
     public function importJSON($json)

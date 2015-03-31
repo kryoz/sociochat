@@ -124,9 +124,10 @@ require_once "pages/header.php";
         <?php include "pages/index/chat.php"; ?>
         <?php include "pages/index/whois.php"; ?>
         <?php include "pages/index/music.php"; ?>
-        <?php include "pages/index/hashes.php"; ?>
+        <?php //include "pages/index/hashes.php"; ?>
         <?php include "pages/index/profile.php"; ?>
         <?php include "pages/index/login.php"; ?>
+        <?php include "pages/index/user.php"; ?>
 
     </div>
 

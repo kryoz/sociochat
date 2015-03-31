@@ -2,6 +2,8 @@
 namespace SocioChat\Response;
 
 use SocioChat\Clients\User;
+use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DI;
 
 abstract class Response
 {
@@ -40,9 +42,20 @@ abstract class Response
             return $this;
         }
 
+	    $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
+
         foreach ($guests as $user) {
             /* @var $user User */
-            $this->guests[] = $user->getProperties()->toPublicArray();
+	        $props = $user->getProperties();
+            $this->guests[] = [
+		        PropertiesDAO::USER_ID => $props->getUserId(),
+	            PropertiesDAO::NAME => $props->getName(),
+	            PropertiesDAO::TIM => $props->getTim()->getName(),
+	            PropertiesDAO::SEX => $props->getSex()->getName(),
+	            PropertiesDAO::AVATAR . 'Thumb' => $props->getAvatarThumb() ? $avatarDir . $props->getAvatarThumb() : null,
+	            PropertiesDAO::CITY => $props->getCity(),
+	            PropertiesDAO::BIRTH => date('Y') - $props->getBirthday(),
+	        ];
         }
 
         return $this;

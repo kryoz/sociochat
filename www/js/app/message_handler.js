@@ -21,7 +21,7 @@ define(function () {
                 var fromUser = response.userInfo ? response.userInfo : $this.getUserInfo(response.fromName);
 
                 if ($this.chatLastFrom != response.fromName) {
-                    msg += this.getAvatar(fromUser) + ' ';
+                    msg += $this.getAvatar(fromUser) + ' ';
                     if (time) {
                         msg += '<div class="time">' + time + '</div>';
                     }
@@ -85,13 +85,12 @@ define(function () {
             this.bindClicks();
         },
         parse: function (incomingMessage) {
-            var originalText = incomingMessage;
             var $this = this.app;
 
             var isHTML = function (str) {
                 var a = document.createElement('div');
                 a.innerHTML = str;
-                for (var c = a.childNodes, i = c.length; i--; ) {
+                for (var c = a.childNodes, i = c.length; i--;) {
                     if (c[i].nodeType == 1) return true;
                 }
                 return false;
@@ -222,21 +221,7 @@ define(function () {
                 }
             });
 
-            newLine.find('.user-avatar').click(function () {
-                var ava = $(this);
-                var imgFull = ava.data('src');
-                console.log(imgFull);
-                if (imgFull != null) {
-                    var imgEl = $('<img src="' + imgFull + '" style="margin-left:-45px">');
-                    ava.parent().prepend(imgEl);
-                    imgEl.click(function () {
-                        $(this).remove();
-                        ava.show();
-                    });
-
-                    ava.hide();
-                }
-            });
+            newLine.find('.user-avatar').click($this.userDetailHandler());
 
             newLine.find('.accept-private').click(function () {
                 var userId = $(this).data('id');
@@ -269,20 +254,6 @@ define(function () {
                     colorClass = '';
             }
             return colorClass;
-        },
-        getAvatar: function (user) {
-            var $this = this.app;
-            var text = '<div class="user-avatar"';
-
-            if (user && user.avatarThumb) {
-                text += ' data-src="' + user.avatarImg + '">';
-                text += '<img src="' + $this.getImgUrl(user.avatarThumb) + '">';
-            } else {
-                text += '>';
-                text += '<span class="glyphicon glyphicon-user"></span>';
-            }
-
-            return text + '</div>';
         }
     }
 });

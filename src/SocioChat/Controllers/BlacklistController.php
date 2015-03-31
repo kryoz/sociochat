@@ -64,6 +64,11 @@ class BlacklistController extends ControllerBase
             return;
         }
 
+	    if ($unbanUser->getId() == $user->getId()) {
+		    RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('CantDoToYourself')]);
+		    return;
+	    }
+
         $user->getBlacklist()->unbanUserId($unbanUser->getId());
         $user->save();
 

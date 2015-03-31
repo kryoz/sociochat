@@ -23,7 +23,7 @@ if (!defined('ROOT')) {
             </div>
             <div class="col-md-2 btn-vert-block">
                 <select class="form-control" id="profile-tim">
-                    <option selected disabled>ТИМ</option>
+                    <option selected disabled><?= $lang->getPhrase('profile.TIM') ?></option>
                     <?php foreach (TimEnum::getList() as $tim) { ?>
                         <option value="<?= $tim->getId() ?>"><?= $tim->getName() ?></option>
                     <?php } ?>
@@ -31,7 +31,7 @@ if (!defined('ROOT')) {
             </div>
             <div class="col-md-2 btn-vert-block">
                 <select class="form-control" id="profile-sex">
-                    <option selected disabled>Пол</option>
+                    <option selected disabled><?= $lang->getPhrase('profile.Sex') ?></option>
                     <?php foreach (SexEnum::getList() as $sex) { ?>
                         <option value="<?= $sex->getId() ?>"><?= $sex->getName() ?></option>
                     <?php } ?>
@@ -39,7 +39,7 @@ if (!defined('ROOT')) {
             </div>
             <div class="col-md-2 btn-vert-block">
                 <select class="form-control" id="profile-year">
-                    <option selected disabled>Год рождения</option>
+                    <option selected disabled><?= $lang->getPhrase('profile.Birth') ?></option>
                     <?php foreach (Rules::getBirthYearsRange() as $year) { ?>
                         <option value="<?= $year ?>"><?= $year ?></option>
                     <?php } ?>

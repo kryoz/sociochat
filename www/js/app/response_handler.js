@@ -1,19 +1,6 @@
 define(function () {
     return {
         process: function (json, $this) {
-            var getAvatar = function (user) {
-                var text = '<div class="user-avatar"';
-                if (user && user.avatarThumb) {
-                    text += ' data-src="' + user.avatarImg + '">';
-                    text += '<img src="' + $this.getImgUrl(user.avatarThumb) + '">';
-                } else {
-                    text += '>';
-                    text += '<span class="glyphicon glyphicon-user"></span>';
-                }
-
-                return text + '</div>';
-            }
-
             var handleGuests = function (json) {
                 if (json.guests && $this.guestEditState == 0) {
                     $this.guests = json.guests;
@@ -43,22 +30,11 @@ define(function () {
                         }
 
                         guestHMTL += '<tr class="' + colorClass + '">';
-                        guestHMTL += '<td>' + getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
+                        guestHMTL += '<td>' + $this.getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
                         guestHMTL += '<td>' + guest.tim + '</td>';
                         guestHMTL += '<td>' + (guest.city ? guest.city : '') + '</td>';
                         guestHMTL += '<td>' + (guest.birth == (d.getFullYear() - 1930) ? '' : guest.birth) + '</td>';
-                        guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb" data-id="' + guest.user_id + '">';
-
-                        if (guest.banned) {
-                            guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
-                            guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
-                        } else if (guest.user_id != $this.user.id) {
-                            guestHMTL += '<a class="btn btn-default invite" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
-                            guestHMTL += '<a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>';
-                            guestHMTL += '<a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>';
-                        }
-
-                        guestHMTL += '</div></td></tr>';
+                        guestHMTL += '</tr>';
 
                         if (guest.note) {
                             guestHMTL += '<tr id="user-note-' + guest.user_id + '" class="' + colorClass + '"><td colspan="5" class="no-border-top">';
@@ -73,82 +49,6 @@ define(function () {
                     $this.domElems.address.append(guestDropdownHTML);
 
                     $this.domElems.address.find('option[value=' + $this.domElems.address.data('id') + ']').attr('selected', 'selected');
-
-                    $this.domElems.guestList.find('.ban').click(function () {
-                        var userId = $(this).parent().data('id');
-
-                        var command = {
-                            subject: 'Blacklist',
-                            action: 'ban',
-                            user_id: userId
-                        }
-                        $this.send(command);
-                        $this.returnToChat();
-                    });
-
-                    $this.domElems.guestList.find('.unban').click(function () {
-                        var userId = $(this).parent().data('id');
-
-                        var command = {
-                            subject: 'Blacklist',
-                            action: 'unban',
-                            user_id: userId
-                        }
-                        $this.send(command);
-                        $this.returnToChat();
-                    });
-
-                    $this.domElems.guestList.find('.note').click(function () {
-                        var userId = $(this).parent().data('id');
-                        var dupItem = $('#user-edit-' + userId);
-                        var textNote = $('#user-note-' + userId);
-
-                        if (dupItem.length) {
-                            dupItem.remove();
-                            textNote.show();
-                            $this.guestEditState = 0;
-                            return false;
-                        }
-
-                        $this.guestEditState = 1;
-
-                        var thisRow = $(this).closest('tr');
-                        var editHtml = '<tr id="user-edit-' + userId + '" class="' + thisRow.attr('class') + ' no-border-top"><td colspan="5">';
-
-                        editHtml += '<div class="col-md-12">';
-                        editHtml += '<div class="input-group btn-block">';
-                        editHtml += '<input type="text" class="form-control">';
-                        editHtml += '<span class="input-group-btn">';
-                        editHtml += '<button class="btn btn-default" type="button">';
-                        editHtml += '<span class="glyphicon glyphicon-pencil"></span></button>';
-                        editHtml += '</span>';
-                        editHtml += '</div></div></div>';
-                        editHtml += '</td></tr>';
-
-                        var noteForm = $(editHtml);
-                        noteForm.insertAfter(thisRow);
-
-                        if (textNote.length) {
-                            noteForm.find('input').val(textNote.find('div').text());
-                            textNote.hide();
-                        }
-
-                        noteForm.find('button').click(function () {
-                            $this.guestEditState = 0;
-                            var command = {
-                                subject: 'Note',
-                                action: 'save',
-                                user_id: userId,
-                                note: noteForm.find('input').val()
-                            }
-                            $this.send(command);
-                            //expect to receive updated guest list and redraw whole markup
-                        })
-                    });
-
-                    $this.domElems.guestList.find('.invite').click(function () {
-                        $this.togglePrivate($(this).parent().data('id'));
-                    });
 
                     $this.guestCount = guests.length;
                     $this.domElems.guestCounter.text($this.guestCount);

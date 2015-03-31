@@ -5,6 +5,7 @@ namespace SocioChat\Clients;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DI;
 use SocioChat\Log;
+use SocioChat\Permissions\UserActions;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\Response;
 use Core\TSingleton;
