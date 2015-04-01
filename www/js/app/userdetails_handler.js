@@ -31,6 +31,7 @@ define(function () {
                     profile.find('.rude-rating').text(response.rudeRating);
                     profile.find('.music-rating').text(response.musicRating);
                     profile.find('.karma').text(response.karma);
+                    profile.find('.names').text(response.names);
 
                     var actions = profile.find('.actions');
                     actions.children().unbind();

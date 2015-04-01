@@ -1,5 +1,6 @@
 <?php
 
+use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
@@ -47,6 +48,12 @@ $total = $props->getTotal();
 $dtF = new DateTime("@0");
 $dtT = new DateTime("@".$props->getOnlineCount());
 
+$names = [];
+foreach (NameChangeDAO::create()->getHistoryByUserId($user->getId()) as $name) {
+	/** @var NameChangeDAO $name */
+	$names[] = $name->getName();
+}
+
 $response = [
 	'id'    => $user->getId(),
     'name' => $props->getName(),
@@ -58,9 +65,10 @@ $response = [
 	'karma' => $props->getKarma(),
 	'dateRegister' => $user->getDateRegister(),
 	'onlineTime' => $dtF->diff($dtT)->format('%a дней %h часов %i минут'),
-	'wordRating' => $props->getWordRating() . ' / '. $total,
-	'rudeRating' => $props->getRudeRating() . ' / '. $total,
-	'musicRating' => $props->getMusicRating() . ' / '. $total,
+	'wordRating' => $props->getWordRating() . '-й из '. $total,
+	'rudeRating' => $props->getRudeRating() . '-й из '. $total,
+	'musicRating' => $props->getMusicRating() . '-й из '. $total,
+	'names' => implode(', ', $names),
 ];
 
 $userActions = new \SocioChat\Permissions\UserActions($owner);

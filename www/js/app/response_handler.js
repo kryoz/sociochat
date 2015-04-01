@@ -5,12 +5,11 @@ define(function () {
                 if (json.guests && $this.guestEditState == 0) {
                     $this.guests = json.guests;
                     var guests = $this.guests;
-                    var d = new Date();
 
                     $this.domElems.guestList.empty();
                     $this.domElems.address.empty();
 
-                    var guestHMTL = '<tr><th>Имя</th><th>ТИМ</th><th>Город</th><th>Возраст</th></tr>';
+                    var guestHMTL = '<tr><th>Имя</th><th>ТИМ</th><th>Город</th><th>Возраст</th><th></th></tr>';
                     var guestDropdownHTML = '<option value="">Всем</option>';
 
                     for (var i in guests) {
@@ -34,24 +33,58 @@ define(function () {
                         guestHMTL += '<td>' + guest.tim + '</td>';
                         guestHMTL += '<td>' + (guest.city ? guest.city : '') + '</td>';
                         guestHMTL += '<td>' + (guest.birth ? guest.birth : '') + '</td>';
-                        guestHMTL += '</tr>';
+                        guestHMTL += '<td><div class="pull-right btn-group btn-group-sm ilb" data-id="' + guest.user_id + '">';
+
+                        if (guest.banned) {
+                            guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
+                        } else if (guest.user_id != $this.user.id) {
+                            guestHMTL += '<a class="btn btn-default invite" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
+                            guestHMTL += '<a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>';
+                        }
+
+                        guestHMTL += '</div></td></tr>';
 
                         if (guest.note) {
                             guestHMTL += '<tr id="user-note-' + guest.user_id + '" class="' + colorClass + '">';
-                            guestHMTL += '<td colspan="4" class="no-border-top"><div class="col-md-12">';
+                            guestHMTL += '<td colspan="5" class="no-border-top"><div class="col-md-12">';
                             guestHMTL += guest.note;
                             guestHMTL += '</div></td></tr>';
                         }
                     }
 
                     $this.domElems.guestList.append(guestHMTL);
+                    $this.domElems.address.append(guestDropdownHTML);
+
                     $this.domElems.guestList.find('.user-avatar').click(function () {
                         var e = this;
                         require(['userdetails_handler'], function (userDetails) {
                             userDetails.process($this, $(e).data('id'));
                         });
                     });
-                    $this.domElems.address.append(guestDropdownHTML);
+
+                    $this.domElems.guestList.find('.ban').click(function () {
+                        var userId = $(this).parent().data('id');
+
+                        var command = {
+                            subject: 'Blacklist',
+                            action: 'ban',
+                            user_id: userId
+                        }
+                        $this.send(command);
+                        $this.returnToChat();
+                    });
+
+                    $this.domElems.guestList.find('.unban').click(function () {
+                        var userId = $(this).parent().data('id');
+
+                        var command = {
+                            subject: 'Blacklist',
+                            action: 'unban',
+                            user_id: userId
+                        }
+                        $this.send(command);
+                        $this.returnToChat();
+                    });
 
                     $this.domElems.address.find('option[value=' + $this.domElems.address.data('id') + ']').attr('selected', 'selected');
 

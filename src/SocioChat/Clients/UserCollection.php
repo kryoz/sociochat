@@ -12,7 +12,7 @@ use Core\TSingleton;
 
 class UserCollection
 {
-    use \Core\TSingleton;
+    use TSingleton;
 
     /**
      * @var User[]
@@ -186,4 +186,12 @@ class UserCollection
             $response->setGuestsRaw($guests);
         }
     }
+
+	/**
+	 * @return User[]
+	 */
+	public function getAll()
+	{
+		return $this->users;
+	}
 }
