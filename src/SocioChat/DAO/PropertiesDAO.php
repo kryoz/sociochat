@@ -269,6 +269,57 @@ class PropertiesDAO extends DAOBase
         $this->db->exec("DELETE FROM {$this->dbTable} WHERE " . self::USER_ID . " IN ($usersList)", $userIds);
     }
 
+	public function getWordRating()
+	{
+		$wordsCount = self::WORDS_COUNT;
+		$messagesCount = self::MESSAGES_COUNT;
+		$userId = self::USER_ID;
+
+		$query = "SELECT t.rnum AS rating
+			FROM (SELECT $userId, $wordsCount, $messagesCount, row_number() OVER (ORDER BY $wordsCount DESC, $messagesCount) AS rnum
+			FROM {$this->dbTable} ) AS t
+			WHERE t.$userId = :user_id";
+		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
+
+		return $data[0]['rating'];
+	}
+
+	public function getRudeRating()
+	{
+		$rudeCount = self::RUDE_COUNT;
+		$userId = self::USER_ID;
+
+		$query = "SELECT t.rnum AS rating
+			FROM (SELECT $userId, $rudeCount, row_number() OVER (ORDER BY $rudeCount DESC) AS rnum
+			FROM {$this->dbTable} ) AS t
+			WHERE t.$userId = :user_id";
+		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
+
+		return $data[0]['rating'];
+	}
+
+	public function getMusicRating()
+	{
+		$musicCount = self::MUSIC_COUNT;
+		$userId = self::USER_ID;
+
+		$query = "SELECT t.rnum AS rating
+			FROM (SELECT $userId, $musicCount, row_number() OVER (ORDER BY $musicCount DESC) AS rnum
+			FROM {$this->dbTable} ) AS t
+			WHERE t.$userId = :user_id";
+		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
+
+		return $data[0]['rating'];
+	}
+
+	public function getTotal()
+	{
+		$query = "SELECT count(*) AS total FROM {$this->dbTable}";
+		$data = $this->db->query($query);
+
+		return $data[0]['total'];
+	}
+
     public function importJSON($json)
     {
         $data = json_decode($json, 1);

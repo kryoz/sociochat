@@ -38,6 +38,30 @@ if (!defined('ROOT')) {
 				    <td class="birth"></td>
 			    </tr>
 			    <tr>
+				    <td><?= $lang->getPhrase('profile.Karma') ?></td>
+				    <td class="karma"></td>
+			    </tr>
+			    <tr>
+				    <td><?= $lang->getPhrase('profile.DateRegister') ?></td>
+				    <td class="date-register"></td>
+			    </tr>
+			    <tr>
+				    <td><?= $lang->getPhrase('profile.OnlineTime') ?></td>
+				    <td class="online-time"></td>
+			    </tr>
+			    <tr>
+				    <td><?= $lang->getPhrase('profile.WordRating') ?></td>
+				    <td class="word-rating"></td>
+			    </tr>
+			    <tr>
+				    <td><?= $lang->getPhrase('profile.RudeRating') ?></td>
+				    <td class="rude-rating"></td>
+			    </tr>
+			    <tr>
+				    <td><?= $lang->getPhrase('profile.MusicRating') ?></td>
+				    <td class="music-rating"></td>
+			    </tr>
+			    <tr>
 				    <td><?= $lang->getPhrase('profile.Note') ?></td>
 				    <td class="note-data"></td>
 			    </tr>

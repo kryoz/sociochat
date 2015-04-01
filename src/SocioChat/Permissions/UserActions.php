@@ -30,15 +30,19 @@ class UserActions
 		$this->user = $user;
 	}
 
-	public function getAllowed($guestId)
+	public function getAllowed(UserDAO $guest)
 	{
 		$actions = $this->actions;
 
-		if ($this->user->getBlacklist()->isBanned($guestId)) {
+		if (!$guest->getEmail()) {
+			unset($actions[self::MAIL]);
+		}
+
+		if ($this->user->getBlacklist()->isBanned($guest->getId())) {
 			unset($actions[self::BAN]);
 			unset($actions[self::INVITE]);
 			unset($actions[self::MAIL]);
-		} elseif ($guestId == $this->user->getId()) {
+		} elseif ($guest->getId() == $this->user->getId()) {
 			$actions = [];
 		} else {
 			unset($actions[self::UNBAN]);

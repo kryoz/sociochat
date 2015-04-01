@@ -25,6 +25,12 @@ define(function () {
                     profile.find('.tim').text(response.tim);
                     profile.find('.birth').text(response.birth);
                     profile.find('.note-data').text(response.note);
+                    profile.find('.online-time').text(response.onlineTime);
+                    profile.find('.date-register').text(response.dateRegister);
+                    profile.find('.word-rating').text(response.wordRating);
+                    profile.find('.rude-rating').text(response.rudeRating);
+                    profile.find('.music-rating').text(response.musicRating);
+                    profile.find('.karma').text(response.karma);
 
                     var actions = profile.find('.actions');
                     actions.children().unbind();
@@ -94,12 +100,43 @@ define(function () {
                     }
                     $app.send(command);
                     $this.updateInfo(userId);
-                })
+                });
             });
 
             actions.find('.private').click(function () {
                 $app.togglePrivate(userId);
             });
-        },
+
+            actions.find('.mail').click(function () {
+                var textNote = $app.domElems.userDetails.find('.mail-note');
+                if (!textNote.length) {
+                    textNote = $('<div class="panel panel-default mail-note"></div>');
+                    $app.domElems.userDetails.find('table').parent().append(textNote);
+                }
+
+                var editHtml = '<div class="panel-heading">Введите сообщение</div>';
+                editHtml += '<div class="panel-body">';
+                editHtml += '<div class="input-group btn-block" id="mail-edit">';
+                editHtml += '<input type="text" class="form-control">';
+                editHtml += '<span class="input-group-btn">';
+                editHtml += '<button class="btn btn-default" type="button">';
+                editHtml += '<span class="glyphicon glyphicon-pencil"></span></button>';
+                editHtml += '</span>';
+                editHtml += '</div></div></div>';
+
+                var noteForm = $(editHtml);
+                textNote.html(noteForm);
+
+                noteForm.find('button').click(function () {
+                    var command = {
+                        subject: 'Message',
+                        msg: '/mail '+$app.getUserInfoById(userId).name+' '+noteForm.find('input').val(),
+                        to: ''
+                    }
+                    $app.send(command);
+                    $this.updateInfo(userId);
+                });
+            });
+        }
     }
 });

@@ -42,6 +42,11 @@ if (empty($user)) {
 $props = $user->getPropeties();
 $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
 $note = $owner->getUserNotes()->getNote($user->getId());
+$total = $props->getTotal();
+
+$dtF = new DateTime("@0");
+$dtT = new DateTime("@".$props->getOnlineCount());
+
 $response = [
 	'id'    => $user->getId(),
     'name' => $props->getName(),
@@ -50,10 +55,16 @@ $response = [
 	'sex' => $props->getSex()->getName(),
 	'birth' => $props->getAge() ?: $lang->getPhrase('NotSpecified'),
 	'note' => $note ?: '',
+	'karma' => $props->getKarma(),
+	'dateRegister' => $user->getDateRegister(),
+	'onlineTime' => $dtF->diff($dtT)->format('%a дней %h часов %i минут'),
+	'wordRating' => $props->getWordRating() . ' / '. $total,
+	'rudeRating' => $props->getRudeRating() . ' / '. $total,
+	'musicRating' => $props->getMusicRating() . ' / '. $total,
 ];
 
 $userActions = new \SocioChat\Permissions\UserActions($owner);
-$response['allowed'] = $userActions->getAllowed($user->getId());
+$response['allowed'] = $userActions->getAllowed($user);
 
 http_response_code(200);
 echo json_encode($response);
