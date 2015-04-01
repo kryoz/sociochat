@@ -171,6 +171,11 @@ class PropertiesDAO extends DAOBase
         return $this;
     }
 
+	public function getAge()
+	{
+		return $this->getBirthday() != Rules::LOWEST_YEAR ? date('Y') - $this->getBirthday() : 0;
+	}
+
     public function getBirthday()
     {
         return $this[self::BIRTH] ? date('Y', strtotime($this[self::BIRTH])) : Rules::LOWEST_YEAR;

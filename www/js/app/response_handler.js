@@ -10,7 +10,7 @@ define(function () {
                     $this.domElems.guestList.empty();
                     $this.domElems.address.empty();
 
-                    var guestHMTL = '<tr><th>Имя</th><th>ТИМ</th><th>Город</th><th>Возраст</th><th></th></tr>';
+                    var guestHMTL = '<tr><th>Имя</th><th>ТИМ</th><th>Город</th><th>Возраст</th></tr>';
                     var guestDropdownHTML = '<option value="">Всем</option>';
 
                     for (var i in guests) {
@@ -33,19 +33,24 @@ define(function () {
                         guestHMTL += '<td>' + $this.getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
                         guestHMTL += '<td>' + guest.tim + '</td>';
                         guestHMTL += '<td>' + (guest.city ? guest.city : '') + '</td>';
-                        guestHMTL += '<td>' + (guest.birth == (d.getFullYear() - 1930) ? '' : guest.birth) + '</td>';
+                        guestHMTL += '<td>' + (guest.birth ? guest.birth : '') + '</td>';
                         guestHMTL += '</tr>';
 
                         if (guest.note) {
-                            guestHMTL += '<tr id="user-note-' + guest.user_id + '" class="' + colorClass + '"><td colspan="5" class="no-border-top">';
-                            guestHMTL += '<div class="col-md-12">';
+                            guestHMTL += '<tr id="user-note-' + guest.user_id + '" class="' + colorClass + '">';
+                            guestHMTL += '<td colspan="4" class="no-border-top"><div class="col-md-12">';
                             guestHMTL += guest.note;
-                            guestHMTL += '</div>';
-                            guestHMTL += '</td></tr>';
+                            guestHMTL += '</div></td></tr>';
                         }
                     }
 
                     $this.domElems.guestList.append(guestHMTL);
+                    $this.domElems.guestList.find('.user-avatar').click(function () {
+                        var e = this;
+                        require(['userdetails_handler'], function (userDetails) {
+                            userDetails.process($this, $(e).data('id'));
+                        });
+                    });
                     $this.domElems.address.append(guestDropdownHTML);
 
                     $this.domElems.address.find('option[value=' + $this.domElems.address.data('id') + ']').attr('selected', 'selected');

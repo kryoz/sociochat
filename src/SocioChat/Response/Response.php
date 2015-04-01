@@ -54,7 +54,7 @@ abstract class Response
 	            PropertiesDAO::SEX => $props->getSex()->getName(),
 	            PropertiesDAO::AVATAR . 'Thumb' => $props->getAvatarThumb() ? $avatarDir . $props->getAvatarThumb() : null,
 	            PropertiesDAO::CITY => $props->getCity(),
-	            PropertiesDAO::BIRTH => date('Y') - $props->getBirthday(),
+	            PropertiesDAO::BIRTH => $props->getAge(),
 	        ];
         }
 

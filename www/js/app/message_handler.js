@@ -221,7 +221,12 @@ define(function () {
                 }
             });
 
-            newLine.find('.user-avatar').click($this.userDetailHandler());
+            newLine.find('.user-avatar').click(function () {
+                var e = this;
+                require(['userdetails_handler'], function (userDetails) {
+                    userDetails.process($this, $(e).data('id'));
+                });
+            });
 
             newLine.find('.accept-private').click(function () {
                 var userId = $(this).data('id');

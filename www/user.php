@@ -3,6 +3,7 @@
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
+use SocioChat\Message\Lang;
 
 if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die('only internal requests allowed');
@@ -15,8 +16,10 @@ if (!isset($_COOKIE['token'])) {
 require_once '../config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
-
-
+$httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])
+	? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
+$lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
+/* @var $lang Lang */
 $userId = isset($_GET['id']) ? (int) $_GET['id'] : '';
 
 if (!$userId) {
@@ -31,7 +34,6 @@ if (!$session->getUserId()) {
 	return json_encode(['error' => 'Unauthorized']);
 }
 $owner = \SocioChat\DAO\UserDAO::create()->getById($session->getUserId());
-
 $user = \SocioChat\DAO\UserDAO::create()->getById($userId);
 if (empty($user)) {
     http_response_code(400);
@@ -39,15 +41,15 @@ if (empty($user)) {
 }
 $props = $user->getPropeties();
 $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
-
+$note = $owner->getUserNotes()->getNote($user->getId());
 $response = [
 	'id'    => $user->getId(),
     'name' => $props->getName(),
     'avatar' => $props->getAvatarImg() ? $avatarDir.$props->getAvatarImg() : null,
     'tim' => $props->getTim()->getName(),
 	'sex' => $props->getSex()->getName(),
-	'birth' => $props->getBirthday(),
-	'note' => $owner->getUserNotes()->getNote($user->getId())
+	'birth' => $props->getAge() ?: $lang->getPhrase('NotSpecified'),
+	'note' => $note ?: '',
 ];
 
 $userActions = new \SocioChat\Permissions\UserActions($owner);

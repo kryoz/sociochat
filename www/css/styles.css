@@ -214,6 +214,19 @@ doesnotexist:-o-prefocus, #panel-chat {
     color: #439B43
 }
 
+#charsLeft {
+    position: absolute;
+    right: 40px;
+    top: 0;
+    z-index: 5;
+    color: #ccc;
+    font-size: 10px;
+}
+#message {
+    height: 34px;
+    line-height: 1.1em;
+    padding: 0.2em;
+}
 .female {
     color: #A76067;
 }
@@ -347,6 +360,10 @@ doesnotexist:-o-prefocus, #panel-chat {
     vertical-align: middle;
 }
 
+#user-details .table td:first-child {
+    font-weight: bold;
+    width: 33%;
+}
 .navbar-left a {
     color: #fff;
     text-decoration: none;
