@@ -50,6 +50,10 @@ class UserActions
 			unset($actions[self::MAIL]);
 		} elseif ($guest->getId() == $this->user->getId()) {
 			$actions = [self::KARMA => self::KARMA];
+		} elseif (!$this->user->getEmail()) {
+			unset($actions[self::KARMA_MINUS]);
+			unset($actions[self::KARMA_PLUS]);
+			unset($actions[self::MAIL]);
 		} else {
 			unset($actions[self::UNBAN]);
 		}

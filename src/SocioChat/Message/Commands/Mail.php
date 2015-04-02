@@ -3,9 +3,11 @@
 namespace SocioChat\Message\Commands;
 
 use SocioChat\Clients\User;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
+use SocioChat\Permissions\UserActions;
 
 class Mail implements TextCommand
 {
@@ -25,16 +27,25 @@ class Mail implements TextCommand
 		$args = explode(' ', $args, 2);
 		$userName = $args[0];
 		if (!isset($args[1])) {
-			return ["Вы не ввели сообщения", true];
+			RespondError::make($user, ['msg' => 'Вы не ввели сообщения']);
+			return;
 		}
 		$text = $args[1];
 
 		$properties = PropertiesDAO::create()->getByUserName($userName);
 		if (!$properties->getId()) {
-			return ["$userName не зарегистрирован или имя введено не верно", true];
+			RespondError::make($user, ['msg' => "$userName не зарегистрирован или имя введено не верно"]);
+			return;
 		}
 
 		$address = UserDAO::create()->getById($properties->getUserId());
+		$permissions = new UserActions($user->getUserDAO());
+		$actions = $permissions->getAllowed($address);
+
+		if (!in_array(UserActions::MAIL, $actions)) {
+			RespondError::make($user, ['msg' => $user->getLang()->getPhrase('NoPermission')]);
+			return;
+		}
 
 		//@TODO сделать отправку по крону
 		//также надо ограничить частоту отправки
@@ -56,6 +67,7 @@ class Mail implements TextCommand
 
 		mb_send_mail($address->getEmail(), $topic, $msg, $headers);
 
+		RespondError::make($user, ['msg' => 'Сообщение отправлено!']);
 		return ['Сообщение отправлено!', true];
 	}
 }

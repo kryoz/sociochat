@@ -21,7 +21,7 @@ if (!defined('ROOT')) {
 			    <a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>
 			    <a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>
 			    <a class="btn btn-default note" title="Редактировать заметку"><span class="glyphicon glyphicon-edit"></span></a>
-			    <a class="btn btn-default mail" title="Отправить сообщение"><span class="glyphicon glyphicon-envelope"></span></a>
+			    <a class="btn btn-default mail" title="Отправить сообщение на почту"><span class="glyphicon glyphicon-envelope"></span></a>
 		    </div>
 	    </div>
 	    <div class="col-md-8">

@@ -145,17 +145,16 @@ define(function () {
                 editHtml += '</span>';
                 editHtml += '</div></div></div>';
 
-                var noteForm = $(editHtml);
-                textNote.html(noteForm);
+                textNote.html(editHtml);
 
-                noteForm.find('button').click(function () {
+                textNote.find('button').click(function () {
                     var command = {
                         subject: 'Message',
-                        msg: '/mail '+$app.getUserInfoById(userId).name+' '+noteForm.find('input').val(),
+                        msg: '/mail '+$app.getUserInfoById(userId).name+' '+textNote.find('input').val(),
                         to: ''
-                    }
+                    };
                     $app.send(command);
-                    $this.updateInfo(userId);
+                    textNote.remove();
                 });
             });
         }

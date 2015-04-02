@@ -162,12 +162,17 @@ class PropertiesController extends ControllerBase
 		$request = $chain->getRequest();
 
 		if (!isset($request['user_id'])) {
-			RespondError::make($operator, ['user_id' => 'No user specified']);
+			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('RequiredPropertyNotSpecified')]);
 			return;
 		}
 
 		if ($request['user_id'] == $operator->getId()) {
-			RespondError::make($operator, ['user_id' => 'Cannot change karma for yourself']);
+			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('CantDoToYourself')]);
+			return;
+		}
+
+		if (!$operator->isRegistered()) {
+			RespondError::make($operator, ['user_id' => 'Only available for registered user']);
 			return;
 		}
 
@@ -221,12 +226,17 @@ class PropertiesController extends ControllerBase
 		$request = $chain->getRequest();
 
 		if (!isset($request['user_id'])) {
-			RespondError::make($operator, ['user_id' => 'No user specified']);
+			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('RequiredPropertyNotSpecified')]);
 			return;
 		}
 
 		if ($request['user_id'] == $operator->getId()) {
-			RespondError::make($operator, ['user_id' => 'Cannot change karma for yourself']);
+			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('CantDoToYourself')]);
+			return;
+		}
+
+		if (!$operator->isRegistered()) {
+			RespondError::make($operator, ['user_id' => 'Only available for registered user']);
 			return;
 		}
 
