@@ -160,13 +160,14 @@ define(function () {
                 editHtml += '</span>';
                 editHtml += '</div></div></div>';
 
+                editHtml = $(editHtml);
                 textNote.html(editHtml);
                 editHtml.find('input').focus();
 
                 textNote.find('button').click(function () {
                     var command = {
                         subject: 'Message',
-                        msg: '/mail '+$app.getUserInfoById(userId).name+' '+textNote.find('input').val(),
+                        msg: '/mail '+$app.getUserInfoById(userId).name+' '+editHtml.find('input').val(),
                         to: ''
                     };
                     $app.send(command);
