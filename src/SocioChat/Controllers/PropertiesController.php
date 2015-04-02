@@ -282,6 +282,8 @@ class PropertiesController extends ControllerBase
 		DI::get()->getUsers()
 			->setResponse($response)
 			->notify();
+
+		RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('profile.KarmaVoteSuccess')]);
 	}
 
     private function checkIfAlreadyRegisteredName($userName, User $user)
