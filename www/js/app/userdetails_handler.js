@@ -32,6 +32,8 @@ define(function () {
                     profile.find('.music-rating').text(response.musicRating);
                     profile.find('.karma').text(response.karma);
                     profile.find('.names').text(response.names);
+                    $app.domElems.userDetails.find('.mail-note').remove();
+                    $app.domElems.userDetails.find('.note-edit').remove();
 
                     var actions = profile.find('.actions');
                     actions.children().unbind();
@@ -95,7 +97,12 @@ define(function () {
 
             actions.find('.note').click(function () {
                 var textNote = $app.domElems.userDetails.find('.note-data');
+                var dupItem = $('#note-edit');
 
+                if (dupItem.length) {
+                    dupItem.remove();
+                    return false;
+                }
                 var editHtml = '';
                 editHtml += '<div class="input-group btn-block" id="note-edit">';
                 editHtml += '<input type="text" class="form-control">';
@@ -106,11 +113,13 @@ define(function () {
                 editHtml += '</div></div>';
 
                 var noteForm = $(editHtml);
-                textNote.html(noteForm);
 
                 if (textNote.length) {
-                    noteForm.find('input').val(textNote.find('div').text());
+                    noteForm.find('input').val(textNote.text());
                 }
+
+                textNote.html(noteForm);
+                noteForm.find('input').focus();
 
                 noteForm.find('button').click(function () {
                     var command = {
@@ -118,7 +127,7 @@ define(function () {
                         action: 'save',
                         user_id: userId,
                         note: noteForm.find('input').val()
-                    }
+                    };
                     $app.send(command);
                     $this.updateInfo(userId);
                 });
@@ -130,9 +139,15 @@ define(function () {
 
             actions.find('.mail').click(function () {
                 var textNote = $app.domElems.userDetails.find('.mail-note');
+                var dupItem = $('.mail-note');
+
+                if (dupItem.length) {
+                    dupItem.remove();
+                    return false;
+                }
                 if (!textNote.length) {
-                    textNote = $('<div class="panel panel-default mail-note"></div>');
-                    $app.domElems.userDetails.find('table').parent().append(textNote);
+                    textNote = $('<br><div class="panel panel-default mail-note"></div>');
+                    $app.domElems.userDetails.find('.photo').parent().append(textNote);
                 }
 
                 var editHtml = '<div class="panel-heading">Введите сообщение</div>';
@@ -146,6 +161,7 @@ define(function () {
                 editHtml += '</div></div></div>';
 
                 textNote.html(editHtml);
+                editHtml.find('input').focus();
 
                 textNote.find('button').click(function () {
                     var command = {
