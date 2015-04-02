@@ -318,7 +318,9 @@ class PropertiesDAO extends DAOBase
 
 	public function getTotal()
 	{
-		$query = "SELECT count(*) AS total FROM {$this->dbTable}";
+		$wordsCount = self::WORDS_COUNT;
+		$messagesCount = self::MESSAGES_COUNT;
+		$query = "SELECT count(*) AS total FROM {$this->dbTable} WHERE $wordsCount > 0 OR $messagesCount > 0";
 		$data = $this->db->query($query);
 
 		return $data[0]['total'];

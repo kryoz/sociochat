@@ -81,6 +81,7 @@ doesnotexist:-o-prefocus, #panel-chat {
     max-width: 36px;
     max-height: 36px;
     display: inline-block;
+    cursor: pointer;
 }
 
 #guests .user-avatar {
@@ -526,4 +527,11 @@ doesnotexist:-o-prefocus, #panel-chat {
     top: 0;
     right: 0;
     left: 0;
+}
+
+sup.danger {
+    color: #d44950;
+}
+sup.success {
+    color: #47a447;
 }

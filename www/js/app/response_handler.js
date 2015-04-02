@@ -28,8 +28,15 @@ define(function () {
                             colorClass = 'warning';
                         }
 
+                        var karmaClass = '';
+                        if (guest.karma > 0) {
+                            karmaClass = 'success';
+                        } else if (guest.karma < 0) {
+                            karmaClass = 'danger';
+                        }
                         guestHMTL += '<tr class="' + colorClass + '">';
-                        guestHMTL += '<td>' + $this.getAvatar(guest) + ' <span class="user-name">' + guest.name + '</span></td>';
+                        guestHMTL += '<td>' + $this.getAvatar(guest) + ' <span class="user-name">' + guest.name;
+                        guestHMTL += '<sup class="'+karmaClass+'">'+(guest.karma > 0 ? '+':'')+guest.karma+'</sup></span></td>';
                         guestHMTL += '<td>' + guest.tim + '</td>';
                         guestHMTL += '<td>' + (guest.city ? guest.city : '') + '</td>';
                         guestHMTL += '<td>' + (guest.birth ? guest.birth : '') + '</td>';
