@@ -277,7 +277,7 @@ class PropertiesDAO extends DAOBase
 
 		$query = "SELECT t.rnum AS rating
 			FROM (SELECT $userId, $wordsCount, $messagesCount, row_number() OVER (ORDER BY $wordsCount DESC, $messagesCount) AS rnum
-			FROM {$this->dbTable} ) AS t
+			FROM {$this->dbTable} WHERE $wordsCount > 0 OR $messagesCount > 0) AS t
 			WHERE t.$userId = :user_id";
 		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
 
@@ -288,10 +288,12 @@ class PropertiesDAO extends DAOBase
 	{
 		$rudeCount = self::RUDE_COUNT;
 		$userId = self::USER_ID;
+		$wordsCount = self::WORDS_COUNT;
+		$messagesCount = self::MESSAGES_COUNT;
 
 		$query = "SELECT t.rnum AS rating
 			FROM (SELECT $userId, $rudeCount, row_number() OVER (ORDER BY $rudeCount DESC) AS rnum
-			FROM {$this->dbTable} ) AS t
+			FROM {$this->dbTable} WHERE $wordsCount > 0 OR $messagesCount > 0) AS t
 			WHERE t.$userId = :user_id";
 		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
 
@@ -302,10 +304,12 @@ class PropertiesDAO extends DAOBase
 	{
 		$musicCount = self::MUSIC_COUNT;
 		$userId = self::USER_ID;
+		$wordsCount = self::WORDS_COUNT;
+		$messagesCount = self::MESSAGES_COUNT;
 
 		$query = "SELECT t.rnum AS rating
 			FROM (SELECT $userId, $musicCount, row_number() OVER (ORDER BY $musicCount DESC) AS rnum
-			FROM {$this->dbTable} ) AS t
+			FROM {$this->dbTable} WHERE $wordsCount > 0 OR $messagesCount > 0) AS t
 			WHERE t.$userId = :user_id";
 		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
 
