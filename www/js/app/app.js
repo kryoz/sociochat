@@ -13,9 +13,10 @@ define('app', function () {
         notificationProperties: [],
         bufferSize: 100,
 
-        timer: null,
+        messageTimer: null,
         pingTimer: null,
         clickTimer: null,
+        errorTimer: null,
         reconnectTimeout: null,
         retryTimer: null,
 
@@ -247,6 +248,27 @@ define('app', function () {
             var $div = $('<div class="' + cssclass + '">' + msg + '</div>');
             this.domElems.chat.append($div);
             this.scrollDown();
+        },
+        notifyError: function (errors) {
+            var currentContainer = $('.tab-pane.active').find('.notifications');
+            if (!currentContainer.length) {
+                for (var i in errors) {
+                    this.addLog('Ошибка: ' + errors[i], 'system');
+                }
+                return;
+            }
+
+            currentContainer.show();
+            for (var i in errors) {
+                currentContainer.append('<p>'+errors[i]+'</p>');
+            }
+
+            setTimeout(function () {
+                currentContainer.fadeOut(500);
+                setTimeout(function() {
+                    currentContainer.empty();
+                }, 500);
+            }, 5000);
         },
         send: function (params) {
             if (!this.connection || this.connection.readyState == 1) {

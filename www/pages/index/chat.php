@@ -6,7 +6,7 @@ if (!defined('ROOT')) {
 <div id="chat" class="tab-pane active">
     <div class="panel panel-default chat-container">
         <div class="panel-body">
-	        <header class="post-item post-header"></header>
+	        <div class="notifications"></div>
             <div id="log">
                 <div class="system">
                     Подключаемся...

@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
+use Core\Utils\DbQueryHelper;
 use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
@@ -9,6 +10,7 @@ use SocioChat\Controllers\Helpers\ChannelNotifier;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DAO\UserKarmaDAO;
 use SocioChat\DI;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
@@ -26,6 +28,8 @@ class PropertiesController extends ControllerBase
     private $actionsMap = [
         'uploadAvatar' => 'processUpload',
 	    'removeAvatar' => 'processRemoveAvatar',
+	    'addKarma' => 'addKarma',
+	    'decreaseKarma' => 'decreaseKarma',
         'submit' => 'processSubmit'
     ];
 
@@ -151,6 +155,124 @@ class PropertiesController extends ControllerBase
 
         ChannelNotifier::notifyOnPendingDuals($user);
     }
+
+	protected function addKarma(ChainContainer $chain)
+	{
+		$operator = $chain->getFrom();
+		$request = $chain->getRequest();
+
+		if (!isset($request['user_id'])) {
+			RespondError::make($operator, ['user_id' => 'No user specified']);
+			return;
+		}
+
+		if ($request['user_id'] == $operator->getId()) {
+			RespondError::make($operator, ['user_id' => 'Cannot change karma for yourself']);
+			return;
+		}
+
+		$users = DI::get()->getUsers();
+		$user = $users->getClientById($request['user_id']);
+
+		if (!$user) {
+			$properties = PropertiesDAO::create()->getByUserId($request['user_id']);
+		} else {
+			$properties = $user->getProperties();
+		}
+
+		$lastMark = UserKarmaDAO::create()->getLastMarkByEvaluatorId($request['user_id'], $operator->getId());
+
+		if ($lastMark) {
+			if ((time() - strtotime($lastMark->getDateRegister()) < DI::get()->getConfig()->karmaTimeOut)) {
+				RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('profile.KarmaTimeOut')]);
+				return;
+			}
+
+		}
+
+		$karma = UserKarmaDAO::create()->getKarmaByUserId($request['user_id']);
+
+		$properties
+			->setKarma($karma+1)
+			->save();
+
+		$mark = UserKarmaDAO::create()
+			->setUserId($request['user_id'])
+			->setEvaluator($operator)
+			->setMark(1)
+			->setDateRegister(DbQueryHelper::timestamp2date());
+		$mark->save();
+
+		$chatId = $operator->getChannelId();
+
+		$response = (new MessageResponse())
+			->setGuests($users->getUsersByChatId($chatId))
+			->setChannelId($chatId)
+			->setTime(null);
+
+		DI::get()->getUsers()
+			->setResponse($response)
+			->notify();
+	}
+
+	protected function decreaseKarma(ChainContainer $chain)
+	{
+		$operator = $chain->getFrom();
+		$request = $chain->getRequest();
+
+		if (!isset($request['user_id'])) {
+			RespondError::make($operator, ['user_id' => 'No user specified']);
+			return;
+		}
+
+		if ($request['user_id'] == $operator->getId()) {
+			RespondError::make($operator, ['user_id' => 'Cannot change karma for yourself']);
+			return;
+		}
+
+		$users = DI::get()->getUsers();
+		$user = $users->getClientById($request['user_id']);
+
+		if (!$user) {
+			$properties = PropertiesDAO::create()->getByUserId($request['user_id']);
+		} else {
+			$properties = $user->getProperties();
+		}
+
+		$lastMark = UserKarmaDAO::create()->getLastMarkByEvaluatorId($request['user_id'], $operator->getId());
+
+		if ($lastMark) {
+			if ((time() - strtotime($lastMark->getDateRegister()) < DI::get()->getConfig()->karmaTimeOut)) {
+				RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('profile.KarmaTimeOut')]);
+				return;
+			}
+
+		}
+
+		$karma = UserKarmaDAO::create()->getKarmaByUserId($request['user_id']);
+
+		$properties
+			->setKarma($karma-1)
+			->save();
+
+		$mark = UserKarmaDAO::create()
+			->setUserId($request['user_id'])
+			->setEvaluator($operator)
+			->setMark(-1)
+			->setDateRegister(DbQueryHelper::timestamp2date());
+		$mark->save();
+
+		$chatId = $operator->getChannelId();
+
+		$response = (new MessageResponse())
+			->setGuests($users->getUsersByChatId($chatId))
+			->setChannelId($chatId)
+			->setTime(null);
+
+		DI::get()->getUsers()
+			->setResponse($response)
+			->notify();
+	}
 
     private function checkIfAlreadyRegisteredName($userName, User $user)
     {

@@ -55,6 +55,7 @@ abstract class Response
 	            PropertiesDAO::AVATAR . 'Thumb' => $props->getAvatarThumb() ? $avatarDir . $props->getAvatarThumb() : null,
 	            PropertiesDAO::CITY => $props->getCity(),
 	            PropertiesDAO::BIRTH => $props->getAge(),
+	            PropertiesDAO::KARMA => $props->getKarma(),
 	        ];
         }
 

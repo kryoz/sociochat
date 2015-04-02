@@ -10,12 +10,13 @@ if (!defined('ROOT')) {
 <div class="panel panel-default tab-pane" id="user-details">
     <div class="panel-heading name" style="font-weight: bold"></div>
     <div class="panel-body">
+	    <div class="notifications"></div>
 	    <div class="col-md-4">
 		    <div class="photo">
 			    <div class="user-avatar"><span class="glyphicon glyphicon-user"></span></div>
 		    </div>
-
-		    <div class="btn-group btn-group-sm ilb actions">
+			<br/>
+		    <div class="btn-group btn-group-sm actions">
 			    <a class="btn btn-default private" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>
 			    <a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>
 			    <a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>
@@ -43,7 +44,13 @@ if (!defined('ROOT')) {
 			    </tr>
 			    <tr>
 				    <td><?= $lang->getPhrase('profile.Karma') ?></td>
-				    <td class="karma"></td>
+				    <td>
+					    <div class="btn-group btn-group-sm actions">
+						    <a class="btn btn-danger karma-minus" title="-"><span class="glyphicon glyphicon-minus"></span></a>
+						    <a class="btn btn-default karma" title="">0</a>
+						    <a class="btn btn-success karma-plus" title="+"><span class="glyphicon glyphicon-plus"></span></a>
+					    </div>
+				    </td>
 			    </tr>
 			    <tr>
 				    <td><?= $lang->getPhrase('profile.DateRegister') ?></td>

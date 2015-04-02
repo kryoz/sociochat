@@ -10,6 +10,7 @@ if (!defined('ROOT')) {
 <div class="panel panel-default tab-pane" id="profile">
     <div class="panel-heading"><?= $lang->getPhrase('index.ProfileTip') ?></div>
     <div class="panel-body">
+	    <div class="notifications"></div>
         <p><?= $lang->getPhrase('profile.NameChangePolicy', floor($config->nameChangeFreq / 3600)) ?></p>
 
         <div class="row btn-vert-block form-group">

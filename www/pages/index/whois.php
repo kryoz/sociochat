@@ -8,6 +8,7 @@ if (!defined('ROOT')) {
         <?= $lang->getPhrase('index.UserListTip') ?>
     </div>
     <div class="panel-body">
+	    <div class="notifications"></div>
         <p><span class="glyphicon glyphicon-glass"></span> - Пригласить в приват</p>
 
         <p><span class="glyphicon glyphicon-eye-close"></span> / <span class="glyphicon glyphicon-eye-open"></span> -

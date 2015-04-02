@@ -183,9 +183,7 @@ define(function () {
                 }
 
                 if (json.errors) {
-                    for (var i in json.errors) {
-                        $this.addLog('Ошибка: ' + json.errors[i], 'system');
-                    }
+                    $this.notifyError(json.errors);
                 }
             }
 

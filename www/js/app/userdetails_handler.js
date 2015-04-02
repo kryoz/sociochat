@@ -73,6 +73,26 @@ define(function () {
                 $this.updateInfo(userId);
             });
 
+            actions.find('.karma-plus').click(function () {
+                var command = {
+                    subject: 'Properties',
+                    action: 'addKarma',
+                    user_id: userId
+                };
+                $app.send(command);
+                $this.updateInfo(userId);
+            });
+
+            actions.find('.karma-minus').click(function () {
+                var command = {
+                    subject: 'Properties',
+                    action: 'decreaseKarma',
+                    user_id: userId
+                };
+                $app.send(command);
+                $this.updateInfo(userId);
+            });
+
             actions.find('.note').click(function () {
                 var textNote = $app.domElems.userDetails.find('.note-data');
 

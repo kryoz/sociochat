@@ -71,14 +71,14 @@ define(function () {
             $this.addLog(msg, msgCSStype);
             $this.msgCount++;
 
-            if ($this.timer == null && ($this.guestCount > 0)) {
+            if ($this.messageTimer == null && ($this.guestCount > 0)) {
                 $this.notify(response.msg, fromUser ? fromUser.name : '', 'msg');
             }
 
             // notifications timeout
-            clearTimeout($this.timer);
-            $this.timer = setTimeout(function () {
-                $this.timer = null
+            clearTimeout($this.messageTimer);
+            $this.messageTimer = setTimeout(function () {
+                $this.messageTimer = null
             }, $this.delay);
 
             $this.chatLastFrom = response.fromName;

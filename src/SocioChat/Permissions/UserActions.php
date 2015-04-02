@@ -11,6 +11,9 @@ class UserActions
 	const INVITE = 'private';
 	const NOTE = 'note';
 	const MAIL = 'mail';
+	const KARMA_PLUS = 'karma-plus';
+	const KARMA_MINUS = 'karma-minus';
+	const KARMA = 'karma';
 
 	protected $actions = [
 		self::BAN => self::BAN,
@@ -18,6 +21,9 @@ class UserActions
 		self::INVITE => self::INVITE,
 		self::NOTE => self::NOTE,
 		self::MAIL => self::MAIL,
+		self::KARMA_PLUS => self::KARMA_PLUS,
+		self::KARMA_MINUS => self::KARMA_MINUS,
+		self::KARMA => self::KARMA,
 	];
 
 	/**
@@ -43,7 +49,7 @@ class UserActions
 			unset($actions[self::INVITE]);
 			unset($actions[self::MAIL]);
 		} elseif ($guest->getId() == $this->user->getId()) {
-			$actions = [];
+			$actions = [self::KARMA => self::KARMA];
 		} else {
 			unset($actions[self::UNBAN]);
 		}

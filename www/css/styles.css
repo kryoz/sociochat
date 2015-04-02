@@ -510,3 +510,20 @@ doesnotexist:-o-prefocus, #panel-chat {
         display: block;
     }
 }
+
+.tab-pane, .panel-body {
+    position: relative;
+}
+
+.notifications {
+    display: none;
+    background: #d9534f;
+    opacity: 0.7;
+    color: #fff;
+    position: absolute;
+    z-index: 5;
+    padding: 1em 1em 0.5em 1em;
+    top: 0;
+    right: 0;
+    left: 0;
+}
