@@ -135,6 +135,7 @@ define(function () {
                 $realTrackEl.find('.glyphicon-pause')
                     .removeClass('glyphicon-pause')
                     .addClass('glyphicon-play-circle');
+                $this.find('.audio-position').remove();
             });
 
             if (audioElRaw.paused || audioElRaw.ended || currTrackId != $this.attr('id')) {
@@ -176,7 +177,7 @@ define(function () {
                 return ("0" + n).slice(-2);
             }
             var minutes = Math.floor((total - seconds) / 60);
-            var seconds = Math.floor((total - seconds) % 60);
+            seconds = Math.floor((total - seconds) % 60);
             return '-'+minutes+':'+pad(seconds);
         }
     }
