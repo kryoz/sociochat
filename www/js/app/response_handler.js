@@ -211,10 +211,24 @@ define(function () {
                         $this.domElems.chat.empty();
                     }
 
-                    for (var i in json.history) {
-                        handleMessage(json.history[i]);
-                    }
+                    var render = {
+                        run: function() {
+                            $this.domElems.chat.hide();
 
+                            for (var i in json.history) {
+                                handleMessage(json.history[i]);
+                            }
+                        },
+                        end: function() {
+                            setTimeout(function() {
+                                $this.domElems.chat.fadeIn(500,function() {
+                                    $this.scrollDown();
+                                });
+                            }, 150);
+                        }
+                    };
+                    render.run();
+                    render.end();
                     $this.lastMsgId = json.lastMsgId;
 
                     $this.scrollDown();

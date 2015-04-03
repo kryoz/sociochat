@@ -82,7 +82,7 @@ define(function () {
                 if ($this.user.notifyVisual) {
                     try {
                         var myNotification = new Notify(fromUser ? fromUser.name : $this.chatName, {
-                            body: response.msg,
+                            body: $(response.msg).text(),
                             tag: 'msg',
                             icon: 'img/sociochat.jpg',
                             timeout: 5000

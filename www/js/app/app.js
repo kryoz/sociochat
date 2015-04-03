@@ -100,11 +100,9 @@ define('app', function () {
             $(window).TabWindowVisibilityManager({
                 onFocusCallback: function() {
                     $this.isTabActive = 1;
-                    console.log('focus!')
                 },
                 onBlurCallback: function() {
                     $this.isTabActive = 0;
-                    console.log('blur!')
                 }
             });
 
@@ -321,10 +319,11 @@ define('app', function () {
             this.returnToChat();
         },
         scrollDown: function () {
-            if (!this.isManualScrolling) {
+            if (!this.isManualScrolling && this.isTabActive && this.domElems.chat.is(":visible")) {
                 var container = this.domElems.chat;
                 var height = container[0].scrollHeight;
-                container.scrollTop(height + 1000);
+                console.log(height);
+                container.scrollTop(height);
             }
         },
 
