@@ -148,6 +148,7 @@ require_once "pages/header.php";
 <script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
 <script type="text/javascript" src="js/notify.min.js"></script>
 <script type="text/javascript" src="js/ladda.js"></script>
+<script type="text/javascript" src="js/TabWindowVisibilityManager.min.js"></script>
 <script src="js/require.js"></script>
 <script type="text/javascript">
     require.config({

@@ -120,7 +120,9 @@ class PropertiesController extends ControllerBase
                 ->addRule(PropertiesDAO::SEX, Rules::sexPattern(), $lang->getPhrase('InvalidSexFormat'))
                 ->addRule(PropertiesDAO::CITY, Rules::cityPattern(), $lang->getPhrase('InvalidCityFormat'))
                 ->addRule(PropertiesDAO::BIRTH, Rules::birthYears(), $lang->getPhrase('InvalidYearFormat'))
-                ->addRule(PropertiesDAO::CENSOR, Rules::notNull(), $lang->getPhrase('InvalidField'));
+                ->addRule(PropertiesDAO::CENSOR, Rules::notNull(), $lang->getPhrase('InvalidField'))
+	            ->addRule(PropertiesDAO::NOTIFY_VISUAL, Rules::notNull(), $lang->getPhrase('InvalidField'))
+	            ->addRule(PropertiesDAO::NOTIFY_SOUND, Rules::notNull(), $lang->getPhrase('InvalidField'));
         } catch (WrongRuleNameException $e) {
             RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty') . ' ' . $e->getMessage()]);
             return;
@@ -158,69 +160,15 @@ class PropertiesController extends ControllerBase
 
 	protected function addKarma(ChainContainer $chain)
 	{
-		$operator = $chain->getFrom();
-		$request = $chain->getRequest();
-
-		if (!isset($request['user_id'])) {
-			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('RequiredPropertyNotSpecified')]);
-			return;
-		}
-
-		if ($request['user_id'] == $operator->getId()) {
-			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('CantDoToYourself')]);
-			return;
-		}
-
-		if (!$operator->isRegistered()) {
-			RespondError::make($operator, ['user_id' => 'Only available for registered user']);
-			return;
-		}
-
-		$users = DI::get()->getUsers();
-		$user = $users->getClientById($request['user_id']);
-
-		if (!$user) {
-			$properties = PropertiesDAO::create()->getByUserId($request['user_id']);
-		} else {
-			$properties = $user->getProperties();
-		}
-
-		$lastMark = UserKarmaDAO::create()->getLastMarkByEvaluatorId($request['user_id'], $operator->getId());
-
-		if ($lastMark) {
-			if ((time() - strtotime($lastMark->getDateRegister()) < DI::get()->getConfig()->karmaTimeOut)) {
-				RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('profile.KarmaTimeOut')]);
-				return;
-			}
-
-		}
-
-		$karma = UserKarmaDAO::create()->getKarmaByUserId($request['user_id']);
-
-		$properties
-			->setKarma($karma+1)
-			->save();
-
-		$mark = UserKarmaDAO::create()
-			->setUserId($request['user_id'])
-			->setEvaluator($operator)
-			->setMark(1)
-			->setDateRegister(DbQueryHelper::timestamp2date());
-		$mark->save();
-
-		$chatId = $operator->getChannelId();
-
-		$response = (new MessageResponse())
-			->setGuests($users->getUsersByChatId($chatId))
-			->setChannelId($chatId)
-			->setTime(null);
-
-		DI::get()->getUsers()
-			->setResponse($response)
-			->notify();
+		$this->manageKarma($chain, 1);
 	}
 
 	protected function decreaseKarma(ChainContainer $chain)
+	{
+		$this->manageKarma($chain, -1);
+	}
+
+	private function manageKarma(ChainContainer $chain, $mark)
 	{
 		$operator = $chain->getFrom();
 		$request = $chain->getRequest();
@@ -262,13 +210,13 @@ class PropertiesController extends ControllerBase
 		$karma = UserKarmaDAO::create()->getKarmaByUserId($request['user_id']);
 
 		$properties
-			->setKarma($karma-1)
+			->setKarma($karma+$mark)
 			->save();
 
 		$mark = UserKarmaDAO::create()
 			->setUserId($request['user_id'])
 			->setEvaluator($operator)
-			->setMark(-1)
+			->setMark($mark)
 			->setDateRegister(DbQueryHelper::timestamp2date());
 		$mark->save();
 
@@ -282,8 +230,6 @@ class PropertiesController extends ControllerBase
 		DI::get()->getUsers()
 			->setResponse($response)
 			->notify();
-
-		RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('profile.KarmaVoteSuccess')]);
 	}
 
     private function checkIfAlreadyRegisteredName($userName, User $user)
@@ -399,6 +345,12 @@ class PropertiesController extends ControllerBase
                 ->save();
         }
 
+	    $options = [
+		    PropertiesDAO::CENSOR => $request[PropertiesDAO::CENSOR],
+		    PropertiesDAO::NOTIFY_VISUAL => $request[PropertiesDAO::NOTIFY_VISUAL],
+		    PropertiesDAO::NOTIFY_SOUND => $request[PropertiesDAO::NOTIFY_SOUND],
+	    ];
+
         $properties
             ->setUserId($user->getId())
             ->setName($name)
@@ -406,9 +358,9 @@ class PropertiesController extends ControllerBase
             ->setSex(SexEnum::create($request[PropertiesDAO::SEX]))
             ->setCity($request[PropertiesDAO::CITY])
             ->setBirthday($request[PropertiesDAO::BIRTH])
-            ->setOptions([PropertiesDAO::CENSOR => $request[PropertiesDAO::CENSOR]]);
+            ->setOptions($options);
 
-        $properties->save();
+        $properties->save(false);
     }
 
     private function isExpired(NameChangeDAO $changeLog, Config $config)

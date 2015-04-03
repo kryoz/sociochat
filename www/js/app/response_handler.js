@@ -157,7 +157,17 @@ define(function () {
                 if (props.censor) {
                     $this.domElems.censor.prop('checked', props.censor);
                 }
-            }
+
+                if (props.notifyVisual) {
+                    $this.domElems.notifyVisual.prop('checked', props.notifyVisual);
+                    $this.user.notifyVisual = props.notifyVisual;
+                }
+
+                if (props.notifySound) {
+                    $this.domElems.notifySound.prop('checked', props.notifySound);
+                    $this.user.notifySound = props.notifySound;
+                }
+            };
 
             var handleDualChat = function () {
                 if (json.dualChat == 'match') {

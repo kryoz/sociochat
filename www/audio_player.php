@@ -75,7 +75,7 @@ if (!$dao->getId()) {
     ];
 }
 
-$trackInfo['url'] = 'http://pleer.sociochat.me/' . str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
+$trackInfo['url'] = DI::get()->getConfig()->domain->protocol.'pleer.sociochat.me/' . str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
 $trackInfo['track_id'] = $trackId;
 
 response(200, $trackInfo);

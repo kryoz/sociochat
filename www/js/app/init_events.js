@@ -60,7 +60,9 @@ define(function () {
                     name: $this.domElems.nickname.val(),
                     city: $this.domElems.city.val(),
                     birth: $this.domElems.birth.val(),
-                    censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false //mozilla bug
+                    censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false,
+                    notify_visual: $this.domElems.notifyVisual.prop('checked') ? $this.domElems.notifyVisual.prop('checked') : false,
+                    notify_sound: $this.domElems.notifySound.prop('checked') ? $this.domElems.notifySound.prop('checked') : false
                 };
                 $this.send(command);
                 $this.returnToChat();
@@ -116,18 +118,18 @@ define(function () {
                 }
             });
 
-            $this.domElems.doHashSearch.click(function (e) {
-                require(['hashes'], function (hashes) {
-                    hashes.process($this);
-                });
-            });
-            $this.domElems.hashInput.on('keypress', function (e) {
-                if (e.which == 13) {
-                    require(['hashes'], function (hashes) {
-                        hashes.process($this);
-                    });
-                }
-            });
+            //$this.domElems.doHashSearch.click(function (e) {
+            //    require(['hashes'], function (hashes) {
+            //        hashes.process($this);
+            //    });
+            //});
+            //$this.domElems.hashInput.on('keypress', function (e) {
+            //    if (e.which == 13) {
+            //        require(['hashes'], function (hashes) {
+            //            hashes.process($this);
+            //        });
+            //    }
+            //});
 
             $(window).resize(function () {
                 $this.scrollDown();
@@ -183,10 +185,6 @@ define(function () {
 
             $this.domElems.menuChat.click(function () {
                 $this.returnToChat();
-            });
-
-            $this.domElems.regLink.click(function () {
-                $this.domElems.regPanel.toggle();
             });
 
             $('.tab-panel').click(function (e) {

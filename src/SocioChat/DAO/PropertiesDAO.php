@@ -18,7 +18,11 @@ class PropertiesDAO extends DAOBase
     const AVATAR = 'avatar';
     const CITY = 'city';
     const BIRTH = 'birth';
+
     const CENSOR = 'censor';
+	const NOTIFY_VISUAL = 'notify_visual';
+	const NOTIFY_SOUND = 'notify_sound';
+
 	const MESSAGES_COUNT = 'messages_count';
 	const KARMA = 'karma';
 	const WORDS_COUNT = 'words_count';
@@ -191,6 +195,16 @@ class PropertiesDAO extends DAOBase
     {
         return isset($this->getOptions()[self::CENSOR]) ? $this->getOptions()[self::CENSOR] : false;
     }
+
+	public function hasNotifyVisual()
+	{
+		return isset($this->getOptions()[self::NOTIFY_VISUAL]) ? $this->getOptions()[self::NOTIFY_VISUAL] : false;
+	}
+
+	public function hasNotifySound()
+	{
+		return isset($this->getOptions()[self::NOTIFY_SOUND]) ? $this->getOptions()[self::NOTIFY_SOUND] : false;
+	}
 
 	public function setMessagesCount($count)
 	{

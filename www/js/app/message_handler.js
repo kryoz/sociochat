@@ -70,19 +70,32 @@ define(function () {
 
             $this.addLog(msg, msgCSStype);
             $this.msgCount++;
-
-            if ($this.messageTimer == null && ($this.guestCount > 0)) {
-                $this.notify(response.msg, fromUser ? fromUser.name : '', 'msg');
-            }
-
-            // notifications timeout
-            clearTimeout($this.messageTimer);
-            $this.messageTimer = setTimeout(function () {
-                $this.messageTimer = null
-            }, $this.delay);
-
             $this.chatLastFrom = response.fromName;
+
+            this.notify(response, fromUser);
             this.bindClicks();
+        },
+        notify: function (response, fromUser) {
+            var $this = this.app;
+
+            if (!$this.isTabActive) {
+                if ($this.user.notifyVisual) {
+                    try {
+                        var myNotification = new Notify(fromUser ? fromUser.name : $this.chatName, {
+                            body: response.msg,
+                            tag: 'msg',
+                            icon: 'img/sociochat.jpg',
+                            timeout: 5000
+                        });
+
+                        myNotification.show();
+                    } catch (e) {}
+                }
+
+                if ($this.user.notifySound) {
+                    $this.sound.play();
+                }
+            }
         },
         parse: function (incomingMessage) {
             var $this = this.app;

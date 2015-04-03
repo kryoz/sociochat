@@ -15,12 +15,13 @@ class UserPropetiesResponse extends Response
     protected $tim = TimEnum::FIRST;
     protected $sex = SexEnum::FIRST;
     protected $msg;
-    protected $notifications;
     protected $avatarImg;
     protected $avatarThumb;
     protected $city;
     protected $birth;
     protected $censor;
+	protected $notifyVisual;
+	protected $notifySound;
 
     public function setName($name)
     {
@@ -43,12 +44,6 @@ class UserPropetiesResponse extends Response
     public function setMsg($msg)
     {
         $this->msg = $msg;
-        return $this;
-    }
-
-    public function setNotifications($notifications)
-    {
-        $this->notifications = $notifications;
         return $this;
     }
 
@@ -103,6 +98,17 @@ class UserPropetiesResponse extends Response
         return $this;
     }
 
+	public function setNotifyVisual($checkbox)
+	{
+		$this->notifyVisual = $checkbox;
+		return $this;
+	}
+	public function setNotifySound($checkbox)
+	{
+		$this->notifySound = $checkbox;
+		return $this;
+	}
+
     public function setUserProps(User $user)
     {
         $properties = $user->getProperties();
@@ -114,12 +120,13 @@ class UserPropetiesResponse extends Response
             ->setSex($properties->getSex()->getId())
             ->setTim($properties->getTim()->getId())
             ->setName($properties->getName())
-            ->setNotifications($properties->getOptions())
             ->setAvatarImg($properties->getAvatarImg() ? $dir . $properties->getAvatarImg() : null)
             ->setAvatarThumb($properties->getAvatarThumb() ? $dir . $properties->getAvatarThumb() : null)
             ->setYear($properties->getBirthday())
             ->setCity($properties->getCity())
-            ->setCensor($properties->hasCensor());
+            ->setCensor($properties->hasCensor())
+	        ->setNotifyVisual($properties->hasNotifyVisual())
+            ->setNotifySound($properties->hasNotifySound());
 
         return $this;
     }

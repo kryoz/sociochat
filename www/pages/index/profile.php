@@ -49,11 +49,24 @@ if (!defined('ROOT')) {
         </div>
         <div class="row btn-vert-block form-group">
             <div class="col-md-12 btn-vert-block">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="profile-censor"/> <?= $lang->getPhrase('profile.Censor') ?>
-                    </label>
-                </div>
+				<div class="checkbox">
+	                <label>
+	                    <input type="checkbox" id="profile-censor"/> <?= $lang->getPhrase('profile.Censor') ?>
+	                </label>
+				</div>
+	            <div class="well well-sm">
+		            <h5><?= $lang->getPhrase('profile.MessageNotifications') ?></h5>
+		            <div class="checkbox">
+			            <label>
+				            <input type="checkbox" id="profile-notify-visual"/> <?= $lang->getPhrase('profile.NotifyVisual') ?>
+			            </label>
+		            </div>
+		            <div class="checkbox">
+			            <label>
+				            <input type="checkbox" id="profile-notify-sound"/> <?= $lang->getPhrase('profile.NotifySound') ?>
+			            </label>
+		            </div>
+	            </div>
             </div>
 
         </div>

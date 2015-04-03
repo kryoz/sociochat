@@ -10,10 +10,9 @@ define('app', function () {
         guestCount: 0,
         guests: [],
         currentChannel: 1,
-        notificationProperties: [],
+        isTabActive: 1,
         bufferSize: 100,
 
-        messageTimer: null,
         pingTimer: null,
         clickTimer: null,
         errorTimer: null,
@@ -26,15 +25,17 @@ define('app', function () {
         guestEditState: 0,
         disconnect: 0,
         lastMsgId: -1,
-        delay: 1000 * 60,
 
         user: {
             id: 0,
             sex: 0,
             name: '',
-            email: ''
+            email: '',
+            notifyVisual: 0,
+            notifySound: 0
         },
         chatLastFrom: null,
+        sound: new Audio("newmessage.mp3"),
         isFirstConnect: true,
 
         domElems: {
@@ -53,6 +54,8 @@ define('app', function () {
             city: $('#profile-city'),
             birth: $('#profile-year'),
             censor: $('#profile-censor'),
+            notifyVisual: $('#profile-notify-visual'),
+            notifySound: $('#profile-notify-sound'),
 
             loginName: $('#login-name'),
             loginPassword: $('#login-password'),
@@ -67,7 +70,7 @@ define('app', function () {
             doHashSearch: $('#do-hash-search'),
             hashPanel: $('#hashes'),
             musicInput: $("#music input[name=song]"),
-            hashInput: $('#hashes [name=hash]'),
+            //hashInput: $('#hashes [name=hash]'),
 
             menuDualize: $('#menu-dualize'),
             menuDualizeStop: $('#menu-dualize-stop'),
@@ -92,6 +95,17 @@ define('app', function () {
 
             this.initSession(function () {
                 $this.Connect();
+            });
+
+            $(window).TabWindowVisibilityManager({
+                onFocusCallback: function() {
+                    $this.isTabActive = 1;
+                    console.log('focus!')
+                },
+                onBlurCallback: function() {
+                    $this.isTabActive = 0;
+                    console.log('blur!')
+                }
             });
 
             require(['init_events'], function (binders) {
@@ -232,8 +246,7 @@ define('app', function () {
                 if (myNotification.needsPermission()) {
                     myNotification.requestPermission();
                 }
-            } catch (e) {
-            }
+            } catch (e) {}
 
             var command = {
                 subject: "Message",
@@ -314,19 +327,7 @@ define('app', function () {
                 container.scrollTop(height + 1000);
             }
         },
-        notify: function (msg, author, tag, timeout) {
-            try {
-                var myNotification = new Notify(author ? author : App.chatName, {
-                    body: msg,
-                    tag: tag ? tag : App.chatName,
-                    icon: 'img/sociochat.jpg',
-                    timeout: timeout ? timeout : 5000
-                });
 
-                myNotification.show();
-            } catch (e) {
-            }
-        },
         getImgUrl: function (url) {
             if (this.isRetina && url) {
                 var exp = /(\.\w+)/i
@@ -400,6 +401,6 @@ define('app', function () {
             }
 
             return text + '</div>';
-        }
+        },
     }
 });
