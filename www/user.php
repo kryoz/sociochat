@@ -65,9 +65,9 @@ $response = [
 	'karma' => $props->getKarma(),
 	'dateRegister' => $user->getDateRegister(),
 	'onlineTime' => $dtF->diff($dtT)->format('%a дней %h часов %i минут'),
-	'wordRating' => $props->getWordRating() . '-й из '. $total,
-	'rudeRating' => $props->getRudeRating() . '-й из '. $total,
-	'musicRating' => $props->getMusicRating() . '-й из '. $total,
+	'wordRating' => $props->getWordRating() ? $props->getWordRating() . '-й из '. $total : $lang->getPhrase('NotSpecified'),
+	'rudeRating' => $props->getRudeRating() ? $props->getRudeRating() . '-й из '. $total : $lang->getPhrase('NotSpecified'),
+	'musicRating' => $props->getMusicRating() ? $props->getMusicRating() . '-й из '. $total : $lang->getPhrase('NotSpecified'),
 	'names' => implode(', ', $names),
 ];
 

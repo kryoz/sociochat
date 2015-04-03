@@ -322,7 +322,6 @@ define('app', function () {
             if (!this.isManualScrolling && this.isTabActive && this.domElems.chat.is(":visible")) {
                 var container = this.domElems.chat;
                 var height = container[0].scrollHeight;
-                console.log(height);
                 container.scrollTop(height);
             }
         },
