@@ -319,7 +319,7 @@ define('app', function () {
             this.returnToChat();
         },
         scrollDown: function () {
-            if (!this.isManualScrolling && this.isTabActive && this.domElems.chat.is(":visible")) {
+            if (!this.isManualScrolling && this.domElems.chat.is(":visible")) {
                 var container = this.domElems.chat;
                 var height = container[0].scrollHeight;
                 container.scrollTop(height);
