@@ -80,6 +80,16 @@ if (!defined('ROOT')) {
 		            <label class="checkbox-inline">
 			            <input type="checkbox" id="profile-notify-sound"/> <?= $lang->getPhrase('profile.NotifySound') ?>
 		            </label>
+
+		            <div id="profile-notify-online-limit">
+			            <h5><?= $lang->getPhrase('profile.OnlineNotifications') ?></h5>
+			            <select class="form-control">
+				            <option value="0"><?= $lang->getPhrase('NotSpecified') ?></option>
+				            <?php for($i=1; $i <= 50; $i++) { ?>
+					            <option value="<?=$i?>"><?=$i?></option>
+				            <? } ?>
+			            </select>
+		            </div>
 	            </div>
             </div>
 

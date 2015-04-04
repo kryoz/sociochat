@@ -13,6 +13,8 @@ class CronEnum extends Enum
         'sessionCleaner' => ServiceSessionCleaner::class,
         'activationsCleaner' => ServiceActivationsCleaner::class,
 	    'avatarCleaner' => ServiceAvatarCleaner::class,
+	    'mailer' => ServiceMailer::class,
+	    'onlineMonitor' => ServiceOnlineMonitor::class,
     );
 
     public function getServiceInstance()

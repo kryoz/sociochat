@@ -13,8 +13,6 @@ DIBuilder::setupNormal($container);
 $config = $container->get('config');
 /* @var $config Config */
 
-session_start();
-
 $email = isset($_REQUEST['email']) ? $_REQUEST['email'] : null;
 $code = isset($_REQUEST['code']) ? $_REQUEST['code'] : null;
 $password = isset($_REQUEST['password']) ? $_REQUEST['password'] : null;

@@ -23,6 +23,8 @@ class PropertiesDAO extends DAOBase
 	const LINE_BREAK_TYPE = 'line_break_type';
 	const NOTIFY_VISUAL = 'notify_visual';
 	const NOTIFY_SOUND = 'notify_sound';
+	const ONLINE_NOTIFICATION = 'online_limit';
+	const ONLINE_NOTIFICATION_LAST = 'online_notify_last';
 
 	const MESSAGES_COUNT = 'messages_count';
 	const KARMA = 'karma';
@@ -30,6 +32,8 @@ class PropertiesDAO extends DAOBase
 	const ONLINE_TIME = 'online_time';
 	const MUSIC_COUNT = 'music_posts';
 	const RUDE_COUNT = 'rude_count';
+
+	private $options;
 
     public function __construct()
     {
@@ -58,6 +62,7 @@ class PropertiesDAO extends DAOBase
     public function getByUserId($userId)
     {
         $this->setUserId($userId);
+	    $this->options = null;
         return $this->getByPropId(self::USER_ID, $userId);
     }
 
@@ -68,6 +73,7 @@ class PropertiesDAO extends DAOBase
             $this->fillParams($data[0]);
         }
 
+	    $this->options = null;
         return $this;
     }
 
@@ -75,6 +81,15 @@ class PropertiesDAO extends DAOBase
 	{
 		return $this->getListByQuery(
 			"SELECT * FROM {$this->dbTable} WHERE ".self::AVATAR." IS NOT NULL"
+		);
+	}
+
+	public function getRegisteredList()
+	{
+		return $this->getListByQuery(
+			"SELECT p.* FROM {$this->dbTable} AS p "
+			."JOIN users AS u ON u.id = p.".self::USER_ID
+			." WHERE ".UserDAO::EMAIL." IS NOT NULL"
 		);
 	}
 
@@ -156,12 +171,17 @@ class PropertiesDAO extends DAOBase
 
     public function getOptions()
     {
-        return json_decode($this[self::NOTIFICATIONS], 1) ?: [];
+	    if (!$this->options) {
+		    $this->options = json_decode($this[self::NOTIFICATIONS], 1) ?: [];
+	    }
+
+        return $this->options;
     }
 
-    public function setOptions(array $settings)
+    public function setOptions(array $options)
     {
-        $this[self::NOTIFICATIONS] = json_encode($settings);
+        $this[self::NOTIFICATIONS] = json_encode($options);
+	    $this->options = $options;
         return $this;
     }
 
@@ -210,6 +230,28 @@ class PropertiesDAO extends DAOBase
 	public function getLineBreakType()
 	{
 		return isset($this->getOptions()[self::LINE_BREAK_TYPE]) ? $this->getOptions()[self::LINE_BREAK_TYPE] : 0;
+	}
+
+	public function getOnlineNotificationLimit()
+	{
+		return isset($this->getOptions()[self::ONLINE_NOTIFICATION]) ? $this->getOptions()[self::ONLINE_NOTIFICATION] : 0;
+	}
+
+	public function getOnlineNotificationLast()
+	{
+		return isset($this->getOptions()[self::ONLINE_NOTIFICATION_LAST]) ? $this->getOptions()[self::ONLINE_NOTIFICATION_LAST] : 0;
+	}
+
+	public function setOnlineNotificationLast($time)
+	{
+		$options = $this->options;
+		$options = array_merge($options, [
+			self::ONLINE_NOTIFICATION_LAST => $time
+		]);
+
+		print_r($options);
+		$this->setOptions($options);
+		return $this;
 	}
 
 	public function setMessagesCount($count)
@@ -280,7 +322,7 @@ class PropertiesDAO extends DAOBase
 
 	public function dropByUserId($id)
     {
-        $this->dropById($id, 'user_id');
+        $this->dropById($id, self::USER_ID);
     }
 
     public function dropByUserIdList(array $userIds)

@@ -7,6 +7,7 @@ use SocioChat\Application\OnOpenFilters\ResponseFilter;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
+use SocioChat\DAO\OnlineDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
 use Core\Form\Form;
@@ -14,6 +15,7 @@ use SocioChat\Forms\Rules;
 use Core\Form\WrongRuleNameException;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
+use SocioChat\Response\UserPropetiesResponse;
 
 class LoginController extends ControllerBase
 {
@@ -83,9 +85,8 @@ class LoginController extends ControllerBase
             if ($timer = $duplicatedUser->getDisconnectTimer()) {
                 DI::get()->container()->get('eventloop')->cancelTimer($timer);
                 $logger->info(
-                    "Deffered disconnection timer canceled:
-                    connection_id = {$duplicatedUser->getConnectionId()} for userId = {$duplicatedUser->getId()}",
-                    [__CLASS__]
+                    "Deffered disconnection timer canceled: "
+                    ."connection_id = {$duplicatedUser->getConnectionId()} for userId = {$duplicatedUser->getId()}"
                 );
             }
 
@@ -95,7 +96,6 @@ class LoginController extends ControllerBase
             Chat::get()->onClose($duplicatedUser->getConnection());
         }
 
-        /** @var UserDAO $userDAO */
         $userDAO->setChatId($oldChannelId);
         $user->setUserDAO($userDAO);
         $clients->updateKeyOfUserId($oldUserId);
@@ -108,6 +108,9 @@ class LoginController extends ControllerBase
         $responseFilter = new ResponseFilter();
         $responseFilter->sendNickname($user, $clients);
         $responseFilter->notifyChat($user, $clients);
+
+	    $onlineList = OnlineDAO::create();
+	    $onlineList->updateUserId($oldUserId, $userDAO->getId());
     }
 
     protected function processRegister(ChainContainer $chain)
@@ -132,7 +135,11 @@ class LoginController extends ControllerBase
         $this->sendNotifyResponse($user);
     }
 
-    private function validateLogin(array $request)
+	/**
+	 * @param array $request
+	 * @return UserDAO|null
+	 */
+	private function validateLogin(array $request)
     {
         $email = $request['login'];
         $password = $request['password'];
@@ -163,5 +170,14 @@ class LoginController extends ControllerBase
             ->attach($user)
             ->setResponse($response)
             ->notify(false);
+
+	    $response = (new UserPropetiesResponse())
+		    ->setUserProps($user)
+		    ->setChannelId($user->getChannelId());
+
+	    (new UserCollection())
+		    ->attach($user)
+		    ->setResponse($response)
+		    ->notify(false);
     }
 }

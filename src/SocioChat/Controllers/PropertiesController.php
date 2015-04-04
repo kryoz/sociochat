@@ -112,6 +112,11 @@ class PropertiesController extends ControllerBase
         $user = $chain->getFrom();
         $lang = $user->getLang();
 
+	    $onlineLimitRule = function ($val) {
+		    $val = (int) $val;
+	        return $val >=0 && $val <=50;
+        };
+
         try {
             $form = (new Form())
                 ->import($request)
@@ -123,7 +128,8 @@ class PropertiesController extends ControllerBase
                 ->addRule(PropertiesDAO::CENSOR, Rules::notNull(), $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::NOTIFY_VISUAL, Rules::notNull(), $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::NOTIFY_SOUND, Rules::notNull(), $lang->getPhrase('InvalidField'))
-	            ->addRule(PropertiesDAO::LINE_BREAK_TYPE, Rules::notNull(), $lang->getPhrase('InvalidField'));
+	            ->addRule(PropertiesDAO::LINE_BREAK_TYPE, Rules::notNull(), $lang->getPhrase('InvalidField'))
+	            ->addRule(PropertiesDAO::ONLINE_NOTIFICATION, $onlineLimitRule, $lang->getPhrase('InvalidField'));
         } catch (WrongRuleNameException $e) {
             RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty') . ' ' . $e->getMessage()]);
             return;
@@ -351,6 +357,8 @@ class PropertiesController extends ControllerBase
 		    PropertiesDAO::LINE_BREAK_TYPE => $request[PropertiesDAO::LINE_BREAK_TYPE],
 		    PropertiesDAO::NOTIFY_VISUAL => $request[PropertiesDAO::NOTIFY_VISUAL],
 		    PropertiesDAO::NOTIFY_SOUND => $request[PropertiesDAO::NOTIFY_SOUND],
+		    PropertiesDAO::ONLINE_NOTIFICATION => $request[PropertiesDAO::ONLINE_NOTIFICATION],
+		    PropertiesDAO::ONLINE_NOTIFICATION_LAST => $properties->getOnlineNotificationLast(),
 	    ];
 
         $properties

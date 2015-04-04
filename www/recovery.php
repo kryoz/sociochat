@@ -7,6 +7,7 @@ use SocioChat\DIBuilder;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use Core\Utils\PasswordUtils;
+use SocioChat\Utils\Mail;
 use Zend\Config\Config;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php';
@@ -76,20 +77,16 @@ $activation->fillParams(
 );
 $activation->save();
 
-
-$mailerName = 'СоциоЧат';
-$headers = "MIME-Version: 1.0 \n"
-    . "From: " . mb_encode_mimeheader($mailerName)
-    . "<" . $config->adminEmail . "> \n"
-    . "Reply-To: " . mb_encode_mimeheader($mailerName)
-    . "<" . $config->adminEmail . "> \n"
-    . "Content-Type: text/html;charset=UTF-8\n";
-
-
-$msg = "<h2>Восстановление пароля в Социочате</h2>
+$msg = "<h2>Восстановление пароля в СоциоЧате</h2>
 <p>Была произведена процедура восстановления пароля с использованием вашего email.</p>
 <p>Для подтверждения сброса пароля перейдите по <a href=\"" . $config->domain->protocol . $config->domain->web . "/activation.php?email=$email&code=" . $activation->getCode() . "\">ссылке</a></p>
 <p>Данная ссылка действительна до " . date('Y-m-d H:i', time() + $config->activationTTL) . "</p>";
 
-mb_send_mail($email, 'SocioChat - Восстановление пароля', $msg, $headers);
+$mailer = \SocioChat\DAO\MailQueueDAO::create();
+$mailer
+	->setEmail($email)
+	->setTopic('Sociochat.me - Восстановление пароля')
+	->setMessage($msg);
+$mailer->save();
+
 require_once "pages/recovery/recovery2.php";

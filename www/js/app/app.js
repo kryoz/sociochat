@@ -84,7 +84,8 @@ define('app', function () {
             audioPlayer: $('#player'),
             musicLink: $('a[href="#music"]').parent(),
             loginLink: $('a[href="#login"]'),
-            userDetails: $('#user-details')
+            userDetails: $('#user-details'),
+            onlineNotification: $('#profile-notify-online-limit')
         },
 
         Init: function (hostUrl, domain, maxMsgLength) {

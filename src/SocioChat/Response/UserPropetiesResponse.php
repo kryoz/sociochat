@@ -23,6 +23,7 @@ class UserPropetiesResponse extends Response
 	protected $notifyVisual;
 	protected $notifySound;
 	protected $lineBreakType;
+	protected $onlineNotifyLimit;
 
     public function setName($name)
     {
@@ -116,6 +117,12 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+	public function setOnlineNotifyLimit($limit)
+	{
+		$this->onlineNotifyLimit = $limit;
+		return $this;
+	}
+
     public function setUserProps(User $user)
     {
         $properties = $user->getProperties();
@@ -134,7 +141,8 @@ class UserPropetiesResponse extends Response
             ->setCensor($properties->hasCensor())
 	        ->setNotifyVisual($properties->hasNotifyVisual())
             ->setNotifySound($properties->hasNotifySound())
-            ->setLineBreakType($properties->getLineBreakType());
+            ->setLineBreakType($properties->getLineBreakType())
+            ->setOnlineNotifyLimit($properties->getOnlineNotificationLimit());
 
         return $this;
     }

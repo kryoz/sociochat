@@ -536,3 +536,7 @@ sup.danger {
 sup.success {
     color: #47a447;
 }
+
+#profile-notify-online-limit {
+    display: none;
+}

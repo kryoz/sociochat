@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat\Application\OnOpenFilters;
 
+use SocioChat\DAO\OnlineDAO;
 use SocioChat\DI;
 use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Application\Chain\ChainInterface;
@@ -27,6 +28,10 @@ class ResponseFilter implements ChainInterface
         $this->sendNickname($user);
         $this->handleHistory($user);
         $this->notifyChat($user, $users);
+
+	    $onlineList = OnlineDAO::create();
+	    $onlineList->setUserId($user->getId());
+	    $onlineList->save();
     }
 
     /**

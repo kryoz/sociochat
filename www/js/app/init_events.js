@@ -41,7 +41,7 @@ define(function () {
 
                 $this.domElems.charsLeft.text($this.maxMsgLength - inputText.length);
 
-                if ($this.user.lineBreakType) {
+                if ($this.user.lineBreakType == 0) {
                     breakLine = isEnter && !e.ctrlKey;
                     sendMessage = ctrlEnter;
                 }
@@ -72,7 +72,8 @@ define(function () {
                     censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false,
                     notify_visual: $this.domElems.notifyVisual.prop('checked') ? $this.domElems.notifyVisual.prop('checked') : false,
                     notify_sound: $this.domElems.notifySound.prop('checked') ? $this.domElems.notifySound.prop('checked') : false,
-                    line_break_type: $this.domElems.lineBreakType.filter(':checked').val() ? $this.domElems.lineBreakType.filter(':checked').val() : 0
+                    line_break_type: $this.domElems.lineBreakType.filter(':checked').val() ? $this.domElems.lineBreakType.filter(':checked').val() : 0,
+                    online_limit: $this.domElems.onlineNotification.find('select option').filter(':selected').val() ? $this.domElems.onlineNotification.find('select option').filter(':selected').val() : 0
                 };
 
                 $this.send(command);

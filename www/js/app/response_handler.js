@@ -130,6 +130,7 @@ define(function () {
                     $this.domElems.email.val(props.email);
                     $this.user.email = props.email;
                     $this.domElems.loginLink.hide();
+                    $this.domElems.onlineNotification.show();
                 }
 
                 if (props.avatarImg) {
@@ -171,6 +172,10 @@ define(function () {
                 if (props.lineBreakType != undefined) {
                     $this.domElems.lineBreakType.filter('[value='+props.lineBreakType+']').prop('checked', true);
                     $this.user.lineBreakType = props.lineBreakType;
+                }
+
+                if (props.onlineNotifyLimit != undefined) {
+                    $this.domElems.onlineNotification.find('select option').filter('[value='+props.onlineNotifyLimit+']').attr('selected', 'selected');
                 }
             };
 
