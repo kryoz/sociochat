@@ -20,6 +20,7 @@ class PropertiesDAO extends DAOBase
     const BIRTH = 'birth';
 
     const CENSOR = 'censor';
+	const LINE_BREAK_TYPE = 'line_break_type';
 	const NOTIFY_VISUAL = 'notify_visual';
 	const NOTIFY_SOUND = 'notify_sound';
 
@@ -204,6 +205,11 @@ class PropertiesDAO extends DAOBase
 	public function hasNotifySound()
 	{
 		return isset($this->getOptions()[self::NOTIFY_SOUND]) ? $this->getOptions()[self::NOTIFY_SOUND] : false;
+	}
+
+	public function getLineBreakType()
+	{
+		return isset($this->getOptions()[self::LINE_BREAK_TYPE]) ? $this->getOptions()[self::LINE_BREAK_TYPE] : 0;
 	}
 
 	public function setMessagesCount($count)

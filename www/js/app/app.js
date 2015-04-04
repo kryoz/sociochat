@@ -54,6 +54,7 @@ define('app', function () {
             city: $('#profile-city'),
             birth: $('#profile-year'),
             censor: $('#profile-censor'),
+            lineBreakType: $('input[name=profile-linebreak]'),
             notifyVisual: $('#profile-notify-visual'),
             notifySound: $('#profile-notify-sound'),
 

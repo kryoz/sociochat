@@ -154,18 +154,23 @@ define(function () {
                     $this.domElems.city.val(props.city);
                 }
 
-                if (props.censor) {
+                if (props.censor != undefined) {
                     $this.domElems.censor.prop('checked', props.censor);
                 }
 
-                if (props.notifyVisual) {
+                if (props.notifyVisual != undefined) {
                     $this.domElems.notifyVisual.prop('checked', props.notifyVisual);
                     $this.user.notifyVisual = props.notifyVisual;
                 }
 
-                if (props.notifySound) {
+                if (props.notifySound != undefined) {
                     $this.domElems.notifySound.prop('checked', props.notifySound);
                     $this.user.notifySound = props.notifySound;
+                }
+
+                if (props.lineBreakType != undefined) {
+                    $this.domElems.lineBreakType.filter('[value='+props.lineBreakType+']').prop('checked', true);
+                    $this.user.lineBreakType = props.lineBreakType;
                 }
             };
 

@@ -22,6 +22,7 @@ class UserPropetiesResponse extends Response
     protected $censor;
 	protected $notifyVisual;
 	protected $notifySound;
+	protected $lineBreakType;
 
     public function setName($name)
     {
@@ -109,6 +110,12 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+	public function setLineBreakType($checkbox)
+	{
+		$this->lineBreakType = $checkbox;
+		return $this;
+	}
+
     public function setUserProps(User $user)
     {
         $properties = $user->getProperties();
@@ -126,7 +133,8 @@ class UserPropetiesResponse extends Response
             ->setCity($properties->getCity())
             ->setCensor($properties->hasCensor())
 	        ->setNotifyVisual($properties->hasNotifyVisual())
-            ->setNotifySound($properties->hasNotifySound());
+            ->setNotifySound($properties->hasNotifySound())
+            ->setLineBreakType($properties->getLineBreakType());
 
         return $this;
     }

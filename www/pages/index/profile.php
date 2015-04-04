@@ -54,18 +54,32 @@ if (!defined('ROOT')) {
 	                    <input type="checkbox" id="profile-censor"/> <?= $lang->getPhrase('profile.Censor') ?>
 	                </label>
 				</div>
+            </div>
+        </div>
+        <div class="row btn-vert-block form-group">
+	        <div class="col-md-12 btn-vert-block">
+				<div class="well well-sm">
+					<h5><?= $lang->getPhrase('profile.LineBreak') ?></h5>
+					<label class="radio-inline">
+						<input type="radio" name="profile-linebreak" value="0" checked> Ctrl+Enter
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="profile-linebreak" value="1"> Enter
+					</label>
+				</div>
+            </div>
+        </div>
+        <div class="row btn-vert-block form-group">
+	        <div class="col-md-12 btn-vert-block">
 	            <div class="well well-sm">
 		            <h5><?= $lang->getPhrase('profile.MessageNotifications') ?></h5>
-		            <div class="checkbox">
-			            <label>
-				            <input type="checkbox" id="profile-notify-visual"/> <?= $lang->getPhrase('profile.NotifyVisual') ?>
-			            </label>
-		            </div>
-		            <div class="checkbox">
-			            <label>
-				            <input type="checkbox" id="profile-notify-sound"/> <?= $lang->getPhrase('profile.NotifySound') ?>
-			            </label>
-		            </div>
+		            <label class="checkbox-inline">
+			            <input type="checkbox" id="profile-notify-visual"/> <?= $lang->getPhrase('profile.NotifyVisual') ?>
+		            </label>
+
+		            <label class="checkbox-inline">
+			            <input type="checkbox" id="profile-notify-sound"/> <?= $lang->getPhrase('profile.NotifySound') ?>
+		            </label>
 	            </div>
             </div>
 

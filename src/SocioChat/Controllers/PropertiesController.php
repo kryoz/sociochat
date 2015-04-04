@@ -122,7 +122,8 @@ class PropertiesController extends ControllerBase
                 ->addRule(PropertiesDAO::BIRTH, Rules::birthYears(), $lang->getPhrase('InvalidYearFormat'))
                 ->addRule(PropertiesDAO::CENSOR, Rules::notNull(), $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::NOTIFY_VISUAL, Rules::notNull(), $lang->getPhrase('InvalidField'))
-	            ->addRule(PropertiesDAO::NOTIFY_SOUND, Rules::notNull(), $lang->getPhrase('InvalidField'));
+	            ->addRule(PropertiesDAO::NOTIFY_SOUND, Rules::notNull(), $lang->getPhrase('InvalidField'))
+	            ->addRule(PropertiesDAO::LINE_BREAK_TYPE, Rules::notNull(), $lang->getPhrase('InvalidField'));
         } catch (WrongRuleNameException $e) {
             RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty') . ' ' . $e->getMessage()]);
             return;
@@ -347,6 +348,7 @@ class PropertiesController extends ControllerBase
 
 	    $options = [
 		    PropertiesDAO::CENSOR => $request[PropertiesDAO::CENSOR],
+		    PropertiesDAO::LINE_BREAK_TYPE => $request[PropertiesDAO::LINE_BREAK_TYPE],
 		    PropertiesDAO::NOTIFY_VISUAL => $request[PropertiesDAO::NOTIFY_VISUAL],
 		    PropertiesDAO::NOTIFY_SOUND => $request[PropertiesDAO::NOTIFY_SOUND],
 	    ];

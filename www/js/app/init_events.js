@@ -35,14 +35,23 @@ define(function () {
                 var code = e.keyCode || e.which;
                 var isEnter = code == 10 || code == 13;
                 var inputText = this.value;
+                var ctrlEnter = e.ctrlKey && isEnter;
+                var breakLine = ctrlEnter;
+                var sendMessage = isEnter;
 
                 $this.domElems.charsLeft.text($this.maxMsgLength - inputText.length);
-                if (e.ctrlKey && isEnter) {
+
+                if ($this.user.lineBreakType) {
+                    breakLine = isEnter && !e.ctrlKey;
+                    sendMessage = ctrlEnter;
+                }
+
+                if (breakLine) {
                     var matches = inputText.match(/(?:\r\n|\r|\n)/g);
                     return !(matches && matches.length > 3);
 
                 }
-                if (isEnter) {
+                if (sendMessage) {
                     $this.sendMessage();
                     $this.domElems.charsLeft.text($this.maxMsgLength);
                     return false;
@@ -62,8 +71,10 @@ define(function () {
                     birth: $this.domElems.birth.val(),
                     censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false,
                     notify_visual: $this.domElems.notifyVisual.prop('checked') ? $this.domElems.notifyVisual.prop('checked') : false,
-                    notify_sound: $this.domElems.notifySound.prop('checked') ? $this.domElems.notifySound.prop('checked') : false
+                    notify_sound: $this.domElems.notifySound.prop('checked') ? $this.domElems.notifySound.prop('checked') : false,
+                    line_break_type: $this.domElems.lineBreakType.filter(':checked').val() ? $this.domElems.lineBreakType.filter(':checked').val() : 0
                 };
+
                 $this.send(command);
                 $this.returnToChat();
             });

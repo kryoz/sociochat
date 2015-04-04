@@ -519,8 +519,9 @@ doesnotexist:-o-prefocus, #panel-chat {
 .notifications {
     display: none;
     background: #d9534f;
-    opacity: 0.7;
+    opacity: 0.9;
     color: #fff;
+    text-shadow: #101010 0 0 1px;
     position: absolute;
     z-index: 5;
     padding: 1em 1em 0.5em 1em;
