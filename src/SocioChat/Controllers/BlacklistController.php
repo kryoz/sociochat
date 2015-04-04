@@ -6,6 +6,7 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
@@ -38,7 +39,7 @@ class BlacklistController extends ControllerBase
         $request = $chain->getRequest();
         $user = $chain->getFrom();
 
-        if (!$banUser = DI::get()->getUsers()->getClientById($request[PropertiesDAO::USER_ID])) {
+        if (!$banUser = UserDAO::create()->getById($request[PropertiesDAO::USER_ID])) {
             RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
             return;
         }
@@ -59,7 +60,7 @@ class BlacklistController extends ControllerBase
         $request = $chain->getRequest();
         $user = $chain->getFrom();
 
-        if (!$unbanUser = DI::get()->getUsers()->getClientById($request['user_id'])) {
+        if (!$unbanUser = UserDAO::create()->getById($request['user_id'])) {
             RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
             return;
         }
@@ -75,10 +76,10 @@ class BlacklistController extends ControllerBase
         $this->unbanResponse($user, $unbanUser);
     }
 
-    private function banResponse(User $user, User $banUser)
+    private function banResponse(User $user, UserDAO $banUserDAO)
     {
         $response = (new MessageResponse())
-            ->setMsg(MsgToken::create('UserBannedSuccessfully', $banUser->getProperties()->getName()))
+            ->setMsg(MsgToken::create('UserBannedSuccessfully', $banUserDAO->getPropeties()->getName()))
             ->setTime(null)
             ->setChannelId($user->getChannelId())
             ->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
@@ -88,21 +89,24 @@ class BlacklistController extends ControllerBase
             ->setResponse($response)
             ->notify(false);
 
-        $response = (new MessageResponse())
-            ->setMsg(MsgToken::create('UserBannedYou', $user->getProperties()->getName()))
-            ->setChannelId($banUser->getChannelId())
-            ->setTime(null);
+	    if ($banUser = DI::get()->getUsers()->getClientById($banUserDAO->getId())) {
+		    $response = (new MessageResponse())
+			    ->setMsg(MsgToken::create('UserBannedYou', $user->getProperties()->getName()))
+			    ->setChannelId($banUser->getChannelId())
+			    ->setTime(null);
 
-        (new UserCollection())
-            ->attach($banUser)
-            ->setResponse($response)
-            ->notify(false);
+		    (new UserCollection())
+			    ->attach($banUser)
+			    ->setResponse($response)
+			    ->notify(false);
+	    }
+
     }
 
-    private function unbanResponse(User $user, User $banUser)
+    private function unbanResponse(User $user, UserDAO $unBanUserDAO)
     {
         $response = (new MessageResponse())
-            ->setMsg(MsgToken::create('UserIsUnbanned', $banUser->getProperties()->getName()))
+            ->setMsg(MsgToken::create('UserIsUnbanned', $unBanUserDAO->getPropeties()->getName()))
             ->setTime(null)
             ->setChannelId($user->getChannelId())
             ->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
@@ -112,14 +116,16 @@ class BlacklistController extends ControllerBase
             ->setResponse($response)
             ->notify(false);
 
-        $response = (new MessageResponse())
-            ->setMsg(MsgToken::create('UserUnbannedYou', $user->getProperties()->getName()))
-            ->setChannelId($banUser->getChannelId())
-            ->setTime(null);
+	    if ($unBanUser = DI::get()->getUsers()->getClientById($unBanUserDAO->getId())) {
+		    $response = (new MessageResponse())
+			    ->setMsg(MsgToken::create('UserUnbannedYou', $user->getProperties()->getName()))
+			    ->setChannelId($unBanUser->getChannelId())
+			    ->setTime(null);
 
-        (new UserCollection())
-            ->attach($banUser)
-            ->setResponse($response)
-            ->notify(false);
+		    (new UserCollection())
+			    ->attach($unBanUser)
+			    ->setResponse($response)
+			    ->notify(false);
+	    }
     }
 }
