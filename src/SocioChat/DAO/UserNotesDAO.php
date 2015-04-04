@@ -28,8 +28,13 @@ class UserNotesDAO extends DAOBase
 
     public function getByUserId($userId)
     {
-        $list = $this->db->query("SELECT " . self::NOTED_ID . ", " . self::NOTE . " FROM {$this->dbTable} WHERE " . self::USER_ID . " = :0",
+	    $this->db->o()->query("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+	    $this->db->o()->beginTransaction();
+
+        $list = $this->db->query(
+	        "SELECT " . self::NOTED_ID . ", " . self::NOTE . " FROM {$this->dbTable} WHERE " . self::USER_ID . " = :0",
             [$userId]);
+	    $this->db->o()->commit();
         $keys = array_column($list, self::NOTED_ID);
         $vals = array_column($list, self::NOTE);
         $this->notes = array_combine($keys, $vals);

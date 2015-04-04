@@ -5,6 +5,7 @@ use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
+use SocioChat\DAO\UserDAO;
 use SocioChat\DAO\UserNotesDAO;
 use SocioChat\DI;
 use SocioChat\Message\MsgRaw;
@@ -37,7 +38,7 @@ class NoteController extends ControllerBase
         $request = $chain->getRequest();
         $user = $chain->getFrom();
 
-        if (!$notedUser = DI::get()->getUsers()->getClientById($request[UserNotesDAO::USER_ID])) {
+        if (!$notedUser = UserDAO::create()->getById($request[UserNotesDAO::USER_ID])) {
             RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
             return;
         }
