@@ -1,27 +1,28 @@
 define(function () {
     return {
         app: {},
-        process: function ($this, response) {
+        process: function ($app, response) {
             if (!response.msg) {
                 return;
             }
-            this.app = $this;
+            this.app = $app;
+            var $this = this;
             var msg = '';
             var msgCSStype = '';
 
             if (response.lastMsgId) {
-                $this.lastMsgId = response.lastMsgId;
+                $app.lastMsgId = response.lastMsgId;
             }
 
             if (response.time) {
-                var time = $this.timeUTCConvert(response.time);
+                var time = $app.timeUTCConvert(response.time);
             }
 
             if (response.fromName) {
-                var fromUser = response.userInfo ? response.userInfo : $this.getUserInfo(response.fromName);
+                var fromUser = response.userInfo ? response.userInfo : $app.getUserInfo(response.fromName);
 
-                if ($this.chatLastFrom != response.fromName) {
-                    msg += $this.getAvatar(fromUser) + ' ';
+                if ($app.chatLastFrom != response.fromName) {
+                    msg += $app.getAvatar(fromUser) + ' ';
                     if (time) {
                         msg += '<div class="time">' + time + '</div>';
                     }
@@ -30,11 +31,11 @@ define(function () {
                     msgCSStype = 'repeat';
                 }
                 if (response.toName) {
-                    var toUser = $this.getUserInfo(response.toName);
+                    var toUser = $app.getUserInfo(response.toName);
                     var toWho = 'вас';
 
-                    if (fromUser && fromUser.name == $this.user.name) {
-                        $this.notify(response.msg, response.fromName, 'private', 5000);
+                    if (fromUser && fromUser.name == $app.user.name) {
+                        $app.notify(response.msg, response.fromName, 'private', 5000);
                         toWho = toUser.name;
                     }
 
@@ -50,8 +51,8 @@ define(function () {
                 var found = response.msg.match(/приглашает вас в приват\. #(\d+)# предложение/ig);
 
                 if (found) {
-                    var userName = $this.getUserInfoById(found[1]);
-                    $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $this.user.name, 'private', 30000);
+                    var userName = $app.getUserInfoById(found[1]);
+                    $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $app.user.name, 'private', 30000);
                     response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
                 }
 
@@ -63,14 +64,14 @@ define(function () {
                 msgCSStype = 'system';
             }
 
-            if ($this.msgCount > $this.bufferSize) {
-                var $line = $this.domElems.chat.find('div').first();
+            if ($app.msgCount > $app.bufferSize) {
+                var $line = $app.domElems.chat.find('div').first();
                 $line.unbind().remove();
             }
 
-            $this.addLog(msg, msgCSStype);
-            $this.msgCount++;
-            $this.chatLastFrom = response.fromName;
+            $app.addLog(msg, msgCSStype);
+            $app.msgCount++;
+            $app.chatLastFrom = response.fromName;
 
             this.notify(response, fromUser);
             this.bindClicks();

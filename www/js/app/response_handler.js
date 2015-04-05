@@ -45,7 +45,7 @@ define(function () {
                         if (guest.banned) {
                             guestHMTL += '<a class="btn btn-default unban" title="Разбан"><span class="glyphicon glyphicon-eye-open"></span></a>';
                         } else if (guest.user_id != $this.user.id) {
-                            guestHMTL += '<a class="btn btn-default invite" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
+                            guestHMTL += '<a class="btn btn-default private" title="Пригласить в приват"><span class="glyphicon glyphicon-glass"></span></a>';
                             guestHMTL += '<a class="btn btn-default ban" title="Игнор"><span class="glyphicon glyphicon-eye-close"></span></a>';
                         }
 
@@ -91,6 +91,11 @@ define(function () {
                         }
                         $this.send(command);
                         $this.returnToChat();
+                    });
+
+                    $this.domElems.guestList.find('.private').click(function () {
+                        var userId = $(this).parent().data('id');
+                        $this.togglePrivate(userId);
                     });
 
                     $this.domElems.address.find('option[value=' + $this.domElems.address.data('id') + ']').attr('selected', 'selected');
@@ -181,7 +186,6 @@ define(function () {
 
             var handleDualChat = function () {
                 if (json.dualChat == 'match') {
-                    $this.notify('Найден ваш собеседник!', 'Поздоровайтесь :)', 'private');
                     $this.domElems.menuDualize.hide();
                     $this.domElems.menuDualizeStop.hide();
                     $this.domElems.menuExit.parent().attr('style', '');
