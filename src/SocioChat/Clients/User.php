@@ -42,7 +42,6 @@ class User implements ConnectionInterface
     public function __construct(ConnectionInterface $client)
     {
         $this->connection = $client;
-        ChannelsCollection::get()->createChannel(1);
     }
 
     public function send($data)

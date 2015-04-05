@@ -371,7 +371,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .navbar-left .space {
-    padding: 10px;
+    padding: 10px 2px;
     line-height: 30px;
 }
 

@@ -8,7 +8,7 @@ use Core\TSingleton;
 
 class PendingPrivates
 {
-    use \Core\TSingleton;
+    use TSingleton;
 
     const TTL = 60;
     private $queue = [];

@@ -10,23 +10,11 @@ use Core\TSingleton;
 
 class ChannelsCollection
 {
-    use \Core\TSingleton;
+    use TSingleton;
     /**
      * @var Channel[]
      */
     private $channels;
-
-    /**
-     * @param string $channelId
-     * @return $this
-     */
-    public function createChannel($channelId)
-    {
-        if (!isset($this->channels[$channelId])) {
-            $this->channels[$channelId] = new Channel($channelId);
-        }
-        return $this;
-    }
 
     public function addChannel(Channel $channel)
     {

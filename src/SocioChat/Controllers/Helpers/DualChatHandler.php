@@ -3,6 +3,7 @@
 namespace SocioChat\Controllers\Helpers;
 
 use SocioChat\Application\Chain\ChainContainer;
+use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingDuals;
 use SocioChat\Clients\User;
@@ -42,7 +43,10 @@ class DualChatHandler
             $oldChatId = $user->getChannelId();
             $newChatRoomId = uniqid('_', 1);
 
-            ChannelsCollection::get()->createChannel($newChatRoomId);
+	        $channel = new Channel($newChatRoomId, 'Приват_' . $newChatRoomId);
+	        $channel->setOwnerId($user->getId());
+	        ChannelsCollection::get()->addChannel($channel);
+
             $dualUser->setChannelId($newChatRoomId);
             $dualUser->save();
 

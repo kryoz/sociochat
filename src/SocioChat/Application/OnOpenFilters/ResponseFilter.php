@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat\Application\OnOpenFilters;
 
+use SocioChat\Clients\ChannelsCollection;
 use SocioChat\DAO\OnlineDAO;
 use SocioChat\DI;
 use SocioChat\Application\Chain\ChainContainer;
@@ -103,8 +104,17 @@ class ResponseFilter implements ChainInterface
     {
         ChannelNotifier::uploadHistory($user);
 
-        if (file_exists(ROOT . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'motd.txt') && !$user->getLastMsgId()) {
-            $motd = file_get_contents(ROOT . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'motd.txt');
+	    $ds = DIRECTORY_SEPARATOR;
+        if (file_exists(ROOT . $ds . 'www' . $ds . 'motd.txt') && !$user->getLastMsgId()) {
+	        $motd = file_get_contents(ROOT . $ds . 'www' . $ds . 'motd.txt');
+	        $motd .= "<br>Доступны каналы:<br>";
+
+	        foreach (ChannelsCollection::get()->getChannels() as $channel) {
+		        if ($channel->isPrivate()) {
+			        continue;
+		        }
+		        $motd .= '('.DI::get()->getUsers()->getClientsCount($channel->getId()).') '.$channel->getName().'<br>';
+			}
 
             $client = (new UserCollection())
                 ->attach($user);

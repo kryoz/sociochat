@@ -259,7 +259,9 @@ define(function () {
                 $channels.empty();
 
                 for (var channelId in json.channels) {
-                    var item = '<li><a href="#" data-id="' + channelId + '">' + json.channels[channelId].name + ' [' + json.channels[channelId].usersCount + ']';
+                    var item = '<li><a href="#" data-id="' + channelId + '">';
+                    item += json.channels[channelId].name + ' [' + json.channels[channelId].usersCount + ']';
+
                     if (channelId == json.chatId) {
                         item += ' <span class="glyphicon glyphicon-ok-sign"></span>';
                     }
@@ -269,9 +271,13 @@ define(function () {
                 }
 
                 $this.currentChannel = json.chatId;
-                $('#channel-name').text(json.channels[$this.currentChannel].name);
+                var channelName = json.channels[$this.currentChannel].name;
+                if (channelName.length > 17) {
+                    channelName = channelName.substring(0, 15)+'...';
+                }
+                $('#channel-name').text(channelName);
 
-                $channels.find('li a').click(function (e) {
+                $channels.find('li a').click(function () {
                     var channelId = $(this).data('id');
 
                     if (channelId != $this.currentChannel) {

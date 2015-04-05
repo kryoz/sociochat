@@ -3,6 +3,7 @@
 namespace SocioChat\Controllers\Helpers;
 
 use SocioChat\Application\Chain\ChainContainer;
+use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\PendingPrivates;
 use SocioChat\Clients\User;
@@ -49,7 +50,10 @@ class ChannelHandler
             $desiredUser->setChannelId($newChatRoomId);
             $desiredUser->save();
 
-            ChannelsCollection::get()->createChannel($newChatRoomId);
+	        $channel = new Channel($newChatRoomId, 'Приват_' . $newChatRoomId);
+	        $channel->setOwnerId($user->getId());
+	        ChannelsCollection::get()->addChannel($channel);
+
             $user->setChannelId($newChatRoomId);
             $user->save();
 

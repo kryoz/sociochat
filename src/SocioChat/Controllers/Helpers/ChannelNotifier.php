@@ -100,6 +100,7 @@ class ChannelNotifier
 
         if (!$channel) {
             $channel = new Channel($user->getChannelId(), 'Приват_' . $user->getChannelId());
+	        $channel->setOwnerId($user->getId());
             ChannelsCollection::get()->addChannel($channel);
         }
         $log = $channel->getHistory($user->getLastMsgId());
