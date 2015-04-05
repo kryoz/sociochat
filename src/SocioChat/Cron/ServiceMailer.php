@@ -45,7 +45,7 @@ class ServiceMailer implements CronService
 
 	    /** @var MailQueueDAO $message */
 	    foreach (MailQueueDAO::create()->getAllList() as $message) {
-		    echo "Sending message to {$message->getEmail()}";
+		    echo "Sending message to {$message->getEmail()}\n";
 	        $mail->send($message->getEmail(), $message->getTopic(), $message->getMessage());
 		    $message->dropById($message->getId());
         }

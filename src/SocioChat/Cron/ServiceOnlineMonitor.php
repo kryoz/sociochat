@@ -46,7 +46,6 @@ class ServiceOnlineMonitor implements CronService
 
     public function run()
     {
-		$message = MailQueueDAO::create();
 	    $online = OnlineDAO::create()->getOnlineCount();
 	    $config = DI::get()->getConfig();
 	    $timeOut = $config->onlineMonitoringTimeout;
@@ -67,10 +66,11 @@ class ServiceOnlineMonitor implements CronService
 		    if ($online >= $limit) {
 			    $user = UserDAO::create()->getById($props->getUserId());
 
-			    $msg = "<h2>Достижение заданного онлайна в СоциоЧате</h2>
+			    $msg = "<h2>Достижение заданного онлайна в SocioChat.Me</h2>
 <p>Вы получили данное письмо, потому что пожелали уведомить вас, когда в чате будет более $limit человек.</p>
 <p><a href=\"" . $config->domain->protocol . $config->domain->web . "\">Войдите в чат</a> и присоединяйтесь к общению!</p>";
 
+			    $message = MailQueueDAO::create();
 			    $message
 				    ->setEmail($user->getEmail())
 				    ->setTopic('Sociochat.me - Заходите к нам!')
@@ -79,8 +79,6 @@ class ServiceOnlineMonitor implements CronService
 
 			    $props->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
 			    $props->save(false);
-
-			    echo "Sending online-limit-reached ($online >= $limit) message to {$message->getEmail()}";
 		    }
         }
     }

@@ -229,7 +229,7 @@ class PropertiesDAO extends DAOBase
 
 	public function getLineBreakType()
 	{
-		return isset($this->getOptions()[self::LINE_BREAK_TYPE]) ? $this->getOptions()[self::LINE_BREAK_TYPE] : 0;
+		return isset($this->getOptions()[self::LINE_BREAK_TYPE]) ? $this->getOptions()[self::LINE_BREAK_TYPE] : 1;
 	}
 
 	public function getOnlineNotificationLimit()

@@ -19,7 +19,7 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . "header.php";
             <div class="collapse navbar-collapse">
                 <ul role="navigation" class="nav navbar-nav">
                     <li>
-                        <a href="http://vk.com/topic-66015624_29370149" target="_blank" class="tip"
+                        <a href="https://vk.com/topic-66015624_29370149" target="_blank" class="tip"
                            title="Ответы на частые вопросы"><span class="glyphicon glyphicon-question-sign"></span> ЧаВо</a>
                     </li>
                 </ul>

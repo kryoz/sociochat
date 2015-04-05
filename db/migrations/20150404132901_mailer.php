@@ -11,7 +11,7 @@ class Mailer extends AbstractMigration
 	    $table
 		    ->addColumn('email', 'string', ['limit' => 50])
 		    ->addColumn('topic', 'string', ['limit' => 100])
-		    ->addColumn('message', 'string')
+		    ->addColumn('message', 'string', ['limit' => 8192])
 		    ->addColumn('date_register', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
 		    ->save();
     }

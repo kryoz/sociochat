@@ -18,7 +18,7 @@ $config = $container->get('config');
 
 session_start();
 
-$email = isset($_POST['email']) ? trim($_POST['email']) : null;
+$email = isset($_REQUEST['email']) ? trim($_REQUEST['email']) : null;
 $token = isset($_POST['token']) ? $_POST['token'] : null;
 $sessionToken = isset($_SESSION['token']) ? $_SESSION['token'] : null;
 

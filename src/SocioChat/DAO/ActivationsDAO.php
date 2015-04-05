@@ -3,6 +3,7 @@
 namespace SocioChat\DAO;
 
 use Core\DAO\DAOBase;
+use Core\Utils\DbQueryHelper;
 
 class ActivationsDAO extends DAOBase
 {
@@ -93,7 +94,13 @@ class ActivationsDAO extends DAOBase
 
     public function dropUsedActivations()
     {
-        return $this->db->exec("DELETE FROM {$this->dbTable} WHERE ".self::USED." = :used", ['used' => 'true']);
+        return $this->db->exec(
+	        "DELETE FROM {$this->dbTable} WHERE ".self::USED." = :used OR ".self::TIMESTAMP." < :threshold",
+	        [
+		        'used' => 'true',
+		        'threshold' => DbQueryHelper::timestamp2date(time() - 3600*2)
+	        ]
+        );
     }
 
     protected function getForeignProperties()
