@@ -69,7 +69,7 @@ class ServiceOnlineMonitor implements CronService
 			    $list = '';
 			    foreach ($online as $item) {
 				    $guest = PropertiesDAO::create()->getByUserId($item->getUserId());
-				    $list = '<li>'.$guest->getName().'</li>';
+				    $list .= '<li>'.$guest->getName().'</li>';
 			    }
 
 			    $msg = "<h2>Достижение заданного онлайна в SocioChat.Me</h2>
