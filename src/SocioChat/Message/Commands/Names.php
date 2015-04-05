@@ -5,6 +5,7 @@ namespace SocioChat\Message\Commands;
 use SocioChat\Clients\User;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\NameChangeDAO;
+use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DI;
 
 class Names implements TextCommand
@@ -25,14 +26,13 @@ class Names implements TextCommand
 		$request = explode(' ', $args, 1);
 
 		$name = $request[0];
-		$users = DI::get()->getUsers();
 
-		if (!$targetUser = $users->getClientByName($name)) {
-			RespondError::make($user, ['userId' => "$name not found"]);
+		if (!$targetUser = PropertiesDAO::create()->getByUserName($name)) {
+			RespondError::make($user, ['name' => "$name не найден"]);
 			return;
 		}
 
-		$list = NameChangeDAO::create()->getHistoryByUserId($targetUser->getId());
+		$list = NameChangeDAO::create()->getHistoryByUserId($targetUser->getUserId());
 
 		$html = '<table class="table table-striped">';
 

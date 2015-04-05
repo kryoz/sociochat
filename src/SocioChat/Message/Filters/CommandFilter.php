@@ -7,7 +7,7 @@ use SocioChat\Message\Commands\Kick;
 use SocioChat\Message\Commands\Mail;
 use SocioChat\Message\Commands\Me;
 use SocioChat\Message\Commands\Names;
-use SocioChat\Message\Commands\ReloadConfig;
+use SocioChat\Message\Commands\Sudo;
 use SocioChat\Message\Commands\Sync;
 use SocioChat\Message\Commands\TextCommand;
 
@@ -20,7 +20,7 @@ class CommandFilter implements ChainInterface
         'me' => Me::class,
         'mail' => Mail::class,
 	    'sync' => Sync::class,
-	    'reloadconfig' => ReloadConfig::class,
+	    'sudo' => Sudo::class,
     ];
 
     public function handleRequest(Chain $chain)
