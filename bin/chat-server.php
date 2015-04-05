@@ -1,5 +1,6 @@
 <?php
 
+use Core\Form\Form;
 use Monolog\Logger;
 use SocioChat\Application\Chat;
 use Ratchet\Http\HttpServer;
@@ -8,12 +9,13 @@ use Ratchet\WebSocket\WsServer;
 use React\Socket\Server;
 use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
+use SocioChat\Clients\User;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 
 $setupErrorHandler = 1;
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.php';
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 $config = $container->get('config');
@@ -55,8 +57,30 @@ $server = new IoServer(
 $logger->info("Starting chat server daemon on " . $config->daemon->host . ":" . $config->daemon->port, ['CHAT-SERVER']);
 
 $channels = ChannelsCollection::get()
-    ->addChannel(new Channel(1, 'Гостевая', false))
-    ->addChannel(new Channel(2, 'Закрытый клуб', false));
+    ->addChannel(
+	    (new Channel(1, 'Гостевая', false))->setOnJoinRule(function (Form $form, User $user) {
+		    return true;
+	    })
+    )
+	->addChannel(
+		(new Channel(2, 'Храм просветленных', false))->setOnJoinRule(function (Form $form, User $user) {
+			if ($user->getProperties()->getKarma() <= 1) {
+				$form->markWrong('channelId', 'Вход разрешён только пользователям с положительной кармой!');
+				return false;
+			}
+			return true;
+		})
+	)
+    ->addChannel(
+	    (new Channel(3, 'Закрытый клуб', false))->setOnJoinRule(function (Form $form, User $user) {
+		    if (!$user->isRegistered()) {
+			    $form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
+			    return false;
+		    }
+
+		    return true;
+        })
+    );
 
 include_once 'dumper.php';
 include_once 'msgsaver.php';
