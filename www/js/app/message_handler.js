@@ -35,7 +35,6 @@ define(function () {
                     var toWho = 'вас';
 
                     if (fromUser && fromUser.name == $app.user.name) {
-                        $app.notify(response.msg, response.fromName, 'private', 5000);
                         toWho = toUser.name;
                     }
 
