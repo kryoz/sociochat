@@ -18,6 +18,13 @@ class PropertiesDAO extends DAOBase
     const AVATAR = 'avatar';
     const CITY = 'city';
     const BIRTH = 'birth';
+	const MESSAGES_COUNT = 'messages_count';
+	const KARMA = 'karma';
+	const WORDS_COUNT = 'words_count';
+	const ONLINE_TIME = 'online_time';
+	const MUSIC_COUNT = 'music_posts';
+	const RUDE_COUNT = 'rude_count';
+	const IS_SUBSCRIBED = 'is_subscribed';
 
     const CENSOR = 'censor';
 	const LINE_BREAK_TYPE = 'line_break_type';
@@ -26,14 +33,11 @@ class PropertiesDAO extends DAOBase
 	const ONLINE_NOTIFICATION = 'online_limit';
 	const ONLINE_NOTIFICATION_LAST = 'online_notify_last';
 
-	const MESSAGES_COUNT = 'messages_count';
-	const KARMA = 'karma';
-	const WORDS_COUNT = 'words_count';
-	const ONLINE_TIME = 'online_time';
-	const MUSIC_COUNT = 'music_posts';
-	const RUDE_COUNT = 'rude_count';
-
 	private $options;
+
+	protected $types = [
+		self::IS_SUBSCRIBED => \PDO::PARAM_BOOL,
+	];
 
     public function __construct()
     {
@@ -53,6 +57,7 @@ class PropertiesDAO extends DAOBase
 	            self::ONLINE_TIME,
 	            self::MUSIC_COUNT,
 	            self::RUDE_COUNT,
+	            self::IS_SUBSCRIBED,
             ]
         );
 
@@ -318,6 +323,17 @@ class PropertiesDAO extends DAOBase
 	public function getKarma()
 	{
 		return $this[self::KARMA];
+	}
+
+	public function hasSubscription()
+	{
+		return $this[self::IS_SUBSCRIBED];
+	}
+
+	public function setSubscription($subscription)
+	{
+		$this[self::IS_SUBSCRIBED] = $subscription;
+		return $this;
 	}
 
 	public function dropByUserId($id)

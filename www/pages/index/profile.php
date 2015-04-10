@@ -49,11 +49,14 @@ if (!defined('ROOT')) {
         </div>
         <div class="row btn-vert-block form-group">
             <div class="col-md-12 btn-vert-block">
-				<div class="checkbox">
-	                <label>
+	            <div class="well well-sm">
+	                <label class="checkbox-inline">
 	                    <input type="checkbox" id="profile-censor"/> <?= $lang->getPhrase('profile.Censor') ?>
 	                </label>
-				</div>
+		            <label class="checkbox-inline">
+			            <input type="checkbox" id="profile-subscription"/> <?= $lang->getPhrase('profile.Subscription') ?>
+		            </label>
+	            </div>
             </div>
         </div>
         <div class="row btn-vert-block form-group">

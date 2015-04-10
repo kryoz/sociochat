@@ -164,6 +164,10 @@ define(function () {
                     $this.domElems.censor.prop('checked', props.censor);
                 }
 
+                if (props.isSubscribed != undefined) {
+                    $this.domElems.subscription.prop('checked', props.isSubscribed);
+                }
+
                 if (props.notifyVisual != undefined) {
                     $this.domElems.notifyVisual.prop('checked', props.notifyVisual);
                     $this.user.notifyVisual = props.notifyVisual;

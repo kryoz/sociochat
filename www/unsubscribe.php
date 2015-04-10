@@ -74,13 +74,15 @@ if (strtotime($activation->getTimestamp()) + $config->activationTTL < time()) {
     exit;
 }
 
-
 $user = UserDAO::create()->getByEmail($email);
-$user->dropById($user->getId());
+$props = \SocioChat\DAO\PropertiesDAO::create()->getByUserId($user->getId());
+
+$props->setSubscription(false);
+$props->save(false);
 
 $activation->setIsUsed(true);
 $activation->save();
 
 $heading = 'Готово!';
-$message = 'Ваша учётная запись удалена. Прощайте!';
+$message = 'Ваша учётная запись удалена из рассылки!';
 require_once "pages/common_page.php";

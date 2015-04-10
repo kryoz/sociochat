@@ -110,7 +110,8 @@ class SessionFilter implements ChainInterface
                 ->setWordsCount(0)
                 ->setRudeCount(0)
                 ->setKarma(0)
-                ->setMessagesCount(0);
+                ->setMessagesCount(0)
+                ->setSubscription(true);
 
             try {
                 $properties->save();

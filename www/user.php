@@ -36,7 +36,7 @@ if (!$session->getUserId()) {
 }
 $owner = \SocioChat\DAO\UserDAO::create()->getById($session->getUserId());
 $user = \SocioChat\DAO\UserDAO::create()->getById($userId);
-if (empty($user)) {
+if (!$user->getId()) {
     http_response_code(400);
     return json_encode(['error' => 'No user found']);
 }

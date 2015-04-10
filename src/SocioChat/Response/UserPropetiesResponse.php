@@ -24,6 +24,7 @@ class UserPropetiesResponse extends Response
 	protected $notifySound;
 	protected $lineBreakType;
 	protected $onlineNotifyLimit;
+	protected $isSubscribed;
 
     public function setName($name)
     {
@@ -123,6 +124,12 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+	private function setSubscription($hasSubscription)
+	{
+		$this->isSubscribed = $hasSubscription;
+		return $this;
+	}
+
     public function setUserProps(User $user)
     {
         $properties = $user->getProperties();
@@ -142,7 +149,8 @@ class UserPropetiesResponse extends Response
 	        ->setNotifyVisual($properties->hasNotifyVisual())
             ->setNotifySound($properties->hasNotifySound())
             ->setLineBreakType($properties->getLineBreakType())
-            ->setOnlineNotifyLimit($properties->getOnlineNotificationLimit());
+            ->setOnlineNotifyLimit($properties->getOnlineNotificationLimit())
+	        ->setSubscription($properties->hasSubscription());
 
         return $this;
     }

@@ -129,7 +129,9 @@ class PropertiesController extends ControllerBase
 	            ->addRule(PropertiesDAO::NOTIFY_VISUAL, Rules::notNull(), $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::NOTIFY_SOUND, Rules::notNull(), $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::LINE_BREAK_TYPE, Rules::notNull(), $lang->getPhrase('InvalidField'))
-	            ->addRule(PropertiesDAO::ONLINE_NOTIFICATION, $onlineLimitRule, $lang->getPhrase('InvalidField'));
+	            ->addRule(PropertiesDAO::ONLINE_NOTIFICATION, $onlineLimitRule, $lang->getPhrase('InvalidField'))
+	            ->addRule(PropertiesDAO::IS_SUBSCRIBED, Rules::notNull(), $lang->getPhrase('InvalidField'))
+            ;
         } catch (WrongRuleNameException $e) {
             RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty') . ' ' . $e->getMessage()]);
             return;
@@ -368,6 +370,7 @@ class PropertiesController extends ControllerBase
             ->setSex(SexEnum::create($request[PropertiesDAO::SEX]))
             ->setCity($request[PropertiesDAO::CITY])
             ->setBirthday($request[PropertiesDAO::BIRTH])
+	        ->setSubscription($request[PropertiesDAO::IS_SUBSCRIBED])
             ->setOptions($options);
 
         $properties->save(false);
