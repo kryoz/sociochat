@@ -279,7 +279,7 @@ class User implements ConnectionInterface
 
             $this->userDAO->save();
         } catch (\PDOException $e) {
-            DI::get()->getLogger()->warn("User onSave PDO Exception: " . print_r($e, 1), [__CLASS__]);
+            DI::get()->getLogger()->alert("User->save() PDO Exception: " . $e->getMessage(), [__CLASS__]);
         }
     }
 
