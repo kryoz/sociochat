@@ -60,6 +60,7 @@ $response = [
     'avatar' => $props->getAvatarImg() ? $avatarDir.$props->getAvatarImg() : null,
     'tim' => $props->getTim()->getName(),
 	'sex' => $props->getSex()->getName(),
+	'city' => $props->getCity(),
 	'birth' => $props->getAge() ?: $lang->getPhrase('NotSpecified'),
 	'note' => $note ?: '',
 	'karma' => $props->getKarma(),

@@ -35,6 +35,10 @@ if (!defined('ROOT')) {
 				    <td class="sex"></td>
 			    </tr>
 			    <tr>
+				    <td><?= $lang->getPhrase('profile.City') ?></td>
+				    <td class="city"></td>
+			    </tr>
+			    <tr>
 				    <td><?= $lang->getPhrase('profile.Birth') ?></td>
 				    <td class="birth"></td>
 			    </tr>
