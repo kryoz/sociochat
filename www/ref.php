@@ -1,10 +1,8 @@
 <?php
 
-use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;
-use SocioChat\Message\Lang;
 
 require_once '../config.php';
 $container = DI::get()->container();
@@ -24,16 +22,17 @@ if (!$user->getId()) {
 	return;
 }
 
-/** @var SessionDAO $session */
-$session = $container->get('session')->read($_COOKIE['token']);
-if ($session->getUserId()) {
-	header('Location: '.$config->domain->protocol.$config->domain->web, true, 302);
-	return;
+$token = isset($_COOKIE['token']) ? $_COOKIE['token'] : null;
+if ($token) {
+	/** @var SessionDAO $session */
+	$session = $container->get('session')->read($token);
+	if ($session->getUserId()) {
+		header('Location: '.$config->domain->protocol.$config->domain->web, true, 302);
+		return;
+	}
 }
 
-$props = $user->getPropeties();
-$props->setKarma($props->getKarma()+1);
-$props->save(false);
+setcookie('refUserId', $user->getId(), time()+180);
 
 header('Location: '.$config->domain->protocol.$config->domain->web, true, 302);
 return;

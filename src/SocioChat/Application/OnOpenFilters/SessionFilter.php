@@ -2,6 +2,8 @@
 namespace SocioChat\Application\OnOpenFilters;
 
 use Core\Utils\DbQueryHelper;
+use Guzzle\Http\Message\Request;
+use SocioChat\DAO\ReferralDAO;
 use SocioChat\DAO\TmpSessionDAO;
 use SocioChat\DI;
 use Monolog\Logger;
@@ -30,7 +32,7 @@ class SessionFilter implements ChainInterface
         /* @var $logger Logger */
         $clients = DI::get()->getUsers();
         $socketRequest = $newUserWrapper->getWSRequest();
-        /* @var $socketRequest \Guzzle\Http\Message\Request */
+        /* @var $socketRequest Request */
 
         $langCode = $socketRequest->getCookie('lang') ?: 'ru';
         $lang = $container->get('lang')->setLangByCode($langCode);
@@ -62,7 +64,7 @@ class SessionFilter implements ChainInterface
                 if (!$tmpSession->getId()) {
                     throw new InvalidSessionException('Wrong token ' . $token);
                 }
-                $tmpSession->dropById($tmpSession->getId());
+	            $tmpSession->dropById($tmpSession->getId());
                 $session = SessionDAO::create()->setSessionId($token);
             }
 
@@ -77,50 +79,12 @@ class SessionFilter implements ChainInterface
             return false;
         }
 
-
         if ($session->getUserId() != 0) {
             /** @var User $user */
             $user = $this->handleKnownUser($session, $clients, $logger, $newUserWrapper, $lang);
             $logger->info('Handled known user_id = ' . $user->getId());
         } else {
-            $user = UserDAO::create()
-                ->setChatId(1)
-                ->setDateRegister(DbQueryHelper::timestamp2date())
-                ->setRole(UserRoleEnum::USER);
-
-            $user->save();
-
-            $id = $user->getId();
-            $guestName = $lang->getPhrase('Guest') . $id;
-
-            if (PropertiesDAO::create()->getByUserName($guestName)->getName()) {
-                $guestName = $lang->getPhrase('Guest') . ' ' . $id;
-            }
-
-            $properties = $user->getPropeties();
-            $properties
-                ->setUserId($user->getId())
-                ->setName($guestName)
-                ->setSex(SexEnum::create(SexEnum::ANONYM))
-                ->setTim(TimEnum::create(TimEnum::ANY))
-                ->setBirthday(Rules::LOWEST_YEAR)
-                ->setOptions([PropertiesDAO::CENSOR => true])
-                ->setOnlineCount(0)
-                ->setMusicCount(0)
-                ->setWordsCount(0)
-                ->setRudeCount(0)
-                ->setKarma(0)
-                ->setMessagesCount(0)
-                ->setSubscription(true);
-
-            try {
-                $properties->save();
-            } catch (\PDOException $e) {
-                $logger->error("PDO Exception: " . $e->getTraceAsString(), [__CLASS__]);
-            }
-
-            $logger->info("Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}",
-                [__CLASS__]);
+	        $user = $this->createNewUser($lang, $logger, $newUserWrapper, $socketRequest);
         }
 
         //update access time
@@ -134,13 +98,13 @@ class SessionFilter implements ChainInterface
         $clients->attach($newUserWrapper);
     }
 
-    /**
-     * @param $sessionInfo
-     * @param $clients
-     * @param $logger
-     * @param $newUserWrapper
-     * @return $this
-     */
+	/**
+	 * @param $sessionInfo
+	 * @param UserCollection $clients
+	 * @param Logger $logger
+	 * @param User $newUserWrapper
+	 * @return $this
+	 */
     private function handleKnownUser($sessionInfo, UserCollection $clients, Logger $logger, User $newUserWrapper)
     {
         $user = UserDAO::create()->getById($sessionInfo['user_id']);
@@ -193,4 +157,73 @@ class SessionFilter implements ChainInterface
         }
         return $user;
     }
+
+	/**
+	 * @param Lang $lang
+	 * @param Logger $logger
+	 * @param User $newUserWrapper
+	 * @param Request $socketRequest
+	 * @return UserDAO
+	 */
+	private function createNewUser(Lang $lang, Logger $logger, User $newUserWrapper, Request $socketRequest)
+	{
+		$user = UserDAO::create()
+			->setChatId(1)
+			->setDateRegister(DbQueryHelper::timestamp2date())
+			->setRole(UserRoleEnum::USER);
+
+		try {
+			$user->save();
+		} catch (\PDOException $e) {
+			$logger->error("PDO Exception: " . $e->getTraceAsString(), [__CLASS__]);
+		}
+
+		$id = $user->getId();
+		$guestName = $lang->getPhrase('Guest') . $id;
+
+		if (PropertiesDAO::create()->getByUserName($guestName)->getName()) {
+			$guestName = $lang->getPhrase('Guest') . ' ' . $id;
+		}
+
+		$properties = $user->getPropeties();
+		$properties
+			->setUserId($user->getId())
+			->setName($guestName)
+			->setSex(SexEnum::create(SexEnum::ANONYM))
+			->setTim(TimEnum::create(TimEnum::ANY))
+			->setBirthday(Rules::LOWEST_YEAR)
+			->setOptions([PropertiesDAO::CENSOR => true])
+			->setOnlineCount(0)
+			->setMusicCount(0)
+			->setWordsCount(0)
+			->setRudeCount(0)
+			->setKarma(0)
+			->setMessagesCount(0)
+			->setSubscription(true);
+
+		try {
+			$properties->save();
+		} catch (\PDOException $e) {
+			$logger->error("PDO Exception: " . $e->getTraceAsString(), [__CLASS__]);
+		}
+
+		if ($refUserId = $socketRequest->getCookie('refUserId')) {
+			$ref = ReferralDAO::create()->getByUserId($user->getId(), $refUserId);
+			if (!$ref) {
+				$ref = ReferralDAO::create()
+					->setUserId($user->getId())
+					->setRefUserId($refUserId)
+					->setDateRegister(DbQueryHelper::timestamp2date());
+				$ref->save();
+
+				$logger->info('Found referral userId '.$refUserId.' for guest userId '.$user->getId());
+			}
+		}
+
+		$logger->info(
+			"Created new user with id = $id for connectionId = {$newUserWrapper->getConnectionId()}",
+			[__CLASS__]
+		);
+		return $user;
+	}
 }

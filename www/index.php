@@ -160,6 +160,7 @@ require_once "pages/header.php";
         return {
             wsDomain: '<?=$config->domain->ws?>',
             webDomain: '<?=$config->domain->web?>',
+	        protocol: '<?=$config->domain->protocol?>',
 	        maxMsgLength: <?=$maxMsgLength?>
         };
     });

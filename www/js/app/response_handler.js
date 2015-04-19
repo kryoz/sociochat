@@ -114,6 +114,7 @@ define(function () {
 
                 if (props.id) {
                     $this.user.id = props.id;
+                    $this.domElems.refLink.val($this.protocol+$this.domain+'/ref.php?id='+props.id);
                 }
 
                 if (props.name) {

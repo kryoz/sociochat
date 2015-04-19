@@ -9,10 +9,16 @@ if (!defined('ROOT')) {
     </div>
     <div class="panel-body">
 	    <div class="notifications"></div>
-        <p><span class="glyphicon glyphicon-glass"></span> - Пригласить в приват</p>
+	    <p><?= $lang->getPhrase('who.ReferralTip')?></p>
+	    <div class="input-group input-group-sm">
+		    <span class="input-group-addon" id="sizing-addon3"><span class="glyphicon glyphicon-link"></span></span>
+		    <input type="text" class="form-control" id="profile-ref-link" value="" readonly aria-describedby="sizing-addon3">
+	    </div>
+	    <br><br>
+        <p><span class="glyphicon glyphicon-glass"></span> - <?= $lang->getPhrase('who.InviteTip')?>;
 
-        <p><span class="glyphicon glyphicon-eye-close"></span> / <span class="glyphicon glyphicon-eye-open"></span> -
-            Игнор/убрать игнор</p>
+        <span class="glyphicon glyphicon-eye-close"></span> / <span class="glyphicon glyphicon-eye-open"></span> -
+	        <?= $lang->getPhrase('who.ToggleBanTip')?></p>
 
         <div class="table-responsive">
             <table class="table table-striped" id="guests">

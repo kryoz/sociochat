@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat\Controllers;
 
+use Core\Utils\DbQueryHelper;
 use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Application\Chat;
 use SocioChat\Application\OnOpenFilters\ResponseFilter;
@@ -8,11 +9,15 @@ use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\OnlineDAO;
+use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DAO\ReferralDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DAO\UserKarmaDAO;
 use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
 use Core\Form\WrongRuleNameException;
+use SocioChat\Message\Msg;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 use SocioChat\Response\UserPropetiesResponse;
@@ -120,11 +125,16 @@ class LoginController extends ControllerBase
         $email = $request['login'];
 
         $duplUser = UserDAO::create()->getByEmail($email);
+		$isSameUser = $duplUser->getId() == $user->getId();
 
-        if ($duplUser->getId() && $duplUser->getId() != $user->getId()) {
+        if (!$isSameUser) {
             RespondError::make($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
             return;
         }
+
+	    if (!$user->isRegistered()) {
+		    $this->checkReferral($user);
+	    }
 
         $userDAO = $user->getUserDAO();
         $userDAO
@@ -180,4 +190,61 @@ class LoginController extends ControllerBase
 		    ->setResponse($response)
 		    ->notify(false);
     }
+
+	private function checkReferral(User $user)
+	{
+		$ref = ReferralDAO::create()->getFirstRefByUserId($user->getId());
+		if (!$ref) {
+			return;
+		}
+
+		$users = DI::get()->getUsers();
+
+		if ($refUserOnline = $users->getClientById($ref->getRefUserId())) {
+			$refUser = $refUserOnline->getUserDAO();
+		} else {
+			$refUser = UserDAO::create()->getById($ref->getRefUserId());
+		}
+
+		if (!$refUser->getId()) {
+			return;
+		}
+
+		$mark = UserKarmaDAO::create()
+			->setUserId($refUser->getId())
+			->setEvaluator($user)
+			->setMark(5)
+			->setDateRegister(DbQueryHelper::timestamp2date());
+		$mark->save();
+
+		$props = $refUser->getPropeties();
+		$props->setKarma($props->getKarma()+5);
+
+		if ($refUserOnline) {
+			$refUserOnline->save();
+
+			$response = (new MessageResponse())
+				->setGuests($users->getUsersByChatId($refUserOnline->getChannelId()))
+				->setChannelId($refUserOnline->getChannelId())
+				->setTime(null);
+
+			$users
+				->setResponse($response)
+				->notify();
+
+			$response = (new MessageResponse())
+				->setMsg(MsgToken::create('profile.referralKarma'))
+				->setChannelId($refUserOnline->getChannelId())
+				->setTime(null);
+
+			(new UserCollection)
+				->attach($refUserOnline)
+				->setResponse($response)
+				->notify(false);
+		} else {
+			$props->save(false);
+		}
+
+		DI::get()->getLogger()->info('Added karma to referral userId '.$props->getUserId());
+	}
 }

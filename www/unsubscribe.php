@@ -81,7 +81,7 @@ $props->setSubscription(false);
 $props->save(false);
 
 $activation->setIsUsed(true);
-$activation->save();
+$activation->save(false);
 
 $heading = 'Готово!';
 $message = 'Ваша учётная запись удалена из рассылки!';

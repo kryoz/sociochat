@@ -3,6 +3,7 @@ define('app', function () {
         connection: null,
         hostUrl: null,
         domain: null,
+        protocol: null,
         maxMsgLength: null,
         token: null,
         isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
@@ -58,6 +59,7 @@ define('app', function () {
             lineBreakType: $('input[name=profile-linebreak]'),
             notifyVisual: $('#profile-notify-visual'),
             notifySound: $('#profile-notify-sound'),
+            refLink: $('#profile-ref-link'),
 
             loginName: $('#login-name'),
             loginPassword: $('#login-password'),
@@ -89,11 +91,12 @@ define('app', function () {
             onlineNotification: $('#profile-notify-online-limit')
         },
 
-        Init: function (hostUrl, domain, maxMsgLength) {
+        Init: function (hostUrl, domain, protocol, maxMsgLength) {
             var $this = this;
 
             this.hostUrl = hostUrl;
             this.domain = domain;
+            this.protocol = protocol;
             this.maxMsgLength = maxMsgLength;
 
             this.initSession(function () {
