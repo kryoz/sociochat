@@ -127,7 +127,7 @@ class LoginController extends ControllerBase
         $duplUser = UserDAO::create()->getByEmail($email);
 		$isSameUser = $duplUser->getId() == $user->getId();
 
-        if (!$isSameUser) {
+        if ($duplUser->getId() && !$isSameUser) {
             RespondError::make($user, ['email' => $user->getLang()->getPhrase('EmailAlreadyRegistered')]);
             return;
         }
