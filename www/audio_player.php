@@ -5,8 +5,8 @@ use SocioChat\DI;
 use SocioChat\DIBuilder;
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
-if (!(($_SERVER['REMOTE_ADDR'] == '37.139.20.229') || $isAjax)) {
-    die('only internal requests allowed');
+if (!(($_SERVER['REMOTE_ADDR'] == '::ffff:46.101.136.244') || $isAjax)) {
+    die('only internal requests allowed, got '.$_SERVER['REMOTE_ADDR']);
 }
 
 require_once '../config.php';
@@ -75,7 +75,7 @@ if (!$dao->getId()) {
     ];
 }
 
-$trackInfo['url'] = DI::get()->getConfig()->domain->protocol.'pleer.sociochat.me/' . str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
+$trackInfo['url'] = DI::get()->getConfig()->domain->protocol.'audio.sociochat.me/' . str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
 $trackInfo['track_id'] = $trackId;
 
 response(200, $trackInfo);

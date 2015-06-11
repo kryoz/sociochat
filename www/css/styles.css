@@ -376,10 +376,13 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 .navbar-default {
-    background-color: #ed9c28;
-    border-color: #b17f3a;
+    background-color: #4E71A0;
+    border-color: #2D5080;
 }
-
+.btn-warning {
+    background-color: #4E71A0;
+    border-color: #2D5080;
+}
 .navbar-default .navbar-brand {
     color: #ffffff;
 }
@@ -403,20 +406,20 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     color: #ffffff;
-    background-color: #b17f3a;
+    background-color: #2D5080;
 }
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     color: #ffffff;
-    background-color: #b17f3a;
+    background-color: #2D5080;
 }
 
 .navbar-default .navbar-toggle {
-    border-color: #b17f3a;
+    border-color: #2D5080;
 }
 
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-    background-color: #ed9c28;
+    background-color: #4E71A0;
 }
 
 .navbar-default .navbar-toggle .icon-bar {
@@ -461,7 +464,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 
     .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
         color: #ffffff;
-        background-color: #b17f3a;
+        background-color: #2D5080;
     }
 
     .chat-container {

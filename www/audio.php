@@ -42,7 +42,7 @@ $response = curl('http://api.pleer.com/resource.php',
 );
 
 if ($response['success'] == true) {
-    $url = DI::get()->getConfig()->domain->protocol.'pleer.sociochat.me/' . str_replace('http://', '', $response['url'] . '?track_id=' . $trackId);
+    $url = DI::get()->getConfig()->domain->protocol.'audio.sociochat.me/' . str_replace('http://', '', $response['url'] . '?track_id=' . $trackId);
 
     $dao = MusicDAO::create()->getByTrackId($trackId);
 
