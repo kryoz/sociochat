@@ -254,7 +254,6 @@ class PropertiesDAO extends DAOBase
 			self::ONLINE_NOTIFICATION_LAST => $time
 		]);
 
-		print_r($options);
 		$this->setOptions($options);
 		return $this;
 	}
