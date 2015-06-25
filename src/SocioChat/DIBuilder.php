@@ -92,7 +92,7 @@ class DIBuilder
     public static function setupDB(Container $container)
     {
         $container->add('db', DB::class, true)
-            ->withArgument('config');
+            ->withArguments(['config', true]);
     }
 
     /**
