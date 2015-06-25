@@ -113,9 +113,6 @@ class LoginController extends ControllerBase
         $responseFilter = new ResponseFilter();
         $responseFilter->sendNickname($user, $clients);
         $responseFilter->notifyChat($user, $clients);
-
-	    $onlineList = OnlineDAO::create();
-	    $onlineList->updateUserId($oldUserId, $userDAO->getId());
     }
 
     protected function processRegister(ChainContainer $chain)

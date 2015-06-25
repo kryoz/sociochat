@@ -2,6 +2,7 @@
 use SocioChat\Clients\Channel;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\DI;
+use SocioChat\Message\MsgContainer;
 
 $dumperCallback = function () use ($config) {
 	$logger = DI::get()->getLogger();

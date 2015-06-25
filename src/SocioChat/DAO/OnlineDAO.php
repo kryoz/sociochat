@@ -2,69 +2,98 @@
 
 namespace SocioChat\DAO;
 
-use Core\DAO\DAOBase;
+use Core\TSingleton;
+use Memcached;
+use SocioChat\DI;
 
-class OnlineDAO extends DAOBase
+class OnlineDAO
 {
-    const USER_ID = 'user_id';
+	use TSingleton;
+
+	const KEY = 'sociochat.online.';
+	/**
+	 * @var Memcached
+	 */
+	private $memcache;
 
     public function __construct()
     {
-        parent::__construct(
-            [
-                self::USER_ID,
-            ]
-        );
-
-        $this->dbTable = 'users_online';
+	    $this->memcache = DI::get()->getMemcache()->instance();
     }
 
-    public function getUserId()
-    {
-        return $this[self::USER_ID];
-    }
-
-	public function setUserId($userId)
+	public static function create()
 	{
-		$this[self::USER_ID] = $userId;
+		return static::get();
+	}
+
+    public function addOne($channelId, $userId)
+    {
+	    $key = self::KEY.'list'.$channelId;
+	    $list = $this->memcache->get($key);
+	    if (!$list = json_decode($list, 1)) {
+		    $list = [];
+	    }
+
+	    $list[$userId] = 1;
+	    $this->memcache->set($key, json_encode($list));
+
+	    return $this;
+    }
+
+	public function dropOne($channelId, $userId)
+	{
+		$key = self::KEY.'list'.$channelId;
+		$list = $this->memcache->get($key);
+		if (!$list = json_decode($list, 1)) {
+			return $this;
+		}
+
+		unset($list[$userId]);
+
+		if (count($list) == 0) {
+			$this->memcache->delete($key);
+			return $this;
+		}
+
+		$this->memcache->set($key, json_encode($list));
+
 		return $this;
 	}
 
-    public function getByUserId($id)
-    {
-        return $this->getByPropId(self::USER_ID, $id);
-    }
-
-	public function dropByUserId($userId)
+	public function setOnline($channelId, $count)
 	{
-		$this->db->exec("DELETE FROM {$this->dbTable} WHERE " . self::USER_ID . " = :id", ['id' => $userId]);
-	}
+		if (!$count) {
+			$this->memcache->delete(self::KEY.$channelId);
+		} else {
+			$this->memcache->set(self::KEY.$channelId, $count);
+		}
 
-	public function updateUserId($oldUserId, $newUserId)
-	{
-		$this->db->exec(
-			"UPDATE {$this->dbTable} SET ".self::USER_ID." = :newUserId WHERE "
-			. self::USER_ID . " = :oldUserId",
-			[
-				'oldUserId' => $oldUserId,
-				'newUserId' => $newUserId,
-			]
-		);
+		return $this;
 	}
 
 	/**
-	 * @return integer
+	 * @param int $channelId
+	 * @return int
 	 */
-	public function getOnlineCount()
+	public function getOnlineCount($channelId = 1)
 	{
-		$mark = $this->db->query("SELECT count(*) AS online FROM {$this->dbTable} ");
-
-		return count($mark) ? $mark[0]['online'] : 0;
+		return $this->memcache->get(self::KEY.$channelId);
 	}
 
-    protected function getForeignProperties()
-    {
-        return [];
-    }
+	/**
+	 * @param $channelId
+	 * @param $userId
+	 * @return bool
+	 */
+	public function isUserOnline($channelId, $userId)
+	{
+		$key = self::KEY.'list'.$channelId;
+		$list = $this->memcache->get($key);
+		if (!$list = json_decode($list, 1)) {
+			return false;
+		}
+
+		return isset($list[$userId]);
+	}
 }
 

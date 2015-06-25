@@ -46,10 +46,10 @@ class ServiceOnlineMonitor implements CronService
 
     public function run()
     {
-	    /** @var OnlineDAO[] $online */
-	    $online = OnlineDAO::create()->getAllList();
 	    $config = DI::get()->getConfig();
 	    $timeOut = $config->onlineMonitoringTimeout;
+	    // Let it be simple for a while
+	    $channelId = 1;
 
 	    /** @var PropertiesDAO $props */
 	    foreach (PropertiesDAO::create()->getRegisteredList() as $props) {
@@ -57,25 +57,21 @@ class ServiceOnlineMonitor implements CronService
 			    continue;
 		    }
 
-		    if (OnlineDAO::create()->getByUserId($props->getUserId())->getId()) {
+		    $online = OnlineDAO::create();
+		    if ($online->isUserOnline($channelId, $props->getUserId())) {
 			    continue;
 		    }
+		    $onlineCount = $online->getOnlineCount($channelId);
 
 		    if ((time() - $timeOut) < strtotime($props->getOnlineNotificationLast())) {
 			    continue;
 		    }
-		    if (count($online) >= $limit) {
+		    if ($onlineCount >= $limit) {
 			    $user = UserDAO::create()->getById($props->getUserId());
-			    $list = '';
-			    foreach ($online as $item) {
-				    $guest = PropertiesDAO::create()->getByUserId($item->getUserId());
-				    $list .= '<li>'.$guest->getName().'</li>';
-			    }
 
 			    $msg = "<h2>Достижение заданного онлайна в SocioChat.Me</h2>
 <p>Вы получили данное письмо, потому что пожелали уведомить вас, когда в чате будет более $limit человек.</p>
-<p>Сейчас общаются:</p>
-<ul>$list</ul>
+<p>Сейчас на основном канале общается $onlineCount человек</p>
 <p><a href=\"" . $config->domain->protocol . $config->domain->web . "\">Присоединяйтесь</a>!</p>";
 
 			    $message = MailQueueDAO::create();
