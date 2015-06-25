@@ -281,46 +281,42 @@ doesnotexist:-o-prefocus, #panel-chat {
     line-height: 1.3em;
 }
 
-@-webkit-keyframes fadeIn {
+@-webkit-keyframes burp {
     from {
         opacity: 0;
+        transform: scale(1.1, 1);
     }
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }
-
-@-moz-keyframes fadeIn {
+@-moz-keyframes burp {
     from {
         opacity: 0;
+        transform: scale(1.1, 1);
     }
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }
-
-@keyframes fadeIn {
+@keyframes burp {
     from {
         opacity: 0;
+        transform: scale(1.1, 1);
     }
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }
 
 #log > div:last-child {
-    opacity: 0;
-    -webkit-animation: fadeIn ease-in 1;
-    -moz-animation: fadeIn ease-in 1;
-    animation: fadeIn ease-in 1;
-
-    -webkit-animation-fill-mode: forwards;
-    -moz-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-
-    -webkit-animation-duration: 0.2s;
-    -moz-animation-duration: 0.2s;
-    animation-duration: 0.2s;
+    position: relative;
+    -webkit-animation: burp ease-out 0.4s;
+    -moz-animation: burp ease-out 0.4s;
+    animation: burp ease-out 0.4s;
 }
 
 #log .video {

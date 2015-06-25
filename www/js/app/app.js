@@ -329,6 +329,7 @@ define('app', function () {
                 var container = this.domElems.chat;
                 var height = container[0].scrollHeight;
                 container.scrollTop(height);
+                container.pageYOffset = height;
             }
         },
 
