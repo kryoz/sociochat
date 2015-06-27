@@ -4,13 +4,14 @@ namespace SocioChat\DAO;
 
 use Core\TSingleton;
 use Memcached;
+use SocioChat\Clients\User;
 use SocioChat\DI;
 
 class OnlineDAO
 {
 	use TSingleton;
 
-	const KEY = 'sociochat.online.';
+	const KEY = 'sociochat.online.list';
 	/**
 	 * @var Memcached
 	 */
@@ -26,29 +27,29 @@ class OnlineDAO
 		return static::get();
 	}
 
-    public function addOne($channelId, $userId)
+    public function addOne(User $user)
     {
-	    $key = self::KEY.'list'.$channelId;
+	    $key = self::KEY.$user->getChannelId();
 	    $list = $this->memcache->get($key);
 	    if (!$list = json_decode($list, 1)) {
 		    $list = [];
 	    }
 
-	    $list[$userId] = 1;
+	    $list[$user->getId()] = $user->getProperties()->getName();
 	    $this->memcache->set($key, json_encode($list));
 
 	    return $this;
     }
 
-	public function dropOne($channelId, $userId)
+	public function dropOne(User $user)
 	{
-		$key = self::KEY.'list'.$channelId;
+		$key = self::KEY.$user->getChannelId();
 		$list = $this->memcache->get($key);
 		if (!$list = json_decode($list, 1)) {
 			return $this;
 		}
 
-		unset($list[$userId]);
+		unset($list[$user->getId()]);
 
 		if (count($list) == 0) {
 			$this->memcache->delete($key);
@@ -60,15 +61,17 @@ class OnlineDAO
 		return $this;
 	}
 
-	public function setOnline($channelId, $count)
+	/**
+	 * @param int $channelId
+	 * @return array
+	 */
+	public function getOnlineList($channelId = 1)
 	{
-		if (!$count) {
-			$this->memcache->delete(self::KEY.$channelId);
-		} else {
-			$this->memcache->set(self::KEY.$channelId, $count);
+		$list = $this->memcache->get(self::KEY.$channelId);
+		if (!$list = json_decode($list, 1)) {
+			return [];
 		}
-
-		return $this;
+		return $list;
 	}
 
 	/**
@@ -77,7 +80,7 @@ class OnlineDAO
 	 */
 	public function getOnlineCount($channelId = 1)
 	{
-		return $this->memcache->get(self::KEY.$channelId);
+		return count($this->getOnlineList($channelId));
 	}
 
 	/**
@@ -87,7 +90,7 @@ class OnlineDAO
 	 */
 	public function isUserOnline($channelId, $userId)
 	{
-		$key = self::KEY.'list'.$channelId;
+		$key = self::KEY.$channelId;
 		$list = $this->memcache->get($key);
 		if (!$list = json_decode($list, 1)) {
 			return false;

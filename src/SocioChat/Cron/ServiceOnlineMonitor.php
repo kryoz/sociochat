@@ -68,10 +68,15 @@ class ServiceOnlineMonitor implements CronService
 		    }
 		    if ($onlineCount >= $limit) {
 			    $user = UserDAO::create()->getById($props->getUserId());
+			    $list = '';
+			    foreach ($online->getOnlineList($channelId) as $userId => $userName) {
+				    $list .= "<li>$userName</li>";
+			    }
 
 			    $msg = "<h2>Достижение заданного онлайна в SocioChat.Me</h2>
 <p>Вы получили данное письмо, потому что пожелали уведомить вас, когда в чате будет более $limit человек.</p>
 <p>Сейчас на основном канале общается $onlineCount человек</p>
+<ul>$list</ul>
 <p><a href=\"" . $config->domain->protocol . $config->domain->web . "\">Присоединяйтесь</a>!</p>";
 
 			    $message = MailQueueDAO::create();

@@ -31,11 +31,7 @@ class ResponseFilter implements ChainInterface
         $this->notifyChat($user, $users);
 
 	    $online = OnlineDAO::create();
-	    $online->setOnline(
-		    $user->getChannelId(),
-		    $users->getClientsCount($user->getChannelId())
-	    );
-	    $online->addOne($user->getChannelId(), $user->getId());
+	    $online->addOne($user);
     }
 
     /**

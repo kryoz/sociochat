@@ -84,11 +84,7 @@ class DetachFilter implements ChainInterface
 			$props->setOnlineCount(time() - $user->getLoginTime() + $props->getOnlineCount());
 
 			$online = OnlineDAO::create();
-			$online->setOnline(
-				$user->getChannelId(),
-				$clients->getClientsCount($user->getChannelId())
-			);
-			$online->dropOne($user->getChannelId(), $user->getId());
+			$online->dropOne($user);
 
 			$user->save();
 

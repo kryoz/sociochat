@@ -9,6 +9,7 @@ use SocioChat\Clients\UserCollection;
 use SocioChat\Controllers\Helpers\ChannelNotifier;
 use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\NameChangeDAO;
+use SocioChat\DAO\OnlineDAO;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserKarmaDAO;
 use SocioChat\DI;
@@ -374,6 +375,10 @@ class PropertiesController extends ControllerBase
             ->setOptions($options);
 
         $properties->save(false);
+
+	    $online = OnlineDAO::create();
+	    $online->dropOne($user);
+	    $online->addOne($user);
     }
 
     private function isExpired(NameChangeDAO $changeLog, Config $config)
