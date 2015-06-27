@@ -41,7 +41,8 @@ define(function () {
                     msg += '<div class="private"><b>[приватно для ' + toWho + ']</b> '
                 }
 
-                msg += this.parse(response.msg);
+                msg += '<div>'+this.parse(response.msg)+'</div>';
+                msg += '<div class="clearfix"></div>';
 
                 if (response.toName) {
                     msg += '</div>';
