@@ -41,40 +41,6 @@ class OnlineDAO
 		foreach ($users as $user) {
 			$list[$user->getId()] = $user->getProperties()->getName();
 		}
-		$this->memcache->set($key, json_encode($users));
-
-		return $this;
-	}
-
-    public function addOne(User $user)
-    {
-	    $key = self::KEY.$user->getChannelId();
-	    $list = $this->memcache->get($key);
-	    if (!$list = json_decode($list, 1)) {
-		    $list = [];
-	    }
-
-	    $list[$user->getId()] = $user->getProperties()->getName();
-	    $this->memcache->set($key, json_encode($list));
-
-	    return $this;
-    }
-
-	public function dropOne(User $user)
-	{
-		$key = self::KEY.$user->getChannelId();
-		$list = $this->memcache->get($key);
-		if (!$list = json_decode($list, 1)) {
-			return $this;
-		}
-
-		unset($list[$user->getId()]);
-
-		if (count($list) == 0) {
-			$this->memcache->delete($key);
-			return $this;
-		}
-
 		$this->memcache->set($key, json_encode($list));
 
 		return $this;
