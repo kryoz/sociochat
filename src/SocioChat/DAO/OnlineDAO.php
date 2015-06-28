@@ -27,6 +27,25 @@ class OnlineDAO
 		return static::get();
 	}
 
+	public function setOnlineList($channelId = 1)
+	{
+		$key = self::KEY.$channelId;
+		$users = DI::get()->getUsers()->getUsersByChatId($channelId);
+
+		if (count($users) == 0) {
+			$this->memcache->delete($key);
+			return $this;
+		}
+
+		$list = [];
+		foreach ($users as $user) {
+			$list[$user->getId()] = $user->getProperties()->getName();
+		}
+		$this->memcache->set($key, json_encode($users));
+
+		return $this;
+	}
+
     public function addOne(User $user)
     {
 	    $key = self::KEY.$user->getChannelId();

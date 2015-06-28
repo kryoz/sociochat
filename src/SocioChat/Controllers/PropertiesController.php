@@ -377,8 +377,7 @@ class PropertiesController extends ControllerBase
         $properties->save(false);
 
 	    $online = OnlineDAO::create();
-	    $online->dropOne($user);
-	    $online->addOne($user);
+	    $online->setOnlineList($user->getChannelId());
     }
 
     private function isExpired(NameChangeDAO $changeLog, Config $config)
