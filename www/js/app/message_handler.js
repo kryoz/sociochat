@@ -78,7 +78,17 @@ define(function () {
             this.bindClicks();
         },
         getAnimationType: function (user) {
-            return user.msgAnimationType == 1 ? 'simple' : 'left';
+            switch (user.msgAnimationType) {
+                case '1':
+                    return 'simple';
+                    break;
+                case '2':
+                    return 'left';
+                    break;
+                case '3':
+                default:
+                    return 'fadein';
+            }
         },
         notify: function (response, fromUser) {
             var $this = this.app;
@@ -112,7 +122,7 @@ define(function () {
                     if (c[i].nodeType == 1) return true;
                 }
                 return false;
-            }
+            };
 
             String.prototype.hashCode = function () {
                 var hash = 0, i, chr, len;
@@ -140,7 +150,9 @@ define(function () {
 
             var replaceURL = function (text) {
                 if (isHTML(text)) {
-                    return text;
+                    if ($(text).find('div').length != 0) {
+                        return text;
+                    }
                 }
                 var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
                 var url = exp.exec(text);

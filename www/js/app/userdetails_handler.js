@@ -24,7 +24,7 @@ define(function () {
                     profile.find('.about').text(response.about == null ? '' : response.about);
                     profile.find('.sex').text(response.sex);
                     profile.find('.tim').text(response.tim);
-                    profile.find('.city').text(response.city);
+                    profile.find('.city').text(response.city == null ? '' : response.city);
                     profile.find('.birth').text(response.birth);
                     profile.find('.note-data').text(response.note);
                     profile.find('.online-time').text(response.onlineTime);

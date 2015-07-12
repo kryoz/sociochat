@@ -342,10 +342,14 @@ doesnotexist:-o-prefocus, #panel-chat {
     animation: burp ease-out 0.4s;
 }
 
-#log > div.simple:last-child {
+#log > div.fadein:last-child {
     -webkit-animation: fade ease-out 0.4s;
     -moz-animation: fade ease-out 0.4s;
     animation: fade ease-out 0.4s;
+}
+
+#log > div.simple:last-child {
+
 }
 
 #log .video {
