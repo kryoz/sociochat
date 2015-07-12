@@ -122,6 +122,10 @@ define(function () {
                     $this.user.name = props.name;
                 }
 
+                if (props.about) {
+                    $this.domElems.about.val(props.about);
+                }
+
                 if (props.sex) {
                     $this.domElems.sex.val(props.sex);
                     $this.user.sex = props.sex == 2;
@@ -185,7 +189,12 @@ define(function () {
                 }
 
                 if (props.onlineNotifyLimit != undefined) {
-                    $this.domElems.onlineNotification.find('select option').filter('[value='+props.onlineNotifyLimit+']').attr('selected', 'selected');
+                    $this.domElems.onlineNotification.val(props.onlineNotifyLimit);
+                }
+
+                if (props.msgAnimationType != undefined) {
+                    $this.domElems.msgAnimationType.val(props.msgAnimationType);
+                    $this.user.msgAnimationType = props.msgAnimationType;
                 }
             };
 

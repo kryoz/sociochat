@@ -118,10 +118,16 @@ class PropertiesController extends ControllerBase
 	        return $val >=0 && $val <=50;
         };
 
+        $aboutRule = function ($val) {
+            $len = mb_strlen($val);
+            return $len >=0 && $len <= 1024;
+        };
+
         try {
             $form = (new Form())
                 ->import($request)
                 ->addRule(PropertiesDAO::NAME, Rules::namePattern(), $lang->getPhrase('InvalidNameFormat'))
+                ->addRule(PropertiesDAO::ABOUT, $aboutRule, $lang->getPhrase('InvalidField'))
                 ->addRule(PropertiesDAO::TIM, Rules::timPattern(), $lang->getPhrase('InvalidTIMFormat'))
                 ->addRule(PropertiesDAO::SEX, Rules::sexPattern(), $lang->getPhrase('InvalidSexFormat'))
                 ->addRule(PropertiesDAO::CITY, Rules::cityPattern(), $lang->getPhrase('InvalidCityFormat'))
@@ -132,6 +138,7 @@ class PropertiesController extends ControllerBase
 	            ->addRule(PropertiesDAO::LINE_BREAK_TYPE, Rules::notNull(), $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::ONLINE_NOTIFICATION, $onlineLimitRule, $lang->getPhrase('InvalidField'))
 	            ->addRule(PropertiesDAO::IS_SUBSCRIBED, Rules::notNull(), $lang->getPhrase('InvalidField'))
+                ->addRule(PropertiesDAO::MESSAGE_ANIMATION_TYPE, Rules::msgAnimationType(), $lang->getPhrase('InvalidField'))
             ;
         } catch (WrongRuleNameException $e) {
             RespondError::make($user, ['property' => $lang->getPhrase('InvalidProperty') . ' ' . $e->getMessage()]);
@@ -305,74 +312,30 @@ class PropertiesController extends ControllerBase
 
     private function importProperties(User $user, $request)
     {
-        $config = DI::get()->getConfig();
-        $name = $request[PropertiesDAO::NAME];
-        $tim = TimEnum::create($request[PropertiesDAO::TIM]);
-        $guestName = $user->getLang()->getPhrase('Guest');
-        $isNewbie = mb_strpos($name, $guestName) !== false;
-
-        $changeLog = NameChangeDAO::create()->getLastByUser($user);
-        $hasNameChanged = $name != $user->getProperties()->getName();
-
-        if ($isNewbie) {
-            $newname = str_replace($guestName, $tim->getShortName(), $name);
-            $duplUser = PropertiesDAO::create()->getByUserName($newname);
-
-            if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
-                $name = $newname;
-            }
-        } elseif ($changeLog && $hasNameChanged && !$this->isExpired($changeLog, $config)) {
-            RespondError::make(
-                $user,
-                $user->getLang()->getPhrase(
-                    'NameChangePolicy',
-                    date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)
-                )
-            );
-            return;
-        }
-
-        if ($changeLog = NameChangeDAO::create()->getLastByName($name)) {
-            if ($changeLog->getUserId() != $user->getId()) {
-                if (!$this->isExpired($changeLog, $config)) {
-                    RespondError::make(
-                        $user,
-                        $user->getLang()->getPhrase(
-                            'NameTakePolicy',
-                            date('Y-m-d H:i', $changeLog->getDate() + $config->nameChangeFreq)
-                        )
-                    );
-                    return;
-                }
-            }
-        }
+        $this->handleNameChange($user, $request);
 
         $properties = $user->getProperties();
 
-        if ($hasNameChanged && !$isNewbie) {
-            NameChangeDAO::create()
-                ->setUser($user)
-                ->save();
-        }
-
-	    $options = [
-		    PropertiesDAO::CENSOR => $request[PropertiesDAO::CENSOR],
-		    PropertiesDAO::LINE_BREAK_TYPE => $request[PropertiesDAO::LINE_BREAK_TYPE],
-		    PropertiesDAO::NOTIFY_VISUAL => $request[PropertiesDAO::NOTIFY_VISUAL],
-		    PropertiesDAO::NOTIFY_SOUND => $request[PropertiesDAO::NOTIFY_SOUND],
-		    PropertiesDAO::ONLINE_NOTIFICATION => $request[PropertiesDAO::ONLINE_NOTIFICATION],
-		    PropertiesDAO::ONLINE_NOTIFICATION_LAST => $properties->getOnlineNotificationLast(),
-	    ];
-
         $properties
             ->setUserId($user->getId())
-            ->setName($name)
+            ->setName($request[PropertiesDAO::NAME])
+            ->setAbout(nl2br($request[PropertiesDAO::ABOUT]))
             ->setTim(TimEnum::create($request[PropertiesDAO::TIM]))
             ->setSex(SexEnum::create($request[PropertiesDAO::SEX]))
             ->setCity($request[PropertiesDAO::CITY])
             ->setBirthday($request[PropertiesDAO::BIRTH])
 	        ->setSubscription($request[PropertiesDAO::IS_SUBSCRIBED])
-            ->setOptions($options);
+            ->setOptions(
+                [
+                    PropertiesDAO::CENSOR => $request[PropertiesDAO::CENSOR],
+                    PropertiesDAO::LINE_BREAK_TYPE => $request[PropertiesDAO::LINE_BREAK_TYPE],
+                    PropertiesDAO::NOTIFY_VISUAL => $request[PropertiesDAO::NOTIFY_VISUAL],
+                    PropertiesDAO::NOTIFY_SOUND => $request[PropertiesDAO::NOTIFY_SOUND],
+                    PropertiesDAO::ONLINE_NOTIFICATION => $request[PropertiesDAO::ONLINE_NOTIFICATION],
+                    PropertiesDAO::ONLINE_NOTIFICATION_LAST => $properties->getOnlineNotificationLast(),
+                    PropertiesDAO::MESSAGE_ANIMATION_TYPE => $request[PropertiesDAO::MESSAGE_ANIMATION_TYPE]
+                ]
+            );
 
         $properties->save(false);
 
@@ -380,8 +343,57 @@ class PropertiesController extends ControllerBase
 	    $online->setOnlineList($user->getChannelId());
     }
 
-    private function isExpired(NameChangeDAO $changeLog, Config $config)
+    private function isExpired(NameChangeDAO $changeLog, $nameChangeFreq)
     {
-        return ($changeLog->getDate() + $config->nameChangeFreq) < time();
+        return ($changeLog->getDate() + $nameChangeFreq) < time();
+    }
+
+    private function handleNameChange(User $user, $request)
+    {
+        $name = $request[PropertiesDAO::NAME];
+        $guestName = $user->getLang()->getPhrase('Guest');
+        $nameChangeFreq = DI::get()->getConfig()->nameChangeFreq;
+        $isNewbie = mb_strpos($name, $guestName) !== false;
+        $changeLog = NameChangeDAO::create()->getLastByUser($user);
+        $hasNameChanged = $name != $user->getProperties()->getName();
+
+        if ($isNewbie) {
+            $newname = str_replace($guestName, TimEnum::create($request[PropertiesDAO::TIM])->getShortName(), $name);
+            $duplUser = PropertiesDAO::create()->getByUserName($newname);
+
+            if (!($duplUser->getId() && $duplUser->getUserId() != $user->getId())) {
+                $name = $newname;
+            }
+        } elseif ($changeLog && $hasNameChanged && !$this->isExpired($changeLog, $nameChangeFreq)) {
+            RespondError::make(
+                $user,
+                $user->getLang()->getPhrase(
+                    'NameChangePolicy',
+                    date('Y-m-d H:i', $changeLog->getDate() + $nameChangeFreq)
+                )
+            );
+            return;
+        }
+
+        if ($changeLog = NameChangeDAO::create()->getLastByName($name)) {
+            if ($changeLog->getUserId() != $user->getId()) {
+                if (!$this->isExpired($changeLog, $nameChangeFreq)) {
+                    RespondError::make(
+                        $user,
+                        $user->getLang()->getPhrase(
+                            'NameTakePolicy',
+                            date('Y-m-d H:i', $changeLog->getDate() + $nameChangeFreq)
+                        )
+                    );
+                    return;
+                }
+            }
+        }
+
+        if ($hasNameChanged && !$isNewbie) {
+            NameChangeDAO::create()
+                ->setUser($user)
+                ->save();
+        }
     }
 }

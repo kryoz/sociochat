@@ -6,6 +6,7 @@ use Core\Form\Form;
 use SocioChat\Clients\ChannelsCollection;
 use SocioChat\Clients\User;
 use SocioChat\DI;
+use SocioChat\Enum\MsgAnimationEnum;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use SocioChat\Utils\RudeFilter;
@@ -59,7 +60,7 @@ class Rules extends \Core\Form\Rules
     public static function timPattern()
     {
         return function ($tim) {
-            $val = (int)$tim;
+            $val = (int) $tim;
             return $val >= TimEnum::FIRST && $val <= TimEnum::LAST;
         };
     }
@@ -67,10 +68,19 @@ class Rules extends \Core\Form\Rules
     public static function sexPattern()
     {
         return function ($sex) {
-            $val = (int)$sex;
+            $val = (int) $sex;
             return $val >= SexEnum::FIRST && $val <= SexEnum::LAST;
         };
     }
+
+    public static function msgAnimationType()
+    {
+        return function ($msgType) {
+            $val = (int) $msgType;
+            return $val >= MsgAnimationEnum::FIRST && $val <= MsgAnimationEnum::LAST;
+        };
+    }
+
 
     public static function isUserOnline()
     {

@@ -10,7 +10,8 @@ use SocioChat\Enum\TimEnum;
 class UserPropetiesResponse extends Response
 {
     protected $id;
-    protected $name = 'buddy';
+    protected $name;
+    protected $about;
     protected $email;
     protected $tim = TimEnum::FIRST;
     protected $sex = SexEnum::FIRST;
@@ -24,11 +25,18 @@ class UserPropetiesResponse extends Response
 	protected $notifySound;
 	protected $lineBreakType;
 	protected $onlineNotifyLimit;
-	protected $isSubscribed;
+    protected $isSubscribed;
+    protected $msgAnimationType;
 
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function setAbout($about)
+    {
+        $this->about = $about;
         return $this;
     }
 
@@ -130,6 +138,12 @@ class UserPropetiesResponse extends Response
 		return $this;
 	}
 
+    public function setMsgAnimationType($type)
+    {
+        $this->msgAnimationType = $type;
+        return $this;
+    }
+
     public function setUserProps(User $user)
     {
         $properties = $user->getProperties();
@@ -141,6 +155,7 @@ class UserPropetiesResponse extends Response
             ->setSex($properties->getSex()->getId())
             ->setTim($properties->getTim()->getId())
             ->setName($properties->getName())
+            ->setAbout($properties->getAbout())
             ->setAvatarImg($properties->getAvatarImg() ? $dir . $properties->getAvatarImg() : null)
             ->setAvatarThumb($properties->getAvatarThumb() ? $dir . $properties->getAvatarThumb() : null)
             ->setYear($properties->getBirthday())
@@ -150,7 +165,9 @@ class UserPropetiesResponse extends Response
             ->setNotifySound($properties->hasNotifySound())
             ->setLineBreakType($properties->getLineBreakType())
             ->setOnlineNotifyLimit($properties->getOnlineNotificationLimit())
-	        ->setSubscription($properties->hasSubscription());
+	        ->setSubscription($properties->hasSubscription())
+            ->setMsgAnimationType($properties->getMessageAnimationType())
+        ;
 
         return $this;
     }

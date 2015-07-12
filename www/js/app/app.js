@@ -33,7 +33,8 @@ define('app', function () {
             name: '',
             email: '',
             notifyVisual: 0,
-            notifySound: 0
+            notifySound: 0,
+            msgAnimationType: 2
         },
         chatLastFrom: null,
         sound: new Audio("newmessage.mp3"),
@@ -49,6 +50,7 @@ define('app', function () {
             nickname: $('#profile-nickname'),
             tim: $('#profile-tim'),
             sex: $('#profile-sex'),
+            about: $('#profile-about'),
             email: $('#profile-email'),
             password: $('#profile-password'),
             avatar: $('#profile-avatar'),
@@ -60,6 +62,7 @@ define('app', function () {
             notifyVisual: $('#profile-notify-visual'),
             notifySound: $('#profile-notify-sound'),
             refLink: $('#profile-ref-link'),
+            msgAnimationType: $('#profile-msg-animation-type'),
 
             loginName: $('#login-name'),
             loginPassword: $('#login-password'),

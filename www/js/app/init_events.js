@@ -69,12 +69,14 @@ define(function () {
                     name: $this.domElems.nickname.val(),
                     city: $this.domElems.city.val(),
                     birth: $this.domElems.birth.val(),
+                    about: $this.domElems.about.val(),
                     censor: $this.domElems.censor.prop('checked') ? $this.domElems.censor.prop('checked') : false,
                     is_subscribed: $this.domElems.subscription.prop('checked') ? $this.domElems.subscription.prop('checked') : false,
                     notify_visual: $this.domElems.notifyVisual.prop('checked') ? $this.domElems.notifyVisual.prop('checked') : false,
                     notify_sound: $this.domElems.notifySound.prop('checked') ? $this.domElems.notifySound.prop('checked') : false,
                     line_break_type: $this.domElems.lineBreakType.filter(':checked').val() ? $this.domElems.lineBreakType.filter(':checked').val() : 0,
-                    online_limit: $this.domElems.onlineNotification.find('select option').filter(':selected').val() ? $this.domElems.onlineNotification.find('select option').filter(':selected').val() : 0
+                    online_limit: $this.domElems.onlineNotification.val() ? $this.domElems.onlineNotification.val() : 0,
+                    message_animation_type: $this.domElems.msgAnimationType.val() ? $this.domElems.msgAnimationType.val() : 2
                 };
 
                 $this.send(command);

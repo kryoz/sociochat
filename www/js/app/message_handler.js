@@ -8,7 +8,7 @@ define(function () {
             this.app = $app;
             var $this = this;
             var msg = '';
-            var msgCSStype = '';
+            var msgCSStype = $this.getAnimationType($app.user) + ' ';
 
             if (response.lastMsgId) {
                 $app.lastMsgId = response.lastMsgId;
@@ -28,8 +28,9 @@ define(function () {
                     }
                     msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">' + response.fromName + '</div>';
                 } else {
-                    msgCSStype = 'repeat';
+                    msgCSStype += 'repeat';
                 }
+
                 if (response.toName) {
                     var toUser = $app.getUserInfo(response.toName);
                     var toWho = 'вас';
@@ -61,7 +62,7 @@ define(function () {
                 }
 
                 msg += '<span>' + response.msg + '</span>';
-                msgCSStype = 'system';
+                msgCSStype += 'system';
             }
 
             if ($app.msgCount > $app.bufferSize) {
@@ -75,6 +76,9 @@ define(function () {
 
             this.notify(response, fromUser);
             this.bindClicks();
+        },
+        getAnimationType: function (user) {
+            return user.msgAnimationType == 1 ? 'simple' : 'left';
         },
         notify: function (response, fromUser) {
             var $this = this.app;
@@ -129,7 +133,7 @@ define(function () {
 
 
             var replaceWithImgLinks = function (text) {
-                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|gif|png)(?:\??.*))\b/ig;
+                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|jpeg|gif|png)(?:[?#]*.*)?)\b/ig;
 
                 return text.replace(exp, getImgReplacementString('$1'));
             }

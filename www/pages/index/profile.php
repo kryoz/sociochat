@@ -47,12 +47,23 @@ if (!defined('ROOT')) {
                 </select>
             </div>
         </div>
+
+        <div class="row btn-vert-block form-group">
+            <div class="col-md-12 btn-vert-block">
+                <div class="well well-sm">
+                    <h5><?= $lang->getPhrase('profile.About') ?>:</h5>
+                    <textarea class="form-control" rows="5" id="profile-about"></textarea>
+                </div>
+            </div>
+        </div>
+
         <div class="row btn-vert-block form-group">
             <div class="col-md-12 btn-vert-block">
 	            <div class="well well-sm">
 	                <label class="checkbox-inline">
 	                    <input type="checkbox" id="profile-censor"/> <?= $lang->getPhrase('profile.Censor') ?>
 	                </label>
+                    <br>
 		            <label class="checkbox-inline">
 			            <input type="checkbox" id="profile-subscription"/> <?= $lang->getPhrase('profile.Subscription') ?>
 		            </label>
@@ -84,15 +95,22 @@ if (!defined('ROOT')) {
 			            <input type="checkbox" id="profile-notify-sound"/> <?= $lang->getPhrase('profile.NotifySound') ?>
 		            </label>
 
-		            <div id="profile-notify-online-limit">
-			            <h5><?= $lang->getPhrase('profile.OnlineNotifications') ?></h5>
-			            <select class="form-control">
-				            <option value="0"><?= $lang->getPhrase('NotSpecified') ?></option>
-				            <?php for($i=1; $i <= 50; $i++) { ?>
-					            <option value="<?=$i?>"><?=$i?></option>
-				            <? } ?>
-			            </select>
-		            </div>
+                    <h5><?= $lang->getPhrase('profile.OnlineNotifications') ?></h5>
+                    <select class="form-control" id="profile-notify-online-limit">
+                        <option value="0"><?= $lang->getPhrase('NotSpecified') ?></option>
+                        <?php for($i=1; $i <= 50; $i++) { ?>
+                            <option value="<?=$i?>"><?=$i?></option>
+                        <? } ?>
+                    </select>
+
+
+                    <h5><?= $lang->getPhrase('profile.msgAnimation') ?>:</h5>
+                    <select class="form-control" id="profile-msg-animation-type">
+                        <option selected disabled><?= $lang->getPhrase('NotSpecified') ?></option>
+                        <?php foreach (\SocioChat\Enum\MsgAnimationEnum::getList() as $animType) { ?>
+                            <option value="<?= $animType->getId() ?>"><?= $animType->getName() ?></option>
+                        <?php } ?>
+                    </select>
 	            </div>
             </div>
 

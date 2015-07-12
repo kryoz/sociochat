@@ -3,6 +3,7 @@
 namespace SocioChat\DAO;
 
 use Core\DAO\DAOBase;
+use SocioChat\Enum\MsgAnimationEnum;
 use SocioChat\Enum\SexEnum;
 use SocioChat\Enum\TimEnum;
 use Core\Utils\DbQueryHelper;
@@ -12,6 +13,7 @@ class PropertiesDAO extends DAOBase
 {
     const USER_ID = 'user_id';
     const NAME = 'name';
+	const ABOUT = 'about';
     const SEX = 'sex';
     const TIM = 'tim';
     const NOTIFICATIONS = 'notifications';
@@ -26,12 +28,14 @@ class PropertiesDAO extends DAOBase
 	const RUDE_COUNT = 'rude_count';
 	const IS_SUBSCRIBED = 'is_subscribed';
 
+	//json
     const CENSOR = 'censor';
 	const LINE_BREAK_TYPE = 'line_break_type';
 	const NOTIFY_VISUAL = 'notify_visual';
 	const NOTIFY_SOUND = 'notify_sound';
 	const ONLINE_NOTIFICATION = 'online_limit';
 	const ONLINE_NOTIFICATION_LAST = 'online_notify_last';
+	const MESSAGE_ANIMATION_TYPE = 'message_animation_type';
 
 	private $options;
 
@@ -45,6 +49,7 @@ class PropertiesDAO extends DAOBase
             [
                 self::USER_ID,
                 self::NAME,
+	            self::ABOUT,
                 self::SEX,
                 self::TIM,
                 self::NOTIFICATIONS,
@@ -108,6 +113,17 @@ class PropertiesDAO extends DAOBase
         $this[self::NAME] = $name;
         return $this;
     }
+
+	public function getAbout()
+	{
+		return $this[self::ABOUT];
+	}
+
+	public function setAbout($about)
+	{
+		$this[self::ABOUT] = $about;
+		return $this;
+	}
 
     public function getUserId()
     {
@@ -245,6 +261,11 @@ class PropertiesDAO extends DAOBase
 	public function getOnlineNotificationLast()
 	{
 		return isset($this->getOptions()[self::ONLINE_NOTIFICATION_LAST]) ? $this->getOptions()[self::ONLINE_NOTIFICATION_LAST] : 0;
+	}
+
+	public function getMessageAnimationType()
+	{
+		return isset($this->getOptions()[self::MESSAGE_ANIMATION_TYPE]) ? $this->getOptions()[self::MESSAGE_ANIMATION_TYPE] : MsgAnimationEnum::FIRST;
 	}
 
 	public function setOnlineNotificationLast($time)

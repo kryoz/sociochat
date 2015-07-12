@@ -21,6 +21,7 @@ define(function () {
                     }
                     profile.find('.photo').html(avatar);
                     profile.find('.name').text(response.name);
+                    profile.find('.about').text(response.about == null ? '' : response.about);
                     profile.find('.sex').text(response.sex);
                     profile.find('.tim').text(response.tim);
                     profile.find('.city').text(response.city);

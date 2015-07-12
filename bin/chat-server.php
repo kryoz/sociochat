@@ -71,16 +71,7 @@ $channels = ChannelsCollection::get()
 			return true;
 		})
 	)
-    ->addChannel(
-	    (new Channel(3, 'Закрытый клуб', false))->setOnJoinRule(function (Form $form, User $user) {
-		    if (!$user->isRegistered()) {
-			    $form->markWrong('channelId', 'Вход разрешён только зарегистрированным участникам');
-			    return false;
-		    }
-
-		    return true;
-        })
-    );
+;
 
 include_once 'dumper.php';
 include_once 'msgsaver.php';

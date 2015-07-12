@@ -281,14 +281,37 @@ doesnotexist:-o-prefocus, #panel-chat {
     line-height: 1.3em;
 }
 
-@-webkit-keyframes burp {
+@-webkit-keyframes fade {
     from {
         opacity: 0;
-        transform: translateX(-45px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+    }
+}
+@-moz-keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes burp {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }
 @-moz-keyframes burp {
@@ -312,11 +335,17 @@ doesnotexist:-o-prefocus, #panel-chat {
     }
 }
 
-#log > div:last-child {
+#log > div.left:last-child {
     position: relative;
     -webkit-animation: burp ease-out 0.4s;
     -moz-animation: burp ease-out 0.4s;
     animation: burp ease-out 0.4s;
+}
+
+#log > div.simple:last-child {
+    -webkit-animation: fade ease-out 0.4s;
+    -moz-animation: fade ease-out 0.4s;
+    animation: fade ease-out 0.4s;
 }
 
 #log .video {

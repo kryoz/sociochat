@@ -57,6 +57,7 @@ foreach (NameChangeDAO::create()->getHistoryByUserId($user->getId()) as $name) {
 $response = [
 	'id'    => $user->getId(),
     'name' => $props->getName(),
+	'about' => $props->getAbout(),
     'avatar' => $props->getAvatarImg() ? $avatarDir.$props->getAvatarImg() : null,
     'tim' => $props->getTim()->getName(),
 	'sex' => $props->getSex()->getName(),
