@@ -205,7 +205,7 @@ class PropertiesController extends ControllerBase
 			return;
 		}
 
-        if ($operator->getProperties()->getOnlineCount() >= 3600) {
+        if ($operator->getProperties()->getOnlineCount() < 3600) {
             RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('OnlineTimeTooLow')]);
             return;
         }
