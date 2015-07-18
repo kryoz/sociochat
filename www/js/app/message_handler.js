@@ -119,7 +119,9 @@ define(function () {
                 var a = document.createElement('div');
                 a.innerHTML = str;
                 for (var c = a.childNodes, i = c.length; i--;) {
-                    if (c[i].nodeType == 1) return true;
+                    if (c[i].nodeType == 1 && c[i].tagName != 'CODE') {
+                        return true;
+                    }
                 }
                 return false;
             };
@@ -150,9 +152,7 @@ define(function () {
 
             var replaceURL = function (text) {
                 if (isHTML(text)) {
-                    if ($(text).find('div').length != 0) {
-                        return text;
-                    }
+                    return text;
                 }
                 var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
                 var url = exp.exec(text);
