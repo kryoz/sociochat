@@ -138,16 +138,16 @@ define(function () {
             };
 
             var getImgReplacementString = function (holder) {
-                var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
-                replacement += '<img src="' + holder + '" style="max-width:100%; height: auto; display: none"></div>';
+                var replacement = '<div class="img-thumbnail image-clickable" data-src="' + holder +'"><a href="#" title="Открыть картинку">';
+                replacement += '<span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
+                replacement += '<img src="" style="max-width:100%; height: auto; display: none"></div>';
                 return replacement;
             }
 
 
             var replaceWithImgLinks = function (text) {
-                var exp = /\b((https?):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|jpeg|gif|png)(?:[?#]*.*)?)\b/ig;
-
-                return text.replace(exp, getImgReplacementString('$1'));
+                var exp = '(https?:\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;()]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|jpeg|gif|png)(?:[^ ]*))';
+                return text.replace(new RegExp(exp, 'ig'), getImgReplacementString('$1'));
             }
 
             var replaceURL = function (text) {
@@ -222,7 +222,13 @@ define(function () {
             var newNameOnLine = newLine.find('.nickname');
 
             newLine.find('.image-clickable').click(function () {
-                $(this).find('img').toggle();
+                var $img = $(this).find('img');
+
+                if ($img.attr('src') == '') {
+                    $img.attr('src', $(this).data('src'));
+                }
+
+                $img.toggle();
                 $(this).find('a').toggle();
                 $this.scrollDown();
             });

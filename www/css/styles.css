@@ -383,7 +383,7 @@ doesnotexist:-o-prefocus, #panel-chat {
     float: right;
     color: #aaa;
     font-size: 12px;
-    margin-right: 0;
+    margin-right: 10px;
 }
 
 #guests td {
