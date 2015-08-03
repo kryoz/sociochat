@@ -126,17 +126,6 @@ define(function () {
                 return false;
             };
 
-            String.prototype.hashCode = function () {
-                var hash = 0, i, chr, len;
-                if (this.length == 0) return hash;
-                for (i = 0, len = this.length; i < len; i++) {
-                    chr = this.charCodeAt(i);
-                    hash = ((hash << 5) - hash) + chr;
-                    hash |= 0; // Convert to 32bit integer
-                }
-                return hash;
-            };
-
             var getImgReplacementString = function (holder) {
                 var replacement = '<div class="img-thumbnail image-clickable" data-src="' + holder +'"><a href="#" title="Открыть картинку">';
                 replacement += '<span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
@@ -167,7 +156,7 @@ define(function () {
                     return imgRegExp;
                 }
 
-                var hash = url.hashCode();
+                var hash = MD5(url);
 
                 $.ajax({
                     type: "GET",
@@ -191,9 +180,10 @@ define(function () {
                             $this.scrollDown();
                         });
                     },
-
                     dataType: 'json'
                 });
+
+
 
                 return text.replace(exp, '<a target="_blank" href="$1" id="url-' + hash + '">$1</a>');
             }

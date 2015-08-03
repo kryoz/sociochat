@@ -14,10 +14,16 @@ class UserDAO extends DAOBase
     const DATE_REGISTER = 'date_register';
     const CHAT = 'chat_id';
     const ROLE = 'role';
+    const IMPRINT = 'imprint';
+    const IS_BANNED = 'is_banned';
 
     const PROPERTIES = 'properties';
     const BLACKLIST = 'blacklist';
     const NOTES = 'notes';
+
+    protected $types = [
+        self::IS_BANNED => \PDO::PARAM_BOOL,
+    ];
 
     public function __construct()
     {
@@ -28,6 +34,8 @@ class UserDAO extends DAOBase
                 self::DATE_REGISTER,
                 self::CHAT,
                 self::ROLE,
+                self::IMPRINT,
+                self::IS_BANNED,
             ]
         );
 
@@ -96,6 +104,36 @@ class UserDAO extends DAOBase
     public function getRole()
     {
         return UserRoleEnum::create($this[self::ROLE]);
+    }
+
+
+    public function getImprint()
+    {
+        return $this[self::IMPRINT];
+    }
+
+    public function setImprint($ip)
+    {
+        $this[self::IMPRINT] = $ip;
+        return $this;
+    }
+
+    public function getByImprint($imprint)
+    {
+        return $this->getListByQuery("SELECT id FROM {$this->dbTable} WHERE " . self::IMPRINT . " = :imprint AND ".self::IS_BANNED.' IS TRUE LIMIT 1',
+            ['imprint' => $imprint]
+        );
+    }
+
+    public function isBanned()
+    {
+        return $this[self::IS_BANNED];
+    }
+
+    public function setBanned($ban)
+    {
+        $this[self::IS_BANNED] = (bool) $ban;
+        return $this;
     }
 
     public function getUnregisteredUserIds()

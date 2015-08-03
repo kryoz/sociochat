@@ -31,6 +31,9 @@ class Kick implements TextCommand
 			return ["$assHoleName not found", 1];
 		}
 
+		$userDAO = $assHole->getUserDAO()->setBanned(true);
+		$userDAO->save(false);
+
 		$assHole
 			->setAsyncDetach(false)
 			->send(
@@ -38,7 +41,8 @@ class Kick implements TextCommand
 					'disconnect' => 1,
 					'msg' => isset($text[1]) ? $text[1] : null
 				]
-			);
+			)
+		;
 
 		Chat::get()->onClose($assHole->getConnection());
 

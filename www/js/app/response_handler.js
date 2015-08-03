@@ -313,12 +313,7 @@ define(function () {
                 }
 
                 $this.connection.close();
-                $this.initSession(function () {
-                        $this.Connect();
-                    }, {
-                        regenerate: 1
-                    }
-                );
+                $this.initSession(function () { $this.Connect();}, {regenerate: 1});
             };
 
             var handleMusicInfo = function() {

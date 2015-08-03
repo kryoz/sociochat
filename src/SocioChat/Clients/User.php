@@ -61,7 +61,7 @@ class User implements ConnectionInterface
         $this->connection->send($response->toString());
     }
 
-    public function getUserDAO()
+    public function &getUserDAO()
     {
         return $this->userDAO;
     }
