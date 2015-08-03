@@ -145,6 +145,11 @@ define('app', function () {
                     $this.setCookie('token', response.token, options);
                     if ($this.token2) {
                         $this.setCookie('token2', MD5($this.token2), options);
+                    } else {
+                        setTimeout(function() {
+                            callback();
+                        }, 1000); //мегакостыль))
+                        return;
                     }
                     callback();
                 },
