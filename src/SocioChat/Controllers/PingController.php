@@ -1,26 +1,26 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\UserCollection;
 use SocioChat\Response\PingResponse;
 
 class PingController extends ControllerBase
 {
-	public function handleRequest(ChainContainer $chain)
-	{
-		$user = $chain->getFrom();
-		$response = (new PingResponse())
-			->setChatId($user->getChatId());
+    public function handleRequest(ChainContainer $chain)
+    {
+        $user = $chain->getFrom();
+        $response = (new PingResponse())
+            ->setChannelId($user->getChannelId());
 
-		(new UserCollection())
-			->attach($user)
-			->setResponse($response)
-			->notify();
-	}
+        (new UserCollection())
+            ->attach($user)
+            ->setResponse($response)
+            ->notify();
+    }
 
-	protected function getFields()
-	{
-		return [];
-	}
+    protected function getFields()
+    {
+        return [];
+    }
 }

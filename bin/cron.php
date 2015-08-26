@@ -2,18 +2,12 @@
 
 use Monolog\Logger;
 use SocioChat\Cron\CronExecutor;
-use Core\DI;
+use SocioChat\DI;
 use SocioChat\DIBuilder;
 use Zend\Config\Config;
 
-function CustomErrorHandler($errno, $errstr, $errfile, $errline)
-{
-	echo "ErrorHandler: $errfile line $errline: $errstr\n";
-	return true;
-}
-set_error_handler('CustomErrorHandler');
-
-require_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config.php';
+//$setupErrorHandler = 1;
+require_once dirname(__DIR__).DIRECTORY_SEPARATOR . 'config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 $config = $container->get('config');
@@ -22,10 +16,10 @@ $logger = $container->get('logger');
 /* @var $logger Logger */
 
 try {
-	/* @var $cronExecutor CronExecutor */
-	$cronExecutor = new CronExecutor;
-	$cronExecutor->run();
+    /* @var $cronExecutor CronExecutor */
+    $cronExecutor = new CronExecutor;
+    $cronExecutor->run();
 } catch (Exception $e) {
-	$logger->err($e);
-	exit(1);
+    echo $e->getMessage();
+    exit(1);
 }

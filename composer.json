@@ -1,18 +1,32 @@
 {
+    "php": ">=5.5.0",
     "autoload": {
         "psr-4": {
             "": "src/",
             "Test\\" : "unit-tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/kryoz/bicycle"
+        }
+    ],
     "require": {
-        "cboden/Ratchet": "0.3.*",
-        "zendframework/zend-config": "2.2.*",
-        "monolog/monolog": "1.8.*",
-        "orno/di": "2.0.*",
-        "robmorgan/phinx": "*"
+        "react/react": "0.4.*@stable",
+        "cboden/Ratchet": "*@stable",
+        "zendframework/zend-config": "*@stable",
+        "monolog/monolog": "*@stable",
+        "orno/di": "*@stable",
+        "robmorgan/phinx": "*@stable",
+        "kryoz/core": "dev-master",
+        "hpatoio/bitly-api": "~2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*"
-    }
+        "phpunit/phpunit": "4.*@stable",
+        "squizlabs/php_codesniffer": "dev-phpcs-fixer"
+    },
+	"config": {
+		"bin-dir": "bin/"
+	}
 }

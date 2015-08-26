@@ -1,113 +1,131 @@
 <?php
 namespace SocioChat\Controllers;
 
-use SocioChat\Chain\ChainContainer;
+use SocioChat\Application\Chain\ChainContainer;
 use SocioChat\Clients\User;
 use SocioChat\Clients\UserCollection;
+use SocioChat\Controllers\Helpers\RespondError;
 use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DAO\UserDAO;
+use SocioChat\DI;
 use SocioChat\Message\MsgToken;
 use SocioChat\Response\MessageResponse;
 
 class BlacklistController extends ControllerBase
 {
-	private $actionsMap = [
-		'ban' => 'processAdd',
-		'unban' => 'processRemove',
-	];
+    private $actionsMap = [
+        'ban' => 'processAdd',
+        'unban' => 'processRemove',
+    ];
 
-	public function handleRequest(ChainContainer $chain)
-	{
-		$action = $chain->getRequest()['action'];
-			if (!isset($this->actionsMap[$action])) {
-			$this->errorResponse($chain->getFrom());
-			return;
-		}
+    public function handleRequest(ChainContainer $chain)
+    {
+        $action = $chain->getRequest()['action'];
+        if (!isset($this->actionsMap[$action])) {
+            RespondError::make($chain->getFrom());
+            return;
+        }
 
-		$this->{$this->actionsMap[$action]}($chain);
-	}
+        $this->{$this->actionsMap[$action]}($chain);
+    }
 
-	protected function getFields()
-	{
-		return ['action', 'user_id'];
-	}
+    protected function getFields()
+    {
+        return ['action', 'user_id'];
+    }
 
-	protected function processAdd(ChainContainer $chain)
-	{
-		$request = $chain->getRequest();
-		$user = $chain->getFrom();
+    protected function processAdd(ChainContainer $chain)
+    {
+        $request = $chain->getRequest();
+        $user = $chain->getFrom();
 
-		if (!$banUser = UserCollection::get()->getClientById($request[PropertiesDAO::USER_ID])) {
-			$this->errorResponse($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
-			return;
-		}
+        if (!$banUser = UserDAO::create()->getById($request[PropertiesDAO::USER_ID])) {
+            RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
+            return;
+        }
 
-		if ($user->getBlacklist()->banUserId($banUser->getId())) {
-			$user->save();
-			$this->banResponse($user, $banUser);
-		}
-	}
+        if ($banUser->getId() == $user->getId()) {
+            RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('CantDoToYourself')]);
+            return;
+        }
 
-	protected function processRemove(ChainContainer $chain)
-	{
-		$request = $chain->getRequest();
-		$user = $chain->getFrom();
+        if ($user->getBlacklist()->banUserId($banUser->getId())) {
+            $user->save();
+            $this->banResponse($user, $banUser);
+        }
+    }
 
-		if (!$unbanUser = UserCollection::get()->getClientById($request['user_id'])) {
-			$this->errorResponse($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
-			return;
-		}
+    protected function processRemove(ChainContainer $chain)
+    {
+        $request = $chain->getRequest();
+        $user = $chain->getFrom();
 
-		$user->getBlacklist()->unbanUserId($unbanUser->getId());
-		$user->save();
+        if (!$unbanUser = UserDAO::create()->getById($request['user_id'])) {
+            RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('ThatUserNotFound')]);
+            return;
+        }
 
-		$this->unbanResponse($user, $unbanUser);
-	}
+	    if ($unbanUser->getId() == $user->getId()) {
+		    RespondError::make($user, ['user_id' => $user->getLang()->getPhrase('CantDoToYourself')]);
+		    return;
+	    }
 
-	private function banResponse(User $user, User $banUser)
-	{
-		$response = (new MessageResponse())
-			->setMsg(MsgToken::create('UserBannedSuccessfully', $banUser->getProperties()->getName()))
-			->setTime(null)
-			->setChatId($user->getChatId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
+        $user->getBlacklist()->unbanUserId($unbanUser->getId());
+        $user->save();
 
-		(new UserCollection())
-			->attach($user)
-			->setResponse($response)
-			->notify(false);
+        $this->unbanResponse($user, $unbanUser);
+    }
 
-		$response = (new MessageResponse())
-			->setMsg(MsgToken::create('UserBannedYou', $user->getProperties()->getName()))
-			->setChatId($banUser->getChatId())
-			->setTime(null);
+    private function banResponse(User $user, UserDAO $banUserDAO)
+    {
+        $response = (new MessageResponse())
+            ->setMsg(MsgToken::create('UserBannedSuccessfully', $banUserDAO->getPropeties()->getName()))
+            ->setTime(null)
+            ->setChannelId($user->getChannelId())
+            ->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
 
-		(new UserCollection())
-			->attach($banUser)
-			->setResponse($response)
-			->notify(false);
-	}
+        (new UserCollection())
+            ->attach($user)
+            ->setResponse($response)
+            ->notify(false);
 
-	private function unbanResponse(User $user, User $banUser)
-	{
-		$response = (new MessageResponse())
-			->setMsg(MsgToken::create('UserIsUnbanned', $banUser->getProperties()->getName()))
-			->setTime(null)
-			->setChatId($user->getChatId())
-			->setGuests(UserCollection::get()->getUsersByChatId($user->getChatId()));
+	    if ($banUser = DI::get()->getUsers()->getClientById($banUserDAO->getId())) {
+		    $response = (new MessageResponse())
+			    ->setMsg(MsgToken::create('UserBannedYou', $user->getProperties()->getName()))
+			    ->setChannelId($banUser->getChannelId())
+			    ->setTime(null);
 
-		(new UserCollection())
-			->attach($user)
-			->setResponse($response)
-			->notify(false);
+		    (new UserCollection())
+			    ->attach($banUser)
+			    ->setResponse($response)
+			    ->notify(false);
+	    }
 
-		$response = (new MessageResponse())
-			->setMsg(MsgToken::create('UserUnbannedYou', $user->getProperties()->getName()))
-			->setChatId($banUser->getChatId())
-			->setTime(null);
+    }
 
-		(new UserCollection())
-			->attach($banUser)
-			->setResponse($response)
-			->notify(false);
-	}
+    private function unbanResponse(User $user, UserDAO $unBanUserDAO)
+    {
+        $response = (new MessageResponse())
+            ->setMsg(MsgToken::create('UserIsUnbanned', $unBanUserDAO->getPropeties()->getName()))
+            ->setTime(null)
+            ->setChannelId($user->getChannelId())
+            ->setGuests(DI::get()->getUsers()->getUsersByChatId($user->getChannelId()));
+
+        (new UserCollection())
+            ->attach($user)
+            ->setResponse($response)
+            ->notify(false);
+
+	    if ($unBanUser = DI::get()->getUsers()->getClientById($unBanUserDAO->getId())) {
+		    $response = (new MessageResponse())
+			    ->setMsg(MsgToken::create('UserUnbannedYou', $user->getProperties()->getName()))
+			    ->setChannelId($unBanUser->getChannelId())
+			    ->setTime(null);
+
+		    (new UserCollection())
+			    ->attach($unBanUser)
+			    ->setResponse($response)
+			    ->notify(false);
+	    }
+    }
 }

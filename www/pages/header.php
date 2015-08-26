@@ -1,28 +1,30 @@
 <?php
 if (!defined('ROOT')) {
-	die('not allowed');
+    die('not allowed');
 }
-$title = isset($title) ? $title : 'соционический чат с дуалами';
+$title = isset($title) ? $title : 'соционический чат без регистрации';
 $js = isset($js) ? $js : '';
 $domain = isset($domain) ? $domain : 'https://sociochat.me';
+$meta = isset($meta) ? $meta : '';
+$version = isset($version) ? $version : '';
 ?><!doctype html>
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta charset="utf-8" />
-	<title>SocioChat - <?=$title?></title>
-	<meta property="og:image" content="<?=$domain?>/img/sociochat.jpg">
-	<meta property="og:title" content="SocioChat" />
-	<meta property="og:description" content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства." />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-	<meta name="description" content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства.">
-	<meta name="keywords" content="соционика, знакомства, дуал, тим, чат, дуалчат">
-	<link rel="icon" href="http://sociochat.me/favicon.ico" type="image/x-icon">
-	<link rel="apple-touch-icon" href="<?=$domain?>/img/sociochat.jpg">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="js/jcrop/jquery.Jcrop.min.css">
-	<link rel="stylesheet" href="css/styles.css" >
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<?=$js?>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8"/>
+    <title>СоциоЧат - <?= $title ?></title>
+    <meta property="og:image" content="<?= $domain ?>/img/sociochat.jpg">
+    <meta property="og:title" content="СоциоЧат"/>
+    <meta property="og:description"
+          content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description"
+          content="Удобный современный и быстрый соционический чат. Здесь находят дуалов и новых друзей! Оптимизирован под мобильные устройства.">
+    <meta name="keywords" content="соционика, мобильные знакомства, чат, дуалчат">
+    <?= $meta ?>
+    <link rel="apple-touch-icon" href="<?= $domain ?>/img/sociochat.jpg">
+    <link rel="stylesheet" href="<?= $domain ?>/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $domain ?>/css/styles.css?v=<?= $version ?>">
+    <?= $js ?>
+    <link rel="icon" href="<?= $domain ?>/favicon.ico" type="image/x-icon">
 </head>

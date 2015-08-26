@@ -1,270 +1,474 @@
-define(function () {
-//	var getCookie = function (name) {
-//		var matches = document.cookie.match(new RegExp(
-//			"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-//		));
-//		return matches ? decodeURIComponent(matches[1]) : undefined;
-//	}
+define('app', function () {
+    return {
+        connection: null,
+        hostUrl: null,
+        domain: null,
+        protocol: null,
+        maxMsgLength: null,
+        token: null,
+        isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
+        msgCount: 0,
+        guestCount: 0,
+        guests: [],
+        currentChannel: 1,
+        isTabActive: 1,
+        bufferSize: 100,
 
-	return {
-		connection: null,
-		hostUrl: null,
-		token: null,
-		isRetina: (window.devicePixelRatio > 1 || (window.matchMedia && window.matchMedia("(-webkit-min-device-pixel-ratio: 1.5),(-moz-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)").matches)),
-		msgCount: 0,
-		guestCount: 0,
-		guests : [],
-		currentChannel: 1,
-		notificationProperties : [],
-		bufferSize: 100,
+        pingTimer: null,
+        clickTimer: null,
+        errorTimer: null,
+        reconnectTimeout: null,
+        retryTimer: null,
 
-		timer: null,
-		pingTimer: null,
-		clickTimer: null,
-		reconnectTimeout: null,
-		retryTimer: null,
+        isManualScrolling: false,
+        chatName: 'SocioChat',
+        connState: 0,
+        guestEditState: 0,
+        disconnect: 0,
+        lastMsgId: -1,
+        token2 : null,
 
-		isManualScrolling: false,
-		chatName: 'SocioChat',
-		connState: 0,
-		disconnect: 0,
-		lastMsgId: -1,
-		delay: 1000*60,
+        user: {
+            id: 0,
+            sex: 0,
+            name: '',
+            email: '',
+            notifyVisual: 0,
+            notifySound: 0,
+            msgAnimationType: 2
+        },
+        chatLastFrom: null,
+        sound: new Audio("newmessage.mp3"),
+        isFirstConnect: true,
 
-		ownSex: 0,
-		ownName: null,
-		chatLastFrom: null,
+        domElems: {
+            guestList: $('#guests'),
+            inputMessage: $('#message'),
+            charsLeft : $('#charsLeft'),
+            chat: $('#log'),
+            guestCounter: $('#guest-counter'),
 
-		domElems : {
-			guestList: $('#guests'),
-			inputMessage: $('#message'),
-			chat: $('#log'),
-			guestCounter: $('#guest-counter'),
+            nickname: $('#profile-nickname'),
+            tim: $('#profile-tim'),
+            sex: $('#profile-sex'),
+            about: $('#profile-about'),
+            email: $('#profile-email'),
+            password: $('#profile-password'),
+            avatar: $('#profile-avatar'),
+            city: $('#profile-city'),
+            birth: $('#profile-year'),
+            censor: $('#profile-censor'),
+            subscription: $('#profile-subscription'),
+            lineBreakType: $('input[name=profile-linebreak]'),
+            notifyVisual: $('#profile-notify-visual'),
+            notifySound: $('#profile-notify-sound'),
+            refLink: $('#profile-ref-link'),
+            msgAnimationType: $('#profile-msg-animation-type'),
 
-			nickname: $('#nickname'),
-			tim: $('#tim'),
-			sex: $('#sex'),
-			email: $('#email'),
-			password: $('#password'),
-			avatar: $('#avatar'),
+            loginName: $('#login-name'),
+            loginPassword: $('#login-password'),
+            address: $('#address'),
+            addressReset: $('#address-reset'),
+            sendMessageButton: $('#send'),
+            setProperties: $('#set-profile-info'),
+            setRegInfo: $('#set-reg-info'),
+            removeAvatar: $('#remove-avatar'),
+            doLogin: $('#do-login'),
+            doMusicSearch: $('#do-music-search'),
+            doHashSearch: $('#do-hash-search'),
+            hashPanel: $('#hashes'),
+            musicInput: $("#music input[name=song]"),
+            //hashInput: $('#hashes [name=hash]'),
 
-			loginName: $('#login-name'),
-			loginPassword: $('#login-password'),
-			address: $('#address'),
-			addressReset: $('#address-reset'),
-			send: $('#send'),
-			setProperties: $('#set-profile-info'),
-			setRegInfo: $('#set-reg-info'),
-			doLogin: $('#do-login'),
+            menuDualize: $('#menu-dualize'),
+            menuDualizeStop: $('#menu-dualize-stop'),
+            menuExit: $('#menu-exit'),
+            menuChat: $('.navbar-brand a'),
+            menuChannels: $('#menu-channels'),
+            navbar: $('.navbar-nav'),
+            regLink: $('#reg-info'),
+            regPanel: $('#reg-panel'),
+            audioPlayer: $('#player'),
+            musicLink: $('a[href="#music"]').parent(),
+            loginLink: $('a[href="#login"]'),
+            userDetails: $('#user-details'),
+            onlineNotification: $('#profile-notify-online-limit')
+        },
 
-			menuDualize : $('#menu-dualize'),
-			menuDualizeStop : $('#menu-dualize-stop'),
-			menuExit : $('#menu-exit'),
-			menuChat : $('.navbar-brand'),
-			menuChannels: $('#menu-channels'),
-			navbar: $('.navbar-nav'),
-			regLink: $('#reg-info'),
-			regPanel: $('#reg-panel')
-		},
+        Init: function (hostUrl, domain, protocol, maxMsgLength) {
+            var $this = this;
 
-		Init: function(hostUrl, token) {
-			var $this = this;
+            this.hostUrl = hostUrl;
+            this.domain = domain;
+            this.protocol = protocol;
+            this.maxMsgLength = maxMsgLength;
 
-			$this.hostUrl = hostUrl;
-			$this.token = token;
-			$this.Connect();
+            $this.connectionManager(function(part) {
+                $this.token2 += part;
+            });
+            this.initSession(function () {
+                $this.Connect();
+            });
 
-			require(['init_events'], function(binders) {
-				binders.bindEvents($this);
-				binders.bindMenus($this);
-				binders.AvatarUploadHandler($this);
-			});
+            $(window).TabWindowVisibilityManager({
+                onFocusCallback: function() {
+                    $this.isTabActive = 1;
+                },
+                onBlurCallback: function() {
+                    $this.isTabActive = 0;
+                }
+            });
 
-		},
+            require(['init_events'], function (binders) {
+                binders.bindEvents($this);
+                binders.bindMenus($this);
+                binders.AvatarUploadHandler($this);
+            });
 
-		Connect : function() {
-			try {
-				this.connection = new WebSocket(this.hostUrl);
-			} catch (e) {
-				this.addLog('Простите, но ваш браузер не поддерживается. Используйте свежую версию Chrome, Opera или Firefox', 1);
-			}
+        },
+        initSession: function (callback, params) {
+            var $this = this;
+            $.ajax({
+                type: "GET",
+                data: params,
+                url: '/session.php',
+                cache: false,
+                success: function (response) {
+                    $this.token = response.token;
+                    var options = {
+                        expires: response.ttl
+                    };
 
-			this.addConnectionHandlers();
-		},
-		handleResponse: function (json) {
-			var $this = this;
-			require(['response_handler'], function(response) {
-				response.process(json, $this)
-			});
-		},
-		addConnectionHandlers: function() {
-			var $this = this;
+                    if (response.isSecure) {
+                        $.extend(options, {secure: response.isSecure});
+                    }
+                    $this.setCookie('token', response.token, options);
+                    if ($this.token2) {
+                        $this.setCookie('token2', MD5($this.token2), options);
+                    } else {
+                        setTimeout(function() {
+                            callback();
+                        }, 1000); //мегакостыль))
+                        return;
+                    }
+                    callback();
+                },
+                dataType: 'json'
+            });
+        },
+        Connect: function () {
+            try {
+                this.connection = new WebSocket(this.hostUrl);
+            } catch (e) {
+                this.addLog(e, 1);
+            }
 
-			$(window).unload(function() {
-				$this.connection.close();
-			});
+            this.addConnectionHandlers();
+        },
+        handleResponse: function (json) {
+            var $this = this;
+            require(['response_handler'], function (response) {
+                response.process(json, $this)
+            });
+        },
+        addConnectionHandlers: function () {
+            var $this = this;
+            var startPendingStatus = function () {
+                $this.domElems.sendMessageButton
+                    .find('span')
+                    .removeClass('glyphicon-send')
+                    .addClass('glyphicon-refresh')
+                    .addClass('rotate');
+            }
+            var endPendingStatus = function () {
+                $this.domElems.sendMessageButton
+                    .find('span')
+                    .addClass('glyphicon-send')
+                    .removeClass('glyphicon-refresh')
+                    .removeClass('rotate');
+            }
 
-			$this.connection.onopen = function(e) {
-				$('.glyphicon-refresh').parent().remove();
-				$this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
+            $(window).unload(function () {
+                $this.connection.close();
+            });
 
-				clearTimeout($this.reconnectTimeout);
-				$this.reconnectTimeout = null;
-				clearTimeout($this.retryTimer);
+            $this.connection.onopen = function (e) {
+                if ($this.isFirstConnect) {
+                    $this.domElems.chat.empty();
+                    $this.isFirstConnect = false;
+                }
 
-				$this.domElems.inputMessage.removeAttr('disabled');
-				$this.domElems.inputMessage.attr('placeholder', 'Сообщение');
-			};
+                endPendingStatus();
 
-			$this.connection.onclose = function(e) {
-				if ($this.disconnect) {
-					return;
-				}
+                $this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
 
-				if (!$this.reconnectTimeout) {
-					$this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
-				}
+                clearTimeout($this.reconnectTimeout);
+                $this.reconnectTimeout = null;
+                clearTimeout($this.retryTimer);
 
-				$this.retryTimer = setTimeout(function() {
-					if (!$this.reconnectTimeout) {
-						$this.addLog('<span class="glyphicon glyphicon-refresh rotate"></span>', 'system');
-						$this.reconnectTimeout = setTimeout(function() {
-							$('.glyphicon-refresh').parent().remove();
-							$this.addLog('Попытки подключиться исчерпаны. Попробуйте зайти позднее.', 'system');
-							$this.connection = null;
-							$this.disconnect = 1;
-							clearTimeout($this.retryTimer);
-						}, 30000);
-					}
+                $this.domElems.inputMessage.removeAttr('disabled');
+                $this.domElems.inputMessage.attr('placeholder', 'Сообщение');
+            };
 
-					$this.Connect();
-				}, 2000);
+            $this.connection.onclose = function (e) {
+                if ($this.disconnect) {
+                    return;
+                }
 
-				$this.domElems.inputMessage.attr('disabled', 'disabled');
-				$this.domElems.inputMessage.attr('placeholder', 'Обрыв соединения... подождите пожалуйста...');
-			}
+                if (!$this.reconnectTimeout) {
+                    $this.setCookie('lastMsgId', $this.lastMsgId, {expires: 30});
+                }
 
-			$this.connection.onerror = function(e) {
-				console.log('onError');
-			}
+                $this.retryTimer = setTimeout(function () {
+                    if (!$this.reconnectTimeout) {
+                        startPendingStatus();
 
-			$this.connection.onmessage = function(e) {
-				try {
-					var json = JSON.parse(e.data);
-				} catch (c) {
-					return;
-				}
+                        $this.reconnectTimeout = setTimeout(function () {
+                            endPendingStatus();
+                            $this.addLog('Попытки подключиться исчерпаны. Попробуйте зайти позднее.', 'system');
+                            $this.connection = null;
+                            $this.disconnect = 1;
+                            clearTimeout($this.retryTimer);
+                        }, 30000);
+                    }
 
-				$this.handleResponse(json);
-			};
-		},
-		sendMessage: function () {
-			var $this = this;
-			try {
-				var myNotification = new Notify('test');
-				if (myNotification.needsPermission()) {
-					myNotification.requestPermission();
-				}
-			} catch (e) { }
+                    $this.Connect();
+                }, 2000);
 
-			var command = {
-				subject: "Message",
-				msg: $this.domElems.inputMessage.val(),
-				to: $this.domElems.address.data('id')
-			}
-			$this.send(command);
-			$this.domElems.inputMessage.val('');
-		},
-		addLog: function (msg, cssclass) {
-			var $div = $('<div class="'+cssclass+'">' + msg + '</div>');
-			this.domElems.chat.append($div);
-			this.scrollDown();
-		},
-		send: function (params) {
-			if (!this.connection || this.connection.readyState == 1) {
-				this.connection.send(JSON.stringify(params));
-			}
-		},
-		returnToChat : function () {
-			this.domElems.menuChat.tab('show');
-			this.domElems.navbar.find('li').removeClass('active');
-		},
-		getUserInfo : function(name) {
-			for (var i in this.guests) {
-				if (this.guests[i].name == name) {
-					return this.guests[i];
-				}
-			}
-		},
-		getUserInfoById : function(id) {
-			for (var i in this.guests) {
-				if (this.guests[i].id == id) {
-					return this.guests[i];
-				}
-			}
-		},
-		togglePrivate : function(userId) {
-			var command = {
-				subject: 'Channel',
-				action: 'join',
-				user_id: userId
-			}
-			this.send(command);
-			this.returnToChat();
-		},
-		scrollDown: function() {
-			if (!this.isManualScrolling) {
-				var container = this.domElems.chat;
-				var height = container[0].scrollHeight;
-				container.scrollTop(height+1000);
-			}
-		},
-		notify: function (msg, author, tag, timeout) {
-			try {
-				var myNotification = new Notify(author ? author : App.chatName, {
-					body: msg,
-					tag: tag ? tag : App.chatName,
-					icon: 'img/sociochat.jpg',
-					timeout : timeout ? timeout : 5000
-				});
+                $this.domElems.inputMessage.attr('disabled', 'disabled');
+                $this.domElems.inputMessage.attr('placeholder', 'Обрыв соединения... подождите, пожалуйста...');
+            }
 
-				myNotification.show();
-			} catch (e) { }
-		},
-		getImgUrl: function (url) {
-			if (this.isRetina && url) {
-				var exp = /(\.\w+)/i
-				return url.replace(exp , "@2x$1");
-			}
-			return url;
-		},
-		setCookie: function (name, value, options) {
-			options = options || {};
+            $this.connection.onerror = function (e) {
+                console.log(e);
+            }
 
-			var expires = options.expires;
+            $this.connection.onmessage = function (e) {
+                try {
+                    var json = JSON.parse(e.data);
+                } catch (c) {
+                    console.log(c);
+                    return;
+                }
 
-			if (typeof expires == "number" && expires) {
-				var d = new Date();
-				d.setTime(d.getTime() + expires * 1000);
-				expires = options.expires = d;
-			}
-			if (expires && expires.toUTCString) {
-				options.expires = expires.toUTCString();
-			}
+                $this.handleResponse(json);
+            };
+        },
+        sendMessage: function () {
+            var $this = this;
+            try {
+                var myNotification = new Notify('test');
+                if (myNotification.needsPermission()) {
+                    myNotification.requestPermission();
+                }
+            } catch (e) {}
 
-			value = encodeURIComponent(value);
+            var command = {
+                subject: "Message",
+                msg: $this.domElems.inputMessage.val().replace(/(?:\r\n|\r|\n)/g, '|'),
+                to: $this.domElems.address.data('id')
+            };
 
-			var updatedCookie = name + "=" + value;
+            $this.send(command);
+            $this.domElems.inputMessage.val('');
+        },
+        addLog: function (msg, cssclass) {
+            var $div = $('<div class="' + cssclass + '">' + msg + '</div>');
+            this.domElems.chat.append($div);
+            this.scrollDown();
+        },
+        notifyError: function (errors) {
+            var currentContainer = $('.tab-pane.active').find('.notifications');
+            if (!currentContainer.length) {
+                for (var i in errors) {
+                    this.addLog('Ошибка: ' + errors[i], 'system');
+                }
+                return;
+            }
 
-			for (var propName in options) {
-				updatedCookie += "; " + propName;
-				var propValue = options[propName];
-				if (propValue !== true) {
-					updatedCookie += "=" + propValue;
-				}
-			}
+            currentContainer.show();
+            for (var i in errors) {
+                currentContainer.append('<p>'+errors[i]+'</p>');
+            }
 
-			document.cookie = updatedCookie;
-		}
-	}
+            setTimeout(function () {
+                currentContainer.fadeOut(500);
+                setTimeout(function() {
+                    currentContainer.empty();
+                }, 500);
+            }, 5000);
+        },
+        send: function (params) {
+            if (!this.connection || this.connection.readyState == 1) {
+                try {
+                    this.connection.send(JSON.stringify(params));
+                } catch (e) {
+                    console.log(e);
+                }
+
+            }
+        },
+        returnToChat: function () {
+            this.domElems.menuChat.tab('show');
+            this.domElems.navbar.find('li').removeClass('active');
+        },
+        getUserInfo: function (name) {
+            for (var i in this.guests) {
+                if (this.guests[i].name == name) {
+                    return this.guests[i];
+                }
+            }
+        },
+        getUserInfoById: function (id) {
+            for (var i in this.guests) {
+                if (this.guests[i].user_id == id) {
+                    return this.guests[i];
+                }
+            }
+        },
+        togglePrivate: function (userId) {
+            var command = {
+                subject: 'Channel',
+                action: 'join',
+                user_id: userId
+            }
+            this.send(command);
+            this.returnToChat();
+        },
+        scrollDown: function () {
+            if (!this.isManualScrolling && this.domElems.chat.is(":visible")) {
+                var container = this.domElems.chat;
+                var height = container[0].scrollHeight+100;
+                container.scrollTop(height);
+            }
+        },
+
+        getImgUrl: function (url) {
+            if (this.isRetina && url) {
+                var exp = /(\.\w+)/i
+                return url.replace(exp, "@2x$1");
+            }
+            return '//' + this.domain + url;
+        },
+        setCookie: function (name, value, options) {
+            options = options || {};
+
+            var expires = options.expires;
+
+            if (typeof expires == "number" && expires) {
+                var d = new Date();
+                d.setTime(d.getTime() + expires * 1000);
+                expires = options.expires = d;
+            }
+            if (expires && expires.toUTCString) {
+                options.expires = expires.toUTCString();
+            }
+
+            value = encodeURIComponent(value);
+
+            var updatedCookie = name + "=" + value;
+
+            for (var propName in options) {
+                updatedCookie += "; " + propName;
+                var propValue = options[propName];
+                if (propValue !== true) {
+                    updatedCookie += "=" + propValue;
+                }
+            }
+
+            document.cookie = updatedCookie;
+        },
+        getCookie: function (name) {
+            var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        },
+        timeUTCConvert: function(serverTime, full) {
+            function pad(n) {
+                return ("0" + n).slice(-2);
+            }
+
+            var time = new Date();
+            var str = null;
+            if (full) {
+                str = serverTime;
+            } else {
+                str = (time.getMonth()+1) + '/' + time.getDate() + '/' + time.getFullYear() + ' ' + serverTime;
+            }
+
+            time = new Date(Date.parse(str+ ' UTC'));
+
+            var result = '';
+
+            if (full) {
+                result = time.getFullYear()+'-'+pad(time.getMonth()+1)+'-'+pad(time.getDate()) + ' ';
+            }
+            result += pad(time.getHours()) + ':' + pad(time.getMinutes()) + ':' + pad(time.getSeconds());
+            return result;
+        },
+        getAvatar: function (user) {
+            var text = '<div class="user-avatar" data-id="' + user.user_id + '">';
+            if (user && user.avatarThumb) {
+                text += '<img src="' + this.getImgUrl(user.avatarThumb) + '">';
+            } else {
+                text += '<span class="glyphicon glyphicon-user"></span>';
+            }
+
+            return text + '</div>';
+        },
+        connectionManager: function(callback) {
+            var ip_dups = {};
+
+            var RTCPeerConnection = window.RTCPeerConnection
+                || window.mozRTCPeerConnection
+                || window.webkitRTCPeerConnection;
+            var useWebKit = !!window.webkitRTCPeerConnection;
+
+            if(!RTCPeerConnection){
+                var win = iframe.contentWindow;
+                RTCPeerConnection = win.RTCPeerConnection
+                    || win.mozRTCPeerConnection
+                    || win.webkitRTCPeerConnection;
+                useWebKit = !!win.webkitRTCPeerConnection;
+            }
+
+            var mediaConstraints = {
+                optional: [{RtpDataChannels: true}]
+            };
+
+            var servers = {iceServers: [{urls: "stun:stun.services.mozilla.com"}]};
+            var pc = new RTCPeerConnection(servers, mediaConstraints);
+
+            function handleCandidate(candidate){
+                var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
+                var ip_addr = ip_regex.exec(candidate)[1];
+
+                if(ip_dups[ip_addr] === undefined)
+                    callback(ip_addr);
+
+                ip_dups[ip_addr] = true;
+            }
+
+            pc.onicecandidate = function(ice){
+                if(ice.candidate) {
+                    handleCandidate(ice.candidate.candidate);
+                }
+            };
+
+            pc.createDataChannel("");
+            pc.createOffer(function(result) {
+                pc.setLocalDescription(result, function(){}, function(){});
+
+            }, function(){});
+
+            setTimeout(function(){
+                var lines = pc.localDescription.sdp.split('\n');
+                lines.forEach(function(line){
+                    if(line.indexOf('a=candidate:') === 0)
+                        handleCandidate(line);
+                });
+            }, 1000);
+        }
+    }
 });

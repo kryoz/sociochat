@@ -14,43 +14,43 @@ use React\EventLoop\Timer\TimerInterface;
 class MockTimer implements TimerInterface
 {
 
-	public function getLoop()
-	{
+    public function getLoop()
+    {
 
-	}
+    }
 
-	public function getInterval()
-	{
+    public function getInterval()
+    {
 
-	}
+    }
 
-	public function getCallback()
-	{
+    public function getCallback()
+    {
 
-	}
+    }
 
-	public function setData($data)
-	{
+    public function setData($data)
+    {
 
-	}
+    }
 
-	public function getData()
-	{
+    public function getData()
+    {
 
-	}
+    }
 
-	public function isPeriodic()
-	{
+    public function isPeriodic()
+    {
 
-	}
+    }
 
-	public function isActive()
-	{
+    public function isActive()
+    {
 
-	}
+    }
 
-	public function cancel()
-	{
+    public function cancel()
+    {
 
-	}
+    }
 }

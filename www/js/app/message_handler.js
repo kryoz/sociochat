@@ -1,268 +1,290 @@
-define(function() {
-	return {
-		app: {},
-		process: function($this, response) {
-			if (!response.msg) {
-				return;
-			}
-			this.app = $this;
-			var msg = '';
-			var msgCSStype = '';
+define(function () {
+    return {
+        app: {},
+        process: function ($app, response) {
+            if (!response.msg) {
+                return;
+            }
+            this.app = $app;
+            var $this = this;
+            var msg = '';
+            var msgCSStype = $this.getAnimationType($app.user) + ' ';
 
-			if (response.lastMsgId) {
-				$this.lastMsgId = response.lastMsgId;
-			}
+            if (response.lastMsgId) {
+                $app.lastMsgId = response.lastMsgId;
+            }
 
-			if (response.fromName) {
-				var fromUser = response.userInfo ? response.userInfo : $this.getUserInfo(response.fromName);
+            if (response.time) {
+                var time = $app.timeUTCConvert(response.time);
+            }
 
-				if ($this.chatLastFrom != response.fromName) {
-					msg += this.getAvatar(fromUser)+' ';
-					msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="['+ response.time+'] ' + (fromUser ? fromUser.tim : '') + '">'+ response.fromName +'</div>';
-				} else {
-					msgCSStype = 'repeat';
-				}
-				if (response.toName) {
-					var toUser = $this.getUserInfo(response.toName);
-					var toWho = 'вас';
+            if (response.fromName) {
+                var fromUser = response.userInfo ? response.userInfo : $app.getUserInfo(response.fromName);
 
-					if (fromUser && fromUser.name == $this.ownName) {
-						$this.notify(response.msg, response.fromName, 'private', 5000);
-						toWho = toUser.name;
-					}
+                if ($app.chatLastFrom != response.fromName) {
+                    msg += $app.getAvatar(fromUser) + ' ';
+                    if (time) {
+                        msg += '<div class="time">' + time + '</div>';
+                    }
+                    msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">' + response.fromName + '</div>';
+                } else {
+                    msgCSStype += 'repeat';
+                }
 
-					msg += '<div class="private"><b>[приватно для '+toWho+']</b> '
-				}
+                if (response.toName) {
+                    var toUser = $app.getUserInfo(response.toName);
+                    var toWho = 'вас';
 
-				msg += this.parse(response.msg);
+                    if (fromUser && fromUser.name == $app.user.name) {
+                        toWho = toUser.name;
+                    }
 
-				if (response.toName) {
-					msg += '</div>';
-				}
-			} else {
-				var time = '';
-				if (response.time) {
-					time = '[' + response.time + '] ';
-				}
+                    msg += '<div class="private"><b>[приватно для ' + toWho + ']</b> '
+                }
 
-				var found = response.msg.match(/приглашает вас в приват\. #(\d+)# предложение/ig);
-				if (found) {
-					var userName = $this.getUserInfoById(found[1]);
-					$this.notify('Вас пригласил в приват пользователь '+userName+'!', $this.ownName, 'private', 30000);
-					response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" onclick="App.togglePrivate($1)">Принять</a> предложение');
-				}
+                msg += '<div>'+this.parse(response.msg)+'</div>';
+                msg += '<div class="clearfix"></div>';
 
-				msg += '<span>'+time + response.msg + '</span>';
-				msgCSStype = 'system';
-			}
+                if (response.toName) {
+                    msg += '</div>';
+                }
+            } else {
+                var found = response.msg.match(/приглашает вас в приват\. #(\d+)# предложение/ig);
 
-			if ($this.msgCount > $this.bufferSize) {
-				var $line = $this.domElems.chat.find('div').first();
-				$line.unbind().remove();
-			}
+                if (found) {
+                    var userName = $app.getUserInfoById(found[1]);
+                    $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $app.user.name, 'private', 30000);
+                    response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
+                }
 
-			$this.addLog(msg, msgCSStype);
-			$this.msgCount++;
+                if (time) {
+                    msg += '<div class="time">' + time + '</div>';
+                }
 
-			if ($this.timer == null && ($this.guestCount > 0)) {
-				$this.notify(response.msg, fromUser ? fromUser.name : '', 'msg');
-			}
+                msg += '<span>' + response.msg + '</span>';
+                msgCSStype += 'system';
+            }
 
-			// notifications timeout
-			clearTimeout($this.timer);
-			$this.timer = setTimeout(function () {
-				$this.timer = null
-			}, $this.delay);
+            if ($app.msgCount > $app.bufferSize) {
+                var $line = $app.domElems.chat.find('div').first();
+                $line.unbind().remove();
+            }
 
-			$this.chatLastFrom = response.fromName;
-			this.bindClicks();
-		},
-		parse: function(incomingMessage) {
-			var originalText = incomingMessage;
-			var $this = this.app;
+            $app.addLog(msg, msgCSStype);
+            $app.msgCount++;
+            $app.chatLastFrom = response.fromName;
 
-			var replaceURL = function (text) {
-				var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
-				return text.replace(exp, "<a target='_blank' href='$1'>$1</a>");
-			}
+            this.notify(response, fromUser);
+            this.bindClicks();
+        },
+        getAnimationType: function (user) {
+            switch (user.msgAnimationType) {
+                case '1':
+                    return 'simple';
+                    break;
+                case '2':
+                    return 'left';
+                    break;
+                case '3':
+                default:
+                    return 'fadein';
+            }
+        },
+        notify: function (response, fromUser) {
+            var $this = this.app;
 
-			var replaceWithImgLinks = function (text) {
-				var exp = /\b(https?:\/\/(?:[a-z\-]+\.)+[a-z]{2,6}(?:\/[^/#?]+)+\.(?:jpg|gif|png))\b/ig;
-				var replacement = '<div class="img-thumbnail image-clickable"><a href="#" title="Открыть картинку"><span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
-				replacement += '<img src="$1" style="max-width:100%; height: auto; display: none"></div>';
+            if (!$this.isTabActive) {
+                if ($this.user.notifyVisual) {
+                    try {
+                        var myNotification = new Notify(fromUser ? fromUser.name : $this.chatName, {
+                            body: response.msg.replace(/<\/?[^>]+>/gi, ''),
+                            tag: 'msg',
+                            icon: 'img/sociochat.jpg',
+                            timeout: 5000
+                        });
 
-				return text.replace(exp, replacement);
-			}
+                        myNotification.show();
+                    } catch (e) {}
+                }
 
-			var replaceWithYoutube = function (text) {
-				var exp = /\b(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
-				var replacement = '<a href="$1" class="video" target="_blank"><img src="https://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
+                if ($this.user.notifySound) {
+                    $this.sound.play();
+                }
+            }
+        },
+        parse: function (incomingMessage) {
+            var $this = this.app;
 
-				return text.replace(exp, replacement);
-			}
+            var isHTML = function (str) {
+                var a = document.createElement('div');
+                a.innerHTML = str;
+                for (var c = a.childNodes, i = c.length; i--;) {
+                    if (c[i].nodeType == 1 && c[i].tagName != 'CODE') {
+                        return true;
+                    }
+                }
+                return false;
+            };
 
-			var replaceWithAudio = function (text) {
-				var exp = /\bhttps:\/\/sociochat\.me\/audio\.php\?(?:token=.*)?track_id=(.*)\b/ig;
-				var track_id = exp.exec(text);
+            var getImgReplacementString = function (holder) {
+                var replacement = '<div class="img-thumbnail image-clickable" data-src="' + holder +'"><a href="#" title="Открыть картинку">';
+                replacement += '<span class="glyphicon glyphicon-picture" style="font-size: 16px"></span></a>';
+                replacement += '<img src="" style="max-width:100%; height: auto; display: none"></div>';
+                return replacement;
+            }
 
-				if (track_id) {
-					track_id = track_id[1];
 
-					var musicElId = 'music-'+track_id+'-'+Math.floor(Math.random()*100000);
-					var replacement = '<div class="img-thumbnail">' +
-						'<a id="'+musicElId+
-						'" class="music" href="#" title="Воспроизвести музыку">' +
-						'<span class="glyphicon glyphicon-play-circle"></span> ...</a>';
+            var replaceWithImgLinks = function (text) {
+                var exp = '(https?:\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;()]*[-A-ZА-Я0-9+&@#\/%=~_|()]\.(?:jpg|jpeg|gif|png)(?:[^ ]*))';
+                return text.replace(new RegExp(exp, 'ig'), getImgReplacementString('$1'));
+            }
 
-					$.ajax({
-						type: "GET",
-						url: '/audio_player.php',
-						data: {
-							'track_id' : track_id
-						},
-						success: function(response) {
-							var $realTrackEl = $('#'+musicElId);
-							var $audio = $('#player');
+            var replaceURL = function (text) {
+                if (isHTML(text)) {
+                    return text;
+                }
+                var exp = /(\b(https?|ftp|file):\/\/[-A-ZА-Я0-9+&@#\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\/%=~_|()])/ig;
+                var url = exp.exec(text);
 
-							$realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' '+response.artist+' - '+response.track));
-							$realTrackEl.data('url', response.url);
+                if (!url) {
+                    return text;
+                }
+                url = url[1];
 
-							if ($audio.length == 0) {
-								$('body').append('<audio id="player" style="display: none"></audio>');
-								$audio = $('#player');
-							}
+                var imgRegExp = replaceWithImgLinks(text);
+                if (imgRegExp != text) {
+                    return imgRegExp;
+                }
 
-							$audio.get(0).addEventListener('ended', function() {
-								$realTrackEl.find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
-							});
+                var hash = MD5(url);
 
-							$realTrackEl.click(function() {
-								var audioElRaw = $audio.get(0);
+                $.ajax({
+                    type: "GET",
+                    url: '/img.php',
+                    data: {
+                        'url': url
+                    },
+                    success: function (response) {
+                        var $img = $('#url-' + hash);
 
-								if (audioElRaw.paused || audioElRaw.ended || $audio.data('current-track-id') != $(this).attr('id')) {
-									$('#'+$audio.data('current-track-id')).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
+                        $img.hide();
 
-									if ($audio.data('current-track-id') != $(this).attr('id')) {
-										$audio.attr('src', $(this).data('url'));
-									}
+                        var replacement = $(getImgReplacementString($img.attr('href')));
 
-									$audio.data('current-track-id', $(this).attr('id'));
+                        replacement.insertAfter($img);
+                        $img.remove();
 
-									$(this).find('.glyphicon-play-circle').removeClass('glyphicon-play-circle').addClass('glyphicon-pause');
-									audioElRaw.play();
-								} else {
-									$(this).find('.glyphicon-pause').removeClass('glyphicon-pause').addClass('glyphicon-play-circle');
-									audioElRaw.pause();
-								}
-							});
-						},
-						dataType: 'json'
-					});
+                        replacement.click(function () {
+                            $(this).find('img').toggle();
+                            $(this).find('a').toggle();
+                            $this.scrollDown();
+                        });
+                    },
+                    dataType: 'json'
+                });
 
-					return text.replace(exp, replacement);
-				}
 
-				return text;
-			}
 
-			var replaceOwnName = function (text) {
-				var exp = new RegExp('(?:\\s||,||\\.)('+$this.ownName+')(?:\\s||,||\\.)', 'ig');
-				return text.replace(exp , "<code class=\"private\">$1</code>");
-			}
+                return text.replace(exp, '<a target="_blank" href="$1" id="url-' + hash + '">$1</a>');
+            }
 
-			incomingMessage = replaceOwnName(incomingMessage);
+            var replaceWithYoutube = function (text) {
+                var exp = /\b(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=(.*)&?(?:.*))\b/ig;
+                var replacement = '<a href="$1" class="video" target="_blank"><img src="https://img.youtube.com/vi/$2/hqdefault.jpg"></a>';
 
-			var res = replaceWithImgLinks(incomingMessage);
-			res = replaceWithYoutube(res);
-			res = replaceWithAudio(res);
+                return text.replace(exp, replacement);
+            }
 
-			if (res == incomingMessage) {
-				incomingMessage = replaceURL(incomingMessage);
-			} else {
-				incomingMessage = res;
-			}
+            var replaceOwnName = function (text) {
+                var exp = new RegExp('(?:\\s||,||\\.)(' + $this.user.name + ')(?:\\s||,||\\.)', 'ig');
+                return text.replace(exp, "<code class=\"private\">$1</code>");
+            }
 
-			return incomingMessage;
-		},
-		bindClicks: function() {
-			var $this = this.app;
-			var newLine = $this.domElems.chat.find('div:last-child');
-			var newNameOnLine = newLine.find('.nickname');
+            incomingMessage = replaceOwnName(incomingMessage);
+            incomingMessage = replaceWithYoutube(incomingMessage);
+            incomingMessage = replaceURL(incomingMessage);
 
-			newLine.find('.image-clickable').click(function() {
-				$(this).find('img').toggle();
-				$(this).find('a').toggle();
-				$this.scrollDown();
-			});
+            return incomingMessage;
+        },
+        bindClicks: function () {
+            var $this = this.app;
+            var newLine = $this.domElems.chat.find('div:last-child');
+            var newNameOnLine = newLine.find('.nickname');
 
-			newNameOnLine.click(function() {
-				if ($this.clickTimer) {
-					clearTimeout($this.clickTimer);
-				}
-				var el = $(this);
-				$this.clickTimer = setTimeout(function () {
-					$this.domElems.inputMessage.val(el.text() + ', ' + $this.domElems.inputMessage.val());
-					$this.domElems.inputMessage.focus();
-				}, 250);
-			});
+            newLine.find('.image-clickable').click(function () {
+                var $img = $(this).find('img');
 
-			newNameOnLine.dblclick(function() {
-				clearTimeout($this.clickTimer);
+                if ($img.attr('src') == '') {
+                    $img.attr('src', $(this).data('src'));
+                }
 
-				var userName = $(this).text();
-				var userId = $this.getUserInfo(userName).user_id;
-				if (userId) {
-					$this.domElems.address.find('option[value='+userId+']').attr('selected', 'selected');
-					$this.domElems.address.data('id', userId);
-					$this.domElems.addressReset.show();
-					$this.domElems.inputMessage.focus();
-				}
-			});
+                $img.toggle();
+                $(this).find('a').toggle();
+                $this.scrollDown();
+            });
 
-			newLine.find('.user-avatar').click(function () {
-				var ava = $(this);
-				var imgFull = ava.data('src');
-				console.log(imgFull);
-				if (imgFull != null) {
-					var imgEl = $('<img src="'+imgFull+'" style="margin-left:-45px">');
-					ava.parent().prepend(imgEl);
-					imgEl.click(function() {
-						$(this).remove();
-						ava.show();
-					});
+            newNameOnLine.click(function () {
+                if ($this.clickTimer) {
+                    clearTimeout($this.clickTimer);
+                }
+                var el = $(this);
+                $this.clickTimer = setTimeout(function () {
+                    $this.domElems.inputMessage.val(el.text() + ', ' + $this.domElems.inputMessage.val());
+                    $this.domElems.inputMessage.focus();
+                }, 250);
+            });
 
-					ava.hide();
-				}
-			});
-		},
-		getSexClass: function(user) {
-			var colorClass = null;
-			var sex = user ? user.sex : 'Аноним';
-			switch (sex) {
-				case 'Женщина' :
-					colorClass = 'female'; break;
-				case 'Аноним' :
-					colorClass = 'anonym'; break;
-				case 'Мужчина' :
-					colorClass = 'male'; break;
-				default:
-					colorClass = '';
-			}
-			return colorClass;
-		},
-		getAvatar: function (user) {
-			var $this = this.app;
-			var text = '<div class="user-avatar"';
+            newNameOnLine.dblclick(function () {
+                clearTimeout($this.clickTimer);
 
-			if (user && user.avatarThumb) {
-				text += ' data-src="'+user.avatarImg+'">';
-				text += '<img src="'+ $this.getImgUrl(user.avatarThumb) +'">';
-			} else {
-				text += '>';
-				text += '<span class="glyphicon glyphicon-user"></span>';
-			}
+                var userName = $(this).text();
+                var userId = $this.getUserInfo(userName).user_id;
+                if (userId) {
+                    $this.domElems.address.find('option[value=' + userId + ']').attr('selected', 'selected');
+                    $this.domElems.address.data('id', userId);
+                    $this.domElems.addressReset.show();
+                    $this.domElems.inputMessage.focus();
+                }
+            });
 
-			return text+'</div>';
-		}
-	}
+            newLine.find('.user-avatar').click(function () {
+                var e = this;
+                require(['userdetails_handler'], function (userDetails) {
+                    userDetails.process($this, $(e).data('id'));
+                });
+            });
+
+            newLine.find('.accept-private').click(function () {
+                var userId = $(this).data('id');
+                if (userId) {
+                    $this.togglePrivate(userId);
+                }
+            });
+
+            newLine.find('a[bind-play-click=1]').click(function (e) {
+                var musicElId = $(this).attr('id');
+                require(['audio'], function (audio) {
+                    audio.playMusic($this.domElems.audioPlayer, e, musicElId);
+                });
+            });
+        },
+        getSexClass: function (user) {
+            var colorClass = null;
+            var sex = user ? user.sex : 'Аноним';
+            switch (sex) {
+                case 'Женщина' :
+                    colorClass = 'female';
+                    break;
+                case 'Аноним' :
+                    colorClass = 'anonym';
+                    break;
+                case 'Мужчина' :
+                    colorClass = 'male';
+                    break;
+                default:
+                    colorClass = '';
+            }
+            return colorClass;
+        }
+    }
 });

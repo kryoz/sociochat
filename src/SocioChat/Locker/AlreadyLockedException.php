@@ -3,6 +3,8 @@
 namespace SocioChat\Locker;
 
 
-class AlreadyLockedException extends \Exception
+use Core\BaseException;
+
+class AlreadyLockedException extends BaseException
 {
 }

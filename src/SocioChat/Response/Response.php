@@ -2,113 +2,127 @@
 namespace SocioChat\Response;
 
 use SocioChat\Clients\User;
+use SocioChat\DAO\PropertiesDAO;
+use SocioChat\DI;
 
 abstract class Response
 {
-	protected $guests;
-	protected $fromName;
-	/**
-	 * @var User
-	 */
-	protected $from;
-	/**
-	 * @var User
-	 */
-	protected $recipient;
-	protected $chatId;
-	protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient'];
+    protected $guests;
+    protected $fromName;
+    /**
+     * @var User
+     */
+    protected $from;
+    /**
+     * @var User
+     */
+    protected $recipient;
+    protected $chatId;
+    protected $privateProperties = ['privateProperties', 'chatId', 'from', 'recipient'];
 
-	public function setChatId($chatId)
-	{
-		$this->chatId = $chatId;
-		return $this;
-	}
+    public function setChannelId($chatId)
+    {
+        $this->chatId = $chatId;
+        return $this;
+    }
 
-	public function getChatId()
-	{
-		return $this->chatId;
-	}
+    public function getChannelId()
+    {
+        return $this->chatId;
+    }
 
-	/**
-	 * @param array $guests
-	 * @return $this
-	 */
-	public function setGuests(array $guests = null)
-	{
-		if ($guests === null) {
-			$this->guests = null;
-			return $this;
-		}
+    /**
+     * @param array $guests
+     * @return $this
+     */
+    public function setGuests(array $guests = null)
+    {
+        if ($guests === null) {
+            $this->guests = null;
+            return $this;
+        }
 
-		foreach ($guests as $user) {
-			/* @var $user User */
-			$this->guests[] = $user->getProperties()->toPublicArray();
-		}
+	    $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
 
-		return $this;
-	}
+        foreach ($guests as $user) {
+            /* @var $user User */
+	        $props = $user->getProperties();
+            $this->guests[] = [
+		        PropertiesDAO::USER_ID => $props->getUserId(),
+	            PropertiesDAO::NAME => $props->getName(),
+	            PropertiesDAO::TIM => $props->getTim()->getName(),
+	            PropertiesDAO::SEX => $props->getSex()->getName(),
+	            PropertiesDAO::AVATAR . 'Thumb' => $props->getAvatarThumb() ? $avatarDir . $props->getAvatarThumb() : null,
+	            PropertiesDAO::CITY => $props->getCity(),
+	            PropertiesDAO::BIRTH => $props->getAge(),
+	            PropertiesDAO::KARMA => $props->getKarma(),
+	        ];
+        }
 
-	public function setGuestsRaw($guests)
-	{
-		$this->guests = $guests;
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @return array|null
-	 */
-	public function getGuests()
-	{
-		return $this->guests;
-	}
+    public function setGuestsRaw($guests)
+    {
+        $this->guests = $guests;
+        return $this;
+    }
 
-	public function getFromName()
-	{
-		return $this->from->getProperties()->getName();
-	}
+    /**
+     * @return array|null
+     */
+    public function getGuests()
+    {
+        return $this->guests;
+    }
 
-	public function setFrom(User $user)
-	{
-		$this->from = $user;
-		$this->fromName = $this->getFromName();
+    public function getFromName()
+    {
+        return $this->fromName;
+    }
 
-		return $this;
-	}
+    public function setFrom(User $user)
+    {
+        $this->from = $user;
+        $this->fromName = $user->getProperties()->getName();
 
-	public function getFrom()
-	{
-		return $this->from;
-	}
+        return $this;
+    }
 
-	public function setRecipient(User $user)
-	{
-		$this->recipient = $user;
-		return $this;
-	}
+    public function getFrom()
+    {
+        return $this->from;
+    }
 
-	public function getRecipient()
-	{
-		return $this->recipient;
-	}
+    public function setRecipient(User $user)
+    {
+        $this->recipient = $user;
+        return $this;
+    }
 
-	public function toString()
-	{
-		$arr = [];
+    public function getRecipient()
+    {
+        return $this->recipient;
+    }
 
-		$reflection = new \ReflectionClass(new static);
+    public function toString()
+    {
+        $arr = [];
 
-		foreach ($reflection->getProperties() as $property) {
-			$pName = $property->getName();
-			$val = $this->{$pName};
+        $reflection = new \ReflectionClass(new static);
 
-			if ($val === null) {
-				continue;
-			}
-			if (!in_array($pName, $this->privateProperties)) {
-				$arr += [ $pName => $this->{$pName} ];
-			}
-		}
+        foreach ($reflection->getProperties() as $property) {
+            $pName = $property->getName();
+            $val = $this->{$pName};
 
-		return json_encode($arr);
-	}
+            if ($val === null) {
+                continue;
+            }
+            if (!in_array($pName, $this->privateProperties)) {
+                $arr += [$pName => $this->{$pName}];
+            }
+        }
+
+        return json_encode($arr);
+    }
 }

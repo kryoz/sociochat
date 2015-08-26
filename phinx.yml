@@ -4,13 +4,13 @@ paths:
 environments:
     default_migration_table: phinxlog
     default_database: development
-    production:
-        adapter: mysql
+    development:
+        adapter: pgsql
         host: localhost
         name: chat
         user: chat
         pass: '123'
-        port: 3306
+        port: 5432
         charset: utf8
 
     development:
