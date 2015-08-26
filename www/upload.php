@@ -101,6 +101,7 @@ try {
     makeImage($uploadedFile, $avatarsConfig->thumbdim, 'png', '_t.png', $dim);
     makeImage($uploadedFile, $avatarsConfig->thumbdim * 2, 'png', '_t@2x.png', $dim);
     makeImage($uploadedFile, $avatarsConfig->maxdim, 'jpeg', '.jpg', $dim);
+    makeImage($uploadedFile, $avatarsConfig->maxdim * 2, 'jpeg', '@2x.jpg', $dim);
 } catch (\Core\BaseException $e) {
     $message = $lang->getPhrase('profile.ErrorProcessingImage') . ': ' . $e->getMessage();
     response(500, $message);

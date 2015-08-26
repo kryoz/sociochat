@@ -12,16 +12,16 @@ define(function () {
             $.ajax({
                 url: '/user.php',
                 type: 'GET',
-                data: {id: userId},
+                data: {id: userId, r: Math.random()},
                 success: function (response) {
                     var profile = $app.domElems.userDetails;
                     var avatar = '<div class="user-avatar"><span class="glyphicon glyphicon-user" style="font-size: 148px"></span></div>';
                     if (response.avatar) {
-                        avatar = '<img src="' + response.avatar + '" class="img-responsive img-rounded">';
+                        avatar = '<img src="' + $app.getImgUrl(response.avatar) + '" class="img-responsive img-rounded">';
                     }
                     profile.find('.photo').html(avatar);
                     profile.find('.name').text(response.name);
-                    profile.find('.about').text(response.about == null ? '' : response.about);
+                    profile.find('.about').html(response.about == null ? '' : response.about);
                     profile.find('.sex').text(response.sex);
                     profile.find('.tim').text(response.tim);
                     profile.find('.city').text(response.city == null ? '' : response.city);

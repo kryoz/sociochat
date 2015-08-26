@@ -426,11 +426,15 @@ define('app', function () {
             var useWebKit = !!window.webkitRTCPeerConnection;
 
             if(!RTCPeerConnection){
-                var win = iframe.contentWindow;
+                var win = document.getElementById('iframe').contentWindow;
                 RTCPeerConnection = win.RTCPeerConnection
                     || win.mozRTCPeerConnection
                     || win.webkitRTCPeerConnection;
                 useWebKit = !!win.webkitRTCPeerConnection;
+            }
+
+            if (!RTCPeerConnection) {
+                return;
             }
 
             var mediaConstraints = {

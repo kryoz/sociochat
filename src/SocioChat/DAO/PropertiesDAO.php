@@ -141,6 +141,11 @@ class PropertiesDAO extends DAOBase
         return $this[self::AVATAR] ? $this[self::AVATAR] . '.jpg' : null;
     }
 
+	public function getAvatarImg2X()
+	{
+		return $this[self::AVATAR] ? $this[self::AVATAR] . '@2x.jpg' : null;
+	}
+
     public function getAvatarThumb()
     {
         return $this[self::AVATAR] ? $this[self::AVATAR] . '_t.png' : null;
@@ -379,7 +384,7 @@ class PropertiesDAO extends DAOBase
 			WHERE t.$userId = :user_id";
 		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
 
-		return $data[0]['rating'];
+		return isset($data[0]) ? $data[0]['rating'] : 0;
 	}
 
 	public function getRudeRating()
@@ -395,7 +400,7 @@ class PropertiesDAO extends DAOBase
 			WHERE t.$userId = :user_id";
 		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
 
-		return $data[0]['rating'];
+		return isset($data[0]) ? $data[0]['rating'] : 0;
 	}
 
 	public function getMusicRating()
@@ -411,7 +416,7 @@ class PropertiesDAO extends DAOBase
 			WHERE t.$userId = :user_id";
 		$data = $this->db->query($query, [self::USER_ID => $this->getUserId()]);
 
-		return $data[0]['rating'];
+		return isset($data[0]) ? $data[0]['rating'] : 0;
 	}
 
 	public function getTotal()
@@ -421,7 +426,7 @@ class PropertiesDAO extends DAOBase
 		$query = "SELECT count(*) AS total FROM {$this->dbTable} WHERE $wordsCount > 0 OR $messagesCount > 0";
 		$data = $this->db->query($query);
 
-		return $data[0]['total'];
+		return isset($data[0]) ? $data[0]['total'] : 0;
 	}
 
     public function importJSON($json)

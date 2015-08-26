@@ -1,4 +1,6 @@
 <?php
+// Referral handler
+// Set cookie that will be used when user registers
 
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
@@ -32,7 +34,7 @@ if ($token) {
 	}
 }
 
-setcookie('refUserId', $user->getId(), time()+180);
+setcookie('refUserId', $user->getId(), time()+86400);
 
 header('Location: '.$config->domain->protocol.$config->domain->web, true, 302);
 return;

@@ -1,5 +1,9 @@
 <?php
 
+// The script handles audio stream and caches info in DB
+// Pleer.com allows streaming only to the host which made request
+// So we have to be a sort of proxy. audio.sociochat.me is confnginx caching proxy
+
 use SocioChat\DAO\MusicDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;

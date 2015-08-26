@@ -1,10 +1,10 @@
 <?php
-
+// The script verifies if the hyperlink image
 if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die('only internal requests allowed');
 }
 
-
+// This function gets only image header
 function ranger($url)
 {
     $headers = [

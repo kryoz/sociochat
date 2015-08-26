@@ -1,5 +1,5 @@
 <?php
-
+// The script return user profile info
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DI;
@@ -57,7 +57,7 @@ foreach (NameChangeDAO::create()->getHistoryByUserId($user->getId()) as $name) {
 $response = [
 	'id'    => $user->getId(),
     'name' => $props->getName(),
-	'about' => $props->getAbout(),
+	'about' => nl2br($props->getAbout()),
     'avatar' => $props->getAvatarImg() ? $avatarDir.$props->getAvatarImg() : null,
     'tim' => $props->getTim()->getName(),
 	'sex' => $props->getSex()->getName(),

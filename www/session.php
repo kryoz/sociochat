@@ -1,5 +1,6 @@
 <?php
 
+// This script generates session id that will be verified in daemon
 use SocioChat\DAO\TmpSessionDAO;
 use SocioChat\DI;
 use SocioChat\DIBuilder;

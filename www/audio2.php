@@ -1,5 +1,5 @@
 <?php
-
+// The script handles searching music via pleer.com api
 use SocioChat\DI;
 use SocioChat\DIBuilder;
 
