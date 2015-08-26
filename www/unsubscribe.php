@@ -1,4 +1,7 @@
 <?php
+
+// Sets profile option subscribe = off
+
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\DI;

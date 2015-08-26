@@ -1,4 +1,5 @@
 <?php
+// Script handles password recovery process
 
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;

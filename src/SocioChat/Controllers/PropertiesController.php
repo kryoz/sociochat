@@ -324,7 +324,7 @@ class PropertiesController extends ControllerBase
         $properties
             ->setUserId($user->getId())
             ->setName($request[PropertiesDAO::NAME])
-            ->setAbout(nl2br($request[PropertiesDAO::ABOUT]))
+            ->setAbout(strip_tags(trim($request[PropertiesDAO::ABOUT])))
             ->setTim(TimEnum::create($request[PropertiesDAO::TIM]))
             ->setSex(SexEnum::create($request[PropertiesDAO::SEX]))
             ->setCity($request[PropertiesDAO::CITY])

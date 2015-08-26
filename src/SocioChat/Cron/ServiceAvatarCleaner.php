@@ -66,6 +66,11 @@ class ServiceAvatarCleaner implements CronService
 		    } else {
 			    $userProp->setAvatarImg(null);
 		    }
+		    if (file_exists($dir . $userProp->getAvatarImg2X())) {
+			    unset($fileList[$dir . $userProp->getAvatarImg2X()]);
+		    } else {
+			    $userProp->setAvatarImg(null);
+		    }
 
 		    if ($userProp->getAvatarImg() === null) {
 			    $userProp->save();

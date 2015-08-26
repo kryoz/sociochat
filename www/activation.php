@@ -1,4 +1,6 @@
 <?php
+// Last part of password recovery process
+
 use SocioChat\DAO\ActivationsDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\DI;

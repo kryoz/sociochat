@@ -4,8 +4,6 @@ SocioChat
 This is source code of  <a href="https://sociochat.me" target="_blank">SocioChat</a>.
 The code is a bit rough in some places, lacking of tests, but pretty readable and managable.
 
-This repository has stopped updating since July 2014. The sources moved to a private repository due to lack of volunteers and starting of commercial features.
-
 SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
 ## The story
@@ -28,10 +26,13 @@ So now thanks to that decision and GitHub, of course, you have an opportunity to
 * Flood protection
 * Socionic/MBTI dual chat roulette
 * Avatars
+* Music player
+* Rude filter
+* Message history dumps to memcache 
 
 ## Installation
 
-* PHP 5.5
+* At least PHP 5.5
 * MySQL or PostgreSQL. Use `phinx` utility to apply migrations.
 * Give write permissions to `www/uploads/avatars`
 * PECL extension 'libevent' is recommended to achieve the best speed
@@ -74,3 +75,5 @@ To start in daemon mode use
 ```bash
 nohup php bin/chat-server.php &
 ```
+
+See also `nginx.conf` 

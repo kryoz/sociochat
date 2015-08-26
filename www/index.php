@@ -142,7 +142,7 @@ require_once "pages/header.php";
     </form>
 </div>
 <audio id="player" style="display: none"></audio>
-
+<iframe id="iframe" sandbox="allow-same-origin allow-scripts" style="display: none"></iframe>
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/md5.js"></script>
