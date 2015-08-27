@@ -23,10 +23,13 @@ define(function () {
 
                 if ($app.chatLastFrom != response.fromName) {
                     msg += $app.getAvatar(fromUser) + ' ';
+                    msg += '<div class="nick-time">';
+                    msg += '<span class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">' + response.fromName + '</span>';
                     if (time) {
-                        msg += '<div class="time">' + time + '</div>';
+                        msg += '<span class="time"> - ' + time + '</span>';
                     }
-                    msg += '<div class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">' + response.fromName + '</div>';
+                    msg += '</div>';
+                    msgCSStype += 'first';
                 } else {
                     msgCSStype += 'repeat';
                 }
@@ -55,10 +58,6 @@ define(function () {
                     var userName = $app.getUserInfoById(found[1]);
                     $this.notify('Вас пригласил в приват пользователь ' + userName + '!', $app.user.name, 'private', 30000);
                     response.msg = response.msg.replace(/#(\d+)# предложение/ig, '<a href="#" class="accept-private" data-id="$1">Принять</a> предложение');
-                }
-
-                if (time) {
-                    msg += '<div class="time">' + time + '</div>';
                 }
 
                 msg += '<span>' + response.msg + '</span>';
