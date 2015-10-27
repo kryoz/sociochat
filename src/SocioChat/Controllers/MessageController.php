@@ -9,6 +9,7 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\DI;
 use Core\Form\Form;
 use SocioChat\Forms\Rules;
+use SocioChat\Message\Filters\BlackListFilter;
 use SocioChat\Message\Filters\Chain;
 use SocioChat\Message\Filters\CommandFilter;
 use SocioChat\Message\Filters\HashFilter;
@@ -140,6 +141,7 @@ class MessageController extends ControllerBase
             ->setRequest($request)
             ->setUser($from)
             ->addHandler(new InputFilter())
+            ->addHandler(new BlackListFilter())
             ->addHandler(new LineBreakFilter())
             ->addHandler(new CommandFilter())
             ->addHandler(new MusicFilter())

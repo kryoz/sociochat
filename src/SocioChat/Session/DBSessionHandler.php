@@ -10,6 +10,7 @@ use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserBlacklistDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\DAO\UserNotesDAO;
+use SocioChat\DI;
 
 class DBSessionHandler implements SessionHandler
 {
@@ -38,7 +39,12 @@ class DBSessionHandler implements SessionHandler
             ->setAccessTime(date(self::TIMESTAMP))
             ->setUserId($userId);
 
-        $session->save();
+        try {
+            $session->save();
+        } catch (\PDOException $e) {
+            DI::get()->getLogger()->error($e->getMessage().': '.$e->getTraceAsString());
+        }
+
     }
 
     public function clean($ttl)
