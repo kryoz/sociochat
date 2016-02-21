@@ -6,3 +6,5 @@ chat.log
 www/uploads/avatars/
 www/chatlog.txt
 www/sitemap.xml
+bin/phinx
+bin/phpunit

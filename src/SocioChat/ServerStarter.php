@@ -81,6 +81,8 @@ class ServerStarter
             fwrite($fh, getmypid());
         }
         fclose($fh);
+
+        cli_set_process_title('sociochat.me');
     }
 
     private function setupChannels()
