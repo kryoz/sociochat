@@ -19,12 +19,10 @@
         "monolog/monolog": "*@stable",
         "orno/di": "*@stable",
         "robmorgan/phinx": "*@stable",
-        "kryoz/core": "dev-master",
-        "hpatoio/bitly-api": "~2.0"
+        "kryoz/core": "dev-master"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*@stable",
-        "squizlabs/php_codesniffer": "dev-phpcs-fixer"
+        "phpunit/phpunit": "4.*@stable"
     },
 	"config": {
 		"bin-dir": "bin/"

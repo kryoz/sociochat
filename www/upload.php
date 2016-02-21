@@ -21,34 +21,52 @@ $lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
 function response($code, $message, $image = null)
 {
     http_response_code($code);
-    echo json_encode(['success' => $code == 200, 'response' => $message, 'image' => $image]);
+    echo json_encode(
+        [
+            'success' => $code === 200,
+            'response' => $message,
+            'image' => $image
+        ]
+    );
 }
 
 function makeImage($uploadedFile, $dim, $format, $extension, array $coords)
 {
     $imagick = new Imagick();
     $imagick->readImage($uploadedFile);
-    $imgWidth = $imagick->getimagewidth();
-    $imgHeight = $imagick->getimageheight();
+    $imgWidth = $imagick->getImageWidth();
+    $imgHeight = $imagick->getImageHeight();
 
-    if ($coords['w'] > $imgWidth || $coords['h'] > $imgHeight || $coords['x'] > $imgWidth || $coords['y'] > $imgHeight || $coords['portW'] > $imgWidth || $coords['portH'] > $imgHeight) {
-        throw new Exception('Invalid crop data');
+    if (
+        $coords['w'] > $imgWidth ||
+        $coords['h'] > $imgHeight ||
+        $coords['x'] > $imgWidth ||
+        $coords['y'] > $imgHeight ||
+        $coords['portW'] > $imgWidth ||
+        $coords['portH'] > $imgHeight
+    )
+    {
+        throw new \Core\BaseException('Invalid crop data');
     }
 
     $xFactor = $imgWidth / $coords['portW'];
     $yFactor = $imgHeight / $coords['portH'];
 
-    $imagick->cropimage($xFactor * $coords['w'], $yFactor * $coords['h'], $xFactor * $coords['x'],
-        $yFactor * $coords['y']);
+    $imagick->cropImage(
+        $xFactor * $coords['w'],
+        $yFactor * $coords['h'],
+        $xFactor * $coords['x'],
+        $yFactor * $coords['y']
+    );
 
-    $imgWidth = $imagick->getimagewidth();
-    $imgHeight = $imagick->getimageheight();
+    $imgWidth = $imagick->getImageWidth();
+    $imgHeight = $imagick->getImageHeight();
 
     if ($imgHeight > $dim || $imgWidth > $dim) {
         if ($imgHeight > $imgWidth) {
-            $imagick->resizeimage(0, $dim, imagick::FILTER_CATROM, 1);
+            $imagick->resizeImage(0, $dim, imagick::FILTER_CATROM, 1);
         } else {
-            $imagick->resizeimage($dim, 0, imagick::FILTER_CATROM, 1);
+            $imagick->resizeImage($dim, 0, imagick::FILTER_CATROM, 1);
         }
     }
 
@@ -79,7 +97,7 @@ if (!$token->getId() || !$img || $dim === null) {
     return;
 }
 
-if (!in_array($img['type'], $allowedMIME)) {
+if (!in_array($img['type'], $allowedMIME, 1)) {
     $message = $lang->getPhrase('profile.IncorrectFileType');
     response(403, $message);
     return;
