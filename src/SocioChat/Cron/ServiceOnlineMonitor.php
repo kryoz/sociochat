@@ -61,7 +61,9 @@ class ServiceOnlineMonitor implements CronService
 		    if ($online->isUserOnline($channelId, $props->getUserId())) {
 			    continue;
 		    }
-		    $onlineCount = $online->getOnlineCount($channelId);
+
+            $onlineList = $online->getOnlineList($channelId);
+		    $onlineCount = count($onlineList);
 
 		    if ((time() - $timeOut) < strtotime($props->getOnlineNotificationLast())) {
 			    continue;
@@ -69,20 +71,30 @@ class ServiceOnlineMonitor implements CronService
 		    if ($onlineCount >= $limit) {
 			    $user = UserDAO::create()->getById($props->getUserId());
 			    $list = '';
-			    foreach ($online->getOnlineList($channelId) as $userId => $userName) {
-				    $list .= "<li>$userName</li>";
+                $config = DI::get()->getConfig();
+                $avatarDir = $config->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
+                $hostURL = $config->domain->protocol . $config->domain->web;
+			    foreach ($onlineList as $userId => $userName) {
+                    $guest = PropertiesDAO::create()->getByUserId($userId);
+                    $avatarThumb = '<div style="width:36px; height: 36px; display: inline-block; background-color: #ccc"></div>';
+                    if ($guest->getAvatarThumb()) {
+                        $guestAvatarURL = $hostURL.'/'.$avatarDir.$guest->getAvatarThumb2X();
+                        $avatarThumb = '<img src="'.$guestAvatarURL.'" style="width:36px; height: 36px;">';
+                    }
+
+				    $list .= "<div style='height:36px; margin-bottom: 12px'>$avatarThumb <span style='display: inline-block; height: 100%;line-height: 100%'>$userName</span></div>";
 			    }
 
-			    $msg = "<h2>Достижение заданного онлайна в SocioChat.Me</h2>
+			    $msg = "<h2>Достижение заданного онлайна в Sociochat.me</h2>
 <p>Вы получили данное письмо, потому что пожелали уведомить вас, когда в чате будет более $limit человек.</p>
 <p>Сейчас на основном канале общается $onlineCount человек</p>
-<ul>$list</ul>
-<p><a href=\"" . $config->domain->protocol . $config->domain->web . "\">Присоединяйтесь</a>!</p>";
+$list
+<p><a href=\"" . $hostURL . "\">Присоединяйтесь</a>!</p>";
 
 			    $message = MailQueueDAO::create();
 			    $message
 				    ->setEmail($user->getEmail())
-				    ->setTopic('SocioChat.Me - Заходите к нам!')
+				    ->setTopic('Заходите поговорить :)')
 			        ->setMessage($msg);
 			    $message->save();
 

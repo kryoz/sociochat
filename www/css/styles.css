@@ -92,6 +92,9 @@ doesnotexist:-o-prefocus, #panel-chat {
     margin-left: -48px;
     margin-top: 2px;
     float: left;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 2px 2px #aaa;
 }
 
 .user-avatar img {
@@ -119,6 +122,8 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 #log .user-avatar .glyphicon {
     color: #ddd;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .chat-container, .chat-container .panel-body {

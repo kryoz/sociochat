@@ -19,7 +19,12 @@
         "monolog/monolog": "*@stable",
         "orno/di": "*@stable",
         "robmorgan/phinx": "*@stable",
-        "kryoz/core": "dev-master"
+        "kryoz/core": "dev-master",
+        "silex/silex": "@stable",
+        "symfony/yaml":"2.*",
+        "symfony/config":"2.*",
+        "twig/twig": "@stable"
+
     },
     "require-dev": {
         "phpunit/phpunit": "4.*@stable"

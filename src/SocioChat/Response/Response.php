@@ -42,7 +42,7 @@ abstract class Response
             return $this;
         }
 
-	    $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
+	    $avatarDir = DI::get()->getConfig()->uploads->avatars->wwwfolder.'/';
 
         foreach ($guests as $user) {
             /* @var $user User */
