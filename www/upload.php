@@ -16,7 +16,8 @@ $avatarsConfig = $config->uploads->avatars;
 $httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0,
     2) : 'en';
 /** @var $lang Lang */
-$lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
+$lang = $container->get('lang');
+$lang->setLanguage($httpAcceptLanguage);
 
 function response($code, $message, $image = null)
 {

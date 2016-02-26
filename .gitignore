@@ -3,6 +3,7 @@ conf/local.ini
 vendor/
 composer.phar
 chat.log
+front.log
 www/uploads/avatars/
 www/chatlog.txt
 www/sitemap.xml

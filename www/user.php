@@ -14,12 +14,13 @@ if (!isset($_COOKIE['token'])) {
 	die('Unauthorized');
 }
 
-require_once '../config.php';
+require_once dirname(__DIR__).'/config.php';
 $container = DI::get()->container();
 DIBuilder::setupNormal($container);
 $httpAcceptLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])
 	? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en';
-$lang = $container->get('lang')->setLangByCode($httpAcceptLanguage);
+$lang = $container->get('lang');
+$lang->setLangByCode($httpAcceptLanguage);
 /* @var $lang Lang */
 $userId = isset($_GET['id']) ? (int) $_GET['id'] : '';
 

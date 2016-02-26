@@ -1,0 +1,28 @@
+{% extends 'common_page.twig' %}
+{% block heading %}
+    {{ title }}
+{% endblock %}
+{% block message %}
+    <p>Введите ваш email, на который была произведена регистрация учётной записи.</p>
+
+    <p>На него прийдет письмо с дальнейшими инструкциями для восстановления доступа.</p>
+
+    <form action="/recovery" method="post">
+        <div class="row btn-vert-block form-group {{ hasError }}">
+            <div class="btn-vert-block col-md-6">
+                <input type="text" class="form-control" placeholder="E-mail" name="email" id="email" value="{{ email }}">
+                {% if hasError %}
+                    <div class="has-error">
+                    {% for errMsg in errors %}
+                        <label class="control-label" for="email">{{ errMsg }}</label>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                <input type="hidden" name="token" value="{{ token }}"/>
+            </div>
+            <div class="btn-vert-block col-md-6">
+                <button type="submit" class="btn btn-block btn-success">Выслать</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

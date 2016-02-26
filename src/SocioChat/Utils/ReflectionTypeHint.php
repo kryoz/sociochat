@@ -29,7 +29,7 @@ use ReflectionMethod;
  * @author   Nasibullin Rinat
  * @version  1.1.0
  */
-class ReflectionTypeHint
+final class ReflectionTypeHint
 {
     protected static $hints = array(
         'int' => 'is_int',

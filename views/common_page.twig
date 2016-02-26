@@ -1,10 +1,12 @@
-<?php
-if (!defined('ROOT')) {
-    die('not allowed');
-}
-
-require_once "header.php";
-?>
+{% set hostUrl = config.domain.protocol ~ config.domain.web %}
+{% set version = config.version %}
+{% if js is not defined %}
+    {% set js = '' %}
+{% endif %}
+{% if meta is not defined %}
+    {% set meta = '' %}
+{% endif %}
+{% include 'header.twig' with [title, js, hostUrl, meta, version] %}
 <body>
 <div class="container" id="wrapper">
 	<div class="navbar navbar-default">
@@ -13,13 +15,13 @@ require_once "header.php";
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 					<span class="sr-only">Toggle navigation</span><span class="glyphicon glyphicon-cog"></span>
 				</button>
-				<a href="#chat" class="navbar-brand navbar-left tab-panel" data-toggle="tab">СоциоЧат</a>
+				<a href="#chat" class="navbar-brand navbar-left tab-panel" data-toggle="tab">{{ 'SocioChat'|trans }}</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul role="navigation" class="nav navbar-nav">
 					<li>
-						<a href="/faq.php" target="_blank" class="tip" title="Ответы на частые вопросы"><span
-								class="glyphicon glyphicon-question-sign"></span> ЧаВо</a>
+						<a href="/faq.php" target="_blank" class="tip" title="{{ 'index.FAQtip'|trans }}"><span
+								class="glyphicon glyphicon-question-sign"></span> {{ 'index.FAQ'|trans }}</a>
 					</li>
 				</ul>
 			</div>
@@ -27,10 +29,14 @@ require_once "header.php";
 	</div>
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<?=$heading?>
+            {% block heading %}
+			{{ heading }}
+            {% endblock %}
 		</div>
 		<div class="panel-body">
-		<?=$message?>
+            {% block message %}
+		    {{ message }}
+            {% endblock %}
 		</div>
 	</div>
 </div>

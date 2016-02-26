@@ -1,14 +1,9 @@
-<?php
-if (!defined('ROOT')) {
-    die('not allowed');
-}
-?>
 <div class="panel panel-default tab-pane" id="login">
-    <div class="panel-heading"><?= $lang->getPhrase('index.Login') ?></div>
+    <div class="panel-heading">{{ 'index.Login'|trans }}</div>
     <div class="panel-body">
         <form action="dummy.html" method="post" target="dummy" autocomplete="on">
-            <p><?= $lang->getPhrase('login.Tip') ?> <a href="recovery.php"
-                                                       target="_blank"><?= $lang->getPhrase('login.Forgot') ?></a></p>
+            <p>{{ 'login.Tip'|trans }} <a href="recovery.php"
+                                                       target="_blank">{{ 'login.Forgot'|trans }}</a></p>
 
             <div class="row btn-vert-block form-group">
                 <div class="btn-vert-block col-md-6">
@@ -21,7 +16,7 @@ if (!defined('ROOT')) {
             <div class="row btn-vert-block">
                 <div class="col-md-12 btn-vert-block">
                     <button type="submit" class="btn btn-success btn-block"
-                            id="do-login"><?= $lang->getPhrase('login.Auth') ?></button>
+                            id="do-login">{{ 'login.Auth'|trans }}</button>
                 </div>
             </div>
         </form>

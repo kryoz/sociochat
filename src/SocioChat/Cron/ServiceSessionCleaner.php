@@ -2,8 +2,8 @@
 
 namespace SocioChat\Cron;
 
+use Silex\Application;
 use SocioChat\DAO\TmpSessionDAO;
-use SocioChat\DI;
 use SocioChat\Session\DBSessionHandler;
 
 class ServiceSessionCleaner implements CronService
@@ -41,10 +41,10 @@ class ServiceSessionCleaner implements CronService
         return "Script to clean sessions\n";
     }
 
-    public function run()
+    public function run(Application $app)
     {
         $sessionHandler = new DBSessionHandler();
-        $config = DI::get()->getConfig();
+        $config = $app['config'];
 
         $sessionHandler->clean($config->session->lifetime);
 

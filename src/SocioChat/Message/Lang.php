@@ -1,7 +1,6 @@
 <?php
 namespace SocioChat\Message;
 
-use Monolog\Logger;
 use SocioChat\DI;
 
 class Lang
@@ -26,7 +25,7 @@ class Lang
      * @param $langCode
      * @return $this
      */
-    public function setLangByCode($langCode)
+    public function setLanguage($langCode)
     {
         $this->lexicon = $this->dictionary->getLang($langCode);
         $this->lang = $langCode;
@@ -44,7 +43,7 @@ class Lang
         $logger = DI::get()->getLogger();
 
         if (!$this->lexicon) {
-            $logger->warn('No localization was set', [__CLASS__]);
+            $logger->warn('No localization was set', [__METHOD__]);
             return $token . '|' . implode('|', $args);
         }
 
@@ -53,7 +52,7 @@ class Lang
         foreach (explode('.', $token) as $part) {
             if (!$newScope = $scope->get($part)) {
                 $logger->warn('No localization was matched for ' . $part . ' (lang = ' . $this->lang . ')',
-                    [__CLASS__]);
+                    [__METHOD__]);
                 return $token . '|' . implode('|', $args);
             }
 

@@ -1,10 +1,5 @@
-<?php
-if (!defined('ROOT')) {
-    die('not allowed');
-}
-?>
 <div class="panel panel-default tab-pane" id="hashes">
-    <div class="panel-heading"><?=$lang->getPhrase('index.Hashes')?></div>
+    <div class="panel-heading">{{ 'index.Hashes'|trans }}</div>
     <div class="panel-body">
         <div class="row btn-vert-block form-group">
             <div class="btn-vert-block col-md-6">
@@ -25,6 +20,6 @@ if (!defined('ROOT')) {
         <ul class="pagination"></ul>
     </div>
     <div class="panel-footer">
-        <a class="btn btn-block btn-success return-to-chat"><?= $lang->getPhrase('index.Return') ?></a>
+        <a class="btn btn-block btn-success return-to-chat">{{ 'index.Return'|trans }}</a>
     </div>
 </div>

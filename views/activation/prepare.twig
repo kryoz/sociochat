@@ -1,0 +1,24 @@
+{% extends 'common_page.twig' %}
+{% block message %}
+<p>{{ 'Activation.EnterNewPassword'|trans }}</p>
+<form action="/activation" method="POST">
+    <input type="hidden" name="email" value="{{ email }}"/>
+    <input type="hidden" name="code" value="{{ code }}"/>
+    {% if hasError %}
+        <div class="has-error">
+            {% for errMsg in errors %}
+                <label class="control-label">{{ errMsg }}</label>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="row btn-vert-block form-group {{ hasError }}">
+        <div class="btn-vert-block col-md-6">
+            <input type="password" class="form-control" placeholder="{{ 'Password'|trans }}" name="password" id="password">
+        </div>
+        <div class="btn-vert-block col-md-6">
+            <input type="password" class="form-control" placeholder="{{ 'Activation.PasswordRepeat'|trans }}" name="password-repeat" id="password-repeat">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-block btn-success">{{ 'Save'|trans }}</button>
+</form>
+{% endblock %}

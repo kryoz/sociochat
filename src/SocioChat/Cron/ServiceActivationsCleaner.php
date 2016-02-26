@@ -2,6 +2,7 @@
 
 namespace SocioChat\Cron;
 
+use Silex\Application;
 use SocioChat\DAO\ActivationsDAO;
 
 class ServiceActivationsCleaner implements CronService
@@ -39,7 +40,7 @@ class ServiceActivationsCleaner implements CronService
         return "Script to clean sessions\n";
     }
 
-    public function run()
+    public function run(Application $app)
     {
         ActivationsDAO::create()->dropUsedActivations();
     }

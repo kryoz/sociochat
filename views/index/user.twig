@@ -1,12 +1,3 @@
-<?php
-use SocioChat\Enum\SexEnum;
-use SocioChat\Enum\TimEnum;
-use SocioChat\Forms\Rules;
-
-if (!defined('ROOT')) {
-    die('not allowed');
-}
-?>
 <div class="panel panel-default tab-pane" id="user-details">
     <div class="panel-heading name" style="font-weight: bold"></div>
     <div class="panel-body">
@@ -27,31 +18,31 @@ if (!defined('ROOT')) {
 	    <div class="col-md-8">
 		    <table class="table">
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.TIM') ?></td>
+				    <td>{{ 'profile.TIM'|trans }}</td>
 				    <td class="tim"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.Sex') ?></td>
+				    <td>{{ 'profile.Sex'|trans }}</td>
 				    <td class="sex"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.City') ?></td>
+				    <td>{{ 'profile.City'|trans }}</td>
 				    <td class="city"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.Birth') ?></td>
+				    <td>{{ 'profile.Birth'|trans }}</td>
 				    <td class="birth"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.About') ?></td>
+				    <td>{{ 'profile.About'|trans }}</td>
 				    <td class="about"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.Names') ?></td>
+				    <td>{{ 'profile.Names'|trans }}</td>
 				    <td class="names"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.Karma') ?></td>
+				    <td>{{ 'profile.Karma'|trans }}</td>
 				    <td>
 					    <div class="btn-group btn-group-sm actions">
 						    <a class="btn btn-danger karma-minus" title="-"><span class="glyphicon glyphicon-minus"></span></a>
@@ -61,27 +52,27 @@ if (!defined('ROOT')) {
 				    </td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.DateRegister') ?></td>
+				    <td>{{ 'profile.DateRegister'|trans }}</td>
 				    <td class="date-register"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.OnlineTime') ?></td>
+				    <td>{{ 'profile.OnlineTime'|trans }}</td>
 				    <td class="online-time"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.WordRating') ?></td>
+				    <td>{{ 'profile.WordRating'|trans }}</td>
 				    <td class="word-rating"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.RudeRating') ?></td>
+				    <td>{{ 'profile.RudeRating'|trans }}</td>
 				    <td class="rude-rating"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.MusicRating') ?></td>
+				    <td>{{ 'profile.MusicRating'|trans }}</td>
 				    <td class="music-rating"></td>
 			    </tr>
 			    <tr>
-				    <td><?= $lang->getPhrase('profile.Note') ?></td>
+				    <td>{{ 'profile.Note'|trans }}</td>
 				    <td class="note-data"></td>
 			    </tr>
 		    </table>
@@ -89,6 +80,6 @@ if (!defined('ROOT')) {
 	    </div>
     </div>
 	<div class="panel-footer">
-		<a class="btn btn-block btn-success return-to-chat"><?= $lang->getPhrase('index.Return') ?></a>
+		<a class="btn btn-block btn-success return-to-chat">{{ 'index.Return'|trans }}</a>
 	</div>
 </div>
