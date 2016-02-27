@@ -1,0 +1,169 @@
+{% set version = config.version %}
+{% include 'header.twig' with [title, js, hostUrl, meta, version] %}
+<body>
+<div class="container" id="wrapper">
+    <header class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only"></span><span class="glyphicon glyphicon-collapse-down"></span>
+                </button>
+                <div class="navbar-left">
+                    <div class="navbar-brand">
+                        <a href="#chat" class="tab-panel"
+                           data-toggle="tab">{{ 'index.SocioChat'|trans|raw }}</a>
+                    </div>
+                    <div class="dropdown navbar-cobrand">
+	                    <span class="space">
+
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle"
+                               title="{{ 'index.Channels'|trans }}"><b
+                                        class="caret"></b>
+                                <span id="channel-name">{{ 'index.Channels'|trans }}</span>
+                            </a>
+							<ul class="dropdown-menu" id="menu-channels"></ul>
+						</span>
+
+                        <a href="#who" class="tip tab-panel space" data-toggle="tab"
+                           title="{{ 'index.UserListTip'|trans }}">
+                                    <span class="badge"><span class="glyphicon glyphicon-user"></span> <span
+                                                id="guest-counter">0</span></span>
+                        </a>
+                        <a href="#profile" class="tip tab-panel space cog" data-toggle="tab"
+                           title="{{ 'index.ProfileTip'|trans }}">
+                            <span class="glyphicon glyphicon-cog"></span>
+                        </a>
+
+
+
+                        <a href="#login" class="tip tab-panel space" data-toggle="tab"
+                           title="{{ 'index.LoginTip'|trans }}">
+                            <span class="glyphicon glyphicon-log-in"></span> {{ 'index.Login'|trans }}
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul role="navigation" class="nav navbar-nav">
+                    <li>
+                        <a href="#music" class="tip tab-panel" data-toggle="tab"
+                           title="{{ 'index.MusicTip'|trans }}"><span
+                                    class="glyphicon glyphicon-headphones"></span> {{ 'index.Music'|trans }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" id="menu-dualize" class="tip"
+                           title="{{ 'index.StartDualSearchTip'|trans }}"><span
+                                    class="glyphicon glyphicon-search"></span> {{ 'index.StartDualSearch'|trans }}
+                        </a>
+                    </li>
+                    <li style="display: none">
+                        <a href="#" id="menu-dualize-stop" class="tip"
+                           title="{{ 'index.StopDualSearchTip'|trans }}"><span
+                                    class="glyphicon glyphicon-remove"></span> {{ 'index.StopDualSearch'|trans }}
+                        </a>
+                    </li>
+                    <li style="display: none">
+                        <a href="#" id="menu-exit" class="tip"
+                           title="{{ 'index.ReturnToPublicTip'|trans }}"><span
+                                    class="glyphicon glyphicon-home"></span> {{ 'index.ReturnToPublic'|trans }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/faq.php" target="_blank" class="tip"
+                           title="{{ 'index.FAQtip'|trans }}"><span
+                                    class="glyphicon glyphicon-question-sign"></span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="tab-content tab-wrapper">
+
+        {% include "index/chat.twig" %}
+        {% include "index/whois.twig" %}
+        {% include "index/music.twig" %}
+        {% include "index/profile.twig" %}
+        {% include "index/login.twig" %}
+        {% include "index/user.twig" %}
+
+    </div>
+
+</div>
+<div id="dont_forget" style="display: none">
+    <form action="" method="post" autocomplete="on">
+        <input type="email" required class="form-control" autocomplete="on"
+               placeholder="{{ 'Email'|trans }}" id="login-name">
+        <input type="password" required class="form-control" autocomplete="on"
+               placeholder="{{ 'Password'|trans }}" id="login-password">
+        <input type="submit" value="Login" id="dummy_submit"/>
+    </form>
+</div>
+<audio id="player" style="display: none"></audio>
+<iframe id="iframe" sandbox="allow-same-origin allow-scripts" style="display: none"></iframe>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/md5.js"></script>
+<script type="text/javascript" src="js/notify.min.js"></script>
+<script type="text/javascript" src="js/TabWindowVisibilityManager.min.js"></script>
+<script type="text/javascript" src="js/jcrop/jquery.Jcrop.min.js"></script>
+<script type="text/javascript" src="js/ladda.js"></script>
+<script src="js/require.js"></script>
+<script type="text/javascript">
+    require.config({
+        baseUrl: 'js/app',
+        urlArgs: 'bust=v' + '{{ config.version }}'
+    });
+
+    define('config', function () {
+        return {
+            wsDomain: '{{ config.domain.ws }}',
+            webDomain: '{{ config.domain.web }}',
+            protocol: '{{ config.domain.protocol }}',
+            maxMsgLength: {{ maxMsgLength }}
+        };
+        });
+
+    var App = requirejs(['./main']);
+
+    $(function () {
+        $('#email_place_holder').replaceWith($('#login-name'));
+        $('#password_place_holder').replaceWith($('#login-password'));
+        $('#dont_forget').remove();
+
+        $(".tip").tooltip({
+            placement: 'bottom'
+        });
+    });
+</script>
+{% if config.metrika %}
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">(function (d, w, c) {
+            (w[c] = w[c] || []).push(function () {
+                try {
+                    w.yaCounter23912545 = new Ya.Metrika({id: 23912545, trackLinks: true});
+                } catch (e) {
+                }
+            });
+            var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
+                n.parentNode.insertBefore(s, n);
+            };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+            if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else {
+                f();
+            }
+        })(document, window, "yandex_metrika_callbacks");</script>
+    <noscript>
+        <div><img src="//mc.yandex.ru/watch/23912545" style="position:absolute; left:-9999px;" alt=""/></div>
+    </noscript><!-- /Yandex.Metrika counter -->
+{% endif %}
+</body>
+</html>

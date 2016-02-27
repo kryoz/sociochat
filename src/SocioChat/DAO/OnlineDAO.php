@@ -60,15 +60,6 @@ class OnlineDAO
 	}
 
 	/**
-	 * @param int $channelId
-	 * @return int
-	 */
-	public function getOnlineCount($channelId = 1)
-	{
-		return count($this->getOnlineList($channelId));
-	}
-
-	/**
 	 * @param $channelId
 	 * @param $userId
 	 * @return bool

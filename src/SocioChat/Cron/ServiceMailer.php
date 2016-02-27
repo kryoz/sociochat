@@ -2,6 +2,7 @@
 
 namespace SocioChat\Cron;
 
+use Silex\Application;
 use SocioChat\DAO\MailQueueDAO;
 use SocioChat\Utils\Mail;
 
@@ -39,7 +40,7 @@ class ServiceMailer implements CronService
         return "Script to mail messages\n";
     }
 
-    public function run()
+    public function run(Application $app)
     {
 	    $mail = new Mail();
 

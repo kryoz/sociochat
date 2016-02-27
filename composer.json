@@ -1,27 +1,38 @@
 {
-    "php": ">=5.5.0",
-    "autoload": {
-        "psr-4": {
-            "": "src/",
-            "Test\\" : "unit-tests/"
-        }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/kryoz/bicycle"
-        }
-    ],
-    "require": {
-        "react/react": "0.4.*@stable",
-        "cboden/Ratchet": "*@stable",
-        "zendframework/zend-config": "*@stable",
-        "monolog/monolog": "*@stable",
-        "orno/di": "*@stable",
-        "robmorgan/phinx": "*@stable",
-        "kryoz/core": "dev-master"
-    },
-	"config": {
-		"bin-dir": "bin/"
-	}
+  "php": ">=5.5.0",
+  "autoload": {
+    "psr-4": {
+      "": "src/",
+      "Test\\" : "unit-tests/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/kryoz/bicycle"
+    }
+  ],
+  "require": {
+    "react/react": "0.4.*@stable",
+    "cboden/Ratchet": "*@stable",
+    "zendframework/zend-config": "*@stable",
+    "monolog/monolog": "*@stable",
+    "orno/di": "*@stable",
+    "robmorgan/phinx": "*@stable",
+    "kryoz/core": "dev-master",
+    "silex/silex": "@stable",
+    "symfony/yaml":"2.*",
+    "symfony/config":"2.*",
+    "twig/twig": "@stable",
+    "symfony/twig-bridge": "2.*@stable",
+    "swiftmailer/swiftmailer": "*@stable",
+    "symfony/translation": "2.*@stable"
+
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.*@stable"
+  },
+  "config": {
+    "bin-dir": "bin/"
+  }
 }

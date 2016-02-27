@@ -2,6 +2,8 @@
 
 namespace SocioChat\Cron;
 
+use Silex\Application;
+
 interface CronService
 {
     /**
@@ -24,5 +26,5 @@ interface CronService
      */
     public function getHelp();
 
-    public function run();
+    public function run(Application $app);
 }

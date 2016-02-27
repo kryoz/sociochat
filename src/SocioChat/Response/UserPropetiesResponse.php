@@ -147,7 +147,7 @@ class UserPropetiesResponse extends Response
     public function setUserProps(User $user)
     {
         $properties = $user->getProperties();
-        $dir = DI::get()->getConfig()->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
+        $dir = DI::get()->getConfig()->uploads->avatars->wwwfolder . '/';
 
         $this
             ->setId($user->getId())

@@ -1,6 +1,7 @@
 <?php
 namespace SocioChat;
 
+use Core\BaseException;
 use Core\DB\DB;
 use Core\Memcache\Wrapper;
 use Monolog\Handler\StreamHandler;
@@ -78,8 +79,14 @@ class DIBuilder
             'logger',
             function () use ($container) {
                 $logger = new Logger('Chat');
-                $type = $container->get('config')->logger ?: fopen('php://stdout', 'w');
-                $logger->pushHandler(new StreamHandler($type));
+                $config = $container->get('config');
+                $file = $config->logger ?: fopen('php://stdout', 'w');
+                if (!file_exists($file)) {
+                    throw new BaseException("Check log file path in your config ($file)");
+                }
+                $logHandler = (new StreamHandler($file))
+                    ->setLevel($config->isDebug ? Logger::DEBUG : Logger::INFO);
+                $logger->pushHandler($logHandler);
                 return $logger;
             },
             true
@@ -124,8 +131,8 @@ class DIBuilder
                 try {
                     $cache = new Cache(new CacheApc());
                 } catch (CacheException $e) {
-                    $container->get('logger')->err('Unable to initialize APC cache!');
-                    die($e->getMessage());
+                    $container->get('logger')->error('Unable to initialize APC cache!');
+                    throw new BaseException('Unable to initialize APC cache!');
                 }
 
                 return $cache;
@@ -149,8 +156,8 @@ class DIBuilder
 					$wrapper = new Wrapper('sociochat', $servers);
 					$wrapper->toggleAll();
 				} catch (\Exception $e) {
-					$container->get('logger')->err('Unable to initialize memcached!');
-					die($e->getMessage());
+					$container->get('logger')->error('Unable to initialize memcached!');
+                    throw new BaseException('Unable to initialize memcached!');
 				}
 
 				return $wrapper;
@@ -199,9 +206,7 @@ class DIBuilder
 				$loop = $container->get('eventloop');
 				$dnsResolver = $dnsResolverFactory->createCached('8.8.8.8', $loop);
 				$factory = new HttpFactory();
-				$client = $factory->create($loop, $dnsResolver);
-
-				return $client;
+                return $factory->create($loop, $dnsResolver);
 			},
 			true
 		);

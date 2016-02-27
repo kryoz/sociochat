@@ -3,6 +3,7 @@
 namespace SocioChat\Cron;
 
 use Core\BaseException;
+use Silex\Application;
 use SocioChat\DI;
 use SocioChat\Locker\AlreadyLockedException;
 use SocioChat\Locker\LockerInDB;
@@ -13,7 +14,7 @@ class CronExecutor
     /**
      * @SuppressWarnings(PHPMD)
      */
-    public function run()
+    public function run(Application $app)
     {
         $options = CMDUtils::getOptionsList();
         if (!($service = $this->getService($options))) {
@@ -42,7 +43,7 @@ class CronExecutor
         }
 
         try {
-            $service->run();
+            $service->run($app);
             $locker->unlock($this->getLockName($service));
         } catch (BaseException $e) {
             $locker->unlock($this->getLockName($service));

@@ -3,6 +3,7 @@
 namespace SocioChat\Cron;
 
 use Core\Utils\DbQueryHelper;
+use Silex\Application;
 use SocioChat\DAO\MailQueueDAO;
 use SocioChat\DAO\OnlineDAO;
 use SocioChat\DAO\PropertiesDAO;
@@ -44,51 +45,56 @@ class ServiceOnlineMonitor implements CronService
         return "Script to check online users\n";
     }
 
-    public function run()
+    public function run(Application $app)
     {
-	    $config = DI::get()->getConfig();
-	    $timeOut = $config->onlineMonitoringTimeout;
-	    // Let it be simple for a while
-	    $channelId = 1;
+        $config = $app['config'];
+        $timeOut = $config->onlineMonitoringTimeout;
+        // Let it be simple for a while
+        $channelId = 1;
 
-	    /** @var PropertiesDAO $props */
-	    foreach (PropertiesDAO::create()->getRegisteredList() as $props) {
-		    if (!$limit = $props->getOnlineNotificationLimit()) {
-			    continue;
-		    }
+        /** @var PropertiesDAO $props */
+        foreach (PropertiesDAO::create()->getRegisteredList() as $props) {
+            if (!$limit = $props->getOnlineNotificationLimit()) {
+                continue;
+            }
 
-		    $online = OnlineDAO::create();
-		    if ($online->isUserOnline($channelId, $props->getUserId())) {
-			    continue;
-		    }
-		    $onlineCount = $online->getOnlineCount($channelId);
+            $online = OnlineDAO::create();
+            if ($online->isUserOnline($channelId, $props->getUserId())) {
+                continue;
+            }
 
-		    if ((time() - $timeOut) < strtotime($props->getOnlineNotificationLast())) {
-			    continue;
-		    }
-		    if ($onlineCount >= $limit) {
-			    $user = UserDAO::create()->getById($props->getUserId());
-			    $list = '';
-			    foreach ($online->getOnlineList($channelId) as $userId => $userName) {
-				    $list .= "<li>$userName</li>";
-			    }
+            $onlineList = $online->getOnlineList($channelId);
+            $onlineCount = count($onlineList);
 
-			    $msg = "<h2>Достижение заданного онлайна в SocioChat.Me</h2>
-<p>Вы получили данное письмо, потому что пожелали уведомить вас, когда в чате будет более $limit человек.</p>
-<p>Сейчас на основном канале общается $onlineCount человек</p>
-<ul>$list</ul>
-<p><a href=\"" . $config->domain->protocol . $config->domain->web . "\">Присоединяйтесь</a>!</p>";
+            if ((time() - $timeOut) < strtotime($props->getOnlineNotificationLast())) {
+                continue;
+            }
+            if ($onlineCount >= $limit) {
+                $user = UserDAO::create()->getById($props->getUserId());
 
-			    $message = MailQueueDAO::create();
-			    $message
-				    ->setEmail($user->getEmail())
-				    ->setTopic('SocioChat.Me - Заходите к нам!')
-			        ->setMessage($msg);
-			    $message->save();
+                $msg = $app['twig']->render(
+                    'mail/online.twig',
+                    [
+                        'avatarDir' => $config->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR,
+                        'hostUrl' => $config->domain->protocol . $config->domain->web,
+                        'props' => PropertiesDAO::create(),
+                        'onlineCount' => $onlineCount,
+                        'onlineList' => $onlineList,
+                        'limit' => $limit,
+                    ]
+                );
 
-			    $props->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
-			    $props->save(false);
-		    }
+
+                $message = MailQueueDAO::create();
+                $message
+                    ->setEmail($user->getEmail())
+                    ->setTopic('Заходите поговорить :)')
+                    ->setMessage($msg);
+                $message->save();
+
+                $props->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
+                $props->save(false);
+            }
         }
     }
 }

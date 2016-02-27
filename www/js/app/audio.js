@@ -6,7 +6,7 @@ define(function () {
             var songName = app.domElems.musicInput.val();
             var trackList = $("#music .table");
             var pagination = $("#music .pagination");
-            var sourceUrl = '/audio2.php';
+            var sourceUrl = '/audio-list/';
             var $this = this;
 
             var renderSongSearchResponse = function (response) {
@@ -44,7 +44,7 @@ define(function () {
                 html = '';
                 for (var i = 1; i < Math.floor(trackCount / pageCount); i++) {
                     var currentClass = '';
-                    var src = '?song=' + songName + '&page=' + i;
+                    var src = songName + '/' + i;
 
                     if (i == page) {
                         currentClass = 'active';
@@ -61,7 +61,7 @@ define(function () {
                     var src = $(this).data('src');
                     if (src) {
                         $.ajax({
-                            type: "POST",
+                            type: "GET",
                             url: sourceUrl + src,
                             success: function (r) {
                                 renderSongSearchResponse(r);
@@ -77,10 +77,7 @@ define(function () {
                     if (!$realTrackEl.data('src')) {
                         $.ajax({
                             type: "GET",
-                            url: '/audio_player.php',
-                            data: {
-                                'track_id': $realTrackEl.data('id')
-                            },
+                            url: '/audio-player/'+$realTrackEl.data('id'),
                             success: function (response) {
                                 $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' ' + response.artist + ' - ' + response.track));
                                 $realTrackEl.data('src', response.url);
@@ -106,11 +103,8 @@ define(function () {
                 l.start();
 
                 $.ajax({
-                    type: "POST",
-                    url: sourceUrl,
-                    data: {
-                        'song': songName
-                    },
+                    type: "GET",
+                    url: sourceUrl + songName,
                     success: function (response) {
                         renderSongSearchResponse(response);
                         l.stop();

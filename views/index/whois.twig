@@ -1,0 +1,26 @@
+<div class="panel panel-default tab-pane" id="who">
+    <div class="panel-heading">
+        {{ 'index.UserListTip'|trans }}
+    </div>
+    <div class="panel-body">
+	    <div class="notifications"></div>
+	    <p>{{ 'who.ReferralTip'|trans|raw }}</p>
+	    <div class="input-group input-group-sm">
+		    <span class="input-group-addon" id="sizing-addon3"><span class="glyphicon glyphicon-link"></span></span>
+		    <input type="text" class="form-control" id="profile-ref-link" value="" readonly aria-describedby="sizing-addon3">
+	    </div>
+	    <br><br>
+        <p><span class="glyphicon glyphicon-glass"></span> - {{ 'who.InviteTip'|trans }};
+
+        <span class="glyphicon glyphicon-eye-close"></span> / <span class="glyphicon glyphicon-eye-open"></span> -
+	        {{ 'who.ToggleBanTip'|trans }}</p>
+
+        <div class="table-responsive">
+            <table class="table table-striped" id="guests">
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-block btn-success return-to-chat">{{ 'index.Return'|trans }}</a>
+    </div>
+</div>

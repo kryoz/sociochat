@@ -1,16 +1,8 @@
-@font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(/fonts/Lato-Regular.ttf) format('truetype');
-}
-
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
     background: url(../img/lghtmesh.png) 0 0 repeat;
-    font-family: 'Lato', sans-serif;
 }
 
 code {
@@ -97,22 +89,14 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 #log .user-avatar {
-    margin-left: -46px;
+    margin-left: -48px;
     margin-top: 2px;
     float: left;
     border-radius: 50%;
-    box-shadow: 0 2px 4px #777;
-    position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 2px #aaa;
 }
 
-#log .nick-time {
-    margin-bottom: 5px;
-}
-
-#log .first {
-    margin-top: 10px;
-}
 .user-avatar img {
     width: inherit;
     height: auto;
@@ -138,7 +122,7 @@ doesnotexist:-o-prefocus, #panel-chat {
 
 #log .user-avatar .glyphicon {
     color: #ddd;
-    border-radius: 50% 50%;
+    border-radius: 50%;
     overflow: hidden;
 }
 
@@ -401,8 +385,10 @@ doesnotexist:-o-prefocus, #panel-chat {
 }
 
 #log .time {
+    float: right;
     color: #aaa;
     font-size: 12px;
+    margin-right: 10px;
 }
 
 #guests td {

@@ -36,8 +36,10 @@ class SessionFilter implements ChainInterface
         /* @var $socketRequest Request */
 
         $langCode = $socketRequest->getCookie('lang') ?: 'ru';
-        $lang = $container->get('lang')->setLangByCode($langCode);
         /* @var $lang Lang */
+        $lang = $container->get('lang');
+        $lang->setLanguage($langCode);
+
         $newUserWrapper
             ->setIp($socketRequest->getHeader('X-Real-IP'))
             ->setLastMsgId((int)$socketRequest->getCookie('lastMsgId'))
@@ -53,7 +55,7 @@ class SessionFilter implements ChainInterface
             token = {$socketRequest->getCookie('token')},
             token2 = {$imprint},
             lastMsgId = {$newUserWrapper->getLastMsgId()}",
-            [__CLASS__]
+            [__METHOD__]
         );
 
         try {
@@ -75,7 +77,7 @@ class SessionFilter implements ChainInterface
         } catch (InvalidSessionException $e) {
             $logger->error(
                 "Unauthorized session {$newUserWrapper->getIp()}; " . $e->getMessage(),
-                [__CLASS__]
+                [__METHOD__]
             );
 
             $newUserWrapper->send(['msg' => $lang->getPhrase('UnAuthSession'), 'refreshToken' => 1]);

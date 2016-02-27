@@ -2,6 +2,7 @@
 
 namespace SocioChat\Cron;
 
+use Silex\Application;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DI;
 
@@ -40,15 +41,13 @@ class ServiceAvatarCleaner implements CronService
         return "Script to clean old images\n";
     }
 
-    public function run()
+    public function run(Application $app)
     {
-        $dir = ROOT.DIRECTORY_SEPARATOR.DI::get()->getConfig()->uploads->avatars->dir.DIRECTORY_SEPARATOR;
+        $dir = ROOT.DIRECTORY_SEPARATOR.$app['config']->uploads->avatars->dir.DIRECTORY_SEPARATOR;
 
 	    $fileList = glob("{$dir}*.{jpg,png}", GLOB_BRACE);
 	    $fileList = array_flip($fileList);
-		echo "Found images: ".count($fileList)."\n";
 
-	    print_r($fileList);
 	    /** @var PropertiesDAO $userProp */
 	    foreach (PropertiesDAO::create()->getListWithAvatars() as $userProp) {
 		    if (file_exists($dir . $userProp->getAvatarImg())) {
@@ -74,12 +73,10 @@ class ServiceAvatarCleaner implements CronService
 
 		    if ($userProp->getAvatarImg() === null) {
 			    $userProp->save();
-			    echo "Fixed avatar link to null for ".$userProp->getName()."\n";
 		    }
 	    }
 
 	    $fileList = array_keys($fileList);
-		echo "Images to delete: ".count($fileList)."\n";
 
 	    foreach ($fileList as $file) {
 		    unlink($file);
