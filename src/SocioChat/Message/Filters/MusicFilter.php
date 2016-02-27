@@ -29,7 +29,7 @@ class MusicFilter implements ChainInterface
 	    $regexp = '~\b'.$config->protocol.addcslashes($config->web, '.').'/audio\.php\?(?:token=.*)?track_id=(.*)\b~u';
 
 	    if (preg_match($regexp, $chain->getRequest()['msg'], $matches)) {
-		    $url = $config->protocol.$config->web.'/audio_player.php?track_id='.$matches[1];
+		    $url = $config->protocol.$config->web.'/audio-player/'.$matches[1];
 		    DI::get()->getLogger()->info('Sending http request to '.$url);
 
 		    $httpRequest = $client->request(

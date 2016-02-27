@@ -11,3 +11,13 @@ recovery:
   path: /recovery
   defaults: { _controller: 'Front\Controllers\ActivationController::recovery' }
   methods: [GET,POST]
+
+audio_player:
+  path: /audio-player/{trackId}
+  defaults: { _controller: 'Front\Controllers\AudioController::index'}
+  methods: [GET]
+
+audio_list:
+  path: /audio-list/{song}/{page}
+  defaults: { _controller: 'Front\Controllers\AudioController::listAction', song: '', page: 1}
+  methods: [GET]

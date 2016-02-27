@@ -15,6 +15,7 @@ DIBuilder::setupNormal($container);
 $app['config'] = $container->get('config');
 $isDebug = $app['config']->isDebug;
 $app['debug'] = $isDebug;
+$app['cache'] = $container->get('cache');
 
 $app->register(new Silex\Provider\TranslationServiceProvider(), array(
     'locale_fallbacks' => ['en'],

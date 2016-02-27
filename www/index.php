@@ -1,5 +1,6 @@
 <?php
 
+use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
@@ -8,6 +9,7 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'silex.php';
 
 $app->register(new Silex\Provider\MonologServiceProvider(), [
     'monolog.logfile' => ROOT.'/front.log',
+    'monolig.level' => $isDebug ? Logger::DEBUG : Logger::INFO,
 ]);
 
 $errHandler = ErrorHandler::register();
