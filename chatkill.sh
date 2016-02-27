@@ -1,2 +1,2 @@
 #!/bin/bash
-kill $(ps -A | grep 'sociochat.me' | awk '{print $1}')
+kill $(ps -x | grep 'sociochat.me' | awk '{print $1}')

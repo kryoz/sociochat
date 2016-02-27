@@ -106,7 +106,7 @@ class ServerStarter
 
     private function messageRestore(Wrapper $memcache, ChannelsCollection $channels, Logger $logger)
     {
-         $logger->info('Restoring history from memcache');
+        $logger->info('Restoring history from memcache');
         $memcache->get('sociochat.channels', $json);
 
         if (!$list = json_decode($json, 1)) {
@@ -122,7 +122,7 @@ class ServerStarter
             }
 
             $logger->info('Loading messages in channelId '.$id);
-            $logger->info(print_r($channelInfo['responses'], 1));
+            $logger->debug(print_r($channelInfo['responses'], 1));
 
             if (!isset($channelInfo['responses'])) {
                 continue;
@@ -137,7 +137,7 @@ class ServerStarter
     private function messageBackup(Wrapper $memcache, ChannelsCollection $channels, Config $config, Logger $logger)
     {
         return function () use ($config, $logger, $memcache, $channels) {
-            $logger->info('Dumping chat log to memcached');
+            $logger->debug('Dumping chat log to memcached');
             $memcache->set('sociochat.channels', json_encode($channels->exportChannels()));
         };
     }
@@ -145,7 +145,7 @@ class ServerStarter
     private function seoDumper(Config $config, Logger $logger)
     {
         return function () use ($config, $logger) {
-            $logger->info('Dumping chat log to file', ['CHATLOG']);
+            $logger->debug('Dumping chat log to file', ['CHATLOG']);
             $fn = ROOT . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'chatlog.txt';
 
             if (!$fh = fopen($fn, 'w')) {
