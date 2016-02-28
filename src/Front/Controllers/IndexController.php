@@ -31,7 +31,7 @@ class IndexController
         }
 
         $escapedFragment = null;
-        if ($request->get('_escaped_fragment_', '')) {
+        if ($request->query->has('_escaped_fragment_')) {
             $fn = ROOT . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'chatlog.txt';
             $escapedFragment = file_get_contents($fn);
         }
@@ -43,7 +43,7 @@ class IndexController
             'config' => $config,
             'title' => 'соционический чат без регистрации',
             'js' => '',
-            'meta' => '',
+            'meta' => '<meta name="fragment" content="!">',
             'TimEnumList' => TimEnum::getList(),
             'SexEnumList' => SexEnum::getList(),
             'YearsRange' => Rules::getBirthYearsRange(),
