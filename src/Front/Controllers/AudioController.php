@@ -156,8 +156,9 @@ class AudioController extends BaseController
     {
         /** @var Wrapper $cache */
         $cache = $this->app['memcache'];
+        $cache->get('audioToken', $token);
 
-        if (!$cache->isStored('audioToken')) {
+        if (!$token) {
             $response = $this->curl('http://api.pleer.com/token.php', ['grant_type' => 'client_credentials'], true);
 
             if (!$token = $response['access_token']) {

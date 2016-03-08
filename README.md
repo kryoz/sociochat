@@ -34,6 +34,7 @@ So now thanks to that decision and GitHub, of course, you have an opportunity to
 
 * At least PHP 5.5
 * MySQL or PostgreSQL. Use `phinx` utility to apply migrations.
+* Memcache 
 * Give write permissions to `www/uploads/avatars`
 * PECL extension 'libevent' is recommended to achieve the best speed
 ```bash
@@ -63,8 +64,8 @@ logger =
 
 domain.web = chat
 domain.ws = ws://chat:8080
+domain.protocol = http://
 
-jsappfile = main.js
 metrika = 0
 ```
 * Run from project root with command for development purpose
