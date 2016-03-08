@@ -1,4 +1,6 @@
 {% set version = config.version %}
+{% set hostUrl = config.domain.protocol ~ config.domain.web %}
+{% set maxMsgLength = config.msgMaxLength %}
 {% include 'header.twig' with [title, js, hostUrl, meta, version] %}
 <body>
 <div class="container" id="wrapper">
@@ -15,7 +17,6 @@
                     </div>
                     <div class="dropdown navbar-cobrand">
 	                    <span class="space">
-
 							<a href="#" data-toggle="dropdown" class="dropdown-toggle"
                                title="{{ 'index.Channels'|trans }}"><b
                                         class="caret"></b>
@@ -33,8 +34,6 @@
                            title="{{ 'index.ProfileTip'|trans }}">
                             <span class="glyphicon glyphicon-cog"></span>
                         </a>
-
-
 
                         <a href="#login" class="tip tab-panel space" data-toggle="tab"
                            title="{{ 'index.LoginTip'|trans }}">
@@ -73,7 +72,7 @@
                     </li>
 
                     <li>
-                        <a href="/faq.php" target="_blank" class="tip"
+                        <a href="/faq" target="_blank" class="tip"
                            title="{{ 'index.FAQtip'|trans }}"><span
                                     class="glyphicon glyphicon-question-sign"></span></a>
                     </li>

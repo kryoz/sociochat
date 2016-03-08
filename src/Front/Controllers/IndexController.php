@@ -14,16 +14,13 @@ use Zend\Config\Config;
 
 class IndexController extends BaseController
 {
-    public function index(Application $app, Request $request)
+    public function index(Request $request)
     {
         /** @var Config $config */
-        $config = $app['config'];
+        $config = $this->app['config'];
 
         $httpAcceptLanguage = $request->getPreferredLanguage(['ru', 'en']);
-
         $lifetime = $config->session->lifetime;
-        $hostURL = $config->domain->protocol . $config->domain->web;
-        $maxMsgLength = $config->msgMaxLength;
 
         $cookies = $request->cookies;
         if (!$cookies->has('lang')) {
@@ -36,9 +33,7 @@ class IndexController extends BaseController
             $escapedFragment = file_get_contents($fn);
         }
 
-        $content = $app['twig']->render('index.twig', [
-            'hostUrl' => $hostURL,
-            'maxMsgLength' => $maxMsgLength,
+        $content = $this->app['twig']->render('index.twig', [
             'escapedFragment' => $escapedFragment,
             'config' => $config,
             'title' => 'соционический чат без регистрации',
@@ -57,5 +52,13 @@ class IndexController extends BaseController
         }
 
         return $response;
+    }
+
+    public function faq(Request $request)
+    {
+        return $this->app['twig']->render('faq.twig', [
+            'config' => $this->app['config'],
+            'title' => 'частые вопросы',
+        ]);
     }
 }

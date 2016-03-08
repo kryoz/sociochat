@@ -2,6 +2,10 @@ home:
   path: /
   defaults: { _controller: 'Front\Controllers\IndexController::index' }
 
+faq:
+  path: /faq
+  defaults: { _controller: 'Front\Controllers\IndexController::faq' }
+
 activation:
   path: /activation
   defaults: { _controller: 'Front\Controllers\ActivationController::activation' }
@@ -26,6 +30,7 @@ user_upload_avatar:
   path: /user/upload-avatar
   defaults: { _controller: 'Front\Controllers\UserController::upload' }
   methods: [POST]
+
 user_info:
   path: /user/info/{userId}
   defaults: { _controller: 'Front\Controllers\UserController::info' }
