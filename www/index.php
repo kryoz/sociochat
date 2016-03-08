@@ -12,7 +12,7 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'silex.php';
 
 $app->register(new Silex\Provider\MonologServiceProvider(), [
     'monolog.logfile' => ROOT.'/front.log',
-    'monolig.level' => $isDebug ? Logger::DEBUG : Logger::INFO,
+    'monolog.level' => $isDebug ? Logger::DEBUG : Logger::INFO,
 ]);
 
 $errHandler = ErrorHandler::register();
