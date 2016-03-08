@@ -80,9 +80,11 @@ class DIBuilder
             function () use ($container) {
                 $logger = new Logger('Chat');
                 $config = $container->get('config');
-                $file = $config->logger ?: fopen('php://stdout', 'w');
-                if (!file_exists($file)) {
+                $file = $config->logger ?: null;
+                if ($file && !file_exists($file)) {
                     throw new BaseException("Check log file path in your config ($file)");
+                } elseif (!$file) {
+                    $file = fopen('php://stdout', 'w');
                 }
                 $logHandler = (new StreamHandler($file))
                     ->setLevel($config->isDebug ? Logger::DEBUG : Logger::INFO);

@@ -10,9 +10,8 @@ define(function () {
             var $this = this;
             var $app = this.app;
             $.ajax({
-                url: '/user.php',
-                type: 'GET',
-                data: {id: userId, r: Math.random()},
+                url: '/user/info/'+userId,
+                type: 'OPTIONS',
                 success: function (response) {
                     var profile = $app.domElems.userDetails;
                     var avatar = '<div class="user-avatar"><span class="glyphicon glyphicon-user" style="font-size: 148px"></span></div>';

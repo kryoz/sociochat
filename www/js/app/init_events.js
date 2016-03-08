@@ -338,7 +338,7 @@ define(function () {
                     $this.send(command);
                 }
 
-                xhr.open("POST", "upload.php");
+                xhr.open("POST", "/user/upload-avatar");
                 xhr.send(formData);
             });
         }

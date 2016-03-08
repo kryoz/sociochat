@@ -10,17 +10,13 @@ use SocioChat\DAO\UserDAO;
 use SocioChat\Forms\Rules;
 use Symfony\Component\HttpFoundation\Request;
 
-class ActivationController
+class ActivationController extends BaseController
 {
-    /**
-     * @var Application
-     */
-    private $app;
     private $config;
 
-    public function activation(Request $request, Application $app)
+    public function activation(Request $request)
     {
-        $this->app = $app;
+        $app = $this->app;
         $config = $app['config'];
         $this->config = $config;
 
@@ -106,7 +102,6 @@ class ActivationController
 
     public function recovery(Application $app, Request $request)
     {
-        $this->app = $app;
         $config = $app['config'];
         $this->config = $config;
 

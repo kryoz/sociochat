@@ -6,7 +6,7 @@ define(function () {
             var songName = app.domElems.musicInput.val();
             var trackList = $("#music .table");
             var pagination = $("#music .pagination");
-            var sourceUrl = '/audio-list/';
+            var sourceUrl = '/audio/list/';
             var $this = this;
 
             var renderSongSearchResponse = function (response) {
@@ -25,12 +25,12 @@ define(function () {
                     html += "<tr>";
                     html += '<td>';
                     html += '<a href="#" data-id="' + trackInfo.id + '" id="' + musicElId + '" class="music"><span class="glyphicon glyphicon-play-circle"></span></a>';
-                    html += '&nbsp;&nbsp;<a href="#" data-src="https://'+app.domain+'/audio.php?track_id=' + trackInfo.id + '" class="share"><span class="glyphicon glyphicon-bullhorn"></span></a> ';
+                    html += '&nbsp;&nbsp;<a href="#" data-src="'+app.protocol+app.domain+'/audio/player/' + trackInfo.id + '" class="share"><span class="glyphicon glyphicon-bullhorn"></span></a> ';
                     html += '&nbsp;&nbsp;' + trackInfo.artist + ' - ' + trackInfo.track + '</td>';
                     html += '<td>';
 
                     if (app.user.email) {
-                        html += '<a href="https://'+app.domain+'/audio.php?track_id=' + trackInfo.id + '" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> ' + trackInfo.bitrate;
+                        html += '<a href="'+app.protocol+app.domain+'/audio/player/' + trackInfo.id + '" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> ' + trackInfo.bitrate;
                     } else {
                         html += '<span class="glyphicon glyphicon-floppy-save" title="Доступно только зарегистрированным"></span> ' + trackInfo.bitrate;
                     }
@@ -77,7 +77,7 @@ define(function () {
                     if (!$realTrackEl.data('src')) {
                         $.ajax({
                             type: "GET",
-                            url: '/audio-player/'+$realTrackEl.data('id'),
+                            url: '/audio/player/'+$realTrackEl.data('id'),
                             success: function (response) {
                                 $realTrackEl.html($realTrackEl.html().replace(/\.\.\./ig, ' ' + response.artist + ' - ' + response.track));
                                 $realTrackEl.data('src', response.url);

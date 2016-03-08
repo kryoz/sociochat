@@ -1,10 +1,11 @@
+
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>https://sociochat.me/</loc>
-        <lastmod>2015-07-18</lastmod>
+        <loc>http://chat</loc>
+        <lastmod>2016-03-08</lastmod>
     </url>
     <url>
-        <loc>https://sociochat.me/faq.php</loc>
-        <lastmod>2014-09-12</lastmod>
+        <loc>http://chat/faq.php</loc>
+        <lastmod>2016-09-12</lastmod>
     </url>
 </urlset>

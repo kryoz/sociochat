@@ -175,7 +175,7 @@ class ServerStarter
                     /** @var $msg MsgContainer */
                     $msg = $response[Channel::MSG];
                     $lang = DI::get()->container()->get('lang');
-                    $lang->setLangByCode('ru');
+                    $lang->setLanguage('ru');
                     $line .= $msg->getMsg($lang);
                     $line .= "</div>\n";
                     fwrite($fh, $line);

@@ -4,6 +4,7 @@ namespace Front\Controllers;
 
 
 use Core\Cache\Cache;
+use Core\Memcache\Wrapper;
 use Guzzle\Http\Exception\CurlException;
 use PDOException;
 use Silex\Application;
@@ -11,14 +12,11 @@ use SocioChat\DAO\MusicDAO;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class AudioController
+class AudioController extends BaseController
 {
-    private $app;
-
-    public function index($trackId, Application $app)
+    public function index($trackId)
     {
-        $this->app = $app;
-
+        $app = $this->app;
         $trackId = urldecode($trackId);
 
         try {
@@ -85,7 +83,9 @@ class AudioController
             ];
         }
 
-        $trackInfo['url'] = $app['config']->domain->protocol.'audio.sociochat.me/' . str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
+        $trackInfo['url'] = $app['config']->domain->protocol
+            .$app['config']->music->proxyServer.'/'
+            .str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
         $trackInfo['track_id'] = $trackId;
 
         return new JsonResponse($trackInfo, 200);
@@ -93,7 +93,6 @@ class AudioController
 
     public function listAction($song, $page, Application $app)
     {
-        $this->app = $app;
         $pageCount = $app['config']->music->tracksOnPage;
         $song = urldecode($song);
 
@@ -155,10 +154,10 @@ class AudioController
 
     private function getToken()
     {
-        /** @var Cache $cache */
-        $cache = $this->app['cache'];
+        /** @var Wrapper $cache */
+        $cache = $this->app['memcache'];
 
-        if (!$cache->has('audioToken')) {
+        if (!$cache->isStored('audioToken')) {
             $response = $this->curl('http://api.pleer.com/token.php', ['grant_type' => 'client_credentials'], true);
 
             if (!$token = $response['access_token']) {
@@ -168,7 +167,7 @@ class AudioController
 
             $cache->set('audioToken', $token, $ttl);
         } else {
-            $token = $cache->get('audioToken');
+            $cache->get('audioToken', $token);
             $this->app['logger']->debug('Get Pleer token from cache');
         }
 

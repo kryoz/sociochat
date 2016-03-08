@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Zend\Config\Config;
 
-class IndexController
+class IndexController extends BaseController
 {
     public function index(Application $app, Request $request)
     {

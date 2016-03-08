@@ -26,19 +26,13 @@ class MusicFilter implements ChainInterface
 	    /** @var Client $client */
 	    $client = DI::get()->container()->get('httpClient');
 
-	    $regexp = '~\b'.$config->protocol.addcslashes($config->web, '.').'/audio\.php\?(?:token=.*)?track_id=(.*)\b~u';
+	    $regexp = '~\b'.$config->protocol.addcslashes($config->web, '.').'/audio/player/(.*)\b~u';
 
 	    if (preg_match($regexp, $chain->getRequest()['msg'], $matches)) {
-		    $url = $config->protocol.$config->web.'/audio-player/'.$matches[1];
+		    $url = $config->protocol.$config->web.'/audio/player/'.$matches[1];
 		    DI::get()->getLogger()->info('Sending http request to '.$url);
 
-		    $httpRequest = $client->request(
-			    'GET',
-			    $url,
-			    [
-				    'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12'
-			    ]
-		    );
+		    $httpRequest = $client->request('GET', $url);
 		    $httpRequest->on('response', $this->onResponse($chain));
 			$httpRequest->on('error', function(\Exception $e) {
 				DI::get()->getLogger()->err($e->getMessage().$e->getPrevious()->getMessage());
