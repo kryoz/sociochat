@@ -163,21 +163,6 @@ define(function () {
             });
         },
         bindMenus: function ($this) {
-            $this.domElems.menuDualize.click(function (e) {
-                var command = {
-                    subject: 'Channel',
-                    action: 'dualSearch'
-                };
-                $this.send(command);
-            });
-
-            $this.domElems.menuDualizeStop.click(function (e) {
-                var command = {
-                    subject: 'MainChat'
-                };
-                $this.send(command);
-            });
-
             $this.domElems.menuExit.click(function (e) {
                 var command = {
                     subject: 'MainChat'

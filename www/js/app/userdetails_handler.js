@@ -46,6 +46,8 @@ define(function () {
 
                     $this.bindActionIcons(actions, response.id);
 
+                    profile.find('.karma-details').empty();
+
                     $('.tab-pane').removeClass('active');
                     $app.domElems.userDetails.toggleClass('active');
                 },
@@ -74,6 +76,29 @@ define(function () {
                 };
                 $app.send(command);
                 $this.updateInfo(userId);
+            });
+
+            actions.find('.karma').click(function () {
+                var details = $app.domElems.userDetails.find('.karma-details');
+                
+                $.ajax({
+                    url: '/user/karma/' + userId + '?v=' + Math.random(1000),
+                    type: 'GET',
+                    success: function (response) {
+                        var html = '<ul class="list-group">';
+
+                        for (var i in response) {
+                            html += '<li class="list-group-item"><span class="badge">' + response[i].mark + '</span> ' + response[i].evaluator + '</li>';
+                        }
+
+                        html += '<li class="list-group-item">...</li>';
+                        html += '</ul>';
+
+                        details.html(html);
+                        details.show();
+                    },
+                    dataType: 'json'
+                });
             });
 
             actions.find('.karma-plus').click(function () {

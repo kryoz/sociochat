@@ -35,3 +35,8 @@ user_info:
   path: /user/info/{userId}
   defaults: { _controller: 'Front\Controllers\UserController::info' }
   methods: [GET, OPTIONS]
+
+user_karma_details:
+  path: /user/karma/{userId}
+  defaults: { _controller: 'Front\Controllers\UserController::karmaDetails' }
+  methods: [GET, OPTIONS]

@@ -9,6 +9,7 @@ use Silex\Application;
 use SocioChat\DAO\NameChangeDAO;
 use SocioChat\DAO\SessionDAO;
 use SocioChat\DAO\UserDAO;
+use SocioChat\DAO\UserKarmaDAO;
 use SocioChat\Permissions\UserActions;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -121,6 +122,24 @@ class UserController extends BaseController
 
         $userActions = new UserActions($owner);
         $response['allowed'] = $userActions->getAllowed($user);
+
+        return new JsonResponse($response, 200);
+    }
+
+    public function karmaDetails($userId, Request $request)
+    {
+        /** @var SessionDAO $session */
+        $session = SessionDAO::create()->getBySessionId($request->cookies->get('token'));
+        if (!$session->getUserId()) {
+            return new JsonResponse(['error' => 'Unauthorized'], 400);
+        }
+
+        $user = UserDAO::create()->getById($userId);
+        if (!$user->getId()) {
+            return new JsonResponse(['error' => 'No user found'], 400);
+        }
+
+        $response = UserKarmaDAO::create()->getMarksList($user->getId(), 3);
 
         return new JsonResponse($response, 200);
     }
