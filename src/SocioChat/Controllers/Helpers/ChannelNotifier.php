@@ -28,8 +28,6 @@ class ChannelNotifier
                 ->setResponse($response)
                 ->notify();
         }
-
-        self::notifyOnPendingDuals($user);
     }
 
     public static function indentifyChat(User $user, UserCollection $userCollection, $silent = false)
@@ -51,7 +49,7 @@ class ChannelNotifier
                 ->notify(false);
         }
 
-        self::updateChannelInfo($userCollection, $channels, $user);
+        self::updateChannelInfo($userCollection, $channels);
         // Refresh everybody's guest list in the new channel
         self::updateGuestsList($userCollection, $channelId);
     }
@@ -78,20 +76,6 @@ class ChannelNotifier
                     ->setChannelId($channelId)
             )
             ->notify(false);
-    }
-
-    public static function notifyOnPendingDuals(User $user)
-    {
-        if (!empty(PendingDuals::get()->getUsersByDual($user))) {
-            $response = (new MessageResponse())
-                ->setMsg(MsgToken::create('DualIsWanted', $user->getProperties()->getTim()->getShortName()))
-                ->setTime(null)
-                ->setChannelId($user->getChannelId());
-            (new UserCollection())
-                ->attach($user)
-                ->setResponse($response)
-                ->notify(false);
-        }
     }
 
     public static function uploadHistory(User $user, $clear = null)

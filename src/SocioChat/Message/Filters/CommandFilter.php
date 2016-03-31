@@ -3,6 +3,7 @@
 namespace SocioChat\Message\Filters;
 
 use SocioChat\Message\Commands\GetIp;
+use SocioChat\Message\Commands\Karma;
 use SocioChat\Message\Commands\Kick;
 use SocioChat\Message\Commands\Mail;
 use SocioChat\Message\Commands\Me;
@@ -21,6 +22,7 @@ class CommandFilter implements ChainInterface
         'mail' => Mail::class,
 	    'sync' => Sync::class,
 	    'sudo' => Sudo::class,
+        'karma' => Karma::class,
     ];
 
     public function handleRequest(Chain $chain)

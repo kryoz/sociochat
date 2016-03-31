@@ -160,19 +160,11 @@ class PropertiesController extends ControllerBase
             return;
         }
 
-        if ($user->isInPrivateChat() || PendingDuals::get()->getUserPosition($user)) {
-            $this->forbiddenChangeInDualization($user);
-            $this->propertiesResponse($user);
-            return;
-        }
-
         $oldName = $user->getProperties()->getName();
 
         $this->importProperties($user, $request);
         $this->guestsUpdateResponse($user, $oldName);
         $this->propertiesResponse($user);
-
-        ChannelNotifier::notifyOnPendingDuals($user);
     }
 
 	protected function addKarma(ChainContainer $chain)
@@ -189,6 +181,7 @@ class PropertiesController extends ControllerBase
 	{
 		$operator = $chain->getFrom();
 		$request = $chain->getRequest();
+        $mark = (int) $mark;
 
 		if (!isset($request['user_id'])) {
 			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('RequiredPropertyNotSpecified')]);
@@ -201,7 +194,7 @@ class PropertiesController extends ControllerBase
 		}
 
 		if (!$operator->isRegistered()) {
-			RespondError::make($operator, ['user_id' => 'Only available for registered user']);
+			RespondError::make($operator, ['user_id' => $operator->getLang()->getPhrase('RegisteredOnly')]);
 			return;
 		}
 

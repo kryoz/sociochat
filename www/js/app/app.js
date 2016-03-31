@@ -78,10 +78,7 @@ define('app', function () {
             doHashSearch: $('#do-hash-search'),
             hashPanel: $('#hashes'),
             musicInput: $("#music input[name=song]"),
-            //hashInput: $('#hashes [name=hash]'),
 
-            menuDualize: $('#menu-dualize'),
-            menuDualizeStop: $('#menu-dualize-stop'),
             menuExit: $('#menu-exit'),
             menuChat: $('.navbar-brand a'),
             menuChannels: $('#menu-channels'),
@@ -146,11 +143,10 @@ define('app', function () {
                     if ($this.token2) {
                         $this.setCookie('token2', MD5($this.token2), options);
                     } else {
-                        setTimeout(function() {
-                            callback();
-                        }, 1000); //мегакостыль))
+                        setTimeout(callback, 1000); //мегакостыль))
                         return;
                     }
+                    
                     callback();
                 },
                 dataType: 'json'
@@ -423,14 +419,12 @@ define('app', function () {
             var RTCPeerConnection = window.RTCPeerConnection
                 || window.mozRTCPeerConnection
                 || window.webkitRTCPeerConnection;
-            var useWebKit = !!window.webkitRTCPeerConnection;
 
-            if(!RTCPeerConnection){
+            if (!RTCPeerConnection){
                 var win = document.getElementById('iframe').contentWindow;
                 RTCPeerConnection = win.RTCPeerConnection
                     || win.mozRTCPeerConnection
                     || win.webkitRTCPeerConnection;
-                useWebKit = !!win.webkitRTCPeerConnection;
             }
 
             if (!RTCPeerConnection) {
@@ -448,14 +442,15 @@ define('app', function () {
                 var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
                 var ip_addr = ip_regex.exec(candidate)[1];
 
-                if(ip_dups[ip_addr] === undefined)
+                if (ip_dups[ip_addr] === undefined) {
                     callback(ip_addr);
+                }
 
                 ip_dups[ip_addr] = true;
             }
 
-            pc.onicecandidate = function(ice){
-                if(ice.candidate) {
+            pc.onicecandidate = function(ice) {
+                if (ice.candidate) {
                     handleCandidate(ice.candidate.candidate);
                 }
             };

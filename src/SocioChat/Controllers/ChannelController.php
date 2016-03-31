@@ -10,7 +10,6 @@ class ChannelController extends ControllerBase
 {
     private $actionsMap = [
         'join' => 'processJoin',
-        'dualSearch' => 'processDualRoulette',
         //'setName' => 'setChatName',
     ];
 
@@ -29,11 +28,6 @@ class ChannelController extends ControllerBase
     protected function getFields()
     {
         return ['action'];
-    }
-
-    protected function processDualRoulette(ChainContainer $chain)
-    {
-        DualChatHandler::run($chain);
     }
 
     protected function processJoin(ChainContainer $chain)

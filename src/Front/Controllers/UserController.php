@@ -79,11 +79,13 @@ class UserController extends BaseController
         if (!$session->getUserId()) {
             return new JsonResponse(['error' => 'Unauthorized'], 400);
         }
-        $owner = UserDAO::create()->getById($session->getUserId());
+        
         $user = UserDAO::create()->getById($userId);
         if (!$user->getId()) {
             return new JsonResponse(['error' => 'No user found'], 400);
         }
+        
+        $owner = UserDAO::create()->getById($session->getUserId());
         $props = $user->getPropeties();
         $avatarDir = $app['config']->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
         $note = $owner->getUserNotes()->getNote($user->getId());

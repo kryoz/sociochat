@@ -14,8 +14,7 @@ class MainChatController extends ControllerBase
         $user = $chain->getFrom();
         $users = DI::get()->getUsers();
         $channels = ChannelsCollection::get();
-
-        MainChatDualsHandler::run($user, $users);
+        
         MainChatPrivateHandler::run($user, $users, $channels);
     }
 

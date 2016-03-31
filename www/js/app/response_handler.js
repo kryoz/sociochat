@@ -198,20 +198,12 @@ define(function () {
                 }
             };
 
-            var handleDualChat = function () {
+            var handlePrivateExitButton = function () {
                 if (json.dualChat == 'match') {
-                    $this.domElems.menuDualize.hide();
-                    $this.domElems.menuDualizeStop.hide();
                     $this.domElems.menuExit.parent().attr('style', '');
                     $this.domElems.menuExit.show();
                 } else if (json.dualChat == 'exit') {
-                    $this.domElems.menuDualize.show();
-                    $this.domElems.menuDualizeStop.hide();
                     $this.domElems.menuExit.hide();
-                } else if (json.dualChat == 'init') {
-                    $this.domElems.menuDualize.hide();
-                    $this.domElems.menuDualizeStop.parent().attr('style', '');
-                    $this.domElems.menuDualizeStop.show();
                 }
             }
 
@@ -338,7 +330,7 @@ define(function () {
             handleGuests(json);
             handleOwnProperties();
             handleHistory();
-            handleDualChat();
+            handlePrivateExitButton();
             handleMessage(json);
             handleErrors();
             handleChannels();

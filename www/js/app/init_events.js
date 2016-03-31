@@ -133,19 +133,6 @@ define(function () {
                 }
             });
 
-            //$this.domElems.doHashSearch.click(function (e) {
-            //    require(['hashes'], function (hashes) {
-            //        hashes.process($this);
-            //    });
-            //});
-            //$this.domElems.hashInput.on('keypress', function (e) {
-            //    if (e.which == 13) {
-            //        require(['hashes'], function (hashes) {
-            //            hashes.process($this);
-            //        });
-            //    }
-            //});
-
             $(window).resize(function () {
                 $this.scrollDown();
             });
