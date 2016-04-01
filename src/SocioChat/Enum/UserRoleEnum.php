@@ -26,11 +26,11 @@ class UserRoleEnum extends Enum
 
     public function isAdmin()
     {
-        return $this->getId() == self::ADMIN;
+        return $this->getId() === self::ADMIN;
     }
 
     public function isCreator()
     {
-        return $this->getId() == self::CREATOR;
+        return $this->getId() === self::CREATOR;
     }
 }

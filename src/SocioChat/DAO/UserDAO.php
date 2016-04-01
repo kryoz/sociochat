@@ -101,6 +101,9 @@ class UserDAO extends DAOBase
         return $this;
     }
 
+    /**
+     * @return UserRoleEnum
+     */
     public function getRole()
     {
         return UserRoleEnum::create($this[self::ROLE]);

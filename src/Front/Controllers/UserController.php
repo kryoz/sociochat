@@ -81,28 +81,28 @@ class UserController extends BaseController
             return new JsonResponse(['error' => 'Unauthorized'], 400);
         }
         
-        $user = UserDAO::create()->getById($userId);
-        if (!$user->getId()) {
+        $subject = UserDAO::create()->getById($userId);
+        if (!$subject->getId()) {
             return new JsonResponse(['error' => 'No user found'], 400);
         }
         
         $owner = UserDAO::create()->getById($session->getUserId());
-        $props = $user->getPropeties();
+        $props = $subject->getPropeties();
         $avatarDir = $app['config']->uploads->avatars->wwwfolder . DIRECTORY_SEPARATOR;
-        $note = $owner->getUserNotes()->getNote($user->getId());
+        $note = $owner->getUserNotes()->getNote($subject->getId());
         $total = $props->getTotal();
 
         $dtF = new DateTime("@0");
         $dtT = new DateTime("@".$props->getOnlineCount());
 
         $names = [];
-        foreach (NameChangeDAO::create()->getHistoryByUserId($user->getId()) as $name) {
+        foreach (NameChangeDAO::create()->getHistoryByUserId($subject->getId()) as $name) {
             /** @var NameChangeDAO $name */
             $names[] = $name->getName();
         }
 
         $response = [
-            'id'    => $user->getId(),
+            'id'    => $subject->getId(),
             'name' => $props->getName(),
             'about' => nl2br($props->getAbout()),
             'avatar' => $props->getAvatarImg() ? $avatarDir.$props->getAvatarImg() : null,
@@ -112,7 +112,7 @@ class UserController extends BaseController
             'birth' => $props->getAge() ?: $app->trans('NotSpecified'),
             'note' => $note ?: '',
             'karma' => $props->getKarma(),
-            'dateRegister' => $user->getDateRegister(),
+            'dateRegister' => $subject->getDateRegister(),
             'onlineTime' => $dtF->diff($dtT)->format('%a дней %h часов %i минут'),
             'wordRating' => $props->getWordRating() ? $props->getWordRating() . '-й из '. $total : $app->trans('NotSpecified'),
             'rudeRating' => $props->getRudeRating() ? $props->getRudeRating() . '-й из '. $total : $app->trans('NotSpecified'),
@@ -121,7 +121,7 @@ class UserController extends BaseController
         ];
 
         $userActions = new UserActions($owner);
-        $response['allowed'] = $userActions->getAllowed($user);
+        $response['allowed'] = $userActions->getAllowed($subject);
 
         return new JsonResponse($response, 200);
     }
@@ -131,15 +131,21 @@ class UserController extends BaseController
         /** @var SessionDAO $session */
         $session = SessionDAO::create()->getBySessionId($request->cookies->get('token'));
         if (!$session->getUserId()) {
-            return new JsonResponse(['error' => 'Unauthorized'], 400);
+            return new JsonResponse(['error' => 'Unauthorized'], 403);
         }
 
-        $user = UserDAO::create()->getById($userId);
-        if (!$user->getId()) {
+        $user = UserDAO::create()->getById($session->getUserId());
+        $subject = UserDAO::create()->getById($userId);
+        
+        if (!$subject->getId()) {
             return new JsonResponse(['error' => 'No user found'], 400);
         }
 
-        $response = UserKarmaDAO::create()->getMarksList($user->getId(), 3);
+        if ($subject->getId() !== $user->getId() && !$user->getRole()->isAdmin()) {
+            return new JsonResponse(['error' => 'Allowed only to owner'], 403);
+        }
+        
+        $response = UserKarmaDAO::create()->getMarksList($subject->getId(), 3);
 
         return new JsonResponse($response, 200);
     }
@@ -190,9 +196,9 @@ class UserController extends BaseController
 
         if ($imgHeight > $dim || $imgWidth > $dim) {
             if ($imgHeight > $imgWidth) {
-                $imagick->resizeImage(0, $dim, imagick::FILTER_CATROM, 1);
+                $imagick->resizeImage(0, $dim, Imagick::FILTER_CATROM, 1);
             } else {
-                $imagick->resizeImage($dim, 0, imagick::FILTER_CATROM, 1);
+                $imagick->resizeImage($dim, 0, Imagick::FILTER_CATROM, 1);
             }
         }
 
