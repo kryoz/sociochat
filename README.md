@@ -1,7 +1,7 @@
 SocioChat
 =========
 
-This is source code of  <a href="https://sociochat.me" target="_blank">SocioChat</a>.
+This is source code of  <a href="https://sociochat.ru" target="_blank">SocioChat</a>.
 The code is a bit rough in some places, lacking of tests, but pretty readable and managable.
 
 SocioChat is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
@@ -19,12 +19,12 @@ So now thanks to that decision and GitHub, of course, you have an opportunity to
 * Adaptive markup via Twitter Bootstrap 3
 * UI optimized to use with mobile devices
 * HTML5 Notifications
-* English/Russian language support (still in progress)
+* Silex framework (for typical web request handling)
+* Partial multilanguage
 * The concept "chat first - register later"
 * Private chatting and personal banning
-* Seamless reconnection on interruption of connection
+* Seamless reconnect on interruption of connection
 * Flood protection
-* Socionic/MBTI dual chat roulette
 * Avatars
 * Music player
 * Rude filter
