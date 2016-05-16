@@ -6,6 +6,7 @@ use Core\BaseException;
 use Core\Form\Form;
 use Core\Memcache\Wrapper;
 use Monolog\Logger;
+use Ratchet\Http\OriginCheck;
 use React\EventLoop\LoopInterface;
 use SocioChat\Application\Chat;
 use Ratchet\Http\HttpServer;

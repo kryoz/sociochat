@@ -23,6 +23,18 @@ class Chat implements MessageComponentInterface
 
     public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
     {
+        /** @var RequestInterface $request */
+        $request = $conn->WebSocket->request;
+        $header = (string) $request->getHeader('Origin');
+        $origin = parse_url($header, PHP_URL_HOST) ?: $header;
+        $config = DI::get()->getConfig();
+
+        if ($origin !== $config->domain->web) {
+            $conn->send('Not allowed origin!');
+            $conn->close();
+            return;
+        }
+
         (new ChainContainer())
             ->setFrom(new User($conn))
             ->addHandler(new OnOpenFilters\SessionFilter())
