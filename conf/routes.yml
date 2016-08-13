@@ -21,6 +21,11 @@ audio_player:
   defaults: { _controller: 'Front\Controllers\AudioController::index'}
   methods: [GET]
 
+audio_download:
+  path: /audio/download/{trackId}
+  defaults: { _controller: 'Front\Controllers\AudioController::download'}
+  methods: [GET]
+
 audio_list:
   path: /audio/list/{song}/{page}
   defaults: { _controller: 'Front\Controllers\AudioController::listAction', song: '', page: 1}

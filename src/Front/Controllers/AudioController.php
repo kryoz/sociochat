@@ -10,13 +10,13 @@ use PDOException;
 use Silex\Application;
 use SocioChat\DAO\MusicDAO;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class AudioController extends BaseController
 {
     public function index($trackId)
     {
-        $app = $this->app;
         $trackId = urldecode($trackId);
 
         try {
@@ -26,69 +26,31 @@ class AudioController extends BaseController
         }
 
         if (!$trackId) {
-            return new JsonResponse('no track_id specified', 400);
+            return new JsonResponse('no track id specified', 400);
         }
 
-        $dao = MusicDAO::create()->getByTrackId($trackId);
-
-        if (!$dao->getId()) {
-            $response = $this->curl('http://api.pleer.com/index.php',
-                [
-                    'access_token' => $token,
-                    'method' => 'tracks_get_download_link',
-                    'track_id' => $trackId,
-                    'reason' => 'listen'
-                ]
-            );
-
-            if (!$response['success']) {
-                return new JsonResponse(
-                    'Invalid track_id = '.$trackId.' specified or unexpected response ('.print_r($response, 1).')',
-                    400
-                );
-            }
-
-            $trackInfo = $this->curl('http://api.pleer.com/index.php',
-                [
-                    'access_token' => $token,
-                    'method' => 'tracks_get_info',
-                    'track_id' => $trackId,
-                ]
-            );
-
-            if (!isset($trackInfo['data'])) {
-                return new JsonResponse('invalid service response, try request again', 400);
-            }
-
-            $trackInfo = $trackInfo['data'];
-
-            $dao
-                ->setTrackId($trackId)
-                ->setArtist($trackInfo['artist'])
-                ->setSong($trackInfo['track'])
-                ->setQuality($trackInfo['bitrate'])
-                ->setUrl($response['url']);
-
-            try {
-                $dao->save();
-            } catch (PDOException $e) {
-                /* */
-            }
-
-        } else {
-            $trackInfo = [
-                'artist' => $dao->getArtist(),
-                'track' => $dao->getSong(),
-                'bitrate' => $dao->getQuality()
-            ];
-        }
-
-        $trackInfo['url'] = $app['config']->domain->protocol
-            .$app['config']->music->proxyServer.'/'
-            .str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
-        $trackInfo['track_id'] = $trackId;
+        $trackInfo = $this->getTrackInfo($trackId, $token);
 
         return new JsonResponse($trackInfo, 200);
+    }
+
+    public function download($trackId)
+    {
+        $trackId = urldecode($trackId);
+
+        try {
+            $token = $this->getToken();
+        } catch (CurlException $e) {
+            return new JsonResponse($e->getMessage(), 400);
+        }
+
+        if (!$trackId) {
+            return new JsonResponse('no track id specified', 400);
+        }
+
+        $trackInfo = $this->getTrackInfo($trackId, $token);
+
+        return new RedirectResponse($trackInfo['url']);
     }
 
     public function listAction($song, $page, Application $app)
@@ -174,5 +136,69 @@ class AudioController extends BaseController
 
         $this->app['logger']->debug('Token = '.$token);
         return $token;
+    }
+
+    private function getTrackInfo($trackId, $token)
+    {
+        $dao = MusicDAO::create()->getByTrackId($trackId);
+
+        if ($dao->getId()) {
+            $trackInfo = [
+                'artist' => $dao->getArtist(),
+                'track' => $dao->getSong(),
+                'bitrate' => $dao->getQuality()
+            ];
+        } else {
+            $response = $this->curl('http://api.pleer.com/index.php',
+                [
+                    'access_token' => $token,
+                    'method' => 'tracks_get_download_link',
+                    'track_id' => $trackId,
+                    'reason' => 'listen'
+                ]
+            );
+
+            if (!$response['success']) {
+                return new JsonResponse(
+                    'Invalid track_id = '.$trackId.' specified or unexpected response ('.print_r($response, 1).')',
+                    400
+                );
+            }
+
+            $trackInfo = $this->curl('http://api.pleer.com/index.php',
+                [
+                    'access_token' => $token,
+                    'method' => 'tracks_get_info',
+                    'track_id' => $trackId,
+                ]
+            );
+
+            if (!isset($trackInfo['data'])) {
+                return new JsonResponse('invalid service response, try request again', 400);
+            }
+
+            $trackInfo = $trackInfo['data'];
+
+            $dao
+                ->setTrackId($trackId)
+                ->setArtist($trackInfo['artist'])
+                ->setSong($trackInfo['track'])
+                ->setQuality($trackInfo['bitrate'])
+                ->setUrl($response['url']);
+
+            try {
+                $dao->save();
+            } catch (PDOException $e) {
+                /* */
+            }
+
+        }
+
+        $trackInfo['url'] = $this->app['config']->domain->protocol
+            .$this->app['config']->music->proxyServer.'/'
+            .str_replace('http://', '', $dao->getUrl() . '?track_id=' . $trackId);
+        $trackInfo['track_id'] = $trackId;
+
+        return $trackInfo;
     }
 }

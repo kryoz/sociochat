@@ -30,7 +30,7 @@ define(function () {
                     html += '<td>';
 
                     if (app.user.email) {
-                        html += '<a href="'+app.protocol+app.domain+'/audio/player/' + trackInfo.id + '" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> ' + trackInfo.bitrate;
+                        html += '<a href="'+app.protocol+app.domain+'/audio/download/' + trackInfo.id + '" target="_blank"><span class="glyphicon glyphicon-floppy-save"></span></a> ' + trackInfo.bitrate;
                     } else {
                         html += '<span class="glyphicon glyphicon-floppy-save" title="Доступно только зарегистрированным"></span> ' + trackInfo.bitrate;
                     }
