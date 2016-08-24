@@ -14,6 +14,7 @@ class CronEnum extends Enum
 	    'avatarCleaner' => ServiceAvatarCleaner::class,
 	    'mailer' => ServiceMailer::class,
 	    'onlineMonitor' => ServiceOnlineMonitor::class,
+        'reminder' => ServiceReminder::class,
     ];
 
     public function getServiceInstance()
