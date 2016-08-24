@@ -68,6 +68,15 @@ class SessionDAO extends DAOBase
         return $this[self::USER_ID];
     }
 
+    public function getUsersToRemind($time)
+    {
+        return $this->db->query(
+            "SELECT " . self::USER_ID . " FROM {$this->dbTable} WHERE " . self::ACCESS_TIME . " <= :0",
+            [$time],
+            PDO::FETCH_COLUMN
+        );
+    }
+
     public function getObsoleteUserIds($deadLine)
     {
         if (!$unregisteredList = UserDAO::create()->getUnregisteredUserIds()) {

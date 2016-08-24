@@ -8,8 +8,6 @@ use SocioChat\DAO\MailQueueDAO;
 use SocioChat\DAO\OnlineDAO;
 use SocioChat\DAO\PropertiesDAO;
 use SocioChat\DAO\UserDAO;
-use SocioChat\DI;
-use SocioChat\Utils\Mail;
 
 class ServiceOnlineMonitor implements CronService
 {
