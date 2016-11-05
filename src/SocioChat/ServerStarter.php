@@ -83,7 +83,7 @@ class ServerStarter
         }
         fclose($fh);
 
-        cli_set_process_title('sociochat.me');
+        cli_set_process_title('sociochat.daemon');
     }
 
     private function setupChannels()

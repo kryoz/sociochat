@@ -6,6 +6,7 @@ use Core\Form\Form;
 use Core\Utils\PasswordUtils;
 use Silex\Application;
 use SocioChat\DAO\ActivationsDAO;
+use SocioChat\DAO\MailQueueDAO;
 use SocioChat\DAO\UserDAO;
 use SocioChat\Forms\Rules;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,8 +101,9 @@ class ActivationController extends BaseController
 
     }
 
-    public function recovery(Application $app, Request $request)
+    public function recovery(Request $request)
     {
+        $app = $this->app;
         $config = $app['config'];
         $this->config = $config;
 
@@ -151,23 +153,23 @@ class ActivationController extends BaseController
         );
         $activation->save();
 
-        $msg = "<h2>Восстановление пароля в СоциоЧате</h2>
+        $msg = "<h2>Восстановление пароля</h2>
 <p>Была произведена процедура восстановления пароля с использованием вашего email.</p>
 <p>Для подтверждения сброса пароля перейдите по <a href=\"" . $config->domain->protocol . $config->domain->web . "/activation?email=$email&code=".$activation->getCode() . "\">ссылке</a></p>
 <p>Данная ссылка действительна до " . date('Y-m-d H:i', time() + $config->activationTTL) . "</p>";
 
-        $mailer = \SocioChat\DAO\MailQueueDAO::create();
+        $mailer = MailQueueDAO::create();
         $mailer
             ->setEmail($email)
-            ->setTopic('Sociochat.me - Восстановление пароля')
+            ->setTopic($config->mail->name.' - Восстановление пароля')
             ->setMessage($msg);
         $mailer->save();
 
         return $this->app['twig']->render(
             'recovery/recovery2.twig',
             [
-                'title' => $this->app->trans('Activation.PasswordRecovery'),
-                'heading' => $this->app->trans('Activation.PasswordRecovery'),
+                'title' => $app->trans('Activation.PasswordRecovery'),
+                'heading' => $app->trans('Activation.PasswordRecovery'),
                 'hasError' => '',
                 'email' => $email,
                 'config' => $config,
@@ -187,7 +189,7 @@ class ActivationController extends BaseController
                 'heading' => $this->app->trans('Activation.PasswordRecovery'),
                 'hasError' => $validation === false ?  : '',
                 'email' => $email,
-                'errors' => $form->getErrors(),
+                'errors' => $form ? $form->getErrors() : [],
                 'config' => $this->config,
                 'token' => $token
             ]
