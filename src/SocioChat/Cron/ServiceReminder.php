@@ -52,6 +52,12 @@ class ServiceReminder implements CronService
 
         /** @var PropertiesDAO $props */
         foreach (SessionDAO::create()->getUsersToRemind(DbQueryHelper::timestamp2date(time() - $timeOut)) as $userId) {
+            $user = UserDAO::create()->getById($userId);
+
+            if (!$user->getEmail()) {
+                continue;
+            }
+
             $online = OnlineDAO::create();
             if ($online->isUserOnline($channelId, $userId)) {
                 continue;
@@ -65,8 +71,6 @@ class ServiceReminder implements CronService
             if ((time() - $timeOut) < strtotime($prop->getOnlineNotificationLast())) {
                 continue;
             }
-
-            $user = UserDAO::create()->getById($userId);
 
             $msg = $app['twig']->render(
                 'mail/reminder.twig',
