@@ -50,10 +50,8 @@ class ServiceReminder implements CronService
         $channelId = 1;
         $timeOut = 604800;
 
-        /** @var PropertiesDAO $props */
         foreach (SessionDAO::create()->getUsersToRemind(DbQueryHelper::timestamp2date(time() - $timeOut)) as $userId) {
             $user = UserDAO::create()->getById($userId);
-
             if (!$user->getEmail()) {
                 continue;
             }
@@ -63,7 +61,7 @@ class ServiceReminder implements CronService
                 continue;
             }
 
-            $prop = PropertiesDAO::create()->getByUserId($userId);
+            $prop = $user->getPropeties();
             if (!$prop->hasSubscription()) {
                 continue;
             }
@@ -72,14 +70,20 @@ class ServiceReminder implements CronService
                 continue;
             }
 
+            $prop->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
+            $prop->save(false);
+
+            $onlineList = $online->getOnlineList($channelId);
+
             $msg = $app['twig']->render(
                 'mail/reminder.twig',
                 [
                     'hostUrl' => $config->domain->protocol . $config->domain->web,
                     'props' => $prop,
+                    'onlineList' => $onlineList,
+                    'onlineCount' => count($onlineList),
                 ]
             );
-
 
             $message = MailQueueDAO::create();
             $message
@@ -88,8 +92,7 @@ class ServiceReminder implements CronService
                 ->setMessage($msg);
             $message->save();
 
-            $prop->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
-            $prop->save(false);
+            $app['logger']->addInfo('Sent reminder to: '.$user->getEmail());
         }
     }
 }

@@ -10,7 +10,7 @@ class LockerInDB implements Locker
     public function lock($key, $expireTime = self::DEFAULT_EXPIRE_TIME)
     {
         if ($this->isLocked($key)) {
-            throw new AlreadyLockedException();
+            throw new AlreadyLockedException($key);
         }
 
         try {

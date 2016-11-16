@@ -207,6 +207,7 @@ class PropertiesDAO extends DAOBase
     public function setOptions(array $options)
     {
         $this[self::NOTIFICATIONS] = json_encode($options);
+
 	    $this->options = $options;
         return $this;
     }
@@ -275,10 +276,8 @@ class PropertiesDAO extends DAOBase
 
 	public function setOnlineNotificationLast($time)
 	{
-		$options = $this->options;
-		$options = array_merge($options, [
-			self::ONLINE_NOTIFICATION_LAST => $time
-		]);
+		$options = $this->getOptions();
+        $options[self::ONLINE_NOTIFICATION_LAST] = $time;
 
 		$this->setOptions($options);
 		return $this;

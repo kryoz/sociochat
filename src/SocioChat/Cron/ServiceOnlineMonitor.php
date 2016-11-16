@@ -52,6 +52,7 @@ class ServiceOnlineMonitor implements CronService
 
         /** @var PropertiesDAO $props */
         foreach (PropertiesDAO::create()->getRegisteredList() as $props) {
+            //@TODO make additional fields to DB: notify_online_count, last_notify_time
             if (!$limit = $props->getOnlineNotificationLimit()) {
                 continue;
             }
@@ -82,6 +83,8 @@ class ServiceOnlineMonitor implements CronService
                     ]
                 );
 
+                $props->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
+                $props->save(false);
 
                 $message = MailQueueDAO::create();
                 $message
@@ -90,8 +93,7 @@ class ServiceOnlineMonitor implements CronService
                     ->setMessage($msg);
                 $message->save();
 
-                $props->setOnlineNotificationLast(DbQueryHelper::timestamp2date());
-                $props->save(false);
+                $app['logger']->addInfo('Sent online notification to: '.$user->getEmail());
             }
         }
     }

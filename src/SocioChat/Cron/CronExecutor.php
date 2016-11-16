@@ -38,18 +38,22 @@ class CronExecutor
         } catch (AlreadyLockedException $e) {
             if (!isset($options['--hiddenLock'])) {
                 $this->msg("Service already locked, " . $e->getMessage());
+                $app['logger']->alert("Service already locked, " . $e->getMessage());
             }
             return;
         }
 
         try {
+            $app['logger']->info('Starting service: '.$service->getLockName());
             $service->run($app);
             $locker->unlock($this->getLockName($service));
         } catch (BaseException $e) {
             $locker->unlock($this->getLockName($service));
-            DI::get()->container()->get('logger')->error($e->getMessage());
+            $app['logger']->alert($e->getMessage());
             exit(1);
         }
+
+        $app['logger']->info('Finished service: '.$service->getLockName());
     }
 
     /**
