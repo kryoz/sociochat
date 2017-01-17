@@ -428,6 +428,7 @@ define('app', function () {
             }
 
             if (!RTCPeerConnection) {
+                callback();
                 return;
             }
 
@@ -439,6 +440,9 @@ define('app', function () {
             var pc = new RTCPeerConnection(servers, mediaConstraints);
 
             function handleCandidate(candidate){
+                if (!candidate.length < 1) {
+                    return;
+                }
                 var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
                 var ip_addr = ip_regex.exec(candidate)[1];
 

@@ -13,21 +13,21 @@
     }
   ],
   "require": {
-    "react/react": "0.4.*@stable",
-    "cboden/Ratchet": "*@stable",
-    "zendframework/zend-config": "*@stable",
-    "monolog/monolog": "*@stable",
-    "orno/di": "*@stable",
-    "robmorgan/phinx": "*@stable",
+    "react/react": "@stable",
+    "cboden/Ratchet": "@stable",
+    "zendframework/zend-config": "@stable",
+    "monolog/monolog": "@stable",
+    "orno/di": "@stable",
+    "robmorgan/phinx": "@stable",
     "kryoz/core": "dev-master",
-    "silex/silex": "@stable",
-    "symfony/yaml":"2.*",
-    "symfony/config":"2.*",
+    "silex/silex": "1.*@stable",
+    "symfony/yaml":"@stable",
+    "symfony/config":"@stable",
     "twig/twig": "@stable",
-    "symfony/twig-bridge": "2.*@stable",
-    "swiftmailer/swiftmailer": "*@stable",
-    "symfony/translation": "2.*@stable"
-
+    "symfony/twig-bridge": "@stable",
+    "swiftmailer/swiftmailer": "@stable",
+    "symfony/translation": "@stable",
+    "guzzle/guzzle" : "@stable"
   },
   "require-dev": {
     "phpunit/phpunit": "4.*@stable"

@@ -122,8 +122,8 @@
         <div class="row btn-vert-block form-group">
             <div class="col-sm-3 btn-vert-block">
 				<span class="btn btn-success btn-file">
-					{{ 'profile.Browse'|trans }} <input type="file" class="upload" accept="image/*"
-                                                                     name="img">
+					{{ 'profile.Browse'|trans }}
+                    <input type="file" class="upload" accept="image/*" name="img">
 				</span>
             </div>
 	        <div class="col-sm-3 btn-vert-block">
@@ -135,8 +135,7 @@
             <div class="col-sm-12 btn-vert-block">
                 <p>{{ 'profile.Preview'|trans }}</p>
 
-                <div class="img-thumbnail avatar-placeholder"
-                     style="max-width: 100%; max-height: <?= $config->uploads->avatars->maxdim ?>px">
+                <div class="img-thumbnail avatar-placeholder">
 	                <div class="user-avatar">
 	                    <span class="glyphicon glyphicon-user"></span>
 	                </div>

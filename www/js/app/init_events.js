@@ -192,12 +192,12 @@ define(function () {
             var cropHolder = null;
             var jcropAPI = null;
             var dim = null;
+            var file = null;
 
-            avatar.find('.upload').change(function () {
+            avatar.find('.upload').change(function (e) {
+                file = this.files[0];
                 var fileReader = new FileReader();
-                var file = this.files[0];
                 var image = new Image();
-
 
                 if (jcropAPI) {
                     jcropAPI.destroy();
@@ -207,9 +207,9 @@ define(function () {
                 cropHolder.attr('style', placeHolder.attr('style'));
                 placeHolder.after(cropHolder);
 
-                fileReader.onload = function (e) {
+                fileReader.onload = function (ev) {
                     placeHolder.hide();
-                    image.src = e.target.result;
+                    image.src = ev.target.result;
                 };
 
                 fileReader.onloadend = function () {
@@ -228,20 +228,19 @@ define(function () {
                         });
                     }, 500);
 
-                }
+                };
 
                 fileReader.readAsDataURL(file);
 
-                image.style.width = 'auto';
+                image.style.width = '100%';
                 image.style.maxHeight = 'inherit';
 
                 cropHolder.html(image);
-                uploadButtonContainer.data('file', file).show();
+                uploadButtonContainer.show();
                 response.removeClass('.alert-success').removeClass('.alert-danger').hide();
             });
 
             uploadButtonContainer.find('a').click(function () {
-                var file = uploadButtonContainer.data('file');
                 var xhr = new XMLHttpRequest();
                 var formData = new FormData();
                 var progressbarContainer = avatar.find('.progress');
@@ -250,10 +249,10 @@ define(function () {
 
                 var dim = jcropAPI.tellSelect();
                 dim = {
-                    x: dim.x,
-                    y: dim.y,
-                    w: dim.w,
-                    h: dim.h,
+                    x: Math.round(dim.x),
+                    y: Math.round(dim.y),
+                    w: Math.round(dim.w),
+                    h: Math.round(dim.h),
                     portW: cropHolder.innerWidth(),
                     portH: cropHolder.innerHeight()
                 };
@@ -274,13 +273,13 @@ define(function () {
                     progressbarContainer.show();
                     progressbar.css('width', '0%').attr('aria-valuenow', 0)
                     percentage.html("0%");
-                }
+                };
 
                 xhr.upload.onload = function (e) {
                     progressbarContainer.hide();
                     uploadButtonContainer.hide();
                     response.addClass('alert-info').html('Фотография обрабатывается, подождите...').show();
-                }
+                };
 
                 xhr.onload = function (e) {
                     response.removeClass('alert-info').removeClass('alert-danger');
@@ -306,11 +305,11 @@ define(function () {
                         subject: 'Properties',
                         action: 'uploadAvatar',
                         image: responseText.image
-                    }
+                    };
                     $this.send(command);
-                }
+                };
 
-                xhr.open("POST", "/user/upload-avatar");
+                xhr.open("POST", "/user/upload-avatar", true);
                 xhr.send(formData);
             });
         }

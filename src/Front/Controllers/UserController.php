@@ -30,7 +30,7 @@ class UserController extends BaseController
         $img = $request->files->get('img');
         $dim = $request->request->get('dim');
 
-        if (!$img || !$token || !$dim) {
+        if (!$img || $img->getError() != UPLOAD_ERR_OK || !$token || !$dim) {
             return $this->imgResponse(403, $app->trans('profile.IncorrectRequest'));
         }
         $uploadDir = ROOT . DIRECTORY_SEPARATOR . $avatarsConfig->dir . DIRECTORY_SEPARATOR;
