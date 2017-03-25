@@ -27,7 +27,7 @@
     "symfony/twig-bridge": "@stable",
     "swiftmailer/swiftmailer": "@stable",
     "symfony/translation": "@stable",
-    "guzzle/guzzle" : "@stable"
+    "guzzlehttp/guzzle" : "@stable"
   },
   "require-dev": {
     "phpunit/phpunit": "4.*@stable"

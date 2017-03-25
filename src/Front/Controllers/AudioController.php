@@ -61,7 +61,7 @@ class AudioController extends BaseController
         try {
             $token = $this->getToken();
         } catch (CurlException $e) {
-            return new JsonResponse($e->getMessage(), 400);
+            return new Response($e->getMessage(), 400);
         }
 
         if (!$song) {
@@ -123,8 +123,8 @@ class AudioController extends BaseController
         if (!$token) {
             $response = $this->curl('http://api.pleer.com/token.php', ['grant_type' => 'client_credentials'], true);
 
-            if (!$token = $response['access_token']) {
-                throw new CurlException('Abnormal API behavior: unable to receive access token');
+            if (empty($response['access_token']) || !$token = $response['access_token']) {
+                throw new CurlException('Похоже внешний сервис не работает! Попробуйте позднее.');
             }
             $ttl = isset($response['expires_in']) ? $response['expires_in'] : 3600;
 

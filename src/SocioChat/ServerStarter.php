@@ -40,12 +40,12 @@ class ServerStarter
         $socketServer = new Server($loop);
         $socketServer->listen($config->daemon->port, $config->daemon->host);
 
-        $server = new IoServer(
+        (new IoServer(
             new HttpServer(new WsServer($app)),
             $socketServer
-        );
+        ));
 
-        $logger->info("Starting chat server daemon on " . $config->daemon->host . ":" . $config->daemon->port, ['CHAT-SERVER']);
+        $logger->info("Starting chat daemon on " . $config->daemon->host . ":" . $config->daemon->port);
 
         $channels = $this->setupChannels();
         $memcache = DI::get()->getMemcache();
@@ -83,19 +83,21 @@ class ServerStarter
         }
         fclose($fh);
 
-        cli_set_process_title('sociochat.daemon');
+        cli_set_process_title('chat-daemon');
     }
 
     private function setupChannels()
     {
         return ChannelsCollection::get()
             ->addChannel(
-                (new Channel(1, 'Гостевая', false))->setOnJoinRule(function (Form $form, User $user) {
+                (new Channel(1, 'Гостевая', false))
+                    ->setOnJoinRule(function (Form $form, User $user) {
                     return true;
                 })
             )
             ->addChannel(
-                (new Channel(2, 'Храм просветленных', false))->setOnJoinRule(function (Form $form, User $user) {
+                (new Channel(2, 'Храм просветленных', false))
+                    ->setOnJoinRule(function (Form $form, User $user) {
                     if ($user->getProperties()->getKarma() <= 1) {
                         $form->markWrong('channelId', 'Вход разрешён только пользователям с положительной кармой!');
                         return false;

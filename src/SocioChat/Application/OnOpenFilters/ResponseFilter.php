@@ -60,36 +60,14 @@ class ResponseFilter implements ChainInterface
         DI::get()->getLogger()->info("Total user count {$userCollection->getTotalCount()}", [__CLASS__]);
 
         if ($user->isInPrivateChat()) {
-            $dualUsers = new UserCollection();
-            $dualUsers->attach($user);
-
             $response = (new MessageResponse())
                 ->setTime(null)
                 ->setGuests($userCollection->getUsersByChatId($channelId))
                 ->setChannelId($channelId);
 
-            if ($userCollection->getClientsCount($channelId) > 1) {
-                $dualUsers = $userCollection;
-                $response
-                    ->setMsg(MsgToken::create('PartnerIsOnline'))
-                    ->setDualChat('match');
-            } elseif ($num = PendingDuals::get()->getUserPosition($user)) {
-                $response
-                    ->setMsg(MsgToken::create('StillInDualSearch', $num))
-                    ->setDualChat('init');
-            } else {
-                $response
-                    ->setMsg(MsgToken::create('YouAreAlone'))
-                    ->setDualChat('match');
-            }
-
             if ($user->getLastMsgId()) {
                 $response->setMsg(Msg::create(null));
             }
-
-            $dualUsers
-                ->setResponse($response)
-                ->notify(false);
         } else {
             ChannelNotifier::welcome($user, $userCollection);
             ChannelNotifier::indentifyChat($user, $userCollection, true);

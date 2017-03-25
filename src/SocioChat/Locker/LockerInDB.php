@@ -28,7 +28,7 @@ class LockerInDB implements Locker
     {
         if ($lock = LockerDAO::create()->getByKey($key)) {
             /* @var  $lock  LockerDAO */
-            $isLocked = (time() - $lock->getTimestamp()) > static::DEFAULT_EXPIRE_TIME;
+            $isLocked = (time() - strtotime($lock->getTimestamp())) > static::DEFAULT_EXPIRE_TIME;
             if (!$isLocked) {
                 $lock->dropById($lock->getId());
             }

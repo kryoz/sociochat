@@ -1,11 +1,11 @@
-'use strict'
+'use strict';
 
 define(function () {
     return {
         process: function (app) {
             var songName = app.domElems.musicInput.val();
-            var trackList = $("#music .table");
-            var pagination = $("#music .pagination");
+            var trackList = app.domElems.music.find('.table');
+            var pagination = app.domElems.music.find('.pagination');
             var sourceUrl = '/audio/list/';
             var $this = this;
 
@@ -110,7 +110,7 @@ define(function () {
                         l.stop();
                     },
                     error: function (response) {
-                        trackList.html('<td>' + response.status + ' ' + response.statusText + ' ' + response.responseText + '</td>');
+                        trackList.html('<td>Ошибка ' + response.status + ': ' + response.responseText + '</td>');
                         l.stop();
                     },
                     dataType: 'json'

@@ -69,9 +69,7 @@ class MusicFilter implements ChainInterface
 				    return;
 			    }
 
-			    $logger->info('JSON decoded');
 			    $channelId = $chain->getUser()->getChannelId();
-			    /** @var UserCollection $users */
 			    $users = DI::get()->getUsers();
 
 			    $response = (new MusicResponse())
