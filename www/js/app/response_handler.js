@@ -7,9 +7,11 @@ define(function () {
                     var guests = $this.guests;
 
                     $this.domElems.guestList.empty();
+                    $this.domElems.guestMiniList.empty();
                     $this.domElems.address.empty();
 
                     var guestHMTL = '<tr><th>Имя</th><th>ТИМ</th><th>Город</th><th>Возраст</th><th></th></tr>';
+                    var guestMiniHTML = '';
                     var guestDropdownHTML = '<option value="">Всем</option>';
 
                     for (var i in guests) {
@@ -34,6 +36,11 @@ define(function () {
                         } else if (guest.karma < 0) {
                             karmaClass = 'danger';
                         }
+
+                        guestMiniHTML += '<div class="' + colorClass + '">';
+                        guestMiniHTML += $this.getAvatar(guest)+' <span class="user-name">'+guest.name+'</span>';
+                        guestMiniHTML += '<sup class="'+karmaClass+'">'+(guest.karma > 0 ? '+':'')+guest.karma+'</sup></div>';
+
                         guestHMTL += '<tr class="' + colorClass + '">';
                         guestHMTL += '<td>' + $this.getAvatar(guest) + ' <span class="user-name">' + guest.name;
                         guestHMTL += '<sup class="'+karmaClass+'">'+(guest.karma > 0 ? '+':'')+guest.karma+'</sup></span></td>';
@@ -60,6 +67,7 @@ define(function () {
                     }
 
                     $this.domElems.guestList.append(guestHMTL);
+                    $this.domElems.guestMiniList.append(guestMiniHTML);
                     $this.domElems.address.append(guestDropdownHTML);
 
                     $this.domElems.guestList.find('.user-avatar').click(function () {
@@ -67,6 +75,17 @@ define(function () {
                         require(['userdetails_handler'], function (userDetails) {
                             userDetails.process($this, $(e).data('id'));
                         });
+                    });
+
+                    $this.domElems.guestMiniList.find('.user-avatar').click(function () {
+                        var e = this;
+                        require(['userdetails_handler'], function (userDetails) {
+                            userDetails.process($this, $(e).data('id'));
+                        });
+                    });
+
+                    $this.domElems.guestMiniList.find('.user-name').click(function () {
+                        $this.domElems.inputMessage.val($(this).text() + ', ' + $this.domElems.inputMessage.val());
                     });
 
                     $this.domElems.guestList.find('.ban').click(function () {

@@ -43,6 +43,7 @@ define('app', function () {
 
         domElems: {
             guestList: $('#guests'),
+            guestMiniList: $('#guests-mini'),
             inputMessage: $('#message'),
             charsLeft : $('#charsLeft'),
             chat: $('#log'),
@@ -192,6 +193,8 @@ define('app', function () {
             $this.connection.onopen = function (e) {
                 if ($this.isFirstConnect) {
                     $this.domElems.chat.empty();
+                    $this.domElems.chat.parent().addClass('w80fl');
+                    $('.w20fl').removeClass('hidden');
                     $this.isFirstConnect = false;
                 }
 
@@ -234,11 +237,11 @@ define('app', function () {
 
                 $this.domElems.inputMessage.attr('disabled', 'disabled');
                 $this.domElems.inputMessage.attr('placeholder', 'Обрыв соединения... подождите, пожалуйста...');
-            }
+            };
 
             $this.connection.onerror = function (e) {
                 console.log(e);
-            }
+            };
 
             $this.connection.onmessage = function (e) {
                 try {

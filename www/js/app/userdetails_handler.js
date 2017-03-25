@@ -5,7 +5,6 @@ define(function () {
             this.app = $app;
             this.updateInfo(userId);
         },
-
         updateInfo: function(userId) {
             var $this = this;
             var $app = this.app;

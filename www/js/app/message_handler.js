@@ -26,7 +26,7 @@ define(function () {
                     msg += '<div class="nick-time">';
                     msg += '<span class="nickname ' + this.getSexClass(fromUser) + '" title="' + (fromUser ? fromUser.tim : '') + '">' + response.fromName + '</span>';
                     if (time) {
-                        msg += '<span class="time"> - ' + time + '</span>';
+                        msg += '<span class="time">' + time + '</span>';
                     }
                     msg += '</div>';
                     msgCSStype += 'first';
@@ -230,7 +230,7 @@ define(function () {
                 $this.clickTimer = setTimeout(function () {
                     $this.domElems.inputMessage.val(el.text() + ', ' + $this.domElems.inputMessage.val());
                     $this.domElems.inputMessage.focus();
-                }, 250);
+                }, 150);
             });
 
             newNameOnLine.dblclick(function () {
