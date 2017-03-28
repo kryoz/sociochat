@@ -79,7 +79,7 @@ define('app', function () {
             doHashSearch: $('#do-hash-search'),
             hashPanel: $('#hashes'),
             music: $('#music'),
-            musicInput: this.music.find("input[name=song]"),
+            musicInput: $("#music input[name=song]"),
 
             menuExit: $('#menu-exit'),
             menuChat: $('.navbar-brand a'),
