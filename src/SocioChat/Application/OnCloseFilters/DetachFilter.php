@@ -56,12 +56,6 @@ class DetachFilter implements ChainInterface
         ChannelNotifier::updateChannelInfo($clients, ChannelsCollection::get());
     }
 
-    private function cleanPendingQueue(User $user)
-    {
-        $duals = PendingDuals::get();
-        $duals->deleteByUser($user);
-    }
-
 	private function detacher(User $user, Logger $logger)
 	{
 		return function () use ($user, $logger) {
@@ -76,7 +70,6 @@ class DetachFilter implements ChainInterface
 			);
 
 			$this->notifyOnClose($user, $clients);
-			$this->cleanPendingQueue($user);
 
 			ChannelsCollection::get()->clean($user);
 
